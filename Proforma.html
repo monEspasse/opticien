@@ -1,0 +1,1836 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>DigitalOpti - Facture Proforma</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary-color: #3f37c9;
+            --accent-color: #4895ef;
+            --light-accent: #4cc9f0;
+            --success-color: #4ade80;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --dark-color: #1e293b;
+            --light-color: #f8fafc;
+            --gray-color: #94a3b8;
+            --sidebar-bg: #1e293b;
+            --sidebar-text: #e2e8f0;
+            --sidebar-hover: #334155;
+            --sidebar-active: #4361ee;
+            --card-bg: #ffffff;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --border-radius: 8px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: #334155;
+        }
+
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Main Content */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+              
+        /* Dashboard Content */
+        .dashboard-section {
+            padding: 1.5rem;
+            flex: 1;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .dashboard-header h1 {
+            font-size: 1.75rem;
+            color: var(--dark-color);
+            font-weight: 600;
+        }
+
+        .dashboard-buttons {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            border: none;
+            padding: 0.75rem 1.25rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: white;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: #f8fafc;
+        }
+
+        /* Header */
+        .header {
+            background-color: var(--card-bg);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--dark-color);
+            font-size: 1.25rem;
+            margin-right: 1rem;
+            cursor: pointer;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .notifications {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--danger-color);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+            font-weight: bold;
+        }
+
+        .profile-dropdown {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .profile-name {
+            font-weight: 500;
+        }
+
+        .profile-img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-color);
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--card-bg);
+            min-width: 200px;
+            box-shadow: var(--card-shadow);
+            border-radius: var(--border-radius);
+            z-index: 10;
+            padding: 0.5rem 0;
+        }
+
+        .dropdown-menu a {
+            color: var(--dark-color);
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #f1f5f9;
+            color: var(--primary-color);
+        }
+
+        .dropdown-menu a i {
+            margin-right: 0.75rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .profile-dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            width: 280px;
+            padding: 1.5rem 1rem;
+            transition: var(--transition);
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 0 0.5rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 0.75rem;
+            color: var(--accent-color);
+            font-size: 1.8rem;
+        }
+
+        .menu {
+            margin-top: 1rem;
+        }
+
+        .menu-item {
+            margin-bottom: 0.25rem;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .menu-link {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 0.75rem 1rem;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .menu-link:hover {
+            background-color: var(--sidebar-hover);
+            color: white;
+        }
+
+        .menu-link i:first-child {
+            margin-right: 0.75rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .menu-link .chevron {
+            transition: transform 0.3s;
+            font-size: 0.8rem;
+        }
+
+        .submenu {
+            display: none;
+            flex-direction: column;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+        }
+
+        .submenu a {
+            font-size: 0.9rem;
+            padding: 0.65rem 1rem 0.65rem 2.5rem;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+        }
+
+        .submenu a i {
+            margin-right: 0.75rem;
+            font-size: 0.7rem;
+            opacity: 0.7;
+        }
+
+        .submenu a:hover {
+            background-color: var(--sidebar-hover);
+            color: white;
+            padding-left: 2.75rem;
+        }
+
+        .menu-item.active .submenu {
+            display: flex;
+        }
+
+        .menu-item.active .menu-link .chevron {
+            transform: rotate(180deg);
+        }
+
+        .menu-item.active .menu-link {
+            background-color: var(--sidebar-active);
+            color: white;
+        }
+
+        /* Form Styles */
+        .form-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+        }
+
+        /* Stepper */
+        .stepper {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .stepper::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #e2e8f0;
+            z-index: 1;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+            flex: 1;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e2e8f0;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            border: 3px solid white;
+        }
+
+        .step.active .step-number {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .step.completed .step-number {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.85rem;
+            color: #64748b;
+            text-align: center;
+            max-width: 100px;
+        }
+
+        .step.active .step-label {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .step.completed .step-label {
+            color: var(--success-color);
+        }
+
+        /* Form Sections */
+        .form-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+            margin: 2rem 0 1rem;
+            font-size: 1.3rem;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+
+        .required-field::after {
+            content: ' *';
+            color: var(--danger-color);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--accent-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(72, 149, 239, 0.2);
+        }
+
+        /* Prescription Table */
+        .prescription-table-container {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+
+        .prescription-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+        }
+
+        .prescription-table th {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .prescription-table td {
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            text-align: center;
+        }
+
+        .prescription-table select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            background-color: white;
+        }
+
+        /* Payment Section */
+        .payment-section {
+            background-color: #f8fafc;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--primary-color);
+            margin: 2rem 0;
+        }
+
+        .payment-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .payment-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .payment-label {
+            font-size: 0.9rem;
+            color: var(--gray-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .payment-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+        }
+
+        .payment-total {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--dark-color);
+        }
+
+        .payment-highlight {
+            background-color: #e8f4fd;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .discount-selector {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .discount-amount {
+            flex: 2;
+        }
+
+        .discount-type {
+            flex: 1;
+        }
+
+        /* Form Navigation */
+        .form-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+
+        /* Loader */
+        .loader-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loader-message {
+            color: white;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+
+        .loader-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .loader-visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .success-message {
+            background-color: var(--success-color);
+            color: white;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-top: 15px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .error-message {
+            background-color: var(--danger-color);
+            color: white;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-top: 15px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: fixed;
+                left: -100%;
+                transition: var(--transition);
+            }
+            
+            .sidebar.active {
+                left: 0;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .form-row, .payment-row {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .form-group, .payment-group {
+                min-width: 100%;
+            }
+            
+            .discount-selector {
+                flex-direction: column;
+            }
+            
+            .discount-type {
+                width: 100%;
+            }
+
+            .stepper {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .step {
+                flex: none;
+                width: calc(50% - 0.5rem);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .step {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <aside class="sidebar" id="sidebar">
+            <div class="logo-container">
+                <div class="logo">
+                    <i class="fas fa-glasses"></i>
+                    <span>DIGITAL OPTIC</span>
+                </div>
+            </div>
+
+            <nav class="menu">
+                <div class="menu-item">
+                    <a class="menu-link">
+                        <i class="fas fa-home"></i>
+                        <span>Tableau de bord</span>
+                        <i class="fas fa-chevron-down chevron"></i>
+                    </a>
+                    <div class="submenu">
+                        <a href="#" onclick="openVueGlobale()"><i class="fas fa-chart-line"></i> Vue Globale</a>
+                        <a href="#"><i class="fas fa-chart-pie"></i> Statistiques</a>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <a class="menu-link">
+                        <i class="fas fa-bolt"></i>
+                        <span>Accès Rapides</span>
+                        <i class="fas fa-chevron-down chevron"></i>
+                    </a>
+                    <div class="submenu">
+                        <a href="#"><i class="fas fa-search"></i> Recherche</a>
+                        <a href="#"><i class="fas fa-history"></i> Historique</a>
+                    </div>
+                </div>
+
+                <div class="menu-item active">
+                    <a class="menu-link">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Gestion des Ventes</span>
+                        <i class="fas fa-chevron-down chevron"></i>
+                    </a>
+                    <div class="submenu">
+                        <a href="#" onclick="openNewSale()"><i class="fas fa-plus-circle"></i> Nouvelle Vente</a>
+                        <a href="#" onclick="openClientList()"><i class="fas fa-users"></i> Liste Clients</a>
+                        <a href="#" onclick="openDevis()"><i class="fas fa-file-invoice"></i> Proforma</a>
+                        <a href="#"><i class="fas fa-exchange-alt"></i> Retours</a>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <a class="menu-link">
+                        <i class="fas fa-boxes"></i>
+                        <span>Gestion Stock</span>
+                        <i class="fas fa-chevron-down chevron"></i>
+                    </a>
+                    <div class="submenu">
+                        <a href="#"><i class="fas fa-plus"></i> Entrée Produit</a>
+                        <a href="#"><i class="fas fa-minus"></i> Destockage</a>
+                        <a href="#"><i class="fas fa-glasses"></i> Montures</a>
+                        <a href="#"><i class="fas fa-eye"></i> Verres</a>
+                        <a href="#"><i class="fas fa-briefcase"></i> Etuis</a>
+                        <a href="#"><i class="fas fa-spray-can"></i> Nettoyants</a>
+                        <a href="#"><i class="fas fa-ellipsis-h"></i> Autres</a>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <a class="menu-link">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Assurances</span>
+                        <i class="fas fa-chevron-down chevron"></i>
+                    </a>
+                    <div class="submenu">
+                        <a href="#"><i class="fas fa-building"></i> Deals Assurance</a>
+                        <a href="#"><i class="fas fa-truck"></i> Facturation</a>
+                        <a href="#"><i class="fas fa-file-contract"></i> Contrats</a>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <a class="menu-link">
+                        <i class="fas fa-bullhorn"></i>
+                        <span>Marketing</span>
+                        <i class="fas fa-chevron-down chevron"></i>
+                    </a>
+                    <div class="submenu">
+                        <a href="#"><i class="fas fa-envelope"></i> Campagnes</a>
+                        <a href="#"><i class="fas fa-chart-bar"></i> Analytique</a>
+                        <a href="#"><i class="fas fa-gift"></i> Promotions</a>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <a class="menu-link">
+                        <i class="fas fa-cog"></i>
+                        <span>Paramètres</span>
+                        <i class="fas fa-chevron-down chevron"></i>
+                    </a>
+                    <div class="submenu">
+                        <a href="#"><i class="fas fa-user-cog"></i> Compte</a>
+                        <a href="#"><i class="fas fa-sliders-h"></i> Préférences</a>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <a class="menu-link">
+                        <i class="fas fa-users-cog"></i>
+                        <span>Administration</span>
+                        <i class="fas fa-chevron-down chevron"></i>
+                    </a>
+                    <div class="submenu">
+                        <a href="#"><i class="fas fa-user-plus"></i> Utilisateurs</a>
+                        <a href="#"><i class="fas fa-user-tag"></i> Rôles</a>
+                        <a href="#"><i class="fas fa-clipboard-list"></i> Audit</a>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <div class="main">
+            <header class="header">
+                <div class="header-left">
+                    <button class="mobile-menu-btn" id="mobileMenuBtn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 class="page-title">Facture Proforma</h1>
+                </div>
+                
+                <div class="user-info">
+                    <div class="notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </div>
+                    
+                    <div class="profile-dropdown">
+                        <span class="profile-name" id="username-display"></span>
+                        <img src="https://ui-avatars.com/api/?name=John+Doe&background=4361ee&color=fff" alt="Profile" class="profile-img">
+                        <div class="dropdown-menu">
+                            <a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <section class="dashboard-section">
+                <div class="form-container">
+                    <form id="client-form" method="POST"> 
+                    <h1>Facture Proforma</h1>
+                    
+                    <!-- Stepper Navigation - Modifié avec 3 étapes -->
+                    <div class="stepper">
+                        <div class="step active" id="step1">
+                            <div class="step-number">1</div>
+                            <div class="step-label">Informations Client</div>
+                        </div>
+                        <div class="step" id="step2">
+                            <div class="step-number">2</div>
+                            <div class="step-label">Prescription</div>
+                        </div>
+                        <div class="step" id="step4">
+                            <div class="step-number">3</div>
+                            <div class="step-label">Paiement</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 1: Client Information -->
+                    <div class="form-section active" id="section1">
+                        <h2 class="section-title">INFORMATION CLIENT</h2>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="nom_complet" class="required-field">Nom complet du client</label>
+                                <input type="text" name="nom_complet" id="nom_complet" required />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="required-field">Contact</label>
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <input type="text" name="indicatif" placeholder="+229" style="width: 70px;" required />
+                                    <input type="tel" name="numero" placeholder="12345678" required />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="date_naissance" class="required-field">Né le</label>
+                                <input type="date" name="date_naissance" id="date_naissance" required />
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="entreprise">Entreprise</label>
+                                <select name="entreprise" id="entreprise">
+                                    <option value="">-- Entreprise --</option>
+                                    <option value="CEI">CEI</option>
+                                    <option value="SONEB">SONEB</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="civilite" class="required-field">Civilité</label>
+                                <select name="civilite" id="civilite" required>
+                                    <option value="">-- Civilité --</option>
+                                    <option value="Enfant">Enfant</option>
+                                    <option value="M.">M.</option>
+                                    <option value="Mme">Mme</option>
+                                    <option value="Mlle">Mlle</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="agence" class="required-field">Agence</label>
+                                <select name="agence" id="agence" required>
+                                    <option value="">-- Agence --</option>
+                                    <option value="cotonou">Cotonou</option>
+                                    <option value="calavi">Calavi</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-navigation">
+                            <button type="button" class="btn btn-secondary" id="cancelButton">
+                                <i class="fas fa-times"></i> Annuler
+                            </button>
+                            <button type="button" class="btn btn-primary next-step" data-next="2">
+                                Suivant <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 2: Prescription -->
+                    <div class="form-section" id="section2">
+                        <h2 class="section-title">PRESCRIPTION ET COMMANDE</h2>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="type_verre" class="required-field">Type de Verre</label>
+                                <select name="type_verre" id="type_verre" required>
+                                    <option value="">-- Type de Verre --</option>
+                                    <option value="photo ar">Photo AR</option>
+                                    <option value="photo max">Photo Max</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="gamme_verre" class="required-field">Gamme des Verres</label>
+                                <select name="gamme_verre" id="gamme_verre" required>
+                                    <option value="">-- Gamme --</option>
+                                    <option value="GA">Ga</option>
+                                    <option value="GB">Gb</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="choix_monture" class="required-field">Choix de Monture</label>
+                                <select name="choix_monture" id="choix_monture" required>
+                                    <option value="">-- Choix de Monture --</option>
+                                    <option value="plastique">Plastique</option>
+                                    <option value="métal">Métal</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="prescription-table-container">
+                            <table class="prescription-table">
+                                <thead>
+                                    <tr>
+                                        <th>Œil</th>
+                                        <th>Sphere</th>
+                                        <th>Cylindre</th>
+                                        <th>Axe</th>
+                                        <th>ADD</th>
+                                        <th>DP</th>
+                                        <th>Hauteur</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr>
+                                        <td>OD</td>
+                                        <td>
+                                            <select name="od_sphere" required>
+                                                <option value="">0.00</option>
+                                                <option>0.00</option>
+                                                <option>+0.25</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select name="od_cylindre">
+                                                <option>0.00</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select name="od_axe">
+                                                <option>0°</option>
+                                                <option>5°</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select name="od_add">
+                                                <option value="">0.00</option>
+                                                <option>0.00</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select name="od_dp">
+                                                <option value="">0</option>
+                                                <option>28</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select name="od_hauteur">
+                                                <option value="">0</option>
+                                                <option>15</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>OG</td>
+                                        <td>
+                                            <select name="og_sphere" required>
+                                                <option value="">0.00</option>
+                                                <option>0.00</option>
+                                                <option>+0.25</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select name="og_cylindre">
+                                                <option value="">0.00</option>
+                                                <option>0.00</option>
+                                                <option>+0.25</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select name="og_axe">
+                                                <option value="">0°</option>
+                                                <option>0°</option>
+                                                <option>5°</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select name="og_add">
+                                                <option value="">0</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select name="og_dp">
+                                                <option value="">0</option>
+                                                <option>28</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select name="og_hauteur">
+                                                <option value="">0</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="form-row" style="margin-top: 1.5rem;">
+                            <div class="form-group">
+                                <label for="clinique">Clinique</label>
+                                <select name="clinique" id="clinique">
+                                    <option value="">-- Choisir --</option>
+                                    <option value="clinique A">Clinique A</option>
+                                    <option value="clinique B">Clinique B</option>
+                                </select>
+                            </div>
+                        
+                            <div class="form-group">
+                                <label for="ophtalmo">Ophtalmo</label>
+                                <select name="ophtalmo" id="ophtalmo">
+                                    <option value="">-- Choisir --</option>
+                                    <option value="Dr A">Dr A</option>
+                                    <option value="Dr B">Dr B</option>
+                                </select>
+                            </div>
+                        
+                            <div class="form-group">
+                                <label for="date_soin">Date de soin</label>
+                                <input type="date" name="date_soin" id="date_soin" />
+                            </div>
+                        </div>
+                        
+                        <div class="form-navigation">
+                            <button type="button" class="btn btn-secondary prev-step" data-prev="1">
+                                <i class="fas fa-arrow-left"></i> Précédent
+                            </button>
+                            <button type="button" class="btn btn-primary next-step" data-next="4">
+                                Suivant <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 4: Payment (anciennement étape 4, maintenant étape 3) -->
+                    <div class="form-section" id="section4">
+                        <h2 class="section-title">DÉTAILS DE PAIEMENT</h2>
+                        
+                        <div class="payment-section">
+                            <div class="payment-row">
+                                <div class="payment-group">
+                                    <label class="payment-label required-field">Montant Monture (FCFA)</label>
+                                    <input type="number" class="payment-input" name="montant_monture" id="montant_monture" required oninput="calculerTotal()" />
+                                </div>
+                                
+                                <div class="payment-group">
+                                    <label class="payment-label required-field">Montant Verres (FCFA)</label>
+                                    <input type="number" class="payment-input" name="montant_verres" id="montant_verres" required oninput="calculerTotal()" />
+                                </div>
+                            </div>
+                            
+                            <div class="payment-row payment-highlight">
+                                <div class="payment-group">
+                                    <label class="payment-label">Total Brut (FCFA)</label>
+                                    <input type="number" class="payment-input payment-total" name="total_brut" id="total_brut" readonly />
+                                </div>
+                                
+                                <div class="payment-group">
+                                    <label class="payment-label">Remise</label>
+                                    <div class="discount-selector">
+                                        <input type="number" class="payment-input discount-amount" name="remise" id="remise" value="0" oninput="calculerTotal()" />
+                                        <select class="payment-input discount-type" name="remise_type" id="remise_type" onchange="calculerTotal()">
+                                            <option value="FCFA">FCFA</option>
+                                            <option value="%">%</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="payment-row payment-highlight">
+                                <div class="payment-group">
+                                    <label class="payment-label">Net à payer (FCFA)</label>
+                                    <input type="number" class="payment-input payment-total" name="net_a_payer" id="net_a_payer" readonly />
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="mode_paiement">Mode de paiement</label>
+                                <select name="mode_paiement" id="mode_paiement">
+                                    <option value="especes">Espèces</option>
+                                    <option value="carte">Carte bancaire</option>
+                                    <option value="cheque">Chèque</option>
+                                    <option value="virement">Virement</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="date_livraison">Date de livraison prévue</label>
+                                <input type="date" name="date_livraison" id="date_livraison" />
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="notes">Notes supplémentaires</label>
+                            <textarea name="notes" id="notes" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="form-navigation">
+                            <button type="button" class="btn btn-secondary prev-step" data-prev="2">
+                                <i class="fas fa-arrow-left"></i> Précédent
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Enregistrer & Imprimer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div class="loader-container" id="loaderContainer">
+        <div class="loader-content">
+            <div class="loader"></div>
+            <div class="loader-message" id="loaderMessage">Chargement en cours...</div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+    <script>
+        // URL de votre Web App Google Apps Script
+        const DATA_SOURCE_URL = 'https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=catalogue';
+        
+        // Cache pour stocker les données chargées
+        let appDataCache = null;
+
+        // Initialisation au chargement
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Vérification de la connexion
+            checkAuth();
+            
+            // Configurer les événements
+            setupEventListeners();
+            
+            // Calcul initial
+            calculerTotal();
+            
+            // Charger les données depuis Google Sheets
+            await loadDataFromSheet();
+            
+            // Activer le menu mobile
+            document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+                document.getElementById('sidebar').classList.toggle('active');
+            });
+        });
+
+        // Vérification de l'authentification
+        function checkAuth() {
+            const username = sessionStorage.getItem("utilisateur") || localStorage.getItem("utilisateur");
+            
+            if (!username) {
+                window.location.href = "code.html";
+                return;
+            }
+            
+            document.getElementById("username-display").textContent = username;
+            const profileImg = document.querySelector('.profile-img');
+            if (profileImg) {
+                profileImg.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=4361ee&color=fff`;
+            }
+            
+            document.getElementById('logout-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                sessionStorage.removeItem("utilisateur");
+                localStorage.removeItem("utilisateur");
+                window.location.href = 'code.html';
+            });
+        }
+
+        // Fonctions de navigation
+        window.openVueGlobale = function() {
+            window.location.href = 'Accueil.html';
+        };
+        
+        window.openNewSale = function() {
+            window.location.href = 'Ajout.html';
+        };
+
+        window.openClientList = function() {
+            window.location.href = 'listeContact.html';
+        };
+
+        window.openDevis = function() {
+            window.location.href = 'Proforma.html';
+        };
+
+        // Navigation par étapes
+        function setupStepNavigation() {
+            document.querySelectorAll('.next-step').forEach(button => {
+                button.addEventListener('click', function() {
+                    const currentSection = this.closest('.form-section');
+                    const nextStep = this.dataset.next;
+                    
+                    // Valider le formulaire avant de passer à l'étape suivante
+                    if (!validateStep(currentSection.id)) {
+                        return;
+                    }
+                    
+                    // Masquer la section actuelle
+                    currentSection.classList.remove('active');
+                    
+                    // Afficher la section suivante
+                    document.getElementById(`section${nextStep}`).classList.add('active');
+                    
+                    // Mettre à jour le stepper
+                    updateStepper(nextStep);
+                });
+            });
+            
+            document.querySelectorAll('.prev-step').forEach(button => {
+                button.addEventListener('click', function() {
+                    const currentSection = this.closest('.form-section');
+                    const prevStep = this.dataset.prev;
+                    
+                    // Masquer la section actuelle
+                    currentSection.classList.remove('active');
+                    
+                    // Afficher la section précédente
+                    document.getElementById(`section${prevStep}`).classList.add('active');
+                    
+                    // Mettre à jour le stepper
+                    updateStepper(prevStep);
+                });
+            });
+        }
+        
+        // Validation des étapes
+        function validateStep(sectionId) {
+            const section = document.getElementById(sectionId);
+            const requiredFields = section.querySelectorAll('[required]');
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value) {
+                    field.style.borderColor = 'var(--danger-color)';
+                    isValid = false;
+                } else {
+                    field.style.borderColor = '#e2e8f0';
+                }
+            });
+            
+            if (!isValid) {
+                showError('Veuillez remplir tous les champs obligatoires');
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // Mise à jour du stepper
+        function updateStepper(activeStep) {
+            document.querySelectorAll('.step').forEach((step) => {
+                step.classList.remove('active', 'completed');
+                
+                const stepNumber = parseInt(step.id.replace('step', ''));
+                if (stepNumber < activeStep) {
+                    step.classList.add('completed');
+                } else if (stepNumber == activeStep) {
+                    step.classList.add('active');
+                }
+            });
+        }
+
+        // Calcul des totaux
+        function calculerTotal() {
+            const montantMonture = parseFloat(document.getElementById('montant_monture').value) || 0;
+            const montantVerres = parseFloat(document.getElementById('montant_verres').value) || 0;
+            const remise = parseFloat(document.getElementById('remise').value) || 0;
+            const remiseType = document.getElementById('remise_type').value;
+            
+            const totalBrut = montantMonture + montantVerres;
+            document.getElementById('total_brut').value = totalBrut.toFixed(2);
+            
+            let montantRemise = 0;
+            if (remiseType === '%') {
+                montantRemise = totalBrut * (remise / 100);
+            } else {
+                montantRemise = remise;
+            }
+            
+            const netAPayer = totalBrut - montantRemise;
+            document.getElementById('net_a_payer').value = Math.max(0, netAPayer).toFixed(2);
+        }
+
+        // Fonction pour remplir une liste déroulante
+        function populateSelect(id, options) {
+            const select = document.getElementById(id);
+            if (!select) return;
+            
+            // Sauvegarder la valeur sélectionnée actuelle
+            const currentValue = select.value;
+            
+            // Vider le select sauf la première option
+            while (select.options.length > 1) {
+                select.remove(1);
+            }
+            
+            // Ajouter les nouvelles options
+            options.forEach(option => {
+                const opt = document.createElement('option');
+                opt.value = option;
+                opt.textContent = option;
+                select.appendChild(opt);
+            });
+            
+            // Restaurer la valeur sélectionnée si elle existe toujours
+            if (currentValue && options.includes(currentValue)) {
+                select.value = currentValue;
+            }
+        }
+
+        // Fonction pour remplir les options de prescription
+        function populatePrescriptionOptions(selectName, values) {
+            const selects = document.getElementsByName(selectName);
+            if (!selects || selects.length === 0) return;
+            
+            const select = selects[0];
+            const currentValue = select.value;
+            
+            // Vider le select sauf la première option
+            while (select.options.length > 1) {
+                select.remove(1);
+            }
+            
+            // Ajouter les nouvelles options
+            values.forEach(value => {
+                const opt = document.createElement('option');
+                opt.value = value;
+                opt.textContent = value;
+                select.appendChild(opt);
+            });
+            
+            // Restaurer la valeur sélectionnée si elle existe toujours
+            if (currentValue && values.includes(currentValue)) {
+                select.value = currentValue;
+            }
+        }
+
+        // Fonction principale de chargement des données
+        async function loadDataFromSheet() {
+            showLoader('Chargement des données...');
+            
+            try {
+                const response = await fetch(DATA_SOURCE_URL);
+                if (!response.ok) throw new Error(`Erreur HTTP: ${response.status}`);
+                
+                const data = await response.json();
+                
+                if (!data.success) throw new Error("Réponse invalide du serveur.");
+                if (!data.data) throw new Error("Données manquantes dans la réponse");
+
+                appDataCache = data.data;
+                populateFormWithData(data.data);
+                
+            } catch (error) {
+                console.error('Erreur lors du chargement:', error);
+                showError(`Erreur lors du chargement: ${error.message}`);
+            } finally {
+                hideLoader();
+            }
+        }
+
+        // Fonction pour remplir le formulaire avec les données
+        function populateFormWithData(data) {
+            if (!data) return;
+            
+            // Liste des champs à remplir avec leurs données correspondantes
+            const fieldsToPopulate = [
+                { id: 'entreprise', data: data.entreprises },
+                { id: 'agence', data: data.agences },
+                { id: 'type_verre', data: data.typesVerre },
+                { id: 'gamme_verre', data: data.gammesVerre },
+                { id: 'choix_monture', data: data.montures },
+                { id: 'clinique', data: data.cliniques },
+                { id: 'ophtalmo', data: data.ophtalmos }
+            ];
+
+            fieldsToPopulate.forEach(field => {
+                if (Array.isArray(field.data)) {
+                    populateSelect(field.id, field.data);
+                }
+            });
+
+            // Gestion des champs de prescription
+            const prescriptionFields = [
+                { name: 'od_sphere', data: data.sphere },
+                { name: 'od_cylindre', data: data.sphere },
+                { name: 'od_axe', data: data.axe },
+                { name: 'od_add', data: data.add },
+                { name: 'og_sphere', data: data.sphere },
+                { name: 'og_cylindre', data: data.sphere },
+                { name: 'og_axe', data: data.axe },
+                { name: 'og_add', data: data.add }
+            ];
+
+            prescriptionFields.forEach(field => {
+                if (Array.isArray(field.data)) {
+                    populatePrescriptionOptions(field.name, field.data);
+                }
+            });
+        }
+
+        // Configuration des événements
+        function setupEventListeners() {
+            // Synchronisation automatique de l'ADD OD vers OG
+            document.getElementsByName('od_add')[0]?.addEventListener('change', function() {
+                const odAddValue = this.value;
+                const ogAddSelect = document.getElementsByName('og_add')[0];
+                if (odAddValue && ogAddSelect) {
+                    ogAddSelect.value = odAddValue;
+                }
+            });
+            
+            // Boutons d'action
+            document.getElementById('cancelButton').addEventListener('click', () => {
+                if (confirm('Voulez-vous vraiment annuler cette facture ?')) {
+                    window.location.href = 'Accueil.html';
+                }
+            });
+
+            // Gestion des menus déroulants
+            document.querySelectorAll('.menu-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    if (e.target.href) e.preventDefault();
+                    const currentItem = this.parentElement;
+                    
+                    document.querySelectorAll('.menu-item').forEach(item => {
+                        if (item !== currentItem) item.classList.remove('active');
+                    });
+                    
+                    currentItem.classList.toggle('active');
+                });
+            });
+            
+            // Navigation par étapes
+            setupStepNavigation();
+        }
+
+        // Fonctions utilitaires
+        function showLoader(message = 'Chargement en cours...') {
+            const loaderContainer = document.getElementById('loaderContainer');
+            const loaderMessage = document.getElementById('loaderMessage');
+            
+            if (loaderContainer && loaderMessage) {
+                loaderMessage.textContent = message;
+                loaderContainer.classList.add('loader-visible');
+            }
+        }
+
+        function hideLoader() {
+            const loaderContainer = document.getElementById('loaderContainer');
+            if (loaderContainer) {
+                loaderContainer.classList.remove('loader-visible');
+            }
+        }
+
+        function showSuccess(message) {
+            hideLoader();
+            
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-message';
+            successDiv.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+            document.body.appendChild(successDiv);
+            successDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                successDiv.style.display = 'none';
+                setTimeout(() => {
+                    document.body.removeChild(successDiv);
+                }, 500);
+            }, 3000);
+        }
+
+        function showError(message) {
+            hideLoader();
+            
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+            document.body.appendChild(errorDiv);
+            errorDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+                setTimeout(() => {
+                    document.body.removeChild(errorDiv);
+                }, 500);
+            }, 5000);
+        }
+
+        // Génération du PDF
+        function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+            const formData = {
+                nom_complet: document.getElementById('nom_complet').value,
+                contact: document.querySelector('input[name="indicatif"]').value + ' ' + document.querySelector('input[name="numero"]').value,
+                date_naissance: document.getElementById('date_naissance').value,
+                entreprise: document.getElementById('entreprise').value,
+                civilite: document.getElementById('civilite').value,
+                agence: document.getElementById('agence').value,
+                type_verre: document.getElementById('type_verre').value,
+                gamme_verre: document.getElementById('gamme_verre').value,
+                choix_monture: document.getElementById('choix_monture').value,
+                od_sphere: document.querySelector('select[name="od_sphere"]').value,
+                od_cylindre: document.querySelector('select[name="od_cylindre"]').value,
+                od_axe: document.querySelector('select[name="od_axe"]').value,
+                od_add: document.querySelector('select[name="od_add"]').value,
+                og_sphere: document.querySelector('select[name="og_sphere"]').value,
+                og_cylindre: document.querySelector('select[name="og_cylindre"]').value,
+                og_axe: document.querySelector('select[name="og_axe"]').value,
+                og_add: document.querySelector('select[name="og_add"]').value,
+                clinique: document.getElementById('clinique').value,
+                ophtalmo: document.getElementById('ophtalmo').value,
+                date_soin: document.getElementById('date_soin').value,
+                montant_monture: document.getElementById('montant_monture').value,
+                montant_verres: document.getElementById('montant_verres').value,
+                total_brut: document.getElementById('total_brut').value,
+                remise: document.getElementById('remise').value + ' ' + document.getElementById('remise_type').value,
+                net_a_payer: document.getElementById('net_a_payer').value
+            };
+
+            // ================= EN-TÊTE ==================
+            pdf.setFontSize(10);
+            pdf.setTextColor(33, 33, 33);
+
+            pdf.text('Digital Optic Sarl', 20, 20);
+            pdf.text('Tel: +229 77 455 12 21', 20, 25);
+            pdf.text('info@optic.com', 20, 30);
+            pdf.text('Jet d\'eau - Dakar', 20, 35);
+
+            pdf.setFontSize(12);
+            pdf.setTextColor(0, 0, 0);
+            pdf.setFont('helvetica', 'bold');
+            pdf.text('[LOGO]', 180, 20, { align: 'right' });
+
+            pdf.setDrawColor(120);
+            pdf.line(20, 42, 190, 42);
+
+            // ============== INFORMATIONS CLIENT ==============
+            let y = 50;
+            pdf.setFont('helvetica', 'bold');
+            pdf.setFontSize(12);
+            pdf.setTextColor(30, 30, 120);
+            pdf.text('Facture Proforma', 60, y);
+            pdf.text('Facture pour	', 20, y);
+
+            pdf.setFont('helvetica', 'normal');
+            pdf.setFontSize(10);
+            pdf.setTextColor(33, 33, 33);
+
+            y += 6;
+            const infoClient = [
+                ` ${formData.civilite} ${formData.nom_complet}`,
+                `Tel        : ${formData.contact}`,
+                `Né le      : ${formData.date_naissance}`,
+                `Entreprise : ${formData.entreprise}`,
+                `Agence     : ${formData.agence}`
+            ];
+            infoClient.forEach(line => {
+                pdf.text(line, 20, y);
+                y += 5;
+            });
+
+            // ============== COMMANDE / CONSULTATION ==============
+            y += 5;
+            pdf.setFont('helvetica', 'bold');
+            pdf.setFontSize(11);
+            pdf.setTextColor(27, 38, 59);
+            pdf.text('DÉTAILS DE LA COMMANDE ET CONSULTATION', 20, y);
+
+            y += 4;
+            pdf.autoTable({
+                startY: y + 2,
+                body: [
+                    ['Type de verre:', formData.type_verre, 'Gamme:', formData.gamme_verre],
+                    ['Monture:', formData.choix_monture, 'Clinique:', formData.clinique],
+                    ['Ophtalmologue:', formData.ophtalmo, 'Date de soin:', formData.date_soin]
+                ],
+                styles: { fontSize: 9, cellPadding: 3 },
+                columnStyles: {
+                    0: { cellWidth: 35, fontStyle: 'bold' },
+                    1: { cellWidth: 45 },
+                    2: { cellWidth: 35, fontStyle: 'bold' },
+                    3: { cellWidth: 45 }
+                },
+                margin: { left: 20 },
+                tableWidth: 'wrap',
+                showHead: false
+            });
+
+            y = pdf.autoTable.previous.finalY + 10;
+
+            // ============== PRESCRIPTION ==============
+            pdf.setFont('helvetica', 'bold');
+            pdf.setFontSize(11);
+            pdf.setTextColor(27, 38, 59);
+            pdf.text('PRESCRIPTION VERRES', 20, y);
+
+            y += 3;
+            pdf.autoTable({
+                startY: y + 2,
+                head: [['Œil', 'Sph', 'Cyl', 'Axe', 'Add']],
+                body: [
+                    ['OD', formData.od_sphere, formData.od_cylindre, formData.od_axe, formData.od_add],
+                    ['OG', formData.og_sphere, formData.og_cylindre, formData.og_axe, formData.og_add]
+                ],
+                headStyles: {
+                    fillColor: [27, 38, 59],
+                    textColor: 255,
+                    fontStyle: 'bold'
+                },
+                styles: { fontSize: 9 },
+                margin: { left: 20 },
+                tableWidth: 'auto'
+            });
+
+            y = pdf.autoTable.previous.finalY + 10;
+
+            // ============== PAIEMENT ==============
+            pdf.setFont('helvetica', 'bold');
+            pdf.setFontSize(11);
+            pdf.setTextColor(27, 38, 59);
+            pdf.text('DÉTAILS DE PAIEMENT', 20, y);
+
+            pdf.setFont('helvetica', 'normal');
+            pdf.setFontSize(10);
+            pdf.setTextColor(0, 0, 0);
+
+            const paiement = [
+                [`Montant Monture`, `${formData.montant_monture} FCFA`],
+                [`Montant Verres`, `${formData.montant_verres} FCFA`],
+                [`Total Brut`, `${formData.total_brut} FCFA`],
+                [`Remise`, `${formData.remise}`],
+                [`Net à Payer`, `${formData.net_a_payer} FCFA`]
+            ];
+
+            y += 2;
+            pdf.autoTable({
+                startY: y,
+                body: paiement,
+                styles: { fontSize: 10 },
+                columnStyles: {
+                    0: { fontStyle: 'bold', cellWidth: 50 },
+                    1: { cellWidth: 50, halign: 'right' }
+                },
+                theme: 'grid',
+                margin: { left: 60 },
+                tableWidth: 'wrap',
+                showHead: false
+            });
+
+            y = pdf.autoTable.previous.finalY + 10;
+
+            // Total en mots (encadré centré)
+            function numberToFrenchWords(n) {
+                const ones = ["", "un", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf"];
+                const teens = ["dix", "onze", "douze", "treize", "quatorze", "quinze", "seize", "dix-sept", "dix-huit", "dix-neuf"];
+                const tens = ["", "", "vingt", "trente", "quarante", "cinquante", "soixante", "soixante", "quatre-vingt", "quatre-vingt"];
+
+                if (n === 0) return "zéro";
+                if (n > 999999) return "Montant trop élevé";
+
+                function convert_hundreds(n) {
+                    let word = "";
+                    if (n > 99) {
+                        word += ones[Math.floor(n / 100)] + " cent";
+                        if (n % 100 === 0 && n >= 200) word += "s";
+                        n %= 100;
+                        if (n > 0) word += " ";
+                    }
+
+                    if (n >= 20) {
+                        let t = Math.floor(n / 10), u = n % 10;
+                        word += tens[t];
+                        if (t === 7 || t === 9) {
+                            if (u === 1) word += "-et-";
+                            word += teens[u];
+                        } else if (u === 1 && t !== 8) {
+                            word += "-et-un";
+                        } else if (u > 0) {
+                            word += "-" + ones[u];
+                        }
+                    } else if (n >= 10) {
+                        word += teens[n - 10];
+                    } else if (n > 0) {
+                        word += ones[n];
+                    }
+
+                    return word;
+                }
+
+                const thousands = Math.floor(n / 1000);
+                const hundreds = n % 1000;
+                let words = "";
+
+                if (thousands > 0) {
+                    if (thousands === 1) {
+                        words += "mille";
+                    } else {
+                        words += convert_hundreds(thousands) + " mille";
+                    }
+                }
+
+                if (hundreds > 0) {
+                    if (thousands > 0) words += " ";
+                    words += convert_hundreds(hundreds);
+                }
+
+                return words.trim();
+            }
+
+            const netPayerNumber = parseInt(formData.net_a_payer.replace(/\s/g, ''));
+            const montantLettre = numberToFrenchWords(netPayerNumber).toUpperCase();
+            pdf.text(`ARRÊTÉE LA PRÉSENTE FACTURE PROFORMA À LA SOMME DE ${montantLettre} FRANCS CFA`, 105, y, { align: 'center' });
+            y += 6;
+
+            // ============== PIED DE PAGE ==============
+            y = Math.min(pdf.autoTable.previous?.finalY + 20 || 250, 250);
+            pdf.setDrawColor(180);
+            pdf.line(60, y, 150, y);
+            pdf.setFontSize(10);
+            pdf.setTextColor(70);
+
+            y += 10;
+            pdf.text('Prenez soin de vos yeux !', 105, y, { align: 'center' });
+            y += 5;
+            pdf.text('Une visite régulière chez votre opticien est essentielle pour votre santé visuelle.', 105, y, { align: 'center' });
+
+            y += 10;
+            pdf.line(60, y, 150, y);
+
+            y += 10;
+            pdf.text('Des questions ? Contactez-nous : +229 77 183 73 33', 105, y, { align: 'center' });
+            // Sauvegarde
+            const fileName = `Facture_${formData.nom_complet.replace(/ /g, '_')}_${new Date().toISOString().slice(0,10)}.pdf`;
+            pdf.save(fileName);
+        }
+
+        // Soumission du formulaire
+        document.getElementById('client-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            generatePDF();
+        });
+    </script>
+</body>
+</html>
