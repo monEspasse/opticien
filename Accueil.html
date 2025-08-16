@@ -4,7 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>DigitalOptic - Logiciel Optique</title>
-        <link rel="icon" href="favicon.ico" type="image/x-icon">
+        <!-- Favicon de base -->
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -5510,278 +5512,814 @@ try {
 
     <!-- Modale Proforma -->
     
-    <div class="modal-overlay" id="proformaModal">
-        <div class="modal-container">
-            <div class="modal-header">
-                <h3 class="modal-title">Facture Proforma</h3>
-                <button class="modal-close" onclick="closeDevis()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-container">
-                    <form id="client-form" method="POST"> 
-                        <!-- Stepper Navigation -->
-                        <div class="stepper">
-                            <div class="step active" id="step1">
-                                <div class="step-number">1</div>
-                                <div class="step-label">Informations Client</div>
+<div class="modal-overlay" id="proformaModal">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h3 class="modal-title">Facture Proforma</h3>
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-container">
+                <form id="client-form" method="POST"> 
+                    <!-- Stepper Navigation -->
+                    <div class="stepper">
+                        <div class="step active" id="step1">
+                            <div class="step-number">1</div>
+                            <div class="step-label">Informations Client</div>
+                        </div>
+                        <div class="step" id="step2">
+                            <div class="step-number">2</div>
+                            <div class="step-label">Prescription</div>
+                        </div>
+                        <div class="step" id="step4">
+                            <div class="step-number">3</div>
+                            <div class="step-label">Paiement</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 1: Client Information -->
+                    <div class="form-section active" id="section1">
+                        <h2 class="section-title">INFORMATION CLIENT</h2>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="nom_complet" class="required-field">Nom complet du client</label>
+                                <input type="text" name="nom_complet" id="nom_complet" required />
                             </div>
-                            <div class="step" id="step2">
-                                <div class="step-number">2</div>
-                                <div class="step-label">Prescription</div>
+
+                            <div class="form-group">
+                                <label class="required-field">Contact</label>
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <input type="text" name="indicatif" placeholder="+229" value="+229" style="width: 70px;" required/>
+                                    <input type="tel" name="numero" placeholder="012345678" required />
+                                </div>
                             </div>
-                            <div class="step" id="step4">
-                                <div class="step-number">3</div>
-                                <div class="step-label">Paiement</div>
+                         </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="date_naissance" class="required-field">Né le</label>
+                                <input type="date" name="date_naissance" id="date_naissance" required />
+                            </div>
+                        
+
+                        
+                            <div class="form-group">
+                                <label for="civilite" class="required-field">Civilité</label>
+                                <select name="civilite" id="civilite" required>
+                                    <option value="M.">M.</option>
+                                    <option value="Mme">Mme</option>
+                                    <option value="Mlle">Mlle</option>
+                                </select>
                             </div>
                         </div>
                         
-                        <!-- Step 1: Client Information -->
-                        <div class="form-section active" id="section1">
-                            <h2 class="section-title">INFORMATION CLIENT</h2>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="nom_complet" class="required-field">Nom complet du client</label>
-                                    <input type="text" name="nom_complet" id="nom_complet" required />
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="required-field">Contact</label>
-                                    <div style="display: flex; gap: 0.5rem;">
-                                        <input type="text" name="indicatif" placeholder="+229" value="+229" style="width: 70px;" required/>
-
-                                        <input type="tel" name="numero" placeholder="012345678" required />
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="date_naissance" class="required-field">Né le</label>
-                                    <input type="date" name="date_naissance" id="date_naissance" required />
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="entreprise">Entreprise</label>
-                                    <select name="entreprise" id="entreprise">
-                                        <option value="">-- Entreprise --</option>
-                                        <option value="CEI">CEI</option>
-                                        <option value="SONEB">SONEB</option>
-                                    </select>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="civilite" class="required-field">Civilité</label>
-                                    <select name="civilite" id="civilite" required>
-                                        <option value="">-- Civilité --</option>
-                                        <option value="Enfant">Enfant</option>
-                                        <option value="M.">M.</option>
-                                        <option value="Mme">Mme</option>
-                                        <option value="Mlle">Mlle</option>
-                                    </select>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="agence" class="required-field">Agence</label>
-                                    <select name="agence" id="agence" required>
-                                        <option value="">-- Agence --</option>
-                                        <option value="cotonou">Cotonou</option>
-                                        <option value="calavi">Calavi</option>
-                                    </select>
-                                </div>
+                        <div class="form-navigation">
+                            <button type="button" class="btn btn-secondary" id="cancelButton">
+                                <i class="fas fa-times"></i> Annuler
+                            </button>
+                            <button type="button" class="btn btn-primary next-step" data-next="2">
+                                Suivant <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 2: Prescription -->
+                    <div class="form-section" id="section2">
+                        <h2 class="section-title">PRESCRIPTION ET COMMANDE</h2>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="type_verre" class="required-field">Type de Verre</label>
+                                <select name="type_verre" id="type_verre" required>
+                                    <option value="">-- Sélectionnez --</option>
+<option value="ACHAT MONTURE">ACHAT MONTURE</option>
+<option value="ORGANIQUE1.56 UNIFOCAL BLANC/ ANTIREFLET">ORGANIQUE1.56 UNIFOCAL BLANC/ ANTIREFLET</option>
+<option value="ORGANIQUE1.56 UNIFOCAL PHOTOCHROMIQUE ANTIREFLET">ORGANIQUE1.56 UNIFOCAL PHOTOCHROMIQUE ANTIREFLET</option>
+<option value="ORGANIQUE1.56 UNIFOCAL PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE">ORGANIQUE1.56 UNIFOCAL PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE</option>
+<option value="ORGANIQUE1.56 PROGRESSIF PHOTOCHROMIQUE ANTIREFLET">ORGANIQUE1.56 PROGRESSIF PHOTOCHROMIQUE ANTIREFLET</option>
+<option value="ORGANIQUE1.56 PROGRESSIF TRANSITION ANTIREFLET + ANTILUMIERE BLUE">ORGANIQUE1.56 PROGRESSIF TRANSITION ANTIREFLET + ANTILUMIERE BLUE</option>
+<option value="ORGANIQUE1.56 UNIFOCAL BLANC/ ANTIREFLET">ORGANIQUE1.56 UNIFOCAL BLANC/ ANTIREFLET</option>
+<option value="ORGANIQUE1.56 UNIFOCAL PHOTOCHROMIQUE ANTIREFLET">ORGANIQUE1.56 UNIFOCAL PHOTOCHROMIQUE ANTIREFLET</option>
+<option value="ORGANIQUE1.56 UNIFOCAL TRANSITION ANTIREFLET">ORGANIQUE1.56 UNIFOCAL TRANSITION ANTIREFLET</option>
+<option value="ORGANIQUE1.56 UNIFOCAL PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE">ORGANIQUE1.56 UNIFOCAL PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE</option>
+<option value="ORGANIQUE1.56 UNIFOCAL TRANSITION ANTIREFLET + ANTILUMIERE BLUE">ORGANIQUE1.56 UNIFOCAL TRANSITION ANTIREFLET + ANTILUMIERE BLUE</option>
+<option value="ORGANIQUE 1.6 UNIFOCAL BLANC/ ANTIREFLET">ORGANIQUE 1.6 UNIFOCAL BLANC/ ANTIREFLET</option>
+<option value="ORGANIQUE 1.6 UNIFOCAL PHOTOCHROMIQUE ANTIREFLET">ORGANIQUE 1.6 UNIFOCAL PHOTOCHROMIQUE ANTIREFLET</option>
+<option value="ORGANIQUE 1.6 UNIFOCAL TRANSITION ANTIREFLET">ORGANIQUE 1.6 UNIFOCAL TRANSITION ANTIREFLET</option>
+<option value="ORGANIQUE 1.6 UNIFOCAL PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE">ORGANIQUE 1.6 UNIFOCAL PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE</option>
+<option value="ORGANIQUE 1.6 UNIFOCAL TRANSITION ANTIREFLET + ANTILUMIERE BLUE">ORGANIQUE 1.6 UNIFOCAL TRANSITION ANTIREFLET + ANTILUMIERE BLUE</option>
+<option value="ORGANIQUE 1.74 UNIFOCAL BLANC/ ANTIREFLET">ORGANIQUE 1.74 UNIFOCAL BLANC/ ANTIREFLET</option>
+<option value="ORGANIQUE 1.74 UNIFOCAL PHOTOCHROMIQUE ANTIREFLET">ORGANIQUE 1.74 UNIFOCAL PHOTOCHROMIQUE ANTIREFLET</option>
+<option value="ORGANIQUE 1.74 UNIFOCAL TRANSITION ANTIREFLET">ORGANIQUE 1.74 UNIFOCAL TRANSITION ANTIREFLET</option>
+<option value="ORGANIQUE 1.74 UNIFOCAL PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE">ORGANIQUE 1.74 UNIFOCAL PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE</option>
+<option value="ORGANIQUE 1.74 UNIFOCAL TRANSITION ANTIREFLET + ANTILUMIERE BLUE">ORGANIQUE 1.74 UNIFOCAL TRANSITION ANTIREFLET + ANTILUMIERE BLUE</option>
+<option value="ORGANIQUE1.56 PROGRESSIF BLANC/ ANTIREFLET">ORGANIQUE1.56 PROGRESSIF BLANC/ ANTIREFLET</option>
+<option value="ORGANIQUE1.56 PROGRESSIF PHOTOCHROMIQUE ANTIREFLET">ORGANIQUE1.56 PROGRESSIF PHOTOCHROMIQUE ANTIREFLET</option>
+<option value="ORGANIQUE1.56 PROGRESSIF TRANSITION ANTIREFLET">ORGANIQUE1.56 PROGRESSIF TRANSITION ANTIREFLET</option>
+<option value="ORGANIQUE1.56 PROGRESSIF PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE">ORGANIQUE1.56 PROGRESSIF PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE</option>
+<option value="ORGANIQUE1.56 PROGRESSIF TRANSITION ANTIREFLET + ANTILUMIERE BLUE">ORGANIQUE1.56 PROGRESSIF TRANSITION ANTIREFLET + ANTILUMIERE BLUE</option>
+<option value="ORGANIQUE 1.6 PROGRESSIF BLANC/ ANTIREFLET">ORGANIQUE 1.6 PROGRESSIF BLANC/ ANTIREFLET</option>
+<option value="ORGANIQUE 1.6 PROGRESSIF PHOTOCHROMIQUE ANTIREFLET">ORGANIQUE 1.6 PROGRESSIF PHOTOCHROMIQUE ANTIREFLET</option>
+<option value="ORGANIQUE 1.6 PROGRESSIF TRANSITION ANTIREFLET">ORGANIQUE 1.6 PROGRESSIF TRANSITION ANTIREFLET</option>
+<option value="ORGANIQUE 1.6 PROGRESSIF PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE">ORGANIQUE 1.6 PROGRESSIF PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE</option>
+<option value="ORGANIQUE 1.6 PROGRESSIF TRANSITION ANTIREFLET + ANTILUMIERE BLUE">ORGANIQUE 1.6 PROGRESSIF TRANSITION ANTIREFLET + ANTILUMIERE BLUE</option>
+<option value="ORGANIQUE 1.74 PROGRESSIF BLANC/ ANTIREFLET">ORGANIQUE 1.74 PROGRESSIF BLANC/ ANTIREFLET</option>
+<option value="ORGANIQUE 1.74 PROGRESSIF PHOTOCHROMIQUE ANTIREFLET">ORGANIQUE 1.74 PROGRESSIF PHOTOCHROMIQUE ANTIREFLET</option>
+<option value="ORGANIQUE 1.74 PROGRESSIF TRANSITION ANTIREFLET">ORGANIQUE 1.74 PROGRESSIF TRANSITION ANTIREFLET</option>
+<option value="ORGANIQUE 1.74 PROGRESSIF PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE">ORGANIQUE 1.74 PROGRESSIF PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE</option>
+<option value="ORGANIQUE 1.74 PROGRESSIF TRANSITION ANTIREFLET + ANTILUMIERE BLUE">ORGANIQUE 1.74 PROGRESSIF TRANSITION ANTIREFLET + ANTILUMIERE BLUE</option>
+<option value="ORGANIQUE1.56 DOUBLE FOYER  BLANC/ ANTIREFLET">ORGANIQUE1.56 DOUBLE FOYER  BLANC/ ANTIREFLET</option>
+<option value="ORGANIQUE1.56 DOUBLE FOYER  PHOTOCHROMIQUE ANTIREFLET">ORGANIQUE1.56 DOUBLE FOYER  PHOTOCHROMIQUE ANTIREFLET</option>
+<option value="ORGANIQUE1.56 DOUBLE FOYER  TRANSITION ANTIREFLET">ORGANIQUE1.56 DOUBLE FOYER  TRANSITION ANTIREFLET</option>
+<option value="ORGANIQUE1.56 DOUBLE FOYER  PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE">ORGANIQUE1.56 DOUBLE FOYER  PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE</option>
+<option value="ORGANIQUE1.56 DOUBLE FOYER  TRANSITION ANTIREFLET + ANTILUMIERE BLUE">ORGANIQUE1.56 DOUBLE FOYER  TRANSITION ANTIREFLET + ANTILUMIERE BLUE</option>
+<option value="ORGANIQUE 1.6 DOUBLE FOYER BLANC/ ANTIREFLET">ORGANIQUE 1.6 DOUBLE FOYER BLANC/ ANTIREFLET</option>
+<option value="ORGANIQUE 1.6 DOUBLE FOYER PHOTOCHROMIQUE ANTIREFLET">ORGANIQUE 1.6 DOUBLE FOYER PHOTOCHROMIQUE ANTIREFLET</option>
+<option value="ORGANIQUE 1.6 DOUBLE FOYER TRANSITION ANTIREFLET">ORGANIQUE 1.6 DOUBLE FOYER TRANSITION ANTIREFLET</option>
+<option value="ORGANIQUE 1.6 DOUBLE FOYER PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE">ORGANIQUE 1.6 DOUBLE FOYER PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE</option>
+<option value="ORGANIQUE 1.6 DOUBLE FOYER TRANSITION ANTIREFLET + ANTILUMIERE BLUE">ORGANIQUE 1.6 DOUBLE FOYER TRANSITION ANTIREFLET + ANTILUMIERE BLUE</option>
+<option value="ORGANIQUE1.56 UNIFOCAL BLANC/ ANTIREFLET">ORGANIQUE1.56 UNIFOCAL BLANC/ ANTIREFLET</option>
+<option value="ORGANIQUE1.56 UNIFOCAL PHOTOCHROMIQUE ANTIREFLET">ORGANIQUE1.56 UNIFOCAL PHOTOCHROMIQUE ANTIREFLET</option>
+<option value="ORGANIQUE1.56 UNIFOCAL TRANSITION ANTIREFLET">ORGANIQUE1.56 UNIFOCAL TRANSITION ANTIREFLET</option>
+<option value="ORGANIQUE1.56 UNIFOCAL PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE">ORGANIQUE1.56 UNIFOCAL PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE</option>
+<option value="ORGANIQUE1.56 UNIFOCAL TRANSITION ANTIREFLET + ANTILUMIERE BLUE">ORGANIQUE1.56 UNIFOCAL TRANSITION ANTIREFLET + ANTILUMIERE BLUE</option>
+<option value="ORGANIQUE1.56 UNIFOCAL BLANC/ ANTIREFLET">ORGANIQUE1.56 UNIFOCAL BLANC/ ANTIREFLET</option>
+<option value="ORGANIQUE1.56 UNIFOCAL PHOTOCHROMIQUE ANTIREFLET">ORGANIQUE1.56 UNIFOCAL PHOTOCHROMIQUE ANTIREFLET</option>
+<option value="ORGANIQUE1.56 UNIFOCAL TRANSITION ANTIREFLET">ORGANIQUE1.56 UNIFOCAL TRANSITION ANTIREFLET</option>
+<option value="ORGANIQUE1.56 UNIFOCAL PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE">ORGANIQUE1.56 UNIFOCAL PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE</option>
+<option value="ORGANIQUE1.56 UNIFOCAL TRANSITION ANTIREFLET + ANTILUMIERE BLUE">ORGANIQUE1.56 UNIFOCAL TRANSITION ANTIREFLET + ANTILUMIERE BLUE</option>
+<option value="ORGANIQUE 1.74 UNIFOCAL BLANC/ ANTIREFLET">ORGANIQUE 1.74 UNIFOCAL BLANC/ ANTIREFLET</option>
+<option value="ORGANIQUE 1.74 UNIFOCAL PHOTOCHROMIQUE ANTIREFLET">ORGANIQUE 1.74 UNIFOCAL PHOTOCHROMIQUE ANTIREFLET</option>
+<option value="ORGANIQUE 1.74 UNIFOCAL TRANSITION ANTIREFLET">ORGANIQUE 1.74 UNIFOCAL TRANSITION ANTIREFLET</option>
+<option value="ORGANIQUE 1.74 UNIFOCAL PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE">ORGANIQUE 1.74 UNIFOCAL PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE</option>
+<option value="ORGANIQUE 1.74 UNIFOCAL TRANSITION ANTIREFLET + ANTILUMIERE BLUE">ORGANIQUE 1.74 UNIFOCAL TRANSITION ANTIREFLET + ANTILUMIERE BLUE</option>
+<option value="ORGANIQUE1.56 PROGRESSIF BLANC/ ANTIREFLET">ORGANIQUE1.56 PROGRESSIF BLANC/ ANTIREFLET</option>
+<option value="ORGANIQUE1.56 PROGRESSIF PHOTOCHROMIQUE ANTIREFLET">ORGANIQUE1.56 PROGRESSIF PHOTOCHROMIQUE ANTIREFLET</option>
+<option value="ORGANIQUE1.56 PROGRESSIF TRANSITION ANTIREFLET">ORGANIQUE1.56 PROGRESSIF TRANSITION ANTIREFLET</option>
+<option value="ORGANIQUE1.56 PROGRESSIF PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE">ORGANIQUE1.56 PROGRESSIF PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE</option>
+<option value="ORGANIQUE1.56 PROGRESSIF TRANSITION ANTIREFLET + ANTILUMIERE BLUE">ORGANIQUE1.56 PROGRESSIF TRANSITION ANTIREFLET + ANTILUMIERE BLUE</option>
+<option value="ORGANIQUE 1.6 PROGRESSIF BLANC/ ANTIREFLET">ORGANIQUE 1.6 PROGRESSIF BLANC/ ANTIREFLET</option>
+<option value="ORGANIQUE 1.6 PROGRESSIF PHOTOCHROMIQUE ANTIREFLET">ORGANIQUE 1.6 PROGRESSIF PHOTOCHROMIQUE ANTIREFLET</option>
+<option value="ORGANIQUE 1.6 PROGRESSIF TRANSITION ANTIREFLET">ORGANIQUE 1.6 PROGRESSIF TRANSITION ANTIREFLET</option>
+<option value="ORGANIQUE 1.6 PROGRESSIF PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE">ORGANIQUE 1.6 PROGRESSIF PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE</option>
+<option value="ORGANIQUE 1.6 PROGRESSIF TRANSITION ANTIREFLET + ANTILUMIERE BLUE">ORGANIQUE 1.6 PROGRESSIF TRANSITION ANTIREFLET + ANTILUMIERE BLUE</option>
+<option value="ORGANIQUE 1.74 PROGRESSIF BLANC/ ANTIREFLET">ORGANIQUE 1.74 PROGRESSIF BLANC/ ANTIREFLET</option>
+<option value="ORGANIQUE 1.74 PROGRESSIF PHOTOCHROMIQUE ANTIREFLET">ORGANIQUE 1.74 PROGRESSIF PHOTOCHROMIQUE ANTIREFLET</option>
+<option value="ORGANIQUE 1.74 PROGRESSIF TRANSITION ANTIREFLET">ORGANIQUE 1.74 PROGRESSIF TRANSITION ANTIREFLET</option>
+<option value="ORGANIQUE 1.74 PROGRESSIF PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE">ORGANIQUE 1.74 PROGRESSIF PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE</option>
+<option value="ORGANIQUE 1.74 PROGRESSIF TRANSITION ANTIREFLET + ANTILUMIERE BLUE">ORGANIQUE 1.74 PROGRESSIF TRANSITION ANTIREFLET + ANTILUMIERE BLUE</option>
+<option value="ORGANIQUE1.56 DOUBLE FOYER  BLANC/ ANTIREFLET">ORGANIQUE1.56 DOUBLE FOYER  BLANC/ ANTIREFLET</option>
+<option value="ORGANIQUE1.56 DOUBLE FOYER  PHOTOCHROMIQUE ANTIREFLET">ORGANIQUE1.56 DOUBLE FOYER  PHOTOCHROMIQUE ANTIREFLET</option>
+<option value="ORGANIQUE1.56 DOUBLE FOYER  TRANSITION ANTIREFLET">ORGANIQUE1.56 DOUBLE FOYER  TRANSITION ANTIREFLET</option>
+<option value="ORGANIQUE1.56 DOUBLE FOYER  PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE">ORGANIQUE1.56 DOUBLE FOYER  PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE</option>
+<option value="ORGANIQUE1.56 DOUBLE FOYER  TRANSITION ANTIREFLET + ANTILUMIERE BLUE">ORGANIQUE1.56 DOUBLE FOYER  TRANSITION ANTIREFLET + ANTILUMIERE BLUE</option>
+<option value="ORGANIQUE 1.6 DOUBLE FOYER BLANC/ ANTIREFLET">ORGANIQUE 1.6 DOUBLE FOYER BLANC/ ANTIREFLET</option>
+<option value="ORGANIQUE 1.6 DOUBLE FOYER PHOTOCHROMIQUE ANTIREFLET">ORGANIQUE 1.6 DOUBLE FOYER PHOTOCHROMIQUE ANTIREFLET</option>
+<option value="ORGANIQUE 1.6 DOUBLE FOYER TRANSITION ANTIREFLET">ORGANIQUE 1.6 DOUBLE FOYER TRANSITION ANTIREFLET</option>
+<option value="ORGANIQUE 1.6 DOUBLE FOYER PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE">ORGANIQUE 1.6 DOUBLE FOYER PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE</option>
+<option value="ORGANIQUE 1.6 DOUBLE FOYER TRANSITION ANTIREFLET + ANTILUMIERE BLUE">ORGANIQUE 1.6 DOUBLE FOYER TRANSITION ANTIREFLET + ANTILUMIERE BLUE</option>      </select>
                             </div>
                             
-                            <div class="form-navigation">
-                                <button type="button" class="btn btn-secondary" id="cancelButton">
-                                    <i class="fas fa-times"></i> Annuler
-                                </button>
-                                <button type="button" class="btn btn-primary next-step" data-next="2">
-                                    Suivant <i class="fas fa-arrow-right"></i>
-                                </button>
+                            <div class="form-group">
+                                <label for="gamme_verre" class="required-field">Gamme des Verres</label>
+                                <select name="gamme_verre" id="gamme_verre" required>
+                                    <option value="">-- Sélectionnez --</option>
+                                    <option value="ENTREE DE GAMME">ENTREE DE GAMME</option>
+                                    <option value="MOYEN DE GAMME">MOYEN DE GAMME</option>
+                                    <option value="HAUT DE GAMME">HAUT DE GAMME</option>
+                                    
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="choix_monture" class="required-field">Choix de Monture</label>
+                              <input type="text"  name="choix_monture" id="choix_monture" required />
+                                
+                            </div>
+                        </div>
+
+                        <div class="prescription-table-container">
+                            <table class="prescription-table">
+                                <thead>
+                                    <tr>
+                                        <th>Œil</th>
+                                        <th>Sphere</th>
+                                        <th>Cylindre</th>
+                                        <th>Axe</th>
+                                        <th>ADD</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr>
+                                        <td>OD</td>
+                                        <td>
+                                            <select name="od_sphere" required>
+                                                <option value="0.00">0.00</option>
+                                                <option value="+0.25">+0.25</option>
+                                                <option value="+0.50">+0.50</option>
+                                                <option value="+0.75">+0.75</option>
+                                                <option value="+1.00">+1.00</option>
+                                                <option value="+1.25">+1.25</option>
+                                                <option value="+1.50">+1.50</option>
+                                                <option value="+1.75">+1.75</option>
+                                                <option value="+2.00">+2.00</option>
+                                                <option value="+2.25">+2.25</option>
+                                                <option value="+2.50">+2.50</option>
+                                                <option value="+2.75">+2.75</option>
+                                                <option value="+3.00">+3.00</option>
+                                                <option value="+3.25">+3.25</option>
+                                                <option value="+3.50">+3.50</option>
+                                                <option value="+3.75">+3.75</option>
+                                                <option value="+4.00">+4.00</option>
+                                                <option value="+4.25">+4.25</option>
+                                                <option value="+4.50">+4.50</option>
+                                                <option value="+4.75">+4.75</option>
+                                                <option value="+5.00">+5.00</option>
+                                                <option value="+5.25">+5.25</option>
+                                                <option value="+5.50">+5.50</option>
+                                                <option value="+5.75">+5.75</option>
+                                                <option value="+6.00">+6.00</option>
+                                                <option value="+6.25">+6.25</option>
+                                                <option value="+6.50">+6.50</option>
+                                                <option value="+6.75">+6.75</option>
+                                                <option value="+7.00">+7.00</option>
+                                                <option value="+7.25">+7.25</option>
+                                                <option value="+7.50">+7.50</option>
+                                                <option value="+7.75">+7.75</option>
+                                                <option value="+8,00">+8,00</option>
+                                                <option value="+8.25">+8.25</option>
+                                                <option value="+8.50">+8.50</option>
+                                                <option value="+8.75">+8.75</option>
+                                                <option value="+9.00">+9.00</option>
+                                                <option value="+9.25">+9.25</option>
+                                                <option value="+9.50">+9.50</option>
+                                                <option value="+9.75">+9.75</option>
+                                                <option value="+10,00">+10.00</option>
+                                                <option value="+10.25">+10.25</option>
+                                                <option value="+10.5">+10.5</option>
+                                                <option value="+10.75">+10.75</option>
+                                                <option value="+11,00">+11.00</option>
+                                                <option value="+11.25">+11.25</option>
+                                                <option value="+11.50">+11.50</option>
+                                                <option value="+11.75">+11.75</option>
+                                                <option value="+12,00">+12,00</option>
+                                                <option value="-0.25">-0.25</option>
+                                                <option value="-0.50">-0.50</option>
+                                                <option value="-0.75">-0.75</option>
+                                                <option value="-1.00">-1.00</option>
+                                                <option value="-1.25">-1.25</option>
+                                                <option value="-1.50">-1.50</option>
+                                                <option value="-1.75">-1.75</option>
+                                                <option value="-2.00">-2.00</option>
+                                                <option value="-2.25">-2.25</option>
+                                                <option value="-2.50">-2.50</option>
+                                                <option value="-2.75">-2.75</option>
+                                                <option value="-3.00">-3.00</option>
+                                                <option value="-3.25">-3.25</option>
+                                                <option value="-3.50">-3.50</option>
+                                                <option value="-3.75">-3.75</option>
+                                                <option value="-4.00">-4.00</option>
+                                                <option value="-4.25">-4.25</option>
+                                                <option value="-4.50">-4.50</option>
+                                                <option value="-4.75">-4.75</option>
+                                                <option value="-5.00">-5.00</option>
+                                                <option value="-5.25">-5.25</option>
+                                                <option value="-5.50">-5.50</option>
+                                                <option value="-5.75">-5.75</option>
+                                                <option value="-6.00">-6.00</option>
+                                                <option value="-6.25">-6.25</option>
+                                                <option value="-6.50">-6.50</option>
+                                                <option value="-6.75">-6.75</option>
+                                                <option value="-7.00">-7.00</option>
+                                                <option value="-7.25">-7.25</option>
+                                                <option value="-7.50">-7.50</option>
+                                                <option value="-7.75">-7.75</option>
+                                                <option value="-8.00">-8.00</option>
+                                                <option value="-8.25">-8.25</option>
+                                                <option value="-8.50">-8.50</option>
+                                                <option value="-8.75">-8.75</option>
+                                                <option value="-9.00">-9.00</option>
+                                                <option value="-9.25">-9.25</option>
+                                                <option value="-9.50">-9.50</option>
+                                                <option value="-9.75">-9.75</option>
+                                                <option value="-10.00">-10.00</option>
+                                                <option value="-10.25">-10.25</option>
+                                                <option value="-10.50">-10.50</option>
+                                                <option value="-10.75">-10.75</option>
+                                                <option value="-11.00">-11.00</option>
+                                                <option value="-11.25">-11.25</option>
+                                                <option value="-11.50">-11.50</option>
+                                                <option value="-11.75">-11.75</option>
+                                                <option value="-12.00">-12.00</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select name="od_cylindre">
+                                                <option value="0.00">0.00</option>
+                                                <option value="+0.25">+0.25</option>
+                                                <option value="+0.50">+0.50</option>
+                                                <option value="+0.75">+0.75</option>
+                                                <option value="+1.00">+1.00</option>
+                                                <option value="+1.25">+1.25</option>
+                                                <option value="+1.50">+1.50</option>
+                                                <option value="+1.75">+1.75</option>
+                                                <option value="+2.00">+2.00</option>
+                                                <option value="+2.25">+2.25</option>
+                                                <option value="+2.50">+2.50</option>
+                                                <option value="+2.75">+2.75</option>
+                                                <option value="+3.00">+3.00</option>
+                                                <option value="+3.25">+3.25</option>
+                                                <option value="+3.50">+3.50</option>
+                                                <option value="+3.75">+3.75</option>
+                                                <option value="+4.00">+4.00</option>
+                                                <option value="+4.25">+4.25</option>
+                                                <option value="+4.50">+4.50</option>
+                                                <option value="+4.75">+4.75</option>
+                                                <option value="+5.00">+5.00</option>
+                                                <option value="+5.25">+5.25</option>
+                                                <option value="+5.50">+5.50</option>
+                                                <option value="+5.75">+5.75</option>
+                                                <option value="+6.00">+6.00</option>
+                                                <option value="+6.25">+6.25</option>
+                                                <option value="+6.50">+6.50</option>
+                                                <option value="+6.75">+6.75</option>
+                                                <option value="+7.00">+7.00</option>
+                                                <option value="+7.25">+7.25</option>
+                                                <option value="+7.50">+7.50</option>
+                                                <option value="+7.75">+7.75</option>
+                                                <option value="+8,00">+8,00</option>
+                                                <option value="+8.25">+8.25</option>
+                                                <option value="+8.50">+8.50</option>
+                                                <option value="+8.75">+8.75</option>
+                                                <option value="+9.00">+9.00</option>
+                                                <option value="+9.25">+9.25</option>
+                                                <option value="+9.50">+9.50</option>
+                                                <option value="+9.75">+9.75</option>
+                                                <option value="+10,00">+10,00</option>
+                                                <option value="+10.25">+10.25</option>
+                                                <option value="+10.5">+10.5</option>
+                                                <option value="+10.75">+10.75</option>
+                                                <option value="+11,00">+11,00</option>
+                                                <option value="+11.25">+11.25</option>
+                                                <option value="+11.50">+11.50</option>
+                                                <option value="+11.75">+11.75</option>
+                                                <option value="+12,00">+12,00</option>
+                                                <option value="-0.25">-0.25</option>
+                                                <option value="-0.50">-0.50</option>
+                                                <option value="-0.75">-0.75</option>
+                                                <option value="-1.00">-1.00</option>
+                                                <option value="-1.25">-1.25</option>
+                                                <option value="-1.50">-1.50</option>
+                                                <option value="-1.75">-1.75</option>
+                                                <option value="-2.00">-2.00</option>
+                                                <option value="-2.25">-2.25</option>
+                                                <option value="-2.50">-2.50</option>
+                                                <option value="-2.75">-2.75</option>
+                                                <option value="-3.00">-3.00</option>
+                                                <option value="-3.25">-3.25</option>
+                                                <option value="-3.50">-3.50</option>
+                                                <option value="-3.75">-3.75</option>
+                                                <option value="-4.00">-4.00</option>
+                                                <option value="-4.25">-4.25</option>
+                                                <option value="-4.50">-4.50</option>
+                                                <option value="-4.75">-4.75</option>
+                                                <option value="-5.00">-5.00</option>
+                                                <option value="-5.25">-5.25</option>
+                                                <option value="-5.50">-5.50</option>
+                                                <option value="-5.75">-5.75</option>
+                                                <option value="-6.00">-6.00</option>
+                                                <option value="-6.25">-6.25</option>
+                                                <option value="-6.50">-6.50</option>
+                                                <option value="-6.75">-6.75</option>
+                                                <option value="-7.00">-7.00</option>
+                                                <option value="-7.25">-7.25</option>
+                                                <option value="-7.50">-7.50</option>
+                                                <option value="-7.75">-7.75</option>
+                                                <option value="-8.00">-8.00</option>
+                                                <option value="-8.25">-8.25</option>
+                                                <option value="-8.50">-8.50</option>
+                                                <option value="-8.75">-8.75</option>
+                                                <option value="-9.00">-9.00</option>
+                                                <option value="-9.25">-9.25</option>
+                                                <option value="-9.50">-9.50</option>
+                                                <option value="-9.75">-9.75</option>
+                                                <option value="-10.00">-10.00</option>
+                                                <option value="-10.25">-10.25</option>
+                                                <option value="-10.50">-10.50</option>
+                                                <option value="-10.75">-10.75</option>
+                                                <option value="-11.00">-11.00</option>
+                                                <option value="-11.25">-11.25</option>
+                                                <option value="-11.50">-11.50</option>
+                                                <option value="-11.75">-11.75</option>
+                                                <option value="-12.00">-12.00</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select name="od_axe">
+                                                <option value="0°">0°</option>
+                                                <option value="5°">5°</option>
+                                                <option value="10°">10°</option>
+                                                <option value="15°">15°</option>
+                                                <option value="20°">20°</option>
+                                                <option value="25°">25°</option>
+                                                <option value="30°">30°</option>
+                                                <option value="35°">35°</option>
+                                                <option value="40°">40°</option>
+                                                <option value="45°">45°</option>
+                                                <option value="50°">50°</option>
+                                                <option value="55°">55°</option>
+                                                <option value="60°">60°</option>
+                                                <option value="65°">65°</option>
+                                                <option value="70°">70°</option>
+                                                <option value="75°">75°</option>
+                                                <option value="80°">80°</option>
+                                                <option value="85°">85°</option>
+                                                <option value="90°">90°</option>
+                                                <option value="95°">95°</option>
+                                                <option value="100°">100°</option>
+                                                <option value="105°">105°</option>
+                                                <option value="110°">110°</option>
+                                                <option value="115°">115°</option>
+                                                <option value="120°">120°</option>
+                                                <option value="125°">125°</option>
+                                                <option value="130°">130°</option>
+                                                <option value="135°">135°</option>
+                                                <option value="140°">140°</option>
+                                                <option value="145°">145°</option>
+                                                <option value="150°">150°</option>
+                                                <option value="155°">155°</option>
+                                                <option value="160°">160°</option>
+                                                <option value="165°">165°</option>
+                                                <option value="170°">170°</option>
+                                                <option value="175°">175°</option>
+                                                <option value="180°">180°</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select name="od_add">
+                                                    <option value="0.00">0.00</option>
+                                                    <option value="+0.50">+0.50</option>
+                                                    <option value="+0.75">+0.75</option>
+                                                    <option value="+1.00">+1.00</option>
+                                                    <option value="+1.25">+1.25</option>
+                                                    <option value="+1.50">+1.50</option>
+                                                    <option value="+1.75">+1.75</option>
+                                                    <option value="+2.00">+2.00</option>
+                                                    <option value="+2.25">+2.25</option>
+                                                    <option value="+2.50">+2.50</option>
+                                                    <option value="+2.75">+2.75</option>
+                                                    <option value="+3.00">+3.00</option>
+                                                    <option value="+3.25">+3.25</option>
+                                                    <option value="+3.50">+3.50</option>
+                                                    <option value="+3.75">+3.75</option>
+                                                    <option value="+4.00">+4.00</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>OG</td>
+                                        <td>
+                                            <select name="og_sphere" required>
+                                                <option value="0.00">0.00</option>
+                                                <option value="+0.25">+0.25</option>
+                                                <option value="+0.50">+0.50</option>
+                                                <option value="+0.75">+0.75</option>
+                                                <option value="+1.00">+1.00</option>
+                                                <option value="+1.25">+1.25</option>
+                                                <option value="+1.50">+1.50</option>
+                                                <option value="+1.75">+1.75</option>
+                                                <option value="+2.00">+2.00</option>
+                                                <option value="+2.25">+2.25</option>
+                                                <option value="+2.50">+2.50</option>
+                                                <option value="+2.75">+2.75</option>
+                                                <option value="+3.00">+3.00</option>
+                                                <option value="+3.25">+3.25</option>
+                                                <option value="+3.50">+3.50</option>
+                                                <option value="+3.75">+3.75</option>
+                                                <option value="+4.00">+4.00</option>
+                                                <option value="+4.25">+4.25</option>
+                                                <option value="+4.50">+4.50</option>
+                                                <option value="+4.75">+4.75</option>
+                                                <option value="+5.00">+5.00</option>
+                                                <option value="+5.25">+5.25</option>
+                                                <option value="+5.50">+5.50</option>
+                                                <option value="+5.75">+5.75</option>
+                                                <option value="+6.00">+6.00</option>
+                                                <option value="+6.25">+6.25</option>
+                                                <option value="+6.50">+6.50</option>
+                                                <option value="+6.75">+6.75</option>
+                                                <option value="+7.00">+7.00</option>
+                                                <option value="+7.25">+7.25</option>
+                                                <option value="+7.50">+7.50</option>
+                                                <option value="+7.75">+7.75</option>
+                                                <option value="+8,00">+8,00</option>
+                                                <option value="+8.25">+8.25</option>
+                                                <option value="+8.50">+8.50</option>
+                                                <option value="+8.75">+8.75</option>
+                                                <option value="+9.00">+9.00</option>
+                                                <option value="+9.25">+9.25</option>
+                                                <option value="+9.50">+9.50</option>
+                                                <option value="+9.75">+9.75</option>
+                                                <option value="+10,00">+10,00</option>
+                                                <option value="+10.25">+10.25</option>
+                                                <option value="+10.5">+10.5</option>
+                                                <option value="+10.75">+10.75</option>
+                                                <option value="+11,00">+11,00</option>
+                                                <option value="+11.25">+11.25</option>
+                                                <option value="+11.50">+11.50</option>
+                                                <option value="+11.75">+11.75</option>
+                                                <option value="+12,00">+12,00</option>
+                                                <option value="-0.25">-0.25</option>
+                                                <option value="-0.50">-0.50</option>
+                                                <option value="-0.75">-0.75</option>
+                                                <option value="-1.00">-1.00</option>
+                                                <option value="-1.25">-1.25</option>
+                                                <option value="-1.50">-1.50</option>
+                                                <option value="-1.75">-1.75</option>
+                                                <option value="-2.00">-2.00</option>
+                                                <option value="-2.25">-2.25</option>
+                                                <option value="-2.50">-2.50</option>
+                                                <option value="-2.75">-2.75</option>
+                                                <option value="-3.00">-3.00</option>
+                                                <option value="-3.25">-3.25</option>
+                                                <option value="-3.50">-3.50</option>
+                                                <option value="-3.75">-3.75</option>
+                                                <option value="-4.00">-4.00</option>
+                                                <option value="-4.25">-4.25</option>
+                                                <option value="-4.50">-4.50</option>
+                                                <option value="-4.75">-4.75</option>
+                                                <option value="-5.00">-5.00</option>
+                                                <option value="-5.25">-5.25</option>
+                                                <option value="-5.50">-5.50</option>
+                                                <option value="-5.75">-5.75</option>
+                                                <option value="-6.00">-6.00</option>
+                                                <option value="-6.25">-6.25</option>
+                                                <option value="-6.50">-6.50</option>
+                                                <option value="-6.75">-6.75</option>
+                                                <option value="-7.00">-7.00</option>
+                                                <option value="-7.25">-7.25</option>
+                                                <option value="-7.50">-7.50</option>
+                                                <option value="-7.75">-7.75</option>
+                                                <option value="-8.00">-8.00</option>
+                                                <option value="-8.25">-8.25</option>
+                                                <option value="-8.50">-8.50</option>
+                                                <option value="-8.75">-8.75</option>
+                                                <option value="-9.00">-9.00</option>
+                                                <option value="-9.25">-9.25</option>
+                                                <option value="-9.50">-9.50</option>
+                                                <option value="-9.75">-9.75</option>
+                                                <option value="-10.00">-10.00</option>
+                                                <option value="-10.25">-10.25</option>
+                                                <option value="-10.50">-10.50</option>
+                                                <option value="-10.75">-10.75</option>
+                                                <option value="-11.00">-11.00</option>
+                                                <option value="-11.25">-11.25</option>
+                                                <option value="-11.50">-11.50</option>
+                                                <option value="-11.75">-11.75</option>
+                                                <option value="-12.00">-12.00</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select name="og_cylindre">
+                                                <option value="0.00">0.00</option>
+                                                <option value="+0.25">+0.25</option>
+                                                <option value="+0.50">+0.50</option>
+                                                <option value="+0.75">+0.75</option>
+                                                <option value="+1.00">+1.00</option>
+                                                <option value="+1.25">+1.25</option>
+                                                <option value="+1.5">+1.5</option>
+                                                <option value="+1.75">+1.75</option>
+                                                <option value="+2.00">+2.00</option>
+                                                <option value="+2.25">+2.25</option>
+                                                <option value="+2.50">+2.50</option>
+                                                <option value="+2.75">+2.75</option>
+                                                <option value="+3.00">+3.00</option>
+                                                <option value="+3.25">+3.25</option>
+                                                <option value="+3.50">+3.50</option>
+                                                <option value="+3.75">+3.75</option>
+                                                <option value="+4.00">+4.00</option>
+                                                <option value="+4.25">+4.25</option>
+                                                <option value="+4.50">+4.50</option>
+                                                <option value="+4.75">+4.75</option>
+                                                <option value="+5.00">+5.00</option>
+                                                <option value="+5.25">+5.25</option>
+                                                <option value="+5.50">+5.50</option>
+                                                <option value="+5.75">+5.75</option>
+                                                <option value="+6.00">+6.00</option>
+                                                <option value="+6.25">+6.25</option>
+                                                <option value="+6.50">+6.50</option>
+                                                <option value="+6.75">+6.75</option>
+                                                <option value="+7.00">+7.00</option>
+                                                <option value="+7.25">+7.25</option>
+                                                <option value="+7.50">+7.50</option>
+                                                <option value="+7.75">+7.75</option>
+                                                <option value="+8,00">+8,00</option>
+                                                <option value="+8.25">+8.25</option>
+                                                <option value="+8.50">+8.50</option>
+                                                <option value="+8.75">+8.75</option>
+                                                <option value="+9.00">+9.00</option>
+                                                <option value="+9.25">+9.25</option>
+                                                <option value="+9.50">+9.50</option>
+                                                <option value="+9.75">+9.75</option>
+                                                <option value="+10,00">+10,00</option>
+                                                <option value="+10.25">+10.25</option>
+                                                <option value="+10.5">+10.5</option>
+                                                <option value="+10.75">+10.75</option>
+                                                <option value="+11,00">+11,00</option>
+                                                <option value="+11.25">+11.25</option>
+                                                <option value="+11.50">+11.50</option>
+                                                <option value="+11.75">+11.75</option>
+                                                <option value="+12,00">+12,00</option>
+                                                <option value="-0.25">-0.25</option>
+                                                <option value="-0.50">-0.50</option>
+                                                <option value="-0.75">-0.75</option>
+                                                <option value="-1.00">-1.00</option>
+                                                <option value="-1.25">-1.25</option>
+                                                <option value="-1.50">-1.50</option>
+                                                <option value="-1.75">-1.75</option>
+                                                <option value="-2.00">-2.00</option>
+                                                <option value="-2.25">-2.25</option>
+                                                <option value="-2.50">-2.50</option>
+                                                <option value="-2.75">-2.75</option>
+                                                <option value="-3.00">-3.00</option>
+                                                <option value="-3.25">-3.25</option>
+                                                <option value="-3.50">-3.50</option>
+                                                <option value="-3.75">-3.75</option>
+                                                <option value="-4.00">-4.00</option>
+                                                <option value="-4.25">-4.25</option>
+                                                <option value="-4.50">-4.50</option>
+                                                <option value="-4.75">-4.75</option>
+                                                <option value="-5.00">-5.00</option>
+                                                <option value="-5.25">-5.25</option>
+                                                <option value="-5.50">-5.50</option>
+                                                <option value="-5.75">-5.75</option>
+                                                <option value="-6.00">-6.00</option>
+                                                <option value="-6.25">-6.25</option>
+                                                <option value="-6.50">-6.50</option>
+                                                <option value="-6.75">-6.75</option>
+                                                <option value="-7.00">-7.00</option>
+                                                <option value="-7.25">-7.25</option>
+                                                <option value="-7.50">-7.50</option>
+                                                <option value="-7.75">-7.75</option>
+                                                <option value="-8.00">-8.00</option>
+                                                <option value="-8.25">-8.25</option>
+                                                <option value="-8.50">-8.50</option>
+                                                <option value="-8.75">-8.75</option>
+                                                <option value="-9.00">-9.00</option>
+                                                <option value="-9.25">-9.25</option>
+                                                <option value="-9.50">-9.50</option>
+                                                <option value="-9.75">-9.75</option>
+                                                <option value="-10.00">-10.00</option>
+                                                <option value="-10.25">-10.25</option>
+                                                <option value="-10.50">-10.50</option>
+                                                <option value="-10.75">-10.75</option>
+                                                <option value="-11.00">-11.00</option>
+                                                <option value="-11.25">-11.25</option>
+                                                <option value="-11.50">-11.50</option>
+                                                <option value="-11.75">-11.75</option>
+                                                <option value="-12.00">-12.00</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select name="og_axe">
+                                                <option value="0°">0°</option>
+                                                <option value="5°">5°</option>
+                                                <option value="10°">10°</option>
+                                                <option value="15°">15°</option>
+                                                <option value="20°">20°</option>
+                                                <option value="25°">25°</option>
+                                                <option value="30°">30°</option>
+                                                <option value="35°">35°</option>
+                                                <option value="40°">40°</option>
+                                                <option value="45°">45°</option>
+                                                <option value="50°">50°</option>
+                                                <option value="55°">55°</option>
+                                                <option value="60°">60°</option>
+                                                <option value="65°">65°</option>
+                                                <option value="70°">70°</option>
+                                                <option value="75°">75°</option>
+                                                <option value="80°">80°</option>
+                                                <option value="85°">85°</option>
+                                                <option value="90°">90°</option>
+                                                <option value="95°">95°</option>
+                                                <option value="100°">100°</option>
+                                                <option value="105°">105°</option>
+                                                <option value="110°">110°</option>
+                                                <option value="115°">115°</option>
+                                                <option value="120°">120°</option>
+                                                <option value="125°">125°</option>
+                                                <option value="130°">130°</option>
+                                                <option value="135°">135°</option>
+                                                <option value="140°">140°</option>
+                                                <option value="145°">145°</option>
+                                                <option value="150°">150°</option>
+                                                <option value="155°">155°</option>
+                                                <option value="160°">160°</option>
+                                                <option value="165°">165°</option>
+                                                <option value="170°">170°</option>
+                                                <option value="175°">175°</option>
+                                                <option value="180°">180°</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select name="og_add">
+                                                <option value="0.00">0.00</option>
+                                                    <option value="+0.50">+0.50</option>
+                                                    <option value="+0.75">+0.75</option>
+                                                    <option value="+1.00">+1.00</option>
+                                                    <option value="+1.25">+1.25</option>
+                                                    <option value="+1.50">+1.50</option>
+                                                    <option value="+1.75">+1.75</option>
+                                                    <option value="+2.00">+2.00</option>
+                                                    <option value="+2.25">+2.25</option>
+                                                    <option value="+2.50">+2.50</option>
+                                                    <option value="+2.75">+2.75</option>
+                                                    <option value="+3.00">+3.00</option>
+                                                    <option value="+3.25">+3.25</option>
+                                                    <option value="+3.50">+3.50</option>
+                                                    <option value="+3.75">+3.75</option>
+                                                    <option value="+4.00">+4.00</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="form-row" style="margin-top: 1rem;">
+                            <div class="form-group">
+                                <label for="date_soin">Date de soin</label>
+                                <input type="date" name="date_soin" id="date_soin" />
                             </div>
                         </div>
                         
-                        <!-- Step 2: Prescription -->
-                        <div class="form-section" id="section2">
-                            <h2 class="section-title">PRESCRIPTION ET COMMANDE</h2>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="type_verre" class="required-field">Type de Verre</label>
-                                    <select name="type_verre" id="type_verre" required>
-                                        <option value="">-- Type de Verre --</option>
-                                        <option value="photo ar">Photo AR</option>
-                                        <option value="photo max">Photo Max</option>
-                                    </select>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="gamme_verre" class="required-field">Gamme des Verres</label>
-                                    <select name="gamme_verre" id="gamme_verre" required>
-                                        <option value="">-- Gamme --</option>
-                                        <option value="GA">Ga</option>
-                                        <option value="GB">Gb</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="choix_monture" class="required-field">Choix de Monture</label>
-                                    <select name="choix_monture" id="choix_monture" required>
-                                        <option value="">-- Choix de Monture --</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="prescription-table-container">
-                                <table class="prescription-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Œil</th>
-                                            <th>Sphere</th>
-                                            <th>Cylindre</th>
-                                            <th>Axe</th>
-                                            <th>ADD</th>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        <tr>
-                                            <td>OD</td>
-                                            <td>
-                                                <select name="od_sphere" required>
-                                                    <option value="">0.00</option>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <select name="od_cylindre">
-                                                         <option value="">0.00</option>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <select name="od_axe">
-                                                        <option value="">0</option>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <select name="od_add">
-                                                         <option value="">0.00</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td>OG</td>
-                                            <td>
-                                                <select name="og_sphere" required>
-                                                         <option value="">0.00</option>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <select name="og_cylindre">
-                                                         <option value="">0.00</option>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <select name="og_axe">
-                                                         <option value="">0</option>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <select name="og_add">
-                                                         <option value="">0.00</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                        <div class="form-navigation">
+                            <button type="button" class="btn btn-secondary prev-step" data-prev="1">
+                                <i class="fas fa-arrow-left"></i> Précédent
+                            </button>
+                            <button type="button" class="btn btn-primary next-step" data-next="4">
+                                Suivant <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 4: Payment -->
+                    <div class="form-section" id="section4">
+                        <h2 class="section-title">DÉTAILS DE PAIEMENT</h2>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="required-field">Montant Monture (FCFA)</label>
+                                <input type="number" name="montant_monture" id="montant_monture" required oninput="calculerTotalPro()" />
                             </div>
                             
-                            <div class="form-row" style="margin-top: 1rem;">
-                                <div class="form-group">
-                                    <label for="clinique">Clinique</label>
-                                    <select name="clinique" id="clinique">
-                                        <option value="">-- Choisir --</option>
-                                    </select>
-                                </div>
-                            
-                                <div class="form-group">
-                                    <label for="ophtalmo">Ophtalmo</label>
-                                    <select name="ophtalmo" id="ophtalmo">
-                                        <option value="">-- Choisir --</option>
-                                    </select>
-                                </div>
-                            
-                                <div class="form-group">
-                                    <label for="date_soin">Date de soin</label>
-                                    <input type="date" name="date_soin" id="date_soin" />
-                                </div>
-                            </div>
-                            
-                            <div class="form-navigation">
-                                <button type="button" class="btn btn-secondary prev-step" data-prev="1">
-                                    <i class="fas fa-arrow-left"></i> Précédent
-                                </button>
-                                <button type="button" class="btn btn-primary next-step" data-next="4">
-                                    Suivant <i class="fas fa-arrow-right"></i>
-                                </button>
+                            <div class="form-group">
+                                <label class="required-field">Montant Verres (FCFA)</label>
+                                <input type="number" name="montant_verres" id="montant_verres" required oninput="calculerTotalPro()" />
                             </div>
                         </div>
                         
-                        <!-- Step 4: Payment -->
-                        <div class="form-section" id="section4">
-                            <h2 class="section-title">DÉTAILS DE PAIEMENT</h2>
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label class="required-field">Montant Monture (FCFA)</label>
-                                    <input type="number" name="montant_monture" id="montant_monture" required oninput="calculerTotalPro()" />
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label class="required-field">Montant Verres (FCFA)</label>
-                                    <input type="number" name="montant_verres" id="montant_verres" required oninput="calculerTotalPro()" />
-                                </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Total Brut (FCFA)</label>
+                                <input type="number" name="total_brut" id="total_brut" readonly />
                             </div>
                             
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Total Brut (FCFA)</label>
-                                    <input type="number" name="total_brut" id="total_brut" readonly />
+                            <div class="form-group">
+                                <label>Remise</label>
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <input type="number" name="remise" id="remise" value="0" oninput="calculerTotalPro()" style="flex: 2;" />
+                                    <select name="remise_type" id="remise_type" onchange="calculerTotalPro()" style="flex: 1;">
+                                        <option value="FCFA">FCFA</option>
+                                        <option value="%">%</option>
+                                    </select>
                                 </div>
-                                
-                                <div class="form-group">
-                                    <label>Remise</label>
-                                    <div style="display: flex; gap: 0.5rem;">
-                                        <input type="number" name="remise" id="remise" value="0" oninput="calculerTotalPro()" style="flex: 2;" />
-                                        <select name="remise_type" id="remise_type" onchange="calculerTotalPro()" style="flex: 1;">
-                                            <option value="FCFA">FCFA</option>
-                                            <option value="%">%</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Net à payer (FCFA)</label>
-                                    <input type="number" name="net_a_payer" id="net_a_payer" readonly />
-                                </div>
-                            </div>
-                            
-                            <div class="form-navigation">
-                                <button type="button" class="btn btn-secondary prev-step" data-prev="2">
-                                    <i class="fas fa-arrow-left"></i> Précédent
-                                </button>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-save"></i> Save and Print
-                                </button>
                             </div>
                         </div>
-                    </form>
-                </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Net à payer (FCFA)</label>
+                                <input type="number" name="net_a_payer" id="net_a_payer" readonly />
+                            </div>
+                        </div>
+                        
+                        <div class="form-navigation">
+                            <button type="button" class="btn btn-secondary prev-step" data-prev="2">
+                                <i class="fas fa-arrow-left"></i> Précédent
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Save and Print
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+</div>
     <div class="loader-overlay" id="loaderOverlay">
     <div class="loader-content">
         <div class="loader-spinner"></div>
@@ -5873,10 +6411,7 @@ async function openDevis() {
     document.getElementById('loaderOverlay').classList.add('active');
     
     try {
-        // Charger les données si pas déjà en cache
-        if (!appDataCache) {
-            await loadDataFromSheet();
-        }
+        await loadDataFromSheet();
         
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -5928,10 +6463,6 @@ document.getElementById('client-form').addEventListener('submit', async function
     }
 });
 
-        function closeDevis() {
-            document.getElementById('proformaModal').classList.remove('active');
-            document.body.style.overflow = ''; // Rétablit le défilement
-        }
 
         // Calcul des totaux
 document.addEventListener("DOMContentLoaded", function() {
@@ -5975,7 +6506,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Charger les données au premier affichage de la modale
     document.getElementById('proformaModal').addEventListener('click', async function(e) {
         if (e.target === this && !appDataCache) {
-            await loadDataPdf();
+            await loadDataFromSheet();
         }
     });
 
@@ -5987,148 +6518,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 
-// URL de votre Web App Google Apps Script
-const DATA_SOURCE_URL = 'https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=catalogue';
 
-// Cache pour stocker les données chargées
-let appDataCache = null;
-async function loadDataPdf() {
-    console.log('Début du chargement des données...'); // Debug
-    try {
-        console.log('Envoi de la requête à:', DATA_SOURCE_URL); // Debug
-        const response = await fetch(DATA_SOURCE_URL);
-        
-        console.log('Réponse reçue, status:', response.status); // Debug
-        if (!response.ok) throw new Error(`Erreur HTTP: ${response.status}`);
-        
-        const data = await response.json();
-        console.log('Données reçues:', data); // Debug
-        
-        if (!data.success) throw new Error("Réponse invalide du serveur.");
-        if (!data.data) throw new Error("Données manquantes dans la réponse");
 
-        appDataCache = data.data;
-        console.log('Données mises en cache:', appDataCache); // Debug
-        populateData(data.data);
-        
-    } catch (error) {
-        console.error('Erreur lors du chargement:', error);
-        alert(`Erreur lors du chargement: ${error.message}`);
-    } finally {
-        console.log('Chargement terminé'); // Debug
-    }
-}
 
-function populateData(data) {
-    console.log('Début du remplissage des données'); // Debug
-    if (!data) {
-        console.error('Aucune donnée à remplir');
-        return;
-    }
-    
-    console.log('Données disponibles:', Object.keys(data)); // Debug
-    
-    // Liste des champs à remplir avec leurs données correspondantes
-    const fieldsToPopulate = [
-        { id: 'entreprise', data: data.entreprises },
-        { id: 'agence', data: data.agences },
-        { id: 'type_verre', data: data.typesVerre },
-        { id: 'gamme_verre', data: data.gammesVerre },
-        { id: 'choix_monture', data: data.montures },
-        { id: 'clinique', data: data.cliniques },
-        { id: 'ophtalmo', data: data.ophtalmos }
-    ];
-
-    console.log('Champs à remplir:', fieldsToPopulate); // Debug
-
-    fieldsToPopulate.forEach(field => {
-        console.log(`Traitement du champ ${field.id}`); // Debug
-        if (Array.isArray(field.data)) {
-            console.log(`Données pour ${field.id}:`, field.data); // Debug
-            populateSelect(field.id, field.data);
-        } else {
-            console.warn(`Pas de données pour ${field.id}`); // Debug
-        }
-    });
-
-    // Gestion des champs de prescription
-    const prescriptionFields = [
-        { name: 'od_sphere', data: data.sphere },
-        { name: 'od_cylindre', data: data.sphere },
-        { name: 'od_axe', data: data.axe },
-        { name: 'od_add', data: data.add },
-        { name: 'og_sphere', data: data.sphere },
-        { name: 'og_cylindre', data: data.sphere },
-        { name: 'og_axe', data: data.axe },
-        { name: 'og_add', data: data.add }
-    ];
-
-    console.log('Champs de prescription:', prescriptionFields); // Debug
-
-    prescriptionFields.forEach(field => {
-        console.log(`Traitement du champ ${field.name}`); // Debug
-        if (Array.isArray(field.data)) {
-            console.log(`Données pour ${field.name}:`, field.data); // Debug
-            populatePrescriptionOptions(field.name, field.data);
-        } else {
-            console.warn(`Pas de données pour ${field.name}`); // Debug
-        }
-    });
-}
-
-// Fonction utilitaire pour remplir un select
-function populateSelect(id, options) {
-    const select = document.getElementById(id);
-    if (!select) return;
-    
-    // Sauvegarder la valeur sélectionnée actuelle
-    const currentValue = select.value;
-    
-    // Vider le select sauf la première option
-    while (select.options.length > 1) {
-        select.remove(1);
-    }
-    
-    // Ajouter les nouvelles options
-    options.forEach(option => {
-        const opt = document.createElement('option');
-        opt.value = option;
-        opt.textContent = option;
-        select.appendChild(opt);
-    });
-    
-    // Restaurer la valeur sélectionnée si elle existe toujours
-    if (currentValue && options.includes(currentValue)) {
-        select.value = currentValue;
-    }
-}
-
-// Fonction utilitaire pour les champs de prescription
-function populatePrescriptionOptions(selectName, values) {
-    const selects = document.getElementsByName(selectName);
-    if (!selects || selects.length === 0) return;
-    
-    const select = selects[0];
-    const currentValue = select.value;
-    
-    // Vider le select sauf la première option
-    while (select.options.length > 1) {
-        select.remove(1);
-    }
-    
-    // Ajouter les nouvelles options
-    values.forEach(value => {
-        const opt = document.createElement('option');
-        opt.value = value;
-        opt.textContent = value;
-        select.appendChild(opt);
-    });
-    
-    // Restaurer la valeur sélectionnée si elle existe toujours
-    if (currentValue && values.includes(currentValue)) {
-        select.value = currentValue;
-    }
-}
 
 async function generatePDF() {
     // Vérifier si jsPDF est chargé
@@ -6147,9 +6539,7 @@ async function generatePDF() {
         contact: document.querySelector('input[name="indicatif"]').value + ' ' + 
                 document.querySelector('input[name="numero"]').value,
         date_naissance: document.getElementById('date_naissance').value,
-        entreprise: document.getElementById('entreprise').value,
         civilite: document.getElementById('civilite').value,
-        agence: document.getElementById('agence').value,
         type_verre: document.getElementById('type_verre').value,
         gamme_verre: document.getElementById('gamme_verre').value,
         choix_monture: document.getElementById('choix_monture').value,
@@ -6161,8 +6551,6 @@ async function generatePDF() {
         og_cylindre: document.querySelector('select[name="og_cylindre"]').value,
         og_axe: document.querySelector('select[name="og_axe"]').value,
         og_add: document.querySelector('select[name="og_add"]').value,
-        clinique: document.getElementById('clinique').value,
-        ophtalmo: document.getElementById('ophtalmo').value,
         date_soin: document.getElementById('date_soin').value,
         montant_monture: document.getElementById('montant_monture').value,
         montant_verres: document.getElementById('montant_verres').value,
@@ -6218,9 +6606,7 @@ pdf.setTextColor(70);
 const leftLines = [
     `${formData.civilite} ${formData.nom_complet}`,
     `Téléphone : ${formData.contact}`,
-    `Né le    : ${formData.date_naissance}`,
-    `Entreprise: ${formData.entreprise}`,
-    `Agence   : ${formData.agence}`
+    `Né le    : ${formData.date_naissance}`
 ];
 
 let lineY = startY + 8;
@@ -6243,8 +6629,6 @@ const rightLines = [
     `Type de verre : ${formData.type_verre}`,
     `Gamme        : ${formData.gamme_verre}`,
     `Monture     : ${formData.choix_monture}`,
-    `Clinique    : ${formData.clinique}`,
-    `Ophtalmo   : ${formData.ophtalmo}`,
     `Date soin  : ${formData.date_soin}`
 ];
 
@@ -6330,7 +6714,7 @@ pdf.save(fileName);
 
     
     // Fermer la modale après génération
-    closeDevis();
+    closeModal();
 }
 
 // Fonction utilitaire pour charger les scripts
@@ -7329,7 +7713,8 @@ function openNewSale() {
 };
 
  
-    // Initialisation de la modal
+ // URL de votre Web App Google Apps Script
+const DATA_SOURCE_URL = 'https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=catalogue';   // Initialisation de la modal
 function initModal() {
     // Configurer les événements
     setupEventListeners();
@@ -8207,7 +8592,7 @@ function setupFormStepNavigation() {
     // Bouton Annuler
     const cancelButton = document.getElementById('cancelButton');
     if (cancelButton) {
-        cancelButton.addEventListener('click', closeDevis);
+        cancelButton.addEventListener('click', closeModal);
     }
 }
     
