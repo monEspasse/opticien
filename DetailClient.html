@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Détails Client - DigitalOpti</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -710,7 +711,6 @@
                         <button class="tab-button" data-tab="order">Commande</button>
                         <button class="tab-button" data-tab="insurance">Tier Payant</button>
                         <button class="tab-button" data-tab="payment">Paiement</button>
-                    <button class="tab-button" data-tab="history">Historique du Deal</button>
                     </div>
 
                     <div id="info-tab" class="tab-content active">
@@ -935,52 +935,6 @@
                             <p class="detail-value" id="payment-status"></p>
                         </div>
                     </div>
-<!-- Ajoutez ceci juste avant la div client-actions -->
-<div id="history-tab" class="tab-content">
-    <div class="history-grid">
-        <!-- Histoire des paiements -->
-        <div class="history-section">
-            <h3 class="section-title"><i class="fas fa-money-bill-wave"></i> Historique des Paiements</h3>
-            <div class="history-table-container">
-                <table class="history-table">
-                    <thead>
-                        <tr>
-                                <th>ID</th>
-                                <th>Montant</th>
-                                <th>Catégorie</th>
-                                <th>Agence</th>
-                                <th>Utilisateur</th>
-                                <th>Date</th>
-                        </tr>
-                    </thead>
-                    <tbody id="payment-history">
-                        <!-- Les données seront injectées ici par JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Histoire des changements -->
-        <div class="history-section">
-            <h3 class="section-title"><i class="fas fa-exchange-alt"></i> Historique des Changements</h3>
-            <div class="history-table-container">
-                <table class="history-table">
-                    <thead>
-                        <tr>
-                            <th>Ancien Statut</th>
-                            <th>Nouveau Statut</th>
-                            <th>Date</th>
-                            <th>Utilisateur</th>
-                        </tr>
-                    </thead>
-                    <tbody id="status-history">
-                        <!-- Les données seront injectées ici par JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
                     <div class="client-actions">
                         <button class="btn btn-primary" onclick="openVueGlobale()">
                             <i class="fas fa-edit"></i> Retour
@@ -995,6 +949,7 @@
     </div>
     
 <div id="modal-container"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script>
         // Fonction pour ouvrir Acceuil
         window.openVueGlobale = function() {
@@ -1136,9 +1091,6 @@ console.log("Statut de la vente importé:", statutVente); // Affiche "Nouvelle v
 
 // Afficher le statut brut importé
 statusElement.textContent = statutVente;
-    // Charger les historiques
-    await loadPaymentHistory(data["ID client"]);
-    await loadStatusHistory(data["ID client"]);
 }
 
 // Fonction utilitaire pour formater les dates
@@ -1148,102 +1100,6 @@ function formatDate(dateString) {
     return date.toLocaleDateString('fr-FR');
 }
 
-async function loadPaymentHistory(clientId) {
-    const paymentHistoryTab = document.getElementById('payment-history');
-    if (!paymentHistoryTab) {
-        console.error("Élément payment-history non trouvé");
-        return;
-    }
-
-    try {
-        paymentHistoryTab.innerHTML = '<tr><td colspan="6">Chargement en cours...</td></tr>';
-        
-        const apiUrl = `https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=getPaymentHistory&clientId=${encodeURIComponent(clientId)}`;
-        
-        const response = await fetch(apiUrl, {
-            mode: 'no-cors', // Ajout essentiel pour CORS
-            redirect: 'follow',
-            headers: {
-                'Content-Type': 'text/plain'
-            }
-        });
-
-        // En mode no-cors, nous devons traiter la réponse comme texte
-        const text = await response.text();
-        let result;
-        
-        try {
-            result = JSON.parse(text);
-        } catch (e) {
-            throw new Error("Réponse JSON invalide");
-        }
-
-        if (result.data?.length > 0) {
-            paymentHistoryTab.innerHTML = result.data.map(payment => `
-                <tr>
-                    <td>${payment.id || '-'}</td>
-                    <td>${payment.amount ? `${payment.amount} FCFA` : '-'}</td>
-                    <td>${payment.category || '-'}</td>
-                    <td>${payment.agency || '-'}</td>
-                    <td>${payment.user || '-'}</td>
-                    <td>${formatDate(payment.date)}</td>
-                </tr>
-            `).join('');
-        } else {
-            paymentHistoryTab.innerHTML = '<tr><td colspan="6">Aucun historique trouvé</td></tr>';
-        }
-    } catch (error) {
-        console.error("Erreur:", error);
-        paymentHistoryTab.innerHTML = '<tr><td colspan="6">Erreur de chargement</td></tr>';
-    }
-}
-
-async function loadStatusHistory(clientId) {
-    const statusHistoryTab = document.getElementById('status-history');
-    if (!statusHistoryTab) {
-        console.error("Élément status-history non trouvé");
-        return;
-    }
-
-    try {
-        statusHistoryTab.innerHTML = '<tr><td colspan="4">Chargement...</td></tr>';
-        
-        const apiUrl = `https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=getStatusHistory&clientId=${encodeURIComponent(clientId)}`;
-        
-        const response = await fetch(apiUrl, {
-            mode: 'no-cors', // Ajouté ici aussi
-            redirect: 'follow',
-            headers: {
-                'Content-Type': 'text/plain'
-            }
-        });
-
-        const text = await response.text();
-        let result;
-        
-        try {
-            result = JSON.parse(text);
-        } catch (e) {
-            throw new Error("Réponse invalide");
-        }
-
-        if (result.data?.length > 0) {
-            statusHistoryTab.innerHTML = result.data.map(status => `
-                <tr>
-                    <td>${status.oldStatus || '-'}</td>
-                    <td>${status.newStatus || '-'}</td>
-                    <td>${formatDate(status.changeDate)}</td>
-                    <td>${status.user || '-'}</td>
-                </tr>
-            `).join('');
-        } else {
-            statusHistoryTab.innerHTML = '<tr><td colspan="4">Aucun changement</td></tr>';
-        }
-    } catch (error) {
-        console.error("Erreur:", error);
-        statusHistoryTab.innerHTML = '<tr><td colspan="4">Erreur</td></tr>';
-    }
-}
         
 function printClientDetails() {
     // Récupération de toutes les données depuis le DOM
@@ -1368,7 +1224,7 @@ function printClientDetails() {
                 }
                 
                 .logo-container {
-                    width: 30mm;
+                    width: 20mm;
                 }
                 
                 .logo-container img {
@@ -1519,7 +1375,7 @@ function printClientDetails() {
                 <!-- Titre client -->
                 <div class="client-header">
                     <div>
-                        <div class="client-title">FICHE CLIENT #${clientData.id}</div>
+                        <div class="client-title">${clientData.id}</div>
                         <div style="font-size:8pt">${clientData.fullname}</div>
                     </div>
                     <div class="client-status">${clientData.status}</div>
@@ -1610,14 +1466,6 @@ function printClientDetails() {
                                 <div class="detail-label">ADD:</div>
                                 <div>${clientData.odAdd}</div>
                             </div>
-                            <div class="detail-item">
-                                <div class="detail-label">DP:</div>
-                                <div>${clientData.odDp}</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Haut.:</div>
-                                <div>${clientData.odHeight}</div>
-                            </div>
                         </div>
                         
                         <div class="eye-section">
@@ -1638,29 +1486,6 @@ function printClientDetails() {
                                 <div class="detail-label">ADD:</div>
                                 <div>${clientData.ogAdd}</div>
                             </div>
-                            <div class="detail-item">
-                                <div class="detail-label">DP:</div>
-                                <div>${clientData.ogDp}</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Haut.:</div>
-                                <div>${clientData.ogHeight}</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="grid-container">
-                        <div class="detail-item">
-                            <div class="detail-label">Ophtalmologue:</div>
-                            <div>${clientData.ophthalmologist}</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Clinique:</div>
-                            <div>${clientData.clinic}</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Date soin:</div>
-                            <div>${clientData.careDate}</div>
                         </div>
                     </div>
                 </div>
@@ -1694,23 +1519,18 @@ function printClientDetails() {
                             <div>${clientData.agency}</div>
                         </div>
                         <div class="detail-item">
-                            <div class="detail-label">Commercial:</div>
+                            <div class="detail-label">Conseiller commercial:</div>
                             <div>${clientData.salesperson}</div>
                         </div>
                     </div>
                     
-                </div>
                 
                 <!-- Pied de page -->
                 <div class="footer">
                     DIGITAL OPTIC SARL - Capital: 1,200,000 FCFA - RCCM: RB/COT/23 B 35451 - Ecobank BJ: BJ66 BJ06 01006 111509475001 52
                 </div>
-
-            <!-- Séparation -->
-            <div class="copy-separator">COPY BOUTIQUE - À CONSERVER</div>
             
             <!-- Version Interne -->
-            <div class="page">
                 <div class="header">
                     <div style="text-align:center">
                         <h3>DIGITAL OPTIC - FICHE INTERNE</h3>
@@ -1720,7 +1540,7 @@ function printClientDetails() {
                 <!-- Titre client -->
                 <div class="client-header">
                     <div>
-                        <div class="client-title">FICHE CLIENT #${clientData.id}</div>
+                        <div class="client-title">${clientData.id}</div>
                         <div style="font-size:8pt">${clientData.fullname}</div>
                     </div>
                     <div class="client-status">${clientData.status}</div>
@@ -1754,37 +1574,6 @@ function printClientDetails() {
                         <div class="financial-item">
                             <span class="financial-label">Reste à payer:</span>
                             <span>${clientData.remainingAmount}</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Section TIER PAYANT -->
-                <div class="section">
-                    <div class="section-title">TIER PAYANT</div>
-                    <div class="insurance-grid">
-                        <div class="detail-item">
-                            <div class="detail-label">Assurance:</div>
-                            <div>${clientData.insurance}</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Compagnie:</div>
-                            <div>${clientData.insuranceCompany}</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">N° Police:</div>
-                            <div>${clientData.policyNumber}</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Taux couverture:</div>
-                            <div>${clientData.coverageRate}</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Assuré principal:</div>
-                            <div>${clientData.insuredName}</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Part assurance:</div>
-                            <div>${clientData.insurancePart}</div>
                         </div>
                     </div>
                 </div>
@@ -1849,21 +1638,6 @@ function printClientDetails() {
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="grid-container">
-                        <div class="detail-item">
-                            <div class="detail-label">Ophtalmologue:</div>
-                            <div>${clientData.ophthalmologist}</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Clinique:</div>
-                            <div>${clientData.clinic}</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Date soin:</div>
-                            <div>${clientData.careDate}</div>
-                        </div>
-                    </div>
                 </div>
                 
                 <!-- Section COMMANDE -->
@@ -1895,7 +1669,7 @@ function printClientDetails() {
                             <div>${clientData.agency}</div>
                         </div>
                         <div class="detail-item">
-                            <div class="detail-label">Commercial:</div>
+                            <div class="detail-label">Conseiller commercial:</div>
                             <div>${clientData.salesperson}</div>
                         </div>
                     </div>
