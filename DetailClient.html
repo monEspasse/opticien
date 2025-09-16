@@ -1623,7 +1623,7 @@ async function displayClientData(data) {
     // Paiement
     document.getElementById('net-amount').textContent = data["Net à Payer (FCFA)"] ? `${data["Net à Payer (FCFA)"]} FCFA` : '';
     document.getElementById('deposit-amount').textContent = data["Acompte (FCFA)"] ? `${data["Acompte (FCFA)"]} FCFA` : '';
-    document.getElementById('deposit-date').textContent = formatDate(data["Date Enregistrement"]) || '';
+    document.getElementById('deposit-date').textContent = data["Acompte (FCFA)"] ? formatDate(data["Date Enregistrement"]) || '' : '';
     document.getElementById('complement1-amount').textContent = data["Complement 1"] ? `${data["Complement 1"]} FCFA` : '';
     document.getElementById('complement1-date').textContent = formatDate(data["Date Comp1"]) || '';
     document.getElementById('complement2-amount').textContent = data["Complement 2"] ? `${data["Complement 2"]} FCFA` : '';
@@ -1903,6 +1903,182 @@ function printClientDetails() {
                         height: 297mm;
                     }
                 }
+/* ===== STYLES POUR LA DÉCHARGE DE RÉCEPTION ===== */
+
+/* Conteneur principal de la décharge - Format A5 (demi-page A4) */
+.discharge-container {
+    width: 210mm;           /* Largeur A4 */
+    height: 148mm;          /* Hauteur A5 (moitié A4) */
+    padding: 12mm 15mm;     /* Marge intérieure: 12mm haut/bas, 15mm gauche/droite */
+    font-family: 'Arial', sans-serif; /* Police simple et professionnelle */
+    font-size: 10.5pt;      /* Taille de police légèrement plus grande pour meilleure lisibilité */
+    line-height: 1.4;       /* Interligne optimal pour la lecture */
+    position: relative;     /* Position relative pour placement des éléments enfants */
+    page-break-before: always; /* S'assure de commencer sur une nouvelle page à l'impression */
+    background-color: #ffffff; /* Fond blanc pur */
+    border: 1px solid #e0e0e0; /* Bordure légère pour délimitation visuelle */
+    box-sizing: border-box; /* Inclut padding et border dans les dimensions */
+    margin: 0 auto;         /* Centrage horizontal */
+}
+
+/* En-tête avec logo et informations de l'entreprise */
+.discharge-header {
+    display: flex;           /* Disposition flexible pour aligner logo et texte */
+    justify-content: space-between; /* Espace entre logo et informations */
+    align-items: flex-start; /* Alignement en haut */
+    margin-bottom: 8mm;     /* Espacement en bas */
+    padding-bottom: 4mm;    /* Padding bas pour séparation visuelle */
+    border-bottom: 1px solid #d4d4d4; /* Ligne de séparation discrète */
+}
+
+/* Conteneur du logo */
+.logo-container {
+    width: 35mm;            /* Largeur fixe pour le logo */
+    height: 15mm;           /* Hauteur fixe pour le logo */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Style de l'image du logo */
+.logo-container img {
+    max-width: 100%;        /* Adaptation à la largeur du conteneur */
+    max-height: 100%;       /* Adaptation à la hauteur du conteneur */
+    object-fit: contain;    /* Maintient les proportions de l'image */
+}
+
+/* Informations de l'entreprise */
+.company-info {
+    text-align: right;      /* Alignement à droite */
+    font-size: 9.5pt;       /* Taille de police légèrement réduite */
+    line-height: 1.3;       /* Interligne serré */
+    color: #444444;         /* Gris foncé pour un look professionnel */
+}
+
+/* Titre principal de la décharge */
+.discharge-title {
+    font-size: 13pt;        /* Taille accentuée pour le titre */
+    font-weight: bold;      /* Texte en gras */
+    text-align: center;     /* Centrage du titre */
+    margin: 8mm 0 10mm 0;   /* Marges: haut 8mm, bas 10mm */
+    color: #2c3e50;         /* Bleu foncé élégant */
+    text-transform: uppercase; /* Conversion en majuscules */
+    letter-spacing: 0.5px;  /* Légère augmentation de l'espacement des lettres */
+    border-bottom: 2px solid #3498db; /* Ligne de soulignement bleue */
+    padding-bottom: 3mm;    /* Espace entre texte et ligne */
+}
+
+/* Section des informations client */
+.discharge-client-info {
+    margin-bottom: 8mm;     /* Espacement en bas */
+    line-height: 1.6;       /* Interligne plus large pour meilleure lisibilité */
+    padding: 4mm;           /* Marge intérieure */
+    background-color: #f8f9fa; /* Fond gris très clair */
+    border-left: 4px solid #3498db; /* Bordure gauche bleue accent */
+    border-radius: 0 4px 4px 0; /* Coins arrondis à droite seulement */
+}
+
+/* Contenu principal de la décharge */
+.discharge-content {
+    margin-bottom: 6mm;     /* Espacement entre les paragraphes */
+    line-height: 1.5;       /* Interligne standard */
+    text-align: justify;    /* Texte justifié pour un aspect professionnel */
+}
+
+/* Liste des équipements reçus */
+.discharge-list {
+    margin: 4mm 0 6mm 5mm;  /* Marges: haut 4mm, bas 6mm, gauche 5mm */
+    padding-left: 8mm;      /* Décalage à gauche pour les puces */
+}
+
+/* Éléments de la liste */
+.discharge-list li {
+    margin-bottom: 2mm;     /* Espacement entre les éléments de liste */
+    position: relative;     /* Position relative pour personnalisation */
+}
+
+/* Personnalisation des puces de liste */
+.discharge-list li::before {
+    content: "•";           /* Utilisation du point comme puce */
+    color: #3498db;         /* Couleur bleue pour les puces */
+    font-weight: bold;      /* Puces en gras */
+    display: inline-block; 
+    width: 1em;             /* Largeur fixe */
+    margin-left: -1em;      /* Décalage pour alignement */
+}
+
+/* Section des conditions de réception */
+.discharge-conditions {
+    margin: 8mm 0;          /* Espacement vertical important */
+    line-height: 1.5;       /* Interligne standard */
+    padding: 5mm;           /* Marge intérieure */
+    background-color: #f1f8ff; /* Fond bleu très clair */
+    border: 1px solid #bbdefb; /* Bordure bleue claire */
+    border-radius: 4px;     /* Coins légèrement arrondis */
+    font-style: italic;     /* Texte en italique pour distinction */
+}
+
+/* Date de la décharge */
+.discharge-date {
+    margin: 8mm 0;          /* Espacement vertical */
+    text-align: center;     /* Centrage du texte */
+    font-weight: bold;      /* Texte en gras */
+}
+
+/* Zone des signatures */
+.discharge-signature {
+    display: flex;           /* Disposition flexible */
+    justify-content: space-between; /* Espace égal entre les signatures */
+    margin-top: 12mm;       /* Espacement important en haut */
+    padding-top: 5mm;       /* Padding haut */
+    border-top: 1px dashed #cccccc; /* Ligne pointillée de séparation */
+}
+
+/* Boîte de signature individuelle */
+.discharge-signature-box {
+    width: 70mm;            /* Largeur fixe */
+    text-align: center;     /* Texte centré */
+    padding-top: 15mm;      /* Espace pour la signature */
+    border-top: 1px solid #000000; /* Ligne de signature */
+    font-size: 9.5pt;       /* Taille de police réduite */
+}
+
+/* Pied de page avec informations légales */
+.discharge-footer {
+    margin-top: 10mm;       /* Espacement depuis le contenu précédent */
+    padding-top: 4mm;       /* Padding haut */
+    border-top: 1px solid #eeeeee; /* Ligne de séparation très discrète */
+}
+
+/* Informations de l'entreprise en bas de page */
+.discharge-company-info {
+    font-size: 7.5pt;       /* Très petite taille de police */
+    text-align: center;     /* Centrage du texte */
+    line-height: 1.3;       /* Interligne serré */
+    color: #777777;         /* Gris moyen pour discrétion */
+    font-style: italic;     /* Texte en italique */
+}
+
+/* Adaptation pour l'impression */
+@media print {
+    .discharge-container {
+        border: none;       /* Suppression de la bordure à l'impression */
+        height: 148mm;      /* Hauteur fixe pour format A5 */
+        page-break-after: always; /* Saut de page après la décharge */
+    }
+    
+    /* Éviter les coupures indésirables */
+    .discharge-signature {
+        page-break-inside: avoid;
+    }
+    
+    /* Optimisation des couleurs pour l'impression */
+    .discharge-client-info,
+    .discharge-conditions {
+        background-color: transparent !important; /* Fond transparent */
+        border: 1px solid #000000 !important; /* Bordure noire */
+    }
+}
             </style>
         </head>
         <body>
@@ -2221,17 +2397,83 @@ function printClientDetails() {
                         </div>
                     </div>
                     
+ <!-- DEUXIÈME PAGE - DÉCHARGE DE RÉCEPTION -->
+            <div class="discharge-container">
+                <div class="header">
+                    <div class="logo-container">
+                        <img src="logo.png" alt="Voir plus Optic Logo">
+                    </div>
+                    <div class="company-info">
+                        <strong>VOIR PLUS OPTIC SARL</strong><br>
+                        0142749495 | IFU:3202368717681<br>
+                        optivoirplus@gmail.com
+                    </div>
+                </div>
+                
+                <div class="discharge-title">
+                    DÉCHARGE DE RÉCEPTION DE LUNETTES OPTIQUES
+                </div>
+                
+                <div class="discharge-client-info">
+                    Mme /M.: <strong>${clientData.fullname}</strong><br>
+                    TEL: <strong>${clientData.phone}</strong>
+                    ${clientData.policyNumber ? `<br>N°Police : ${clientData.policyNumber}` : ''}
+                    ${clientData.insuranceCompany ? `<br>Société : ${clientData.insuranceCompany}` : ''}
+                </div>
+                
+                <div class="discharge-content">
+                    Je soussigné(e) <strong>${clientData.fullname}</strong><br>
+                    reconnais avoir reçu en bon état les lunettes optiques commandées auprès de VOIR PLUS OPTIC
+                </div>
+                
+                <div class="discharge-content">
+                    L'équipement optique composé de :
+                    <ul class="discharge-list">
+                        <li>Une monture avec des verres optiques montés</li>
+                        <li>Un étui de protection</li>
+                        <li>Une chiffonnette de nettoyage</li>
+                        <li>Le tout remis dans un sac de livraison</li>
+                    </ul>
+                </div>
+                
+                <div class="discharge-conditions">
+                    <strong>Conditions de réception :</strong><br><br>
+                    Je confirme que l'équipement reçu correspond à ma commande et qu'aucun défaut visible n'a été constaté au moment de la livraison.<br><br>
+                    J'accepte que toute réclamation pour un défaut non apparent devra être signalée dans un délai de 14 jours après réception.
+                </div>
+                
+                <div class="discharge-date">
+                    Fait à Cotonou, le ${new Date().toLocaleDateString('fr-FR')}
+                </div>
+                
+                <div class="discharge-signature">
+                    <div class="discharge-signature-box">
+                        Signature du Client
+                    </div>
+                    <div class="discharge-signature-box">
+                        Opticien
+                    </div>
+                </div>
+                
+                
+                <div class="discharge-footer">
+                    
+                    <div class="discharge-company-info">
+                        Voir Plus Optic Sarl Société à Responsabilité limitée au Capital de 1,200,000 F CFA enregistré sous le N° RCCM RB/COT/23 B 35451
+                        au registre du commerce de Cotonou. Ecobank Benin RIB : BJ66 BJ06 01006 111509475001 52
+                    </div>
                 </div>
             </div>
         </body>
         </html>
     `);
+    
     printWindow.document.close();
-        printWindow.onload = function () {
-            printWindow.focus();
-            printWindow.print();
-            printWindow.close();
-        };
+    printWindow.onload = function () {
+        printWindow.focus();
+        printWindow.print();
+        printWindow.close();
+    };
 }
  // Fonction pour ouvrir le dialogue d'ajout de complément
 function showComplementDialog() {
