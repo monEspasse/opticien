@@ -10632,7 +10632,7 @@ if (isNaN(depenseData.montant)) {
 const SUBMIT_URL = "https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=addCommandeClient";
 
 let currentStep = 1;
-const totalSteps = 6;
+const totalSteps = 4;
 
 // Fonction pour ouvrir la modal de nouvelle vente
 function openNewSale() {
@@ -10646,513 +10646,493 @@ function openNewSale() {
         modal.innerHTML = `
             <div class="modal-content">
                 <div class="modal-header">
-                            <h3 class="modal-title">Nouvelle Vente</h3>
+                    <h3 class="modal-title">Nouvelle Vente</h3>
+                </div>
+                <div class="modal-body">
+                    <form id="client-form" method="POST">
+                        <input type="hidden" name="source" value="web_form">
+                        
+                        <!-- Indicateur d'étapes -->
+                        <div class="step-indicator">
+                            <div class="step active" data-step="1">
+                                <div class="step-number">1</div>
+                                <div class="step-label">Informations Client</div>
+                            </div>
+                            <div class="step" data-step="2">
+                                <div class="step-number">2</div>
+                                <div class="step-label">Prescription & Commande</div>
+                            </div>
+                            <div class="step" data-step="3">
+                                <div class="step-number">3</div>
+                                <div class="step-label">Paiement</div>
+                            </div>
+                            <div class="step" data-step="4">
+                                <div class="step-number">4</div>
+                                <div class="step-label">Tier Payant & Livraison</div>
+                            </div>
+                            <div class="step-progress">
+                                <div class="step-progress-bar" id="stepProgressBar"></div>
+                            </div>
                         </div>
-                        <div class="modal-body">
-                            <form id="client-form" method="POST">
-                                <input type="hidden" name="source" value="web_form">
+
+                        <!-- Étape 1: Informations Client -->
+                        <div id="step-1" class="form-step active">
+                            <h2 class="section-title">Informations Client</h2>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="nom_complet" class="required-field">Nom complet</label>
+                                    <input type="text" name="nom_complet" id="nom_complet" class="form-control" required />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="numero" class="required-field">Téléphone</label>
+                                    <input type="text" name="indicatif" id="indicatif" placeholder="+229" value="+229" style="width: 70px;" required/>
+                                    <input type="tel" name="numero" id="numero" class="form-control" placeholder="0142749795" required />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="date_naissance" class="required-field">Date de naissance</label>
+                                    <input type="date" name="date_naissance" id="date_naissance" class="form-control" required />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="civilite" class="required-field">Civilité</label>
+                                    <select name="civilite" id="civilite" class="form-control" required>
+                                        <option value="M.">M.</option>
+                                        <option value="Mme">Mme</option>
+                                        <option value="Mlle">Mlle</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="entreprise">Entreprise</label>
+                                    <div class="select-with-input">
+                                        <select name="entreprise" id="entreprise" class="form-control">
+                                            <option value="">-- Choisir --</option>
+                                        </select>
+                                        <input type="text" id="entreprise_input" class="form-control" style="display: none; margin-top: 5px;" 
+                                               placeholder="Nouvelle entreprise">
+                                    </div>
+                                    <button type="button" class="btn btn-small" onclick="toggleInput('entreprise')" 
+                                            style="margin-top: 5px; padding: 0.25rem 0.5rem;">
+                                        <i class="fas fa-plus"></i> Ajouter nouvelle
+                                    </button>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="agence" class="required-field">Agence</label>
+                                    <select name="agence" id="agence" class="form-control" required>
+                                        <option value="">-- Choisir --</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="commercial">Commercial</label>
+                                    <div class="select-with-input">
+                                        <select name="commercial" id="commercial" class="form-control">
+                                            <option value="">-- Choisir --</option>
+                                        </select>
+                                        <input type="text" id="commercial_input" class="form-control" style="display: none; margin-top: 5px;" 
+                                               placeholder="New commercial">
+                                    </div>
+                                    
+                                    <button type="button" class="btn btn-small" onclick="toggleInput('commercial')" 
+                                            style="margin-top: 5px; padding: 0.25rem 0.5rem;">
+                                        <i class="fas fa-plus"></i> Ajouter nouvelle
+                                    </button>
+                                </div>
+                                <div class="form-group">
+                                    <label for="current_user" class="required-field">Utilisateur</label>
+                                    <input type="text" name="current_user" id="current_user" class="form-control" readonly 
+                                           style="background-color: #f0f0f0; cursor: not-allowed;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Étape 2: Prescription & Commande -->
+                        <div id="step-2" class="form-step">
+                            <h2 class="section-title">Prescription Médicale</h2>
+                            
+                            <table class="prescription-table">
+                                <thead>
+                                    <tr>
+                                        <th>Œil</th>
+                                        <th>Sphere</th>
+                                        <th>Cylindre</th>
+                                        <th>Axe</th>
+                                        <th>ADD</th>
+                                        <th>DP</th>
+                                        <th>Hauteur</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- OD -->
+                                    <tr>
+                                        <td>OD</td>
+                                        <td>
+                                            <select name="od_sphere" required>
+                                                <option value="">-- Choisir --</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select name="od_cylindre">
+                                                <option value="">-- Choisir --</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select name="od_axe">
+                                                <option value="">-- Choisir --</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select name="od_add">
+                                                <option value="">-- Choisir --</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="number" name="od_dp" value="0" min="0">
+                                        </td>
+                                        <td>
+                                            <input type="number" name="od_hauteur" value="0" min="0">
+                                        </td>
+                                    </tr>
+
+                                    <!-- OG -->
+                                    <tr>
+                                        <td>OG</td>
+                                        <td>
+                                            <select name="og_sphere" required>
+                                                <option value="">-- Choisir --</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select name="og_cylindre">
+                                                <option value="">-- Choisir --</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select name="og_axe">
+                                                <option value="">-- Choisir --</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select name="og_add">
+                                                <option value="">-- Choisir --</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="number" name="og_dp" value="0" min="0">
+                                        </td>
+                                        <td>
+                                            <input type="number" name="og_hauteur" value="0" min="0">
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="clinique">Clinique</label>
+                                    <div class="select-with-input">
+                                        <select name="clinique" id="clinique" class="form-control">
+                                            <option value="">-- Choisir --</option>
+                                            <!-- Options existantes seront ajoutées dynamiquement -->
+                                        </select>
+                                        <input type="text" id="clinique_input" class="form-control" style="display: none; margin-top: 5px;" 
+                                               placeholder="Nouvelle clinique">
+                                    </div>
+                                    <button type="button" class="btn btn-small" onclick="toggleInput('clinique')" 
+                                            style="margin-top: 5px; padding: 0.25rem 0.5rem;">
+                                        <i class="fas fa-plus"></i> Ajouter nouvelle
+                                    </button>
+                                </div>
                                 
-                                <!-- Indicateur d'étapes -->
-                                <div class="step-indicator">
-                                    <div class="step active" data-step="1">
-                                        <div class="step-number">1</div>
-                                        <div class="step-label">Informations Client</div>
+                                <div class="form-group">
+                                    <label for="ophtalmo">Ophtalmologue</label>
+                                    <div class="select-with-input">
+                                        <select name="ophtalmo" id="ophtalmo" class="form-control">
+                                            <option value="">-- Choisir --</option>
+                                            <!-- Options existantes seront ajoutées dynamiquement -->
+                                        </select>
+                                        <input type="text" id="ophtalmo_input" class="form-control" style="display: none; margin-top: 5px;" 
+                                               placeholder="Nouvel ophtalmologue">
                                     </div>
-                                    <div class="step" data-step="2">
-                                        <div class="step-number">2</div>
-                                        <div class="step-label">Prescription</div>
-                                    </div>
-                                    <div class="step" data-step="3">
-                                        <div class="step-number">3</div>
-                                        <div class="step-label">Commande</div>
-                                    </div>
-                                    <div class="step" data-step="4">
-                                        <div class="step-number">4</div>
-                                        <div class="step-label">Assurance</div>
-                                    </div>
-                                    <div class="step" data-step="5">
-                                        <div class="step-number">5</div>
-                                        <div class="step-label">Paiement</div>
-                                    </div>
-                                    <div class="step" data-step="6">
-                                        <div class="step-number">6</div>
-                                        <div class="step-label">Livraison</div>
-                                    </div>
-                                    <div class="step-progress">
-                                        <div class="step-progress-bar" id="stepProgressBar"></div>
-                                    </div>
+                                    <button type="button" class="btn btn-small" onclick="toggleInput('ophtalmo')"
+                                            style="margin-top: 5px; padding: 0.25rem 0.5rem;">
+                                        <i class="fas fa-plus"></i> Ajouter nouveau
+                                    </button>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="date_soin">Date de soin</label>
+                                    <input type="date" name="date_soin" id="date_soin" class="form-control" />
+                                </div>
+                            </div>
+
+                            <h2 class="section-title" style="margin-top: 2rem;">Détails de la Commande</h2>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="type_verre" class="required-field">Type de Verre</label>
+                                    <select name="type_verre" id="type_verre" class="form-control" required>
+                                        <option value="">-- Type de Verre --</option>
+                                    </select>
                                 </div>
 
-                                <!-- Étape 1: Informations Client -->
-                                <div id="step-1" class="form-step active">
-                                    <h2 class="section-title">Informations Client</h2>
-                                    <div class="form-grid">
-                                        <div class="form-group">
-                                            <label for="nom_complet" class="required-field">Nom complet</label>
-                                            <input type="text" name="nom_complet" id="nom_complet" class="form-control" required />
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="numero" class="required-field">Téléphone</label>
-                                            <input type="text" name="indicatif" id="indicatif" placeholder="+229" value="+229" style="width: 70px;" required/>
-                                            <input type="tel" name="numero" id="numero" class="form-control" placeholder="0142749795" required />
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="date_naissance" class="required-field">Date de naissance</label>
-                                            <input type="date" name="date_naissance" id="date_naissance" class="form-control" required />
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="civilite" class="required-field">Civilité</label>
-                                            <select name="civilite" id="civilite" class="form-control" required>
-                                                <option value="M.">M.</option>
-                                                <option value="Mme">Mme</option>
-                                                <option value="Mlle">Mlle</option>
-                                            </select>
-                                        </div>
-
-        <div class="form-group">
-            <label for="entreprise">Entreprise</label>
-            <div class="select-with-input">
-                <select name="entreprise" id="entreprise" class="form-control">
-                    <option value="">-- Choisir --</option>
-                </select>
-                <input type="text" id="entreprise_input" class="form-control" style="display: none; margin-top: 5px;" 
-                       placeholder="Nouvelle entreprise">
-            </div>
-            <button type="button" class="btn btn-small" onclick="toggleInput('entreprise')" 
-                    style="margin-top: 5px; padding: 0.25rem 0.5rem;">
-                <i class="fas fa-plus"></i> Ajouter nouvelle
-            </button>
-        </div>
-
-    
-
-                                        <div class="form-group">
-                                            <label for="agence" class="required-field">Agence</label>
-                                            <select name="agence" id="agence" class="form-control" required>
-                                                <option value="">-- Choisir --</option>
-                                            </select>
-                                        </div>
-
-
-
-        <div class="form-group">
-            <label for="commercial">Commercial</label>
-            <div class="select-with-input">
-                <select name="commercial" id="commercial" class="form-control">
-                    <option value="">-- Choisir --</option>
-                </select>
-                <input type="text" id="commercial_input" class="form-control" style="display: none; margin-top: 5px;" 
-                       placeholder="New commercial">
-            </div>
-            
-            <button type="button" class="btn btn-small" onclick="toggleInput('commercial')" 
-                    style="margin-top: 5px; padding: 0.25rem 0.5rem;">
-                <i class="fas fa-plus"></i> Ajouter nouvelle
-            </button>
-        </div>
-                                        <div class="form-group">
-                                            <label for="current_user" class="required-field">Utilisateur</label>
-                                            <input type="text" name="current_user" id="current_user" class="form-control" readonly 
-                   style="background-color: #f0f0f0; cursor: not-allowed;">
-                                        </div>
-                                    </div>
+                                <div class="form-group">
+                                    <label for="gamme_verre" class="required-field">Gamme des Verres</label>
+                                    <select name="gamme_verre" id="gamme_verre" class="form-control" required>
+                                        <option value="">-- Gamme --</option>
+                                    </select>
                                 </div>
 
-                                <!-- Étape 2: Prescription -->
-                                <div id="step-2" class="form-step">
-                                    <h2 class="section-title">Prescription Médicale</h2>
-                                    
-                                    <table class="prescription-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Œil</th>
-                                                <th>Sphere</th>
-                                                <th>Cylindre</th>
-                                                <th>Axe</th>
-                                                <th>ADD</th>
-                                                <th>DP</th>
-                                                <th>Hauteur</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- OD -->
-                                            <tr>
-                                                <td>OD</td>
-                                                <td>
-                                                    <select name="od_sphere" required>
-                                                        <option value="">-- Choisir --</option>
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <select name="od_cylindre">
-                                                        <option value="">-- Choisir --</option>
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <select name="od_axe">
-                                                        <option value="">-- Choisir --</option>
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <select name="od_add">
-                                                        <option value="">-- Choisir --</option>
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <input type="number" name="od_dp" value="0" min="0">
-                                                </td>
-                                                <td>
-                                                    <input type="number" name="od_hauteur" value="0" min="0">
-                                                </td>
-                                            </tr>
-
-                                            <!-- OG -->
-                                            <tr>
-                                                <td>OG</td>
-                                                <td>
-                                                    <select name="og_sphere" required>
-                                                        <option value="">-- Choisir --</option>
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <select name="og_cylindre">
-                                                        <option value="">-- Choisir --</option>
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <select name="og_axe">
-                                                        <option value="">-- Choisir --</option>
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <select name="og_add">
-                                                        <option value="">-- Choisir --</option>
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <input type="number" name="og_dp" value="0" min="0">
-                                                </td>
-                                                <td>
-                                                    <input type="number" name="og_hauteur" value="0" min="0">
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
-<div class="form-grid">
-    <div class="form-group">
-        <label for="clinique">Clinique</label>
-        <div class="select-with-input">
-            <select name="clinique" id="clinique" class="form-control">
-                <option value="">-- Choisir --</option>
-                <!-- Options existantes seront ajoutées dynamiquement -->
-            </select>
-            <input type="text" id="clinique_input" class="form-control" style="display: none; margin-top: 5px;" 
-                   placeholder="Nouvelle clinique">
-        </div>
-        <button type="button" class="btn btn-small" onclick="toggleInput('clinique')" 
-                style="margin-top: 5px; padding: 0.25rem 0.5rem;">
-            <i class="fas fa-plus"></i> Ajouter nouvelle
-        </button>
-    </div>
-    
-    <div class="form-group">
-        <label for="ophtalmo">Ophtalmologue</label>
-        <div class="select-with-input">
-            <select name="ophtalmo" id="ophtalmo" class="form-control">
-                <option value="">-- Choisir --</option>
-                <!-- Options existantes seront ajoutées dynamiquement -->
-            </select>
-            <input type="text" id="ophtalmo_input" class="form-control" style="display: none; margin-top: 5px;" 
-                   placeholder="Nouvel ophtalmologue">
-        </div>
-        <button type="button" class="btn btn-small" onclick="toggleInput('ophtalmo')"
-                style="margin-top: 5px; padding: 0.25rem 0.5rem;">
-            <i class="fas fa-plus"></i> Ajouter nouveau
-        </button>
-    </div>
-    
-    <div class="form-group">
-        <label for="date_soin">Date de soin</label>
-        <input type="date" name="date_soin" id="date_soin" class="form-control" />
-    </div>
-</div>
+                                <div class="form-group">
+                                    <label for="choix_monture" class="required-field">Choix de Monture</label>
+                                    <select name="choix_monture" id="choix_monture" class="form-control" required>
+                                        <option value="">-- Choix de Monture --</option>
+                                    </select>
                                 </div>
-
-                                <!-- Étape 3: Commande -->
-                                <div id="step-3" class="form-step">
-                                    <h2 class="section-title">Détails de la Commande</h2>
-                                    <div class="form-grid">
-                                        <div class="form-group">
-                                            <label for="type_verre" class="required-field">Type de Verre</label>
-                                            <select name="type_verre" id="type_verre" class="form-control" required>
-                                                <option value="">-- Type de Verre --</option>
-                                            </select>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="gamme_verre" class="required-field">Gamme des Verres</label>
-                                            <select name="gamme_verre" id="gamme_verre" class="form-control" required>
-                                                <option value="">-- Gamme --</option>
-                                            </select>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="choix_monture" class="required-field">Choix de Monture</label>
-                                            <select name="choix_monture" id="choix_monture" class="form-control" required>
-                                                <option value="">-- Choix de Monture --</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-
-<!-- Étape 4: Assurance -->
-<div id="step-4" class="form-step">
-    <h2 class="section-title">Tier Payant</h2>
-    <div class="form-grid">
-        <div class="form-group">
-            <label for="assurance">Assurance</label>
-            <div class="select-with-input">
-                <select name="assurance" id="assurance" class="form-control" style="display: none;">
-                    <option value="">-- Choisir --</option>
-                </select>
-                <input type="text" id="assurance_input" class="form-control" 
-                       placeholder="Nom de l'assurance">
-            </div>
-            <button type="button" class="btn btn-small" onclick="toggleInput('assurance')" 
-                    style="margin-top: 5px; padding: 0.25rem 0.5rem;">
-                <i class="fas fa-exchange-alt"></i> Choisir dans la liste
-            </button>
-        </div>
-        
-        <div class="form-group">
-            <label for="compagnie">Compagnie</label>
-            <div class="select-with-input">
-                <select name="compagnie" id="compagnie" class="form-control" style="display: none;">
-                    <option value="">-- Choisir --</option>
-                </select>
-                <input type="text" id="compagnie_input" class="form-control" 
-                       placeholder="Nom de la compagnie">
-            </div>
-            <button type="button" class="btn btn-small" onclick="toggleInput('compagnie')"
-                    style="margin-top: 5px; padding: 0.25rem 0.5rem;">
-                <i class="fas fa-exchange-alt"></i> Choisir dans la liste
-            </button>
-        </div>
-        
-        <div class="form-group">
-            <label for="numero_police">N° Police</label>
-            <input type="text" name="numero_police" id="numero_police" class="form-control" placeholder="Numéro de police d'assurance" />
-        </div>
-        
-        <div class="form-group">
-            <label for="taux_couverture">Taux de couverture (%)</label>
-            <input type="number" name="taux_couverture" id="taux_couverture" class="form-control" placeholder="Ex: 80" min="0" max="100" />
-        </div>
-        
-        <div class="form-group">
-            <label for="assure_principal">Assuré Principal</label>
-            <select name="assure_principal" id="assure_principal" class="form-control">
-                <option value="">-- Choisir --</option>
-                <option value="oui">Oui</option>
-                <option value="non">Non</option>
-            </select>
-        </div>
-
-        <div class="form-group" id="assure_principal_nom_container" style="display: none;">
-            <label class="required-field">Nom complet de l'assuré principal</label>
-            <input type="text" name="assure_principal_nom" id="assure_principal_nom" class="form-control" />
-        </div>
-    </div>
-</div>
-
-                                <!-- Étape 5: Paiement -->
-                                <div id="step-5" class="form-step">
-                                    <h2 class="section-title">Détails de Paiement</h2>
-                                    
-                                    <div class="payment-card">
-                                        <div class="payment-row">
-                                            <div class="payment-group">
-                                                <label class="payment-label required-field">Montant Monture (FCFA)</label>
-                                                <input type="number" class="form-control" name="montant_monture" id="montant_monture" required oninput="calculerTotal()" />
-                                            </div>
-                                            
-                                            <div class="payment-group">
-                                                <label class="payment-label required-field">Montant Verres (FCFA)</label>
-                                                <input type="number" class="form-control" name="montant_verres" id="montant_verres" required oninput="calculerTotal()" />
-                                            </div>
-                                            
-                                            <div class="payment-group">
-                                                <label class="payment-label">Frais de livraison (FCFA)</label>
-                                                <input type="number" class="form-control" name="frais_livraison" id="frais_livraison" value="0" oninput="calculerTotal()" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="payment-card">
-                                        <div class="payment-row">
-                                            <div class="payment-group">
-                                                <label class="payment-label">Total Brut (FCFA)</label>
-                                                <div class="payment-value" id="total_brut_display">0</div>
-                                                <input type="hidden" name="total_brut" id="total_brut" />
-                                            </div>
-                                            
-                                            <div class="payment-group">
-                                                <label class="payment-label">Remise</label>
-                                                <div class="discount-selector">
-                                                    <input type="number" class="form-control discount-amount" name="remise" id="remise" value="0" oninput="calculerTotal()" />
-                                                    <select class="form-control discount-type" name="remise_type" id="remise_type" onchange="calculerTotal()">
-                                                        <option value="FCFA">FCFA</option>
-                                                        <option value="%">%</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="payment-group">
-                                                <label class="payment-label">Part Assurance (FCFA)</label>
-                                                <input type="number" class="form-control" name="part_assurance" id="part_assurance" value="0" oninput="calculerTotal()" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="payment-card">
-                                        <div class="payment-row">
-                                            <div class="payment-group">
-                                                <label class="payment-label">Net à payer (FCFA)</label>
-                                                <div class="payment-value" id="net_a_payer_display">0</div>
-                                                <input type="hidden" name="net_a_payer" id="net_a_payer" />
-                                            </div>
-                                            
-                                            <div class="payment-group">
-                                                <label class="payment-label">Acompte (FCFA)</label>
-                                                <input type="number" class="form-control" name="acompte" id="acompte" value="0" oninput="calculerTotal()" />
-                                            </div>
-                                            
-                                            <div class="payment-group">
-                                                <label class="payment-label">Reste à payer (FCFA)</label>
-                                                <div class="payment-value" id="reste_a_payer_display">0</div>
-                                                <input type="hidden" name="reste_a_payer" id="reste_a_payer" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Étape 6: Livraison -->
-                                <div id="step-6" class="form-step">
-                                    <h2 class="section-title">Informations de Livraison</h2>
-                                    
-                                    <div class="form-grid">
-                                        <div class="form-group">
-                                            <label class="required-field">Date de livraison prévue</label>
-                                            <input type="date" class="form-control" name="date_livraison" id="date_livraison" required />
-                                        </div>
-                                        
-                                        <div class="form-group">
-                                            <label class="required-field">Personne à contacter</label>
-                                            <select class="form-control" name="contact_livraison_type" id="contact_livraison_type" required>
-                                                <option value="">-- Choisir --</option>
-                                                <option value="client">Lui-même</option>
-                                                <option value="tiers">Tier Personne</option>
-                                            </select>
-                                        </div>
-                                        
-                                        <div class="form-group">
-                                            <label class="required-field">Téléphone du contact</label>
-                                            <input type="tel" class="form-control" name="telephone_contact" id="telephone_contact" required />
-                                        </div>
-                                        
-                                        <div class="form-group" style="grid-column: span 2">
-                                            <label class="required-field">Adresse de livraison</label>
-                                            <textarea class="form-control" name="adresse_livraison" id="adresse_livraison" rows="3" required></textarea>
-                                        </div>
-                                        
-                                        <div class="form-group" style="grid-column: span 2">
-                                            <label>Informations complémentaires</label>
-                                            <textarea class="form-control" name="infos_complementaires" id="infos_complementaires" rows="3"></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Navigation entre les étapes -->
-<div class="step-navigation">
-    <div class="nav-group">
-        <button type="button" class="btn btn-secondary" id="prevStepBtn" style="display: none;">
-            <i class="fas fa-arrow-left"></i> Précédent
-        </button>
-    </div>
-    
-    <div class="nav-group">
-        <button type="button" class="btn btn-outline" id="resetButton">
-            <i class="fas fa-undo"></i> Réinitialiser
-        </button>
-        <button type="button" class="btn btn-outline" id="cancelButton">
-            <i class="fas fa-times"></i> Annuler
-        </button>
-    </div>
-    
-    <div class="nav-group">
-        <button type="button" class="btn btn-primary" id="nextStepBtn">
-            Suivant <i class="fas fa-arrow-right"></i>
-        </button>
-        <button type="submit" class="btn btn-success" id="submitBtn" style="display: none;">
-            <i class="fas fa-check"></i> Ajouter
-        </button>
-    </div>
-</div>
-
-<style>
-.step-navigation {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid #eee;
-    flex-wrap: wrap;
-}
-
-.nav-group {
-    display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-}
-
-.btn-outline {
-    background: white;
-    border: 1px solid #ddd;
-    color: #555;
-}
-
-.btn-outline:hover {
-    background: #f5f5f5;
-}
-
-.btn-success {
-    background-color: #4ade80;
-}
-
-.btn-success:hover {
-    background-color: #3bc46d;
-}
-
-@media (max-width: 768px) {
-    .step-navigation {
-        flex-direction: column-reverse;
-    }
-    
-    .nav-group {
-        width: 100%;
-        justify-content: space-between;
-    }
-}
-</style>
-                            </form>
+                            </div>
                         </div>
-                    </div>
+
+                        <!-- Étape 3: Paiement -->
+                        <div id="step-3" class="form-step">
+                            <h2 class="section-title">Détails de Paiement</h2>
+                            
+                            <div class="payment-card">
+                                <div class="payment-row">
+                                    <div class="payment-group">
+                                        <label class="payment-label required-field">Montant Monture (FCFA)</label>
+                                        <input type="number" class="form-control" name="montant_monture" id="montant_monture" required oninput="calculerTotal()" />
+                                    </div>
+                                    
+                                    <div class="payment-group">
+                                        <label class="payment-label required-field">Montant Verres (FCFA)</label>
+                                        <input type="number" class="form-control" name="montant_verres" id="montant_verres" required oninput="calculerTotal()" />
+                                    </div>
+                                    
+                                    <div class="payment-group">
+                                        <label class="payment-label">Frais de livraison (FCFA)</label>
+                                        <input type="number" class="form-control" name="frais_livraison" id="frais_livraison" value="0" oninput="calculerTotal()" />
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="payment-card">
+                                <div class="payment-row">
+                                    <div class="payment-group">
+                                        <label class="payment-label">Total Brut (FCFA)</label>
+                                        <div class="payment-value" id="total_brut_display">0</div>
+                                        <input type="hidden" name="total_brut" id="total_brut" />
+                                    </div>
+                                    
+                                    <div class="payment-group">
+                                        <label class="payment-label">Remise</label>
+                                        <div class="discount-selector">
+                                            <input type="number" class="form-control discount-amount" name="remise" id="remise" value="0" oninput="calculerTotal()" />
+                                            <select class="form-control discount-type" name="remise_type" id="remise_type" onchange="calculerTotal()">
+                                                <option value="FCFA">FCFA</option>
+                                                <option value="%">%</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="payment-group">
+                                        <label class="payment-label">Part Assurance (FCFA)</label>
+                                        <input type="number" class="form-control" name="part_assurance" id="part_assurance" value="0" oninput="calculerTotal()" />
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="payment-card">
+                                <div class="payment-row">
+                                    <div class="payment-group">
+                                        <label class="payment-label">Net à payer (FCFA)</label>
+                                        <div class="payment-value" id="net_a_payer_display">0</div>
+                                        <input type="hidden" name="net_a_payer" id="net_a_payer" />
+                                    </div>
+                                    
+                                    <div class="payment-group">
+                                        <label class="payment-label">Acompte (FCFA)</label>
+                                        <input type="number" class="form-control" name="acompte" id="acompte" value="0" oninput="calculerTotal()" />
+                                    </div>
+                                    
+                                    <div class="payment-group">
+                                        <label class="payment-label">Reste à payer (FCFA)</label>
+                                        <div class="payment-value" id="reste_a_payer_display">0</div>
+                                        <input type="hidden" name="reste_a_payer" id="reste_a_payer" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Étape 4: Tier Payant & Livraison -->
+                        <div id="step-4" class="form-step">
+                            <h2 class="section-title">Tier Payant</h2>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="assurance">Assurance</label>
+                                    <div class="select-with-input">
+                                        <select name="assurance" id="assurance" class="form-control" style="display: none;">
+                                            <option value="">-- Choisir --</option>
+                                        </select>
+                                        <input type="text" id="assurance_input" class="form-control" 
+                                               placeholder="Nom de l'assurance">
+                                    </div>
+                                    <button type="button" class="btn btn-small" onclick="toggleInput('assurance')" 
+                                            style="margin-top: 5px; padding: 0.25rem 0.5rem;">
+                                        <i class="fas fa-exchange-alt"></i> Choisir dans la liste
+                                    </button>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="compagnie">Compagnie</label>
+                                    <div class="select-with-input">
+                                        <select name="compagnie" id="compagnie" class="form-control" style="display: none;">
+                                            <option value="">-- Choisir --</option>
+                                        </select>
+                                        <input type="text" id="compagnie_input" class="form-control" 
+                                               placeholder="Nom de la compagnie">
+                                    </div>
+                                    <button type="button" class="btn btn-small" onclick="toggleInput('compagnie')"
+                                            style="margin-top: 5px; padding: 0.25rem 0.5rem;">
+                                        <i class="fas fa-exchange-alt"></i> Choisir dans la liste
+                                    </button>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="numero_police">N° Police</label>
+                                    <input type="text" name="numero_police" id="numero_police" class="form-control" placeholder="Numéro de police d'assurance" />
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="taux_couverture">Taux de couverture (%)</label>
+                                    <input type="number" name="taux_couverture" id="taux_couverture" class="form-control" placeholder="Ex: 80" min="0" max="100" />
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="assure_principal">Assuré Principal</label>
+                                    <select name="assure_principal" id="assure_principal" class="form-control">
+                                        <option value="">-- Choisir --</option>
+                                        <option value="oui">Oui</option>
+                                        <option value="non">Non</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group" id="assure_principal_nom_container" style="display: none;">
+                                    <label class="required-field">Nom complet de l'assuré principal</label>
+                                    <input type="text" name="assure_principal_nom" id="assure_principal_nom" class="form-control" />
+                                </div>
+                            </div>
+
+                            <h2 class="section-title" style="margin-top: 2rem;">Informations de Livraison</h2>
+                            
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="required-field">Date de livraison prévue</label>
+                                    <input type="date" class="form-control" name="date_livraison" id="date_livraison" required />
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="required-field">Personne à contacter</label>
+                                    <select class="form-control" name="contact_livraison_type" id="contact_livraison_type" required>
+                                        <option value="">-- Choisir --</option>
+                                        <option value="client">Lui-même</option>
+                                        <option value="tiers">Tier Personne</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="required-field">Téléphone du contact</label>
+                                    <input type="tel" class="form-control" name="telephone_contact" id="telephone_contact" required />
+                                </div>
+                                
+                                <div class="form-group" style="grid-column: span 2">
+                                    <label class="required-field">Adresse de livraison</label>
+                                    <textarea class="form-control" name="adresse_livraison" id="adresse_livraison" rows="3" required></textarea>
+                                </div>
+                                
+                                <div class="form-group" style="grid-column: span 2">
+                                    <label>Informations complémentaires</label>
+                                    <textarea class="form-control" name="infos_complementaires" id="infos_complementaires" rows="3"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Navigation entre les étapes -->
+                        <div class="step-navigation">
+                            <div class="nav-group">
+                                <button type="button" class="btn btn-secondary" id="prevStepBtn" style="display: none;">
+                                    <i class="fas fa-arrow-left"></i> Précédent
+                                </button>
+                            </div>
+                            
+                            <div class="nav-group">
+                                <button type="button" class="btn btn-outline" id="resetButton">
+                                    <i class="fas fa-undo"></i> Réinitialiser
+                                </button>
+                                <button type="button" class="btn btn-outline" id="cancelButton">
+                                    <i class="fas fa-times"></i> Annuler
+                                </button>
+                            </div>
+                            
+                            <div class="nav-group">
+                                <button type="button" class="btn btn-primary" id="nextStepBtn">
+                                    Suivant <i class="fas fa-arrow-right"></i>
+                                </button>
+                                <button type="submit" class="btn btn-success" id="submitBtn" style="display: none;">
+                                    <i class="fas fa-check"></i> Ajouter
+                                </button>
+                            </div>
+                        </div>
+
+                        <style>
+                        .step-navigation {
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            gap: 1rem;
+                            margin-top: 2rem;
+                            padding-top: 1.5rem;
+                            border-top: 1px solid #eee;
+                            flex-wrap: wrap;
+                        }
+
+                        .nav-group {
+                            display: flex;
+                            gap: 0.75rem;
+                            flex-wrap: wrap;
+                        }
+
+                        .btn-outline {
+                            background: white;
+                            border: 1px solid #ddd;
+                            color: #555;
+                        }
+
+                        .btn-outline:hover {
+                            background: #f5f5f5;
+                        }
+
+                        .btn-success {
+                            background-color: #4ade80;
+                        }
+
+                        .btn-success:hover {
+                            background-color: #3bc46d;
+                        }
+
+                        @media (max-width: 768px) {
+                            .step-navigation {
+                                flex-direction: column-reverse;
+                            }
+                            
+                            .nav-group {
+                                width: 100%;
+                                justify-content: space-between;
+                            }
+                        }
+                        </style>
+                    </form>
                 </div>
             </div>
         `;
@@ -11163,7 +11143,7 @@ function openNewSale() {
     modal.classList.add('active');
     
     // Initialiser la modal
-        initModal();
+    initModal();
 };
 
  
