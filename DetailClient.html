@@ -2537,7 +2537,6 @@ function showComplementDialog() {
     }, 10);
 }
 
-// Fonction pour soumettre le complément
 async function submitComplementForm() {
     const form = document.getElementById('complementForm');
     const formMessage = document.getElementById('complement-message');
@@ -2550,13 +2549,14 @@ async function submitComplementForm() {
         formMessage.classList.add('error');
         return;
     }
-
+     const username = sessionStorage.getItem("utilisateur") || localStorage.getItem("utilisateur");
     const complementData = {
         action: 'addComplement',
         clientId: document.getElementById('clientId').value,
         amount: document.getElementById('complementAmount').value.trim(),
         date: document.getElementById('complementDate').value,
-        notes: document.getElementById('complementNotes').value.trim()
+        notes: document.getElementById('complementNotes').value.trim(),
+        utilisateur: username
     };
 
     const submitButton = document.querySelector('#complement-dialog .btn-primary');
