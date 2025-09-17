@@ -5391,28 +5391,33 @@ document.querySelectorAll('.editable-category').forEach(cell => {
         cell.appendChild(select);
         select.focus();
 
-        select.addEventListener('change', async () => {
-            const newValue = select.value;
+select.addEventListener('change', async () => {
+    const newValue = select.value;
+    
+    // Récupérer le montant depuis la ligne correspondante
+    const row = cell.closest('tr');
+    const montantCell = row.querySelector('td.text-right'); // La cellule du montant
+    const montant = parseFloat(montantCell.textContent.replace(/\s/g, '').replace(',', '.')) || 0;
 
-            const confirmed = confirm(`Voulez-vous vraiment changer la catégorie de "${currentValue}" à "${newValue}" ?`);
-            if (!confirmed) {
-                cell.innerHTML = `<span>${currentValue}</span>`;
-                return;
-            }
+    const confirmed = confirm(`Voulez-vous vraiment changer la catégorie de "${currentValue}" à "${newValue}" ?`);
+    if (!confirmed) {
+        cell.innerHTML = `<span>${currentValue}</span>`;
+        return;
+    }
 
-            await updateBanqueCategorie(rowIndex, newValue);
+    await updateBanqueCategorie(rowIndex, newValue, montant); // Passer le montant
 
-            cell.dataset.value = newValue;
-            cell.innerHTML = `<span>${newValue}</span>`;
+    cell.dataset.value = newValue;
+    cell.innerHTML = `<span>${newValue}</span>`;
 
-            const messageDiv = document.getElementById('banque-message');
-            if (messageDiv) {
-                messageDiv.textContent = `✅ Catégorie mise à jour avec succès : "${newValue}"`;
-                messageDiv.className = 'alert alert-success';
-                messageDiv.style.display = 'block';
-                setTimeout(() => { messageDiv.style.display = 'none'; }, 3000);
-            }
-        });
+    const messageDiv = document.getElementById('banque-message');
+    if (messageDiv) {
+        messageDiv.textContent = `✅ Catégorie mise à jour avec succès : "${newValue}"`;
+        messageDiv.className = 'alert alert-success';
+        messageDiv.style.display = 'block';
+        setTimeout(() => { messageDiv.style.display = 'none'; }, 3000);
+    }
+});
 
         select.addEventListener('blur', () => {
             cell.innerHTML = `<span>${currentValue}</span>`;
@@ -5423,10 +5428,11 @@ document.querySelectorAll('.editable-category').forEach(cell => {
 }
 
 // 🔹 Fonction pour envoyer la modif
-async function updateBanqueCategorie(rowIndex, newCategorie) {
+async function updateBanqueCategorie(rowIndex, newCategorie, montant) {
     const depenseData = {
         rowIndex: parseInt(rowIndex),
-        updatedData: { Categorie: newCategorie }
+        updatedData: { Categorie: newCategorie },
+        montant: montant // Ajouter le montant
     };
 
     try {
