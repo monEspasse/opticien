@@ -1060,6 +1060,67 @@ textarea.form-control {
 .dialog-card {
     animation: modalFadeIn 0.3s ease forwards;
 }
+.call-confirmation-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+}
+
+.call-confirmation-content {
+    background-color: white;
+    padding: 25px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    max-width: 350px;
+    width: 90%;
+}
+
+.call-confirmation-content h3 {
+    margin-bottom: 15px;
+    color: var(--dark-color);
+}
+
+.call-confirmation-content p {
+    margin-bottom: 20px;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--primary-color);
+}
+
+.call-confirmation-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.call-confirm-btn {
+    background-color: var(--success-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.call-cancel-btn {
+    background-color: var(--danger-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+}
     </style>
 </head>
 <body>
@@ -1415,20 +1476,56 @@ textarea.form-control {
 </div>
 
 <div id="modal-container"></div>
+
+<div class="call-confirmation-modal" id="callConfirmationModal">
+    <div class="call-confirmation-content">
+        <h3>Confirmer l'appel</h3>
+        <p id="confirmPhoneNumber"></p>
+        <div class="call-confirmation-buttons">
+            <button class="call-confirm-btn" onclick="confirmCall()">Appeler</button>
+            <button class="call-cancel-btn" onclick="cancelCall()">Annuler</button>
+        </div>
+    </div>
+</div>
 <script>
+// Variables pour stocker le numéro à appeler
+let currentPhoneNumber = '';
+
 // Fonction pour détecter si l'utilisateur est sur un appareil mobile
 function isMobileDevice() {
     return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
 }
 
-// Fonction pour initier un appel téléphonique
+// Fonction pour initier un appel téléphonique (affiche la boîte de dialogue)
 function initiatePhoneCall() {
     const phoneNumber = document.getElementById('client-phone').innerText.trim();
-    if (phoneNumber) {
-        window.location.href = `tel:${phoneNumber}`;
-    } else {
+    
+    if (!phoneNumber || phoneNumber === 'N/A') {
         alert("Numéro de téléphone non disponible");
+        return;
     }
+    
+    // Afficher la boîte de dialogue de confirmation
+    currentPhoneNumber = phoneNumber;
+    document.getElementById('confirmPhoneNumber').textContent = phoneNumber;
+    document.getElementById('callConfirmationModal').style.display = 'flex';
+}
+
+// Fonction pour confirmer l'appel
+function confirmCall() {
+    if (currentPhoneNumber) {
+        window.location.href = `tel:${currentPhoneNumber}`;
+    }
+    // Cacher la boîte de dialogue
+    document.getElementById('callConfirmationModal').style.display = 'none';
+    currentPhoneNumber = '';
+}
+
+// Fonction pour annuler l'appel
+function cancelCall() {
+    // Cacher la boîte de dialogue
+    document.getElementById('callConfirmationModal').style.display = 'none';
+    currentPhoneNumber = '';
 }
 
 // Afficher ou masquer le bouton d'appel selon l'appareil
@@ -1471,7 +1568,6 @@ style.textContent = `
 }
 `;
 document.head.appendChild(style);
-
 </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -2971,6 +3067,89 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
-console.log('Styles d\'animation ajoutés');    </script>
+console.log('Styles d\'animation ajoutés');   
+</script>
+<script>
+// Variables pour stocker le numéro à appeler
+let currentPhoneNumber = '';
+
+// Fonction pour détecter si l'utilisateur est sur un appareil mobile
+function isMobileDevice() {
+    return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+}
+
+// Fonction pour initier un appel téléphonique (affiche la boîte de dialogue)
+function initiatePhoneCall() {
+    const phoneNumber = document.getElementById('client-phone').innerText.trim();
+    
+    if (!phoneNumber || phoneNumber === 'N/A') {
+        alert("Numéro de téléphone non disponible");
+        return;
+    }
+    
+    // Afficher la boîte de dialogue de confirmation
+    currentPhoneNumber = phoneNumber;
+    document.getElementById('confirmPhoneNumber').textContent = phoneNumber;
+    document.getElementById('callConfirmationModal').style.display = 'flex';
+}
+
+// Fonction pour confirmer l'appel
+function confirmCall() {
+    if (currentPhoneNumber) {
+        window.location.href = `tel:${currentPhoneNumber}`;
+    }
+    // Cacher la boîte de dialogue
+    document.getElementById('callConfirmationModal').style.display = 'none';
+    currentPhoneNumber = '';
+}
+
+// Fonction pour annuler l'appel
+function cancelCall() {
+    // Cacher la boîte de dialogue
+    document.getElementById('callConfirmationModal').style.display = 'none';
+    currentPhoneNumber = '';
+}
+
+// Afficher ou masquer le bouton d'appel selon l'appareil
+document.addEventListener('DOMContentLoaded', function() {
+    const mobileCallBtn = document.getElementById('mobileCallBtn');
+    
+    if (isMobileDevice()) {
+        mobileCallBtn.style.display = 'block';
+        mobileCallBtn.addEventListener('click', initiatePhoneCall);
+    }
+});
+
+// Style pour le bouton d'appel mobile
+const style = document.createElement('style');
+style.textContent = `
+.mobile-call-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.mobile-call-btn:hover {
+    background-color: #218838;
+}
+
+/* Ajustement pour l'affichage sur mobile */
+@media (max-width: 768px) {
+    .user-info {
+        display: flex;
+        align-items: center;
+    }
+}
+`;
+document.head.appendChild(style);
+</script>
 </body>
 </html>
