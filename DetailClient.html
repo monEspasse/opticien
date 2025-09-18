@@ -1440,10 +1440,10 @@ document.addEventListener('DOMContentLoaded', function() {
         mobileCallBtn.addEventListener('click', initiatePhoneCall);
     }
 });
-</script>
 
-<style>
-/* Style pour le bouton d'appel mobile */
+// Style pour le bouton d'appel mobile
+const style = document.createElement('style');
+style.textContent = `
 .mobile-call-btn {
     background-color: #28a745;
     color: white;
@@ -1469,7 +1469,10 @@ document.addEventListener('DOMContentLoaded', function() {
         align-items: center;
     }
 }
-</style>
+`;
+document.head.appendChild(style);
+
+</script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
