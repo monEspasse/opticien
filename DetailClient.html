@@ -1074,6 +1074,11 @@ textarea.form-control {
             </div>
 
             <div class="user-info">
+                <!-- Bouton d'appel téléphonique (visible uniquement en mode mobile) -->
+                <button class="mobile-call-btn" id="mobileCallBtn" aria-label="Appeler le client" style="display: none;">
+                    <i class="fas fa-phone" aria-hidden="true"></i>
+                </button>
+                
                 <div class="profile-dropdown" tabindex="0" aria-haspopup="true" aria-expanded="false">
                     <span class="profile-name" id="username-display"></span>
                     <img src="https://ui-avatars.com/api/?name=John+Doe&background=4361ee&color=fff" alt="Photo de profil" class="profile-img">
@@ -1155,12 +1160,7 @@ textarea.form-control {
                             </div>
                             <div class="detail-item">
                                 <span class="detail-label">Numéro de Contact</span>
-                                <p class="detail-value">
-                                    <span id="client-phone"></span>
-                                    <a href="#" class="mobile-call-btn" id="client-phone-link" aria-label="Appeler le client">
-                                        <i class="fas fa-phone" aria-hidden="true"></i>
-                                    </a>
-                                </p>
+                                <p class="detail-value" id="client-phone"></p>
                             </div>
                             <div class="detail-item">
                                 <span class="detail-label">Date de Naissance</span>
@@ -1192,12 +1192,7 @@ textarea.form-control {
                             </div>
                             <div class="detail-item">
                                 <span class="detail-label">Téléphone du contact</span>
-                                <p class="detail-value">
-                                    <span id="client-delivery-phone"></span>
-                                    <a href="#" class="mobile-call-btn" id="delivery-phone-link" aria-label="Appeler le contact de livraison">
-                                        <i class="fas fa-phone" aria-hidden="true"></i>
-                                    </a>
-                                </p>
+                                <p class="detail-value" id="client-delivery-phone"></p>
                             </div>
                             <div class="detail-item">
                                 <span class="detail-label">Adresse Livraison</span>
@@ -1420,70 +1415,61 @@ textarea.form-control {
 </div>
 
 <div id="modal-container"></div>
+<script>
+// Fonction pour détecter si l'utilisateur est sur un appareil mobile
+function isMobileDevice() {
+    return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+}
+
+// Fonction pour initier un appel téléphonique
+function initiatePhoneCall() {
+    const phoneNumber = document.getElementById('client-phone').innerText.trim();
+    if (phoneNumber) {
+        window.location.href = `tel:${phoneNumber}`;
+    } else {
+        alert("Numéro de téléphone non disponible");
+    }
+}
+
+// Afficher ou masquer le bouton d'appel selon l'appareil
+document.addEventListener('DOMContentLoaded', function() {
+    const mobileCallBtn = document.getElementById('mobileCallBtn');
+    
+    if (isMobileDevice()) {
+        mobileCallBtn.style.display = 'block';
+        mobileCallBtn.addEventListener('click', initiatePhoneCall);
+    }
+});
+</script>
 
 <style>
-    /* Style pour le bouton d'appel mobile */
-    .mobile-call-btn {
-        display: none;
-        margin-left: 10px;
-        color: #4361ee;
-        text-decoration: none;
-    }
-    
-    /* Afficher le bouton d'appel uniquement sur mobile */
-    @media (max-width: 768px) {
-        .mobile-call-btn {
-            display: inline-block;
-        }
-        
-        .detail-item .detail-value {
-            display: flex;
-            align-items: center;
-        }
-    }
-</style>
+/* Style pour le bouton d'appel mobile */
+.mobile-call-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    cursor: pointer;
+}
 
-<script>
-    // Fonction pour détecter si on est sur un appareil mobile
-    function isMobileDevice() {
-        return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+.mobile-call-btn:hover {
+    background-color: #218838;
+}
+
+/* Ajustement pour l'affichage sur mobile */
+@media (max-width: 768px) {
+    .user-info {
+        display: flex;
+        align-items: center;
     }
-    
-    // Fonction pour initialiser les boutons d'appel
-    function initCallButtons() {
-        if (isMobileDevice()) {
-            const clientPhone = document.getElementById('client-phone').textContent;
-            const deliveryPhone = document.getElementById('client-delivery-phone').textContent;
-            
-            // Configurer les liens d'appel
-            if (clientPhone) {
-                document.getElementById('client-phone-link').href = 'tel:' + clientPhone.replace(/\s/g, '');
-            }
-            
-            if (deliveryPhone) {
-                document.getElementById('delivery-phone-link').href = 'tel:' + deliveryPhone.replace(/\s/g, '');
-            }
-        } else {
-            // Masquer les boutons d'appel sur desktop
-            document.querySelectorAll('.mobile-call-btn').forEach(btn => {
-                btn.style.display = 'none';
-            });
-        }
-    }
-    
-    // Initialiser les boutons d'appel quand la page est chargée
-    document.addEventListener('DOMContentLoaded', function() {
-        // Simuler le chargement des données client (à remplacer par votre code réel)
-        setTimeout(function() {
-            // Données factices pour la démonstration
-            document.getElementById('client-phone').textContent = '0151819317';
-            document.getElementById('client-delivery-phone').textContent = '0151819317';
-            
-            // Initialiser les boutons d'appel
-            initCallButtons();
-        }, 500);
-    });
-</script>
+}
+</style>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
