@@ -2990,114 +2990,79 @@ console.log('Styles d\'animation ajoutés');
 // Variables pour stocker le numéro à appeler
 let currentPhoneNumber = '';
 
-// Fonction pour détecter si l'utilisateur est sur un appareil mobile
+// Détection mobile
 function isMobileDevice() {
-    return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+    return /Mobi|Android|iPhone|iPad|iPod|IEMobile|WPDesktop/i.test(navigator.userAgent);
 }
 
-// Fonction pour initier un appel téléphonique (affiche la boîte de dialogue)
+// Fonction pour nettoyer et prendre les 10 derniers chiffres
+function cleanPhoneNumber(phoneNumber) {
+    let digitsOnly = phoneNumber.replace(/\D/g, ''); // Retirer tout sauf chiffres
+    if (digitsOnly.length > 10) {
+        digitsOnly = digitsOnly.slice(-10); // Garder les 10 derniers chiffres
+    }
+    return digitsOnly;
+}
+
+// Formater pour affichage lisible (ex: 01 23 45 67 89)
+function formatPhoneNumberForDisplay(phoneNumber) {
+    return phoneNumber.replace(/(\d{2})(?=\d)/g, '$1 ');
+}
+
+// Fonction pour initier un appel
 function initiatePhoneCall() {
     const phoneElement = document.getElementById('client-phone');
-    
-    // Vérifier si l'élément existe
     if (!phoneElement) {
         alert("Élément numéro de téléphone non trouvé");
         return;
     }
-    
-    // Extraire le texte avec textContent
-    const phoneNumber = phoneElement.textContent.trim();
-    
-    // Vérifications supplémentaires
-    if (!phoneNumber || phoneNumber === 'N/A' || phoneNumber === 'Chargement...') {
+
+    const rawNumber = phoneElement.textContent.trim();
+    if (!rawNumber || rawNumber === 'N/A' || rawNumber === 'Chargement...') {
         alert("Numéro de téléphone non disponible");
         return;
     }
-    
-    // Nettoyer le numéro (supprimer les espaces et caractères non numériques)
-    const cleanedPhoneNumber = phoneNumber.replace(/\s+/g, '').replace(/[^\d+]/g, '');
-    
-    // Vérifier que le numéro a une longueur valide
-    if (cleanedPhoneNumber.length < 8) {
-        alert("Numéro de téléphone invalide: " + phoneNumber);
+
+    const cleanedNumber = cleanPhoneNumber(rawNumber);
+
+    if (cleanedNumber.length !== 10) {
+        alert("Numéro de téléphone invalide: " + rawNumber);
         return;
     }
-    
-    console.log("Numéro à appeler:", cleanedPhoneNumber); // Pour débogage
-    
-    // Afficher la boîte de dialogue de confirmation
-    currentPhoneNumber = cleanedPhoneNumber;
-    document.getElementById('confirmPhoneNumber').textContent = formatPhoneNumberForDisplay(cleanedPhoneNumber);
+
+    currentPhoneNumber = cleanedNumber;
+    document.getElementById('confirmPhoneNumber').textContent = formatPhoneNumberForDisplay(cleanedNumber);
     document.getElementById('callConfirmationModal').style.display = 'flex';
 }
 
-// Fonction pour formater le numéro pour l'affichage
-function formatPhoneNumberForDisplay(phoneNumber) {
-    // Formater avec des espaces pour une meilleure lisibilité
-    if (phoneNumber.startsWith('+')) {
-        return phoneNumber.replace(/(\+\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/, '$1 $2 $3 $4 $5');
-    } else {
-        return phoneNumber.replace(/(\d{2})(?=\d)/g, '$1 ');
-    }
-}
-
-// Fonction pour confirmer l'appel
+// Confirmer l'appel
 function confirmCall() {
     if (currentPhoneNumber) {
         window.location.href = `tel:${currentPhoneNumber}`;
     }
-    // Cacher la boîte de dialogue
-    document.getElementById('callConfirmationModal').style.display = 'none';
-    currentPhoneNumber = '';
+    cancelCall();
 }
 
-// Fonction pour annuler l'appel
+// Annuler l'appel
 function cancelCall() {
-    // Cacher la boîte de dialogue
     document.getElementById('callConfirmationModal').style.display = 'none';
     currentPhoneNumber = '';
 }
 
-// Afficher ou masquer le bouton d'appel selon l'appareil
+// Afficher bouton d'appel sur mobile et ajouter écouteur
 document.addEventListener('DOMContentLoaded', function() {
     const mobileCallBtn = document.getElementById('mobileCallBtn');
-    
     if (isMobileDevice()) {
         mobileCallBtn.style.display = 'block';
         mobileCallBtn.addEventListener('click', initiatePhoneCall);
     }
-    
-    // Ajouter un écouteur pour vérifier quand les données sont chargées
-    const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-            if (mutation.type === 'childList' || mutation.type === 'characterData') {
-                const phoneElement = document.getElementById('client-phone');
-                if (phoneElement && phoneElement.textContent.trim() && 
-                    phoneElement.textContent.trim() !== 'N/A' && 
-                    phoneElement.textContent.trim() !== 'Chargement...') {
-                    console.log("Numéro de téléphone détecté:", phoneElement.textContent.trim());
-                }
-            }
-        });
-    });
-    
-    // Observer les changements dans l'élément phone
-    const phoneElement = document.getElementById('client-phone');
-    if (phoneElement) {
-        observer.observe(phoneElement, { 
-            childList: true, 
-            characterData: true, 
-            subtree: true 
-        });
-    }
 });
 
-// Style pour le bouton d'appel mobile
-    // Vérifier si le style a déjà été ajouté avant de le créer
-    if (!document.getElementById('mobileCallBtnStyle')) {
-        const style = document.createElement('style');
-        style.id = 'mobileCallBtnStyle';
-        style.textContent = `
+// Styles pour le bouton
+if (!document.getElementById('mobileCallBtnStyle')) {
+    const style = document.createElement('style');
+    style.id = 'mobileCallBtnStyle';
+    style.textContent = `
         .mobile-call-btn {
             background-color: #28a745;
             color: white;
@@ -3111,21 +3076,18 @@ document.addEventListener('DOMContentLoaded', function() {
             margin-right: 10px;
             cursor: pointer;
         }
-
         .mobile-call-btn:hover {
             background-color: #218838;
         }
-
-        /* Ajustement pour l'affichage sur mobile */
         @media (max-width: 768px) {
             .user-info {
                 display: flex;
                 align-items: center;
             }
         }
-        `;
-        document.head.appendChild(style);
-    };
+    `;
+    document.head.appendChild(style);
+}
 </script>
 </body>
 </html>
