@@ -3031,7 +3031,7 @@ function initiatePhoneCall() {
     }
 
     currentPhoneNumber = cleanedNumber;
-    document.getElementById('confirmPhoneNumber').textContent = formatPhoneNumberForDisplay(cleanedNumber);
+    document.getElementById('confirmPhoneNumber').textContent = cleanedNumber;
     document.getElementById('callConfirmationModal').style.display = 'flex';
 }
 
