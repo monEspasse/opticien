@@ -76,7 +76,6 @@
         .logo img {
             height: 60px;
             margin-bottom: 10px;
-            max-width: 100%;
         }
 
         .logo h1 {
@@ -128,7 +127,6 @@
             border-radius: var(--border-radius);
             padding: 0 15px;
             transition: var(--transition);
-            min-height: 48px; /* Augmenté pour les écrans tactiles */
         }
 
         .input-field:focus-within {
@@ -150,7 +148,6 @@
             font-size: 0.95rem;
             color: var(--dark-color);
             background: transparent;
-            min-height: 46px; /* Pour faciliter le toucher sur mobile */
         }
 
         .input-field input::placeholder {
@@ -164,11 +161,6 @@
             font-size: 1rem;
             margin-left: 10px;
             transition: var(--transition);
-            min-width: 20px; /* Zone de toucher plus grande */
-            min-height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         .toggle-password:hover {
@@ -179,7 +171,7 @@
             width: 100%;
             background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
             color: white;
-            padding: 16px; /* Augmenté pour les écrans tactiles */
+            padding: 14px;
             font-size: 1rem;
             font-weight: 600;
             border: none;
@@ -187,7 +179,6 @@
             cursor: pointer;
             transition: var(--transition);
             margin-bottom: 20px;
-            min-height: 50px; /* Pour faciliter le toucher sur mobile */
         }
 
         .login-button:hover {
@@ -219,152 +210,18 @@
             color: #16a34a;
         }
 
-        /* Media Queries pour la responsivité */
-        
-        /* Tablettes en mode portrait */
-        @media (max-width: 768px) {
-            body {
-                padding: 15px;
-                background-attachment: scroll;
-            }
-            
-            .login-box {
-                padding: 35px 30px;
-            }
-        }
-        
-        /* Téléphones en mode paysage et petites tablettes */
-        @media (max-width: 640px) {
-            .login-box {
-                padding: 30px 25px;
-            }
-            
-            .logo img {
-                height: 55px;
-            }
-            
-            .login-header h2 {
-                font-size: 1.4rem;
-            }
-            
-            .input-field, .input-field input {
-                min-height: 44px;
-            }
-            
-            .login-button {
-                padding: 14px;
-                min-height: 48px;
-            }
-        }
-        
-        /* Téléphones en mode portrait */
+        /* Responsive */
         @media (max-width: 480px) {
             .login-box {
-                padding: 25px 20px;
-            }
-            
-            .logo {
-                margin-bottom: 25px;
+                padding: 30px 20px;
             }
             
             .logo img {
                 height: 50px;
             }
             
-            .logo h1 {
-                font-size: 1.4rem;
-            }
-            
-            .login-header {
-                margin-bottom: 25px;
-            }
-            
             .login-header h2 {
                 font-size: 1.3rem;
-            }
-            
-            .input-group {
-                margin-bottom: 18px;
-            }
-            
-            .input-field, .input-field input {
-                min-height: 42px;
-            }
-            
-            .login-button {
-                padding: 13px;
-                min-height: 46px;
-                font-size: 0.95rem;
-            }
-        }
-        
-        /* Très petits téléphones */
-        @media (max-width: 360px) {
-            .login-box {
-                padding: 20px 15px;
-            }
-            
-            .logo img {
-                height: 45px;
-            }
-            
-            .logo h1 {
-                font-size: 1.3rem;
-            }
-            
-            .login-header h2 {
-                font-size: 1.2rem;
-            }
-            
-            .login-header p, 
-            .input-group label,
-            .input-field input {
-                font-size: 0.85rem;
-            }
-            
-            .input-field i,
-            .toggle-password {
-                font-size: 0.9rem;
-            }
-        }
-        
-        /* Grands écrans */
-        @media (min-width: 1440px) {
-            .login-container {
-                max-width: 450px;
-            }
-            
-            .login-box {
-                padding: 45px;
-            }
-            
-            .logo img {
-                height: 70px;
-            }
-            
-            .logo h1 {
-                font-size: 1.7rem;
-            }
-            
-            .login-header h2 {
-                font-size: 1.6rem;
-            }
-            
-            .login-header p {
-                font-size: 1rem;
-            }
-            
-            .input-group label {
-                font-size: 1rem;
-            }
-            
-            .input-field input {
-                font-size: 1rem;
-            }
-            
-            .login-button {
-                font-size: 1.1rem;
-                padding: 17px;
             }
         }
 
@@ -377,13 +234,6 @@
 
         .login-box {
             animation: float 6s ease-in-out infinite;
-        }
-        
-        /* Désactiver l'animation flottante sur mobile pour de meilleures performances */
-        @media (max-width: 768px) {
-            .login-box {
-                animation: none;
-            }
         }
     </style>
 </head>
