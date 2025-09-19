@@ -2990,26 +2990,26 @@ console.log('Styles d\'animation ajoutés');
 // Variables pour stocker le numéro à appeler
 let currentPhoneNumber = '';
 
-// Détection mobile
+// Détection mobile (garde si tu veux afficher/masquer le bouton)
 function isMobileDevice() {
     return /Mobi|Android|iPhone|iPad|iPod|IEMobile|WPDesktop/i.test(navigator.userAgent);
 }
 
-// Fonction pour nettoyer et prendre les 10 derniers chiffres
+// Nettoyer et garder 10 chiffres
 function cleanPhoneNumber(phoneNumber) {
-    let digitsOnly = phoneNumber.replace(/\D/g, ''); // Retirer tout sauf chiffres
+    let digitsOnly = phoneNumber.replace(/\D/g, '');
     if (digitsOnly.length > 10) {
-        digitsOnly = digitsOnly.slice(-10); // Garder les 10 derniers chiffres
+        digitsOnly = digitsOnly.slice(-10);
     }
     return digitsOnly;
 }
 
-// Formater pour affichage lisible (ex: 01 23 45 67 89)
+// Formater pour affichage
 function formatPhoneNumberForDisplay(phoneNumber) {
     return phoneNumber.replace(/(\d{2})(?=\d)/g, '$1 ');
 }
 
-// Fonction pour initier un appel
+// Ouvrir la fenêtre de confirmation
 function initiatePhoneCall() {
     const phoneElement = document.getElementById('client-phone');
     if (!phoneElement) {
@@ -3035,21 +3035,28 @@ function initiatePhoneCall() {
     document.getElementById('callConfirmationModal').style.display = 'flex';
 }
 
-// Confirmer l'appel
+// Confirmer l'appel → envoie à Thunkable
 function confirmCall() {
     if (currentPhoneNumber) {
-        window.location.href = `tel:${currentPhoneNumber}`;
+        if (window.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(JSON.stringify({
+                action: "call",
+                number: currentPhoneNumber
+            }));
+        } else {
+            alert("Thunkable Web_Viewer non détecté");
+        }
     }
     cancelCall();
 }
 
-// Annuler l'appel
+// Annuler
 function cancelCall() {
     document.getElementById('callConfirmationModal').style.display = 'none';
     currentPhoneNumber = '';
 }
 
-// Afficher bouton d'appel sur mobile et ajouter écouteur
+// Afficher bouton d'appel sur mobile
 document.addEventListener('DOMContentLoaded', function() {
     const mobileCallBtn = document.getElementById('mobileCallBtn');
     if (isMobileDevice()) {
@@ -3058,7 +3065,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Styles pour le bouton
+// Styles
 if (!document.getElementById('mobileCallBtnStyle')) {
     const style = document.createElement('style');
     style.id = 'mobileCallBtnStyle';
@@ -3089,5 +3096,6 @@ if (!document.getElementById('mobileCallBtnStyle')) {
     document.head.appendChild(style);
 }
 </script>
+
 </body>
 </html>
