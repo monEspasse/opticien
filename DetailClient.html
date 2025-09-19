@@ -3096,6 +3096,267 @@ if (!document.getElementById('mobileCallBtnStyle')) {
     document.head.appendChild(style);
 }
 </script>
+<script>
+// Variables pour stocker le numéro à appeler et les informations du client
+let currentPhoneNumber = '';
+let currentClientId = '';
+let currentUsername = '';
 
+// Détection mobile (garde si tu veux afficher/masquer le bouton)
+function isMobileDevice() {
+    return /Mobi|Android|iPhone|iPad|iPod|IEMobile|WPDesktop/i.test(navigator.userAgent);
+}
+
+// Nettoyer et garder 10 chiffres
+function cleanPhoneNumber(phoneNumber) {
+    let digitsOnly = phoneNumber.replace(/\D/g, '');
+    if (digitsOnly.length > 10) {
+        digitsOnly = digitsOnly.slice(-10);
+    }
+    return digitsOnly;
+}
+
+// Formater pour affichage
+function formatPhoneNumberForDisplay(phoneNumber) {
+    return phoneNumber.replace(/(\d{2})(?=\d)/g, '$1 ');
+}
+
+// Ouvrir la fenêtre de confirmation
+function initiatePhoneCall() {
+    const phoneElement = document.getElementById('client-phone');
+    if (!phoneElement) {
+        alert("Élément numéro de téléphone non trouvé");
+        return;
+    }
+
+    const rawNumber = phoneElement.textContent.trim();
+    if (!rawNumber || rawNumber === 'N/A' || rawNumber === 'Chargement...') {
+        alert("Numéro de téléphone non disponible");
+        return;
+    }
+
+    const cleanedNumber = cleanPhoneNumber(rawNumber);
+
+    if (cleanedNumber.length !== 10) {
+        alert("Numéro de téléphone invalide: " + rawNumber);
+        return;
+    }
+
+    // Stocker les informations pour la consigne
+    currentPhoneNumber = cleanedNumber;
+    currentClientId = document.getElementById('client-id').textContent;
+    currentUsername = sessionStorage.getItem("utilisateur") || localStorage.getItem("utilisateur");
+    
+    document.getElementById('confirmPhoneNumber').textContent = cleanedNumber;
+    document.getElementById('callConfirmationModal').style.display = 'flex';
+}
+
+// Confirmer l'appel → envoie à Thunkable
+function confirmCall() {
+    if (currentPhoneNumber) {
+        if (window.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(JSON.stringify({
+                action: "call",
+                number: currentPhoneNumber
+            }));
+            
+            // Stocker l'information qu'un appel vient d'être passé
+            localStorage.setItem('lastCallInfo', JSON.stringify({
+                clientId: currentClientId,
+                username: currentUsername,
+                phoneNumber: currentPhoneNumber,
+                timestamp: new Date().getTime()
+            }));
+        } else {
+            alert("Thunkable Web_Viewer non détecté");
+        }
+    }
+    cancelCall();
+}
+
+// Annuler
+function cancelCall() {
+    document.getElementById('callConfirmationModal').style.display = 'none';
+    currentPhoneNumber = '';
+}
+
+// Fonction pour ouvrir automatiquement la modale de consigne
+function openLogModalAutomatically() {
+    const lastCallInfo = localStorage.getItem('lastCallInfo');
+    if (lastCallInfo) {
+        const callInfo = JSON.parse(lastCallInfo);
+        
+        // Vérifier si l'appel a été passé il y a moins de 5 minutes
+        const fiveMinutesAgo = new Date().getTime() - (5 * 60 * 1000);
+        if (callInfo.timestamp > fiveMinutesAgo) {
+            // Remplir automatiquement les champs
+            document.getElementById('logClientId').value = callInfo.clientId;
+            document.getElementById('logUser').value = callInfo.username;
+            
+            // Afficher la modale
+            document.getElementById('logCallModal').style.display = 'flex';
+            
+            // Supprimer l'information pour ne pas réafficher la modale
+            localStorage.removeItem('lastCallInfo');
+        }
+    }
+}
+
+// Fermer la modale de consigne
+function closeLogModal() {
+    document.getElementById('logCallModal').style.display = 'none';
+}
+
+// Enregistrer la consigne d'appel
+async function saveCallLog() {
+    const clientId = document.getElementById('logClientId').value;
+    const user = document.getElementById('logUser').value;
+    const note = document.getElementById('logNote').value;
+    
+    if (!note) {
+        alert("Veuillez saisir une note pour cet appel");
+        return;
+    }
+    
+    try {
+        const apiUrl = "https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=logCall";
+        
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                clientId: clientId,
+                user: user,
+                note: note,
+                timestamp: new Date().toISOString()
+            })
+        });
+        
+        alert("Appel consigné avec succès!");
+        closeLogModal();
+        
+    } catch (error) {
+        console.error("Erreur lors de l'enregistrement:", error);
+        alert("Erreur lors de l'enregistrement de l'appel");
+    }
+}
+
+// Afficher bouton d'appel sur mobile
+document.addEventListener('DOMContentLoaded', function() {
+    const mobileCallBtn = document.getElementById('mobileCallBtn');
+    if (isMobileDevice()) {
+        mobileCallBtn.style.display = 'block';
+        mobileCallBtn.addEventListener('click', initiatePhoneCall);
+    }
+    
+    // Vérifier si on doit ouvrir la modale de consigne au chargement
+    openLogModalAutomatically();
+    
+    // Écouter les événements de visibilité de page (retour d'appel)
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) {
+            // La page est redevenue visible (utilisateur est revenu)
+            openLogModalAutomatically();
+        }
+    });
+    
+    // Configurer le bouton d'enregistrement
+    document.getElementById('saveLogBtn').addEventListener('click', saveCallLog);
+});
+
+// Styles
+if (!document.getElementById('mobileCallBtnStyle')) {
+    const style = document.createElement('style');
+    style.id = 'mobileCallBtnStyle';
+    style.textContent = `
+        .mobile-call-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        .mobile-call-btn:hover {
+            background-color: #218838;
+        }
+        @media (max-width: 768px) {
+            .user-info {
+                display: flex;
+                align-items: center;
+            }
+        }
+        
+        #logCallModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+        
+        #logCallModal > div {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 300px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        #logCallModal h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        #logCallModal label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        #logCallModal input,
+        #logCallModal textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        #logCallModal textarea {
+            height: 80px;
+            resize: vertical;
+        }
+        
+        #logCallModal button {
+            padding: 8px 16px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        #saveLogBtn {
+            background-color: #4361ee;
+            color: white;
+        }
+    `;
+    document.head.appendChild(style);
+}
+</script>
 </body>
 </html>
