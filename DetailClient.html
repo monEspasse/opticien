@@ -1477,16 +1477,29 @@ textarea.form-control {
 
 <div id="modal-container"></div>
 
-<div class="call-confirmation-modal" id="callConfirmationModal">
-    <div class="call-confirmation-content">
-        <h3>Confirmer l'appel</h3>
-        <p id="confirmPhoneNumber"></p>
-        <div class="call-confirmation-buttons">
-            <button class="call-confirm-btn" onclick="confirmCall()">Appeler</button>
-            <button class="call-cancel-btn" onclick="cancelCall()">Annuler</button>
+<!-- Modale pour consigner l'appel -->
+<div id="logCallModal">
+    <div class="log-call-content">
+        <h3>Consigner l'appel</h3>
+        <div>
+            <label for="logClientId">ID Client:</label>
+            <input type="text" id="logClientId" readonly>
+        </div>
+        <div>
+            <label for="logUser">Utilisateur:</label>
+            <input type="text" id="logUser" readonly>
+        </div>
+        <div>
+            <label for="logNote">Notes sur l'appel:</label>
+            <textarea id="logNote" placeholder="Décrivez le résultat de l'appel..." required></textarea>
+        </div>
+        <div class="log-call-buttons">
+            <button id="cancelLogBtn">Annuler</button>
+            <button id="saveLogBtn">Enregistrer</button>
         </div>
     </div>
 </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <script>
@@ -3101,8 +3114,9 @@ if (!document.getElementById('mobileCallBtnStyle')) {
 let currentPhoneNumber = '';
 let currentClientId = '';
 let currentUsername = '';
+let callTimer = null;
 
-// Détection mobile (garde si tu veux afficher/masquer le bouton)
+// Détection mobile
 function isMobileDevice() {
     return /Mobi|Android|iPhone|iPad|iPod|IEMobile|WPDesktop/i.test(navigator.userAgent);
 }
@@ -3114,11 +3128,6 @@ function cleanPhoneNumber(phoneNumber) {
         digitsOnly = digitsOnly.slice(-10);
     }
     return digitsOnly;
-}
-
-// Formater pour affichage
-function formatPhoneNumberForDisplay(phoneNumber) {
-    return phoneNumber.replace(/(\d{2})(?=\d)/g, '$1 ');
 }
 
 // Ouvrir la fenêtre de confirmation
@@ -3154,30 +3163,71 @@ function initiatePhoneCall() {
 // Confirmer l'appel → envoie à Thunkable
 function confirmCall() {
     if (currentPhoneNumber) {
+        // Stocker l'information qu'un appel vient d'être passé
+        const callInfo = {
+            clientId: currentClientId,
+            username: currentUsername,
+            phoneNumber: currentPhoneNumber,
+            timestamp: new Date().getTime(),
+            callInitiated: true
+        };
+        
+        localStorage.setItem('lastCallInfo', JSON.stringify(callInfo));
+        
         if (window.ReactNativeWebView) {
             window.ReactNativeWebView.postMessage(JSON.stringify({
                 action: "call",
                 number: currentPhoneNumber
             }));
-            
-            // Stocker l'information qu'un appel vient d'être passé
-            localStorage.setItem('lastCallInfo', JSON.stringify({
-                clientId: currentClientId,
-                username: currentUsername,
-                phoneNumber: currentPhoneNumber,
-                timestamp: new Date().getTime()
-            }));
         } else {
-            alert("Thunkable Web_Viewer non détecté");
+            // Simulation pour le développement
+            console.log("Appel simulé vers:", currentPhoneNumber);
+            // Pour tester sans Thunkable, décommentez la ligne suivante:
+            // setTimeout(openLogModalAutomatically, 3000);
         }
     }
     cancelCall();
+    
+    // Démarrer la vérification du retour d'appel
+    startCallReturnCheck();
 }
 
-// Annuler
+// Vérifier périodiquement si l'utilisateur est revenu après l'appel
+function startCallReturnCheck() {
+    // Arrêter toute vérification précédente
+    if (callTimer) {
+        clearInterval(callTimer);
+    }
+    
+    // Démarrer une nouvelle vérification
+    callTimer = setInterval(function() {
+        const lastCallInfo = localStorage.getItem('lastCallInfo');
+        if (lastCallInfo) {
+            const callInfo = JSON.parse(lastCallInfo);
+            
+            // Si l'appel a été initié il y a plus de 5 secondes
+            const fiveSecondsAgo = new Date().getTime() - 5000;
+            if (callInfo.callInitiated && callInfo.timestamp < fiveSecondsAgo) {
+                // Ouvrir la modale de consigne
+                openLogModalAutomatically();
+                // Arrêter la vérification
+                clearInterval(callTimer);
+                callTimer = null;
+            }
+        }
+    }, 1000); // Vérifier toutes les secondes
+}
+
+// Annuler l'appel
 function cancelCall() {
     document.getElementById('callConfirmationModal').style.display = 'none';
     currentPhoneNumber = '';
+    
+    // Nettoyer le timer si existant
+    if (callTimer) {
+        clearInterval(callTimer);
+        callTimer = null;
+    }
 }
 
 // Fonction pour ouvrir automatiquement la modale de consigne
@@ -3186,9 +3236,9 @@ function openLogModalAutomatically() {
     if (lastCallInfo) {
         const callInfo = JSON.parse(lastCallInfo);
         
-        // Vérifier si l'appel a été passé il y a moins de 5 minutes
-        const fiveMinutesAgo = new Date().getTime() - (5 * 60 * 1000);
-        if (callInfo.timestamp > fiveMinutesAgo) {
+        // Vérifier si l'appel a été passé il y a moins de 2 minutes
+        const twoMinutesAgo = new Date().getTime() - (2 * 60 * 1000);
+        if (callInfo.timestamp > twoMinutesAgo && callInfo.callInitiated) {
             // Remplir automatiquement les champs
             document.getElementById('logClientId').value = callInfo.clientId;
             document.getElementById('logUser').value = callInfo.username;
@@ -3196,8 +3246,9 @@ function openLogModalAutomatically() {
             // Afficher la modale
             document.getElementById('logCallModal').style.display = 'flex';
             
-            // Supprimer l'information pour ne pas réafficher la modale
-            localStorage.removeItem('lastCallInfo');
+            // Marquer l'appel comme traité
+            callInfo.callInitiated = false;
+            localStorage.setItem('lastCallInfo', JSON.stringify(callInfo));
         }
     }
 }
@@ -3205,6 +3256,9 @@ function openLogModalAutomatically() {
 // Fermer la modale de consigne
 function closeLogModal() {
     document.getElementById('logCallModal').style.display = 'none';
+    
+    // Nettoyer les informations d'appel
+    localStorage.removeItem('lastCallInfo');
 }
 
 // Enregistrer la consigne d'appel
@@ -3265,93 +3319,88 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Configurer le bouton d'enregistrement
     document.getElementById('saveLogBtn').addEventListener('click', saveCallLog);
+    document.getElementById('cancelLogBtn').addEventListener('click', closeLogModal);
 });
 
-// Styles
-if (!document.getElementById('mobileCallBtnStyle')) {
+// Styles pour la modale de consigne (à ajouter si pas déjà présent)
+if (!document.getElementById('logCallModalStyles')) {
     const style = document.createElement('style');
-    style.id = 'mobileCallBtnStyle';
+    style.id = 'logCallModalStyles';
     style.textContent = `
-        .mobile-call-btn {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 10px;
-            cursor: pointer;
-        }
-        .mobile-call-btn:hover {
-            background-color: #218838;
-        }
-        @media (max-width: 768px) {
-            .user-info {
-                display: flex;
-                align-items: center;
-            }
-        }
-        
         #logCallModal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.7);
             display: none;
             justify-content: center;
             align-items: center;
             z-index: 10000;
         }
         
-        #logCallModal > div {
+        .log-call-content {
             background: white;
-            padding: 20px;
-            border-radius: 8px;
-            width: 300px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 25px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
         
-        #logCallModal h3 {
+        .log-call-content h3 {
             margin-top: 0;
             margin-bottom: 15px;
+            color: var(--dark-color);
+            text-align: center;
         }
         
-        #logCallModal label {
+        .log-call-content label {
             display: block;
             margin-bottom: 5px;
-            font-weight: bold;
+            font-weight: 500;
+            color: var(--dark-color);
         }
         
-        #logCallModal input,
-        #logCallModal textarea {
+        .log-call-content input,
+        .log-call-content textarea {
             width: 100%;
-            padding: 8px;
+            padding: 10px;
             margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            border: 1px solid var(--gray-light);
+            border-radius: 6px;
             box-sizing: border-box;
+            font-family: inherit;
         }
         
-        #logCallModal textarea {
-            height: 80px;
+        .log-call-content textarea {
+            height: 100px;
             resize: vertical;
         }
         
-        #logCallModal button {
-            padding: 8px 16px;
-            margin-right: 10px;
+        .log-call-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .log-call-buttons button {
+            padding: 10px 20px;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
+            font-weight: 500;
         }
         
         #saveLogBtn {
-            background-color: #4361ee;
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        #cancelLogBtn {
+            background-color: var(--danger-color);
             color: white;
         }
     `;
