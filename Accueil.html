@@ -10358,7 +10358,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 
-
 async function generatePDF() {
     // Vérifier si jsPDF est chargé
     if (typeof window.jspdf === 'undefined') {
@@ -10399,38 +10398,34 @@ async function generatePDF() {
         net_a_payer: document.getElementById('net_a_payer').value
     };
 
-    // --- En-tête ---
-    const headerX = 145;
-    const headerY = 20;
+    // --- Nouvelle structure de l'en-tête ---
+    const headerLeftX = 15;
+    const headerLeftY = 20;
     
-    // Titre "VOIR +"
-    pdf.setFontSize(22);
-    pdf.setFont('helvetica', 'bold');
-    pdf.text("VOIR +", headerX, headerY, { align: 'center' }); // Centré par rapport à une position X
-    
-    // Tagline "Optic"
-    pdf.setFontSize(10);
-    pdf.setFont('helvetica', 'normal');
-    pdf.text("Optic", headerX, headerY + 5, { align: 'center' });
+    // Nom de l'entreprise "VOIR PLUS OPTIC"
+    pdf.setFontSize(40);
+    pdf.setFont('times', 'bold');
+    pdf.text("VOIR PLUS OPTIC", headerLeftX, headerLeftY);
 
     // Informations de l'entreprise
-    pdf.setFontSize(9);
-    pdf.text("Gbédomidji, Cotonou-Benin.", headerX, headerY + 12, { align: 'center' });
-    pdf.text("Tel (229) 42749495", headerX, headerY + 15, { align: 'center' });
-    pdf.text("Ifu:3202368717681", headerX, headerY + 18, { align: 'center' });
-    pdf.text("Email: optiquevoirplus@gmail.com", headerX, headerY + 21, { align: 'center' });
+    pdf.setFontSize(14);
+    pdf.setFont('helvetica', 'normal');
+    pdf.text("Gbédomidji, Cotonou-Benin.", headerLeftX, headerLeftY + 10);
+    pdf.text("Tel (229) 42749495", headerLeftX, headerLeftY + 16);
+    pdf.text("Ifu:3202368717681", headerLeftX, headerLeftY + 22);
+    pdf.text("Email: optiquevoirplus@gmail.com", headerLeftX, headerLeftY + 28);
 
-    // Logo (ajustez les coordonnées selon l'emplacement souhaité)
+    // Logo à droite
     logoImg.onload = () => {
-        const logoWidth = 30; // Largeur du logo
-        const logoHeight = 15; // Hauteur du logo
-        const logoX = 15;
+        const logoWidth = 40; // Taille moyenne
+        const logoHeight = 20; // Proportionnelle
+        const logoX = 150; // Positionné à droite
         const logoY = 15;
         pdf.addImage(logoImg, 'PNG', logoX, logoY, logoWidth, logoHeight);
     };
 
     // --- Facture Proforma ---
-    const invoiceTitleX = 135;
+    const invoiceTitleX = 15;
     const invoiceTitleY = 55;
     pdf.setFontSize(18);
     pdf.setFont('helvetica', 'bold');
@@ -10439,7 +10434,7 @@ async function generatePDF() {
     // Date
     pdf.setFontSize(9);
     pdf.setFont('helvetica', 'normal');
-    pdf.text(`Edité le ${formData.date_soin}`, 160, invoiceTitleY + 5);
+    pdf.text(`Edité le ${formData.date_soin}`, 160, invoiceTitleY);
 
     // --- Informations Client ---
     const clientBoxX = 15;
@@ -10466,36 +10461,91 @@ async function generatePDF() {
 
     // --- Table des produits ---
     const tableY = 100;
-    const productsData = [
-        [{ content: 'ORGANIQUE1.56 UNIFOCAL PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE', rowSpan: 2 }, 'MOYEN DE GAMME', 'Client', '1', '0'],
-        ['', 'SPH', 'CYL', 'ADD'],
-        ['OD', formData.od_sphere, formData.od_cylindre, formData.od_add, { content: formData.montant_verres, colSpan: 2, rowSpan: 1 }],
-        ['OG', formData.og_sphere, formData.og_cylindre, formData.og_add, { content: formData.montant_verres, colSpan: 2, rowSpan: 1 }]
-    ];
 
     pdf.autoTable({
         startY: tableY,
-        head: [['Monture', 'Qté', 'Prix unitaire', 'Client']],
+        head: [
+            [
+                {content: 'Désignation', styles: {fillColor: [200, 200, 200], fontStyle: 'bold', fontSize: 16}},
+                {content: 'Monture', styles: {fillColor: [200, 200, 200], fontStyle: 'bold', fontSize: 16}},
+                {content: 'Qté', styles: {fillColor: [200, 200, 200], fontStyle: 'bold', fontSize: 16}},
+                {content: 'Prix unitaire', styles: {fillColor: [200, 200, 200], fontStyle: 'bold', fontSize: 16}}
+            ]
+        ],
         body: [
-            [formData.choix_monture, 1, formData.montant_monture, ''], // Monture line
-            ...productsData,
+            // Première ligne - Type de verre
+            [
+                formData.type_verre || 'ORGANIQUE1.56 UNIFOCAL PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE',
+                formData.choix_monture || '',
+                formData.choix_monture ? '1' : '',
+                formData.montant_monture || ''
+            ],
+            
+            // Deuxième ligne - En-tête des sous-colonnes
+            [
+                {content: '', styles: {fillColor: [240, 240, 240]}},
+                {content: 'SPH', styles: {fillColor: [240, 240, 240], fontStyle: 'bold'}},
+                {content: 'CYL', styles: {fillColor: [240, 240, 240], fontStyle: 'bold'}},
+                {content: 'AXE', styles: {fillColor: [240, 240, 240], fontStyle: 'bold'}},
+                {content: 'ADD', styles: {fillColor: [240, 240, 240], fontStyle: 'bold'}},
+                {content: 'Qté', styles: {fillColor: [240, 240, 240], fontStyle: 'bold'}},
+                {content: 'Prix unitaire', styles: {fillColor: [240, 240, 240], fontStyle: 'bold'}}
+            ],
+            
+            // Troisième ligne - OD
+            [
+                {content: 'OD', styles: {fontStyle: 'bold'}},
+                formData.od_sphere || '',
+                formData.od_cylindre || '',
+                formData.od_axe || '',
+                formData.od_add || '',
+                '1',
+                formData.montant_verres ? (parseFloat(formData.montant_verres) / 2).toFixed(2) : '0'
+            ],
+            
+            // Quatrième ligne - OG
+            [
+                {content: 'OG', styles: {fontStyle: 'bold'}},
+                formData.og_sphere || '',
+                formData.og_cylindre || '',
+                formData.og_axe || '',
+                formData.og_add || '',
+                '1',
+                formData.montant_verres ? (parseFloat(formData.montant_verres) / 2).toFixed(2) : '0'
+            ]
         ],
         theme: 'plain',
         styles: {
             fontSize: 10,
-            cellPadding: 2
+            cellPadding: 3,
+            textColor: [0, 0, 0]
         },
         headStyles: {
-            fillColor: [255, 255, 255],
+            fillColor: [200, 200, 200],
             textColor: [0, 0, 0],
-            fontStyle: 'bold'
+            fontStyle: 'bold',
+            fontSize: 16
         },
         bodyStyles: {
             textColor: [0, 0, 0]
         },
-        didDrawPage: function(data) {
-            // Dessiner les lignes de séparation pour la table manuellement si nécessaire
-            // ou ajuster les options autoTable pour qu'elles correspondent au design
+        columnStyles: {
+            0: {cellWidth: 'auto'},
+            1: {cellWidth: 'auto'},
+            2: {cellWidth: 'auto'},
+            3: {cellWidth: 'auto'}
+        },
+        didParseCell: function(data) {
+            // Appliquer un fond gris clair pour la deuxième ligne (sous-en-têtes)
+            if (data.row.index === 1) {
+                data.cell.styles.fillColor = [240, 240, 240];
+                data.cell.styles.fontStyle = 'bold';
+            }
+            
+            // Pour les lignes OD/OG, mettre en gras la première colonne
+            if (data.row.index >= 2 && data.column.index === 0) {
+                data.cell.styles.fontStyle = 'bold';
+            }
         }
     });
 
@@ -10527,40 +10577,31 @@ async function generatePDF() {
 
     // --- Pied de page ---
     const footerY = pdf.autoTable.previous.finalY + 20;
-    
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const centerX = pageWidth / 2;
+
     pdf.setFontSize(10);
     pdf.setFont('helvetica', 'normal');
-    pdf.text("ARRETÉE LA PRÉSENTE FACTURE PROFORMA À LA SOMME DE SOIXANTE-DIX-NEUF MILLE FRANCS CFA", 15, footerY);
+    pdf.text("ARRETÉE LA PRÉSENTE FACTURE PROFORMA À LA SOMME DE SOIXANTE-DIX-NEUF MILLE FRANCS CFA", centerX, footerY, { align: 'center' });
 
     pdf.setFontSize(12);
     pdf.setFont('helvetica', 'bold');
-    pdf.text("<<<<<<<<<<>>>>>>>>>", 15, footerY + 10);
-    pdf.text("<<<<<<<<<<>>>>>>>>>", 15, footerY + 30);
+    pdf.text("<<<<<<<<<<>>>>>>>>>", centerX, footerY + 10, { align: 'center' });
+    pdf.text("<<<<<<<<<<>>>>>>>>>", centerX, footerY + 30, { align: 'center' });
     
     pdf.setFontSize(10);
     pdf.setFont('helvetica', 'bold');
-    pdf.text("Prenez soin de vos yeux !", 15, footerY + 15);
+    pdf.text("Prenez soin de vos yeux !", centerX, footerY + 15, { align: 'center' });
     pdf.setFont('helvetica', 'normal');
-    pdf.text("Une visite régulière chez votre opticien est essentielle pour préserver votre santé visuelle.", 15, footerY + 20);
+    pdf.text("Une visite régulière chez votre opticien est essentielle pour préserver votre santé visuelle.", centerX, footerY + 20, { align: 'center' });
 
     pdf.setFontSize(8);
-    pdf.text("Voir Plus Optic Sarl Société à Responsabilité limitée au Capital de 1,200,000 F.CFA enregistré sous le N° RCCM RB/COT/23 B", 15, footerY + 35);
-    pdf.text("35451 au registre du commerce de Cotonou. Ecobank Benin RIB: BJ66 BJ06 01006 111509475001 52", 15, footerY + 40);
+    pdf.text("Voir Plus Optic Sarl Société à Responsabilité limitée au Capital de 1,200,000 F.CFA enregistré sous le N° RCCM RB/COT/23 B", centerX, footerY + 35, { align: 'center' });
+    pdf.text("35451 au registre du commerce de Cotonou. Ecobank Benin RIB: BJ66 BJ06 01006 111509475001 52", centerX, footerY + 40, { align: 'center' });
 
-    // Générer PDF
-    const pdfBlob = pdf.output('blob');
-    const pdfUrl = URL.createObjectURL(pdfBlob);
-    const printWindow = window.open(pdfUrl, '_blank');
-
-    printWindow.onload = function () {
-        printWindow.focus();
-        printWindow.print();
-        printWindow.onafterprint = () => {
-            printWindow.close();
-            URL.revokeObjectURL(pdfUrl);
-        };
-    };
-    closeModal();
+    // Nom du fichier et téléchargement
+    const filename = `Facture_Proforma_${formData.nom_complet}.pdf`;
+    pdf.save(filename);
 }
 
 // Fonction utilitaire pour charger les scripts
@@ -10685,17 +10726,6 @@ function numberToFrenchWords(number) {
         
         return str;
     }
-}
-
-// Fonction utilitaire pour charger les scripts
-function loadScript(src) {
-    return new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = src;
-        script.onload = resolve;
-        script.onerror = reject;
-        document.head.appendChild(script);
-    });
 }
 //fin proforma
 </script>
