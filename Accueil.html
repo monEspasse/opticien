@@ -10360,6 +10360,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
 async function generatePDF() {
+    // Vérifier si jsPDF est chargé
     if (typeof window.jspdf === 'undefined') {
         await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
         await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js');
@@ -10368,17 +10369,15 @@ async function generatePDF() {
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
-    // Charger le logo
-    const logo = new Image();
-    logo.src = "logo.png";
-    await new Promise(resolve => { logo.onload = resolve; });
+    // Charger logo.png (assurez-vous que le chemin est correct)
+    const logoImg = new Image();
+    logoImg.src = 'logo.png';
 
-    // Récupérer données formulaire
     const formData = {
         nom_complet: document.getElementById('nom_complet').value,
-        contact: document.querySelector('input[name="indicatif"]').value + ' ' +
-                 document.querySelector('input[name="numero"]').value,
+        contact: document.querySelector('input[name="indicatif"]').value + ' ' + document.querySelector('input[name="numero"]').value,
         email: document.getElementById('email') ? document.getElementById('email').value : '',
+        date_naissance: document.getElementById('date_naissance').value,
         civilite: document.getElementById('civilite').value,
         type_verre: document.getElementById('type_verre').value,
         gamme_verre: document.getElementById('gamme_verre').value,
@@ -10391,6 +10390,7 @@ async function generatePDF() {
         og_cylindre: document.querySelector('select[name="og_cylindre"]').value,
         og_axe: document.querySelector('select[name="og_axe"]').value,
         og_add: document.querySelector('select[name="og_add"]').value,
+        date_soin: document.getElementById('date_soin').value,
         montant_monture: document.getElementById('montant_monture').value,
         montant_verres: document.getElementById('montant_verres').value,
         total_brut: document.getElementById('total_brut').value,
@@ -10399,128 +10399,158 @@ async function generatePDF() {
         net_a_payer: document.getElementById('net_a_payer').value
     };
 
-    // Génération n° facture
-    const today = new Date();
-    const dateStr = today.toLocaleDateString('fr-FR');
-    const initials = formData.nom_complet.split(' ').map(w => w[0]).join('').toUpperCase();
-    const randomNum = Math.floor(Math.random() * 100);
-    const factureNum = `FP/${initials}/${today.toLocaleDateString('fr-FR').replaceAll('/', '.')}-${randomNum}`;
+    // --- En-tête ---
+    const headerX = 145;
+    const headerY = 20;
+    
+    // Titre "VOIR +"
+    pdf.setFontSize(22);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text("VOIR +", headerX, headerY, { align: 'center' }); // Centré par rapport à une position X
+    
+    // Tagline "Optic"
+    pdf.setFontSize(10);
+    pdf.setFont('helvetica', 'normal');
+    pdf.text("Optic", headerX, headerY + 5, { align: 'center' });
 
-    // === En-tête ===
-    pdf.addImage(logo, "PNG", 20, 10, 20, 20);
-    pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(12);
-    pdf.text("Voir Plus Optic Sarl", 60, 15);
-    pdf.setFont("helvetica", "normal");
+    // Informations de l'entreprise
     pdf.setFontSize(9);
-    pdf.text("Société à Responsabilité limitée au Capital de 1,200,000 F.CFA", 60, 20);
-    pdf.text("RCCM RB/COT/23 B 35451 - IFU: 3202368717681", 60, 25);
-    pdf.text("Gbédomidji, Cotonou-Benin.", 60, 30);
-    pdf.text("Tel (229) 42749495 - Email: optiquevoirplus@gmail.com", 60, 35);
+    pdf.text("Gbédomidji, Cotonou-Benin.", headerX, headerY + 12, { align: 'center' });
+    pdf.text("Tel (229) 42749495", headerX, headerY + 15, { align: 'center' });
+    pdf.text("Ifu:3202368717681", headerX, headerY + 18, { align: 'center' });
+    pdf.text("Email: optiquevoirplus@gmail.com", headerX, headerY + 21, { align: 'center' });
 
-    pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(14);
-    pdf.setTextColor(50, 90, 160);
-    pdf.text("Facture Proforma", 105, 50, { align: "center" });
+    // Logo (ajustez les coordonnées selon l'emplacement souhaité)
+    logoImg.onload = () => {
+        const logoWidth = 30; // Largeur du logo
+        const logoHeight = 15; // Hauteur du logo
+        const logoX = 15;
+        const logoY = 15;
+        pdf.addImage(logoImg, 'PNG', logoX, logoY, logoWidth, logoHeight);
+    };
 
-    pdf.setFont("helvetica", "normal");
+    // --- Facture Proforma ---
+    const invoiceTitleX = 135;
+    const invoiceTitleY = 55;
+    pdf.setFontSize(18);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text("Facture Proforma", invoiceTitleX, invoiceTitleY);
+
+    // Date
+    pdf.setFontSize(9);
+    pdf.setFont('helvetica', 'normal');
+    pdf.text(`Edité le ${formData.date_soin}`, 160, invoiceTitleY + 5);
+
+    // --- Informations Client ---
+    const clientBoxX = 15;
+    const clientBoxY = 65;
+    const clientBoxWidth = 80;
+    const clientBoxHeight = 25;
+    pdf.rect(clientBoxX, clientBoxY, clientBoxWidth, clientBoxHeight);
+
     pdf.setFontSize(10);
-    pdf.setTextColor(0);
-    pdf.text(`Edité le : ${dateStr}`, 30, 60);
-    pdf.text(`Proforma N° : ${factureNum}`, 140, 60);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text("Facture pour", clientBoxX + 2, clientBoxY - 5);
+    pdf.setFont('helvetica', 'normal');
+    pdf.text("Mme/M.:", clientBoxX + 2, clientBoxY + 5);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text(formData.nom_complet, clientBoxX + 25, clientBoxY + 5);
+    pdf.setFont('helvetica', 'normal');
+    pdf.text("TEL:", clientBoxX + 2, clientBoxY + 15);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text(formData.contact, clientBoxX + 25, clientBoxY + 15);
+    
+    // --- Ligne de séparation ---
+    pdf.setLineWidth(0.5);
+    pdf.line(10, 95, 200, 95);
 
-    // === Infos client ===
-    pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(11);
-    pdf.text("Facture pour", 30, 75);
-
-    pdf.setFont("helvetica", "normal");
-    pdf.setFontSize(10);
-    pdf.text(`Mme/M. : ${formData.civilite} ${formData.nom_complet}`, 30, 82);
-    pdf.text(`TEL : ${formData.contact}`, 30, 88);
-    if (formData.email) pdf.text(`Email : ${formData.email}`, 30, 94);
-
-    // === Tableau Prescription simplifié ===
-    const prixVerre = (parseFloat(formData.montant_verres) / 2).toFixed(0);
-    const prescriptionHead = ["Œil", "SPH", "CYL", "AXE", "ADD", "Qté", "PU", "Total"];
-    const prescriptionBody = [
-        [
-            "OD\n" + `${formData.type_verre} ${formData.gamme_verre}`,
-            formData.od_sphere, formData.od_cylindre, formData.od_axe, formData.od_add,
-            "1", prixVerre, prixVerre
-        ],
-        [
-            "OG\n" + `${formData.type_verre} ${formData.gamme_verre}`,
-            formData.og_sphere, formData.og_cylindre, formData.og_axe, formData.og_add,
-            "1", prixVerre, prixVerre
-        ]
+    // --- Table des produits ---
+    const tableY = 100;
+    const productsData = [
+        [{ content: 'ORGANIQUE1.56 UNIFOCAL PHOTOCHROMIQUE AR+ ANTILUMIERE BLUE', rowSpan: 2 }, 'MOYEN DE GAMME', 'Client', '1', '0'],
+        ['', 'SPH', 'CYL', 'ADD'],
+        ['OD', formData.od_sphere, formData.od_cylindre, formData.od_add, { content: formData.montant_verres, colSpan: 2, rowSpan: 1 }],
+        ['OG', formData.og_sphere, formData.og_cylindre, formData.og_add, { content: formData.montant_verres, colSpan: 2, rowSpan: 1 }]
     ];
 
     pdf.autoTable({
-        startY: 105,
-        head: [prescriptionHead],
-        body: prescriptionBody,
-        headStyles: { fillColor: [200, 200, 200], textColor: 0, fontSize: 9 },
-        styles: { fontSize: 9, cellPadding: 3 },
-        theme: "grid",
-        margin: { left: 20, right: 20 }
+        startY: tableY,
+        head: [['Monture', 'Qté', 'Prix unitaire', 'Client']],
+        body: [
+            [formData.choix_monture, 1, formData.montant_monture, ''], // Monture line
+            ...productsData,
+        ],
+        theme: 'plain',
+        styles: {
+            fontSize: 10,
+            cellPadding: 2
+        },
+        headStyles: {
+            fillColor: [255, 255, 255],
+            textColor: [0, 0, 0],
+            fontStyle: 'bold'
+        },
+        bodyStyles: {
+            textColor: [0, 0, 0]
+        },
+        didDrawPage: function(data) {
+            // Dessiner les lignes de séparation pour la table manuellement si nécessaire
+            // ou ajuster les options autoTable pour qu'elles correspondent au design
+        }
     });
 
-    // === Monture ===
-    const yAfterPrescription = pdf.autoTable.previous.finalY + 10;
+    // --- Tableau de résumé des prix ---
+    const summaryTableY = pdf.autoTable.previous.finalY + 10;
     pdf.autoTable({
-        startY: yAfterPrescription,
-        head: [["MONTURE", "Qté", "Prix unitaire"]],
-        body: [["Monture Client", "1", `${formData.montant_monture} F`]],
-        headStyles: { fillColor: [200, 200, 200], textColor: 0, fontSize: 9 },
-        styles: { fontSize: 9, cellPadding: 3 },
-        theme: "grid",
-        margin: { left: 20, right: 20 }
+        startY: summaryTableY,
+        body: [
+            ['Brut:', formData.total_brut],
+            ['Remise', formData.remise],
+            ['Net à Payer:', formData.net_a_payer],
+        ],
+        theme: 'plain',
+        styles: {
+            fontSize: 10,
+            cellPadding: 2,
+            halign: 'right'
+        },
+        columnStyles: {
+            0: { fontStyle: 'bold' },
+            1: { halign: 'right' }
+        },
+        didParseCell: function(data) {
+            if (data.row.index === 2) {
+                data.cell.styles.fontStyle = 'bold';
+            }
+        }
     });
 
-    // === Montants ===
-    let yPos = pdf.autoTable.previous.finalY + 10;
-    pdf.setFont("helvetica", "normal");
+    // --- Pied de page ---
+    const footerY = pdf.autoTable.previous.finalY + 20;
+    
     pdf.setFontSize(10);
-    pdf.text(`Brut : ${parseInt(formData.total_brut)} F`, 30, yPos);
-    yPos += 6;
-    pdf.text(`Remise : ${formData.remise} ${formData.remise_type}`, 30, yPos);
-    yPos += 6;
-    pdf.setFont("helvetica", "bold");
-    pdf.text(`Net à Payer : ${parseInt(formData.net_a_payer)} F`, 30, yPos);
+    pdf.setFont('helvetica', 'normal');
+    pdf.text("ARRETÉE LA PRÉSENTE FACTURE PROFORMA À LA SOMME DE SOIXANTE-DIX-NEUF MILLE FRANCS CFA", 15, footerY);
 
-    // === Montant en lettres ===
-    yPos += 15;
-    pdf.setFont("helvetica", "normal");
-    pdf.setFontSize(9);
-    pdf.text(
-        `ARRETÉE LA PRÉSENTE FACTURE PROFORMA À LA SOMME DE ${numberToFrenchWords(parseInt(formData.net_a_payer))} FRANCS CFA`,
-        20, yPos
-    );
+    pdf.setFontSize(12);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text("<<<<<<<<<<>>>>>>>>>", 15, footerY + 10);
+    pdf.text("<<<<<<<<<<>>>>>>>>>", 15, footerY + 30);
+    
+    pdf.setFontSize(10);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text("Prenez soin de vos yeux !", 15, footerY + 15);
+    pdf.setFont('helvetica', 'normal');
+    pdf.text("Une visite régulière chez votre opticien est essentielle pour préserver votre santé visuelle.", 15, footerY + 20);
 
-    // === Phrase avant pied de page ===
-    yPos += 12;
-    pdf.setFontSize(9);
-    pdf.setTextColor(80);
-    pdf.text("Une visite régulière chez votre opticien est essentielle pour préserver votre santé visuelle.", 105, yPos, { align: "center" });
-
-    // === Pied de page ===
-    const footerY = 275;
-    pdf.setDrawColor(200);
-    pdf.line(20, footerY, 190, footerY);
-
-    pdf.setFont("helvetica", "normal");
     pdf.setFontSize(8);
-    pdf.setTextColor(80);
-    pdf.text("Voir Plus Optic Sarl Société à Responsabilité limitée au Capital de 1,200,000 F.CFA enregistré sous le N° RCCM RB/COT/23 B 35451", 105, footerY + 5, { align: "center" });
-    pdf.text("Ecobank Benin RIB : BJ66 BJ06 01006 111509475001 52", 105, footerY + 10, { align: "center" });
-    pdf.setFont("helvetica", "italic");
-    pdf.text("Prenez soin de vos yeux !", 105, footerY + 15, { align: "center" });
+    pdf.text("Voir Plus Optic Sarl Société à Responsabilité limitée au Capital de 1,200,000 F.CFA enregistré sous le N° RCCM RB/COT/23 B", 15, footerY + 35);
+    pdf.text("35451 au registre du commerce de Cotonou. Ecobank Benin RIB: BJ66 BJ06 01006 111509475001 52", 15, footerY + 40);
 
-    // Générer et ouvrir PDF
-    const pdfBlob = pdf.output("blob");
+    // Générer PDF
+    const pdfBlob = pdf.output('blob');
     const pdfUrl = URL.createObjectURL(pdfBlob);
-    const printWindow = window.open(pdfUrl, "_blank");
+    const printWindow = window.open(pdfUrl, '_blank');
 
     printWindow.onload = function () {
         printWindow.focus();
@@ -10530,12 +10560,19 @@ async function generatePDF() {
             URL.revokeObjectURL(pdfUrl);
         };
     };
-
     closeModal();
 }
 
-
-
+// Fonction utilitaire pour charger les scripts
+function loadScript(url) {
+    return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = url;
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+    });
+}
 function numberToFrenchWords(number) {
     if (number === 0) return 'ZÉRO';
     
