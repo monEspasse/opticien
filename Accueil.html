@@ -12014,9 +12014,7 @@ function setupEventListeners() {
                 telephoneContact.style.backgroundColor = '#f0f0f0';
                 
                 if (agence) {
-                    const adressesAgences = {
-                        'cotonou': '123 Rue des Agences, Cotonou, Bénin',
-                    };
+                    const adressesAgences = agence
                     
                     adresseLivraison.value = adressesAgences[agence] || agence;
                     adresseLivraison.readOnly = true;
