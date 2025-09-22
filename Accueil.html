@@ -6021,7 +6021,7 @@ function hasAdminRights() {
     const currentUser = sessionStorage.getItem("utilisateur") || localStorage.getItem("utilisateur");
     
     // Liste des utilisateurs autorisés
-    const adminUsers = ["Admin"];
+    const adminUsers = ["Admin","Dosso"];
     
     // Vérifie si l'utilisateur actuel fait partie de la liste
     return adminUsers.includes(currentUser);
