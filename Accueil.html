@@ -4629,6 +4629,329 @@ select.form-control {
 @keyframes spin {
     to { transform: rotate(360deg); }
 }
+
+/* Custom Styles for Caisse Modal */
+#modal-${action} {
+    /* Base Modal Overlay */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Slightly darker overlay for better contrast */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1050; /* Ensure it's on top of other content */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+#modal-${action}.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+#modal-${action} .modal-content {
+    background-color: #ffffff;
+    border-radius: 12px; /* Smoother, modern corners */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Deeper shadow for a "lifted" effect */
+    max-width: 1200px;
+    width: 95%; /* Responsive width */
+    transform: scale(0.95);
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
+}
+
+#modal-${action}.active .modal-content {
+    transform: scale(1);
+}
+
+#modal-${action} .modal-header {
+    background-color: #4A90E2; /* Professional blue header */
+    color: #fff;
+    padding: 20px 30px;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+#modal-${action} .modal-title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+#modal-${action} .modal-title i {
+    margin-right: 12px;
+    font-size: 1.8rem;
+}
+
+#modal-${action} .modal-body {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+/* Filters Card */
+#modal-${action} .filters-card {
+    background-color: #F8F9FA;
+    border-radius: 8px;
+    padding: 20px;
+    border: 1px solid #E0E0E0;
+}
+
+#modal-${action} .filters-container {
+    display: flex;
+    align-items: flex-end; /* Align items to the bottom */
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+#modal-${action} .filter-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+#modal-${action} .filter-item label {
+    font-weight: 500;
+    color: #555;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#modal-${action} .date-range {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#modal-${action} .date-range input {
+    border: 1px solid #CED4DA;
+    border-radius: 6px;
+    padding: 8px 12px;
+    transition: border-color 0.2s;
+    font-size: 0.95rem;
+}
+
+#modal-${action} .date-range input:focus {
+    border-color: #4A90E2;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+}
+
+/* Table Card */
+#modal-${action} .table-card {
+    border: 1px solid #E0E0E0;
+    border-radius: 8px;
+    overflow: hidden; /* Ensures table corners are rounded */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+#modal-${action} .caisse-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+#modal-${action} .caisse-table thead {
+    background-color: #f2f2f2;
+    border-bottom: 2px solid #E0E0E0;
+}
+
+#modal-${action} .caisse-table th,
+#modal-${action} .caisse-table td {
+    padding: 15px 20px;
+    text-align: left;
+    border-bottom: 1px solid #E9ECEF;
+    vertical-align: middle;
+}
+
+#modal-${action} .caisse-table th {
+    font-weight: 600;
+    color: #495057;
+    white-space: nowrap;
+}
+
+#modal-${action} .caisse-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+#modal-${action} .caisse-table tbody tr:hover {
+    background-color: #F8F9FA;
+}
+
+#modal-${action} .caisse-table tfoot {
+    background-color: #E6F0F8;
+    font-weight: 700;
+}
+
+#modal-${action} .caisse-table tfoot td {
+    border-top: 2px solid #4A90E2;
+    color: #212529;
+}
+
+#modal-${action} .caisse-table .text-right {
+    text-align: right;
+    font-weight: 500;
+}
+
+#modal-${action} .spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-top-color: #4A90E2;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#modal-${action} .alert {
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+}
+
+#modal-${action} .alert-info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+}
+
+/* Footer & Buttons */
+#modal-${action} .modal-footer {
+    padding: 20px 30px;
+    border-top: 1px solid #E9ECEF;
+    background-color: #f8f9fa;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+}
+
+#modal-${action} .btn {
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#modal-${action} .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#modal-${action} .btn-secondary {
+    background-color: #6c757d;
+    color: #fff;
+    border: none;
+}
+
+#modal-${action} .btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+#modal-${action} .btn-close-modal {
+    background-color: #dc3545; /* A subtle red for 'close' */
+    color: #fff;
+    border: none;
+}
+
+#modal-${action} .btn-close-modal:hover {
+    background-color: #c82333;
+}
+
+.caisse-summary-item {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 12px;
+    padding: 15px 20px;
+    border: 2px solid #dee2e6;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    margin-left: auto;
+    min-width: 220px;
+    text-align: center;
+}
+
+.caisse-summary-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    border-color: #007bff;
+}
+
+.caisse-summary-item label {
+    display: block;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+}
+
+/* Style pour la valeur numérique */
+.caisse-value-display {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #28a745;
+    display: block;
+    padding: 10px 15px;
+    background-color: white;
+    border-radius: 8px;
+    border: 2px dashed #28a745;
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.15);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    animation: pulse 2s infinite;
+}
+
+.caisse-value-display:hover {
+    transform: scale(1.03);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.25);
+}
+
+/* Animation de pulsation subtile */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.15);
+    }
+    70% {
+        box-shadow: 0 0 0 6px rgba(40, 167, 69, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+    }
+}
+
+/* Adaptation pour mobile */
+@media (max-width: 768px) {
+    .caisse-summary-item {
+        min-width: auto;
+        width: 100%;
+        margin-top: 15px;
+    }
+    
+    .caisse-value-display {
+        font-size: 1.5rem;
+        padding: 8px 12px;
+    }
+}
 </style>
 </head>
 <body>
@@ -4884,7 +5207,6 @@ window.openProductEntryForm = function() {
                 <i class="fas fa-plus"></i> Ajouter
             </button>
         </div>
-                        
                         <div id="dynamicFields"></div>
                         
                         <div class="form-group">
@@ -6060,6 +6382,7 @@ window.openCaisse = function(action, title) {
     const startId = `start-${action}`;
     const endId = `end-${action}`;
     const messageId = `message-${action}`;
+    const currentCaisseId = `currentCaisse-${action}`; // Nouvel ID pour la valeur En Caisse
 
     modalContainer.innerHTML = `
         <div class="modal-overlay" id="modal-${action}">
@@ -6083,7 +6406,12 @@ window.openCaisse = function(action, title) {
                                     <i class="fas fa-undo"></i> Réinitialiser
                                 </button>
                             </div>
-                        </div>
+                            
+                            <div class="filter-item caisse-summary-item">
+                                <label>En Caisse :</label>
+                                <strong id="${currentCaisseId}" class="caisse-value-display">--</strong>
+                            </div>
+                            </div>
                     </div>
 
                     <div class="table-card">
@@ -6122,7 +6450,8 @@ window.openCaisse = function(action, title) {
 
     setTimeout(() => {
         document.getElementById(`modal-${action}`).classList.add('active');
-        loadCaisse(action);
+
+        loadCaisse(action); 
     }, 10);
 };
 
@@ -6137,11 +6466,17 @@ const caisseDataStore = {}; // Stocke toutes les données par action (caisse1, c
 async function loadCaisse(action) {
     const dataId = `caisseData-${action}`;
     const messageId = `message-${action}`;
+    const currentCaisseId = `currentCaisse-${action}`; // Utiliser le bon ID
+    
     const tableBody = document.getElementById(dataId);
     const messageDiv = document.getElementById(messageId);
+    const currentCaisseDiv = document.getElementById(currentCaisseId); // Récupérer l'élément correct
 
     tableBody.innerHTML = `<tr><td colspan="6" class="text-center"><div class="spinner"></div></td></tr>`;
     messageDiv.style.display = 'none';
+    if (currentCaisseDiv) {
+        currentCaisseDiv.textContent = '--'; // Réinitialiser l'affichage pendant le chargement
+    }
 
     try {
         const apiUrl = `https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=${action}`;
@@ -6170,12 +6505,25 @@ async function loadCaisse(action) {
             };
         });
 
+        // Trier les données par date en ordre décroissant pour obtenir la dernière valeur "En Caisse"
+        caisseDataStore[action].sort((a, b) => b.Date - a.Date);
+
         setupFilters(action);
         displayCaisse(action, caisseDataStore[action]);
+
+        // Trouver et afficher la dernière valeur "En Caisse"
+        const latestCaisseEntry = caisseDataStore[action][0];
+        if (latestCaisseEntry && currentCaisseDiv) {
+            currentCaisseDiv.textContent = `${latestCaisseEntry.EnCaisse.toFixed(2)} FCFA`;
+        }
+
     } catch (error) {
         console.error(`[${action}] Erreur:`, error);
         showCaisseMessage(action, `❌ Erreur: ${error.message || 'Chargement échoué'}`, 'danger');
         tableBody.innerHTML = '<tr><td colspan="6" class="text-center">Erreur de chargement</td></tr>';
+        if (currentCaisseDiv) {
+            currentCaisseDiv.textContent = 'Erreur';
+        }
     }
 }
 
@@ -10018,15 +10366,19 @@ async function generatePDF() {
         await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js');
     }
 
-    // Utiliser jsPDF via window.jspdf
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
-    // Récupérer les données du formulaire
+    // Charger logo.png
+    const logoImg = new Image();
+    logoImg.src = 'logo.png';
+
+    // Données formulaire
     const formData = {
         nom_complet: document.getElementById('nom_complet').value,
-        contact: document.querySelector('input[name="indicatif"]').value + ' ' + 
-        document.querySelector('input[name="numero"]').value,
+        contact: document.querySelector('input[name="indicatif"]').value + ' ' +
+                 document.querySelector('input[name="numero"]').value,
+        email: document.getElementById('email') ? document.getElementById('email').value : '',
         date_naissance: document.getElementById('date_naissance').value,
         civilite: document.getElementById('civilite').value,
         type_verre: document.getElementById('type_verre').value,
@@ -10049,249 +10401,244 @@ async function generatePDF() {
         net_a_payer: document.getElementById('net_a_payer').value
     };
 
-    // === Barre colorée à gauche ===
-    pdf.setFillColor(50, 90, 160);
-    pdf.rect(15, 15, 5, 250, 'F'); // Barre verticale
+    // Génération du numéro facture
+    const today = new Date();
+    const dateStr = today.toISOString().slice(0,10).replace(/-/g,'/'); // AAAA/MM/JJ
+    const initials = formData.nom_complet.split(' ').map(w => w[0]).join('').toUpperCase();
+    const randomNum = Math.floor(Math.random() * 100);
+    const factureNum = `FP/${initials}/${dateStr}-${randomNum}`;
 
-    // === En-tête simplifié, moderne ===
-    pdf.setFont('helvetica', 'normal');
-    pdf.setFontSize(24);
-    pdf.setTextColor(50, 90, 160);
-    pdf.text('VOIR PLUS OPTIC Sarl', 30, 30);
-
-    pdf.setFontSize(10);
-    pdf.setTextColor(100, 100, 100);
-    pdf.text('Tel: +229 01 427 494 95', 30, 38);
-    pdf.text('optiquevoirplus@gmail.com', 30, 44);
-    pdf.text('Gbédomidji, Cotonou-Benin.', 30, 50);
-
-    // Date et N° facture en haut à droite
+    // === En-tête ===
+    pdf.addImage(logoImg, 'PNG', 20, 10, 30, 30); // logo
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(14);
+    pdf.setTextColor(40);
+    pdf.text('Voir Plus Optic Sarl', 60, 15);
     pdf.setFont('helvetica', 'normal');
     pdf.setFontSize(9);
-    pdf.setTextColor(120, 120, 120);
-    const today = new Date().toISOString().slice(0,10);
-    pdf.text(`Date: ${today}`, 180, 30, { align: 'right' });
-    pdf.text(`Facture Proforma`, 180, 40, { align: 'right', fontStyle: 'bold' });
+    pdf.text('Société à Responsabilité Limitée au Capital de 1,200,000 F.CFA', 60, 20);
+    pdf.text('RCCM RB/COT/23 B 35451 - IFU: 3202368717681', 60, 25);
+    pdf.text('Gbédomidji, Cotonou-Benin', 60, 30);
+    pdf.text('Tel: (229) 42749495 - Email: optiquevoirplus@gmail.com', 60, 35);
 
-    pdf.setDrawColor(200);
-    pdf.setLineWidth(0.5);
-    pdf.line(30, 55, 185, 55);
-
-    // === Deux colonnes à partir d'ici ===
-    let startY = 65;
-    const colLeftX = 30;
-    const colRightX = 110;
-    
-    // ==== Colonne gauche : Infos client ====
     pdf.setFont('helvetica', 'bold');
-    pdf.setFontSize(11);
+    pdf.setFontSize(16);
     pdf.setTextColor(50, 90, 160);
-    pdf.text('Informations Client', colLeftX, startY);
+    pdf.text('FACTURE PROFORMA', 105, 50, { align: 'center' });
 
     pdf.setFont('helvetica', 'normal');
     pdf.setFontSize(10);
-    pdf.setTextColor(70);
+    pdf.setTextColor(80);
+    pdf.text(`Edité le: ${today.toLocaleDateString()}`, 30, 60);
+    pdf.text(`Proforma N°: ${factureNum}`, 150, 60);
 
-    const leftLines = [
-        `${formData.civilite} ${formData.nom_complet}`,
-        `Téléphone : ${formData.contact}`,
-        `Né le    : ${formData.date_naissance}`
-    ];
-
-    let lineY = startY + 8;
-    leftLines.forEach(line => {
-        pdf.text(line, colLeftX, lineY);
-        lineY += 6;
-    });
-
-    // ==== Colonne droite : Commande ====
+    // === Infos client ===
     pdf.setFont('helvetica', 'bold');
     pdf.setFontSize(11);
-    pdf.setTextColor(50, 90, 160);
-    pdf.text('Commande', colRightX, startY);
+    pdf.setTextColor(0);
+    pdf.text('Facture pour :', 30, 75);
 
     pdf.setFont('helvetica', 'normal');
     pdf.setFontSize(10);
-    pdf.setTextColor(70);
+    pdf.text(`Mme/M. : ${formData.civilite} ${formData.nom_complet}`, 30, 82);
+    pdf.text(`TEL : ${formData.contact}`, 30, 88);
+    if (formData.email) pdf.text(`Email : ${formData.email}`, 30, 94);
 
-    // Vérifier si le type de verre est trop long
-    const typeVerreText = `Type de verre : ${formData.type_verre}`;
-    const maxWidth = 70; // Largeur maximale pour la colonne droite
-    
-    // Diviser le texte si nécessaire
-    const splitTypeVerre = pdf.splitTextToSize(typeVerreText, maxWidth);
-    
-    let rightY = startY + 8;
-    pdf.text(splitTypeVerre[0], colRightX, rightY);
-    rightY += 6;
-    
-    // Ajouter les lignes supplémentaires si le texte a été divisé
-    if (splitTypeVerre.length > 1) {
-        for (let i = 1; i < splitTypeVerre.length; i++) {
-            pdf.text(splitTypeVerre[i], colRightX, rightY);
-            rightY += 6;
-        }
-    }
-    
-    // Continuer avec les autres informations
-    const rightLines = [
-        `Gamme        : ${formData.gamme_verre}`,
-        `Monture     : ${formData.choix_monture}`,
-        `Date soin  : ${formData.date_soin}`
+    // === Prescription Verres ===
+    const prescriptionHead = ['Œil', 'Désignation', 'Sphère', 'Cylindre', 'Axe', 'Add', 'Qté', 'Prix U.', 'Total'];
+    const prixVerre = (parseFloat(formData.montant_verres) / 2).toFixed(0);
+    const prescriptionBody = [
+        ['OD', `${formData.type_verre} ${formData.gamme_verre}`, formData.od_sphere, formData.od_cylindre, formData.od_axe, formData.od_add, '1', prixVerre, prixVerre],
+        ['OG', `${formData.type_verre} ${formData.gamme_verre}`, formData.og_sphere, formData.og_cylindre, formData.og_axe, formData.og_add, '1', prixVerre, prixVerre]
     ];
 
-    rightLines.forEach(line => {
-        pdf.text(line, colRightX, rightY);
-        rightY += 6;
+    pdf.autoTable({
+        startY: 105,
+        head: [prescriptionHead],
+        body: prescriptionBody,
+        headStyles: { fillColor: [50,90,160], textColor: 255, fontSize: 9 },
+        styles: { fontSize: 9, cellPadding: 3 },
+        theme: 'grid',
+        margin: { left: 20, right: 20 }
     });
 
-    const maxY = Math.max(lineY, rightY) + 10;
+    // === Monture ===
+    const yAfterPrescription = pdf.autoTable.previous.finalY + 10;
+    pdf.autoTable({
+        startY: yAfterPrescription,
+        head: [['Désignation', 'Qté', 'Prix unitaire']],
+        body: [[formData.choix_monture, '1', `${formData.montant_monture} F`]],
+        headStyles: { fillColor: [200,200,200], textColor: 0, fontSize: 9 },
+        styles: { fontSize: 9, cellPadding: 3 },
+        theme: 'grid',
+        margin: { left: 20, right: 20 }
+    });
 
-    // ==== Prescription en pleine largeur ====
-    pdf.setDrawColor(50, 90, 160);
-    pdf.setLineWidth(1);
-    pdf.rect(25, maxY, 160, 50);
-
+    // === Détails Montants ===
+    let yPos = pdf.autoTable.previous.finalY + 10;
     pdf.setFont('helvetica', 'bold');
-    pdf.setFontSize(12);
-    pdf.setTextColor(50, 90, 160);
-    pdf.text('Prescription Verres', 30, maxY + 12);
+    pdf.setFontSize(11);
+    pdf.setTextColor(50,90,160);
+    pdf.text('DÉTAIL DES MONTANTS', 105, yPos, { align: 'center' });
+    yPos += 8;
 
     pdf.setFont('helvetica', 'normal');
     pdf.setFontSize(10);
     pdf.setTextColor(0);
+    pdf.text(`Brut : ${formData.total_brut} F`, 40, yPos);
+    yPos += 6;
+    pdf.text(`Remise : ${formData.remise} ${formData.remise_type}`, 40, yPos);
+    yPos += 6;
+    pdf.setFont('helvetica', 'bold');
+    pdf.text(`Net à Payer : ${formData.net_a_payer} F`, 40, yPos);
 
-    const prescriptionHead = ['Œil', 'Sphère', 'Cylindre', 'Axe', 'Add'];
-    const prescriptionBody = [
-        ['OD', formData.od_sphere, formData.od_cylindre, formData.od_axe, formData.od_add],
-        ['OG', formData.og_sphere, formData.og_cylindre, formData.og_axe, formData.og_add]
-    ];
-
-    pdf.autoTable({
-        startY: maxY + 16,
-        head: [prescriptionHead],
-        body: prescriptionBody,
-        headStyles: {
-            fillColor: [50, 90, 160],
-            textColor: 255,
-            fontStyle: 'bold',
-            fontSize: 11
-        },
-        styles: {
-            fontSize: 10,
-            textColor: 30,
-            cellPadding: 4
-        },
-        margin: { left: 30, right: 30 },
-        tableWidth: 160
-    });
-
-    const paymentY = pdf.autoTable.previous.finalY + 15;
-
-// --- Détail des montants ---
-let yPos = pdf.autoTable.previous.finalY + 15;
-
-// Ligne de séparation
-pdf.setDrawColor(200);
-pdf.setLineWidth(0.3);
-pdf.line(30, yPos - 5, 180, yPos - 5);
-
-// Titre de la section
-pdf.setFont('helvetica', 'bold');
-pdf.setFontSize(11);
-pdf.setTextColor(50, 90, 160);
-pdf.text('DÉTAIL DES MONTANTS', 105, yPos, { align: 'center' });
-yPos += 8;
-
-// Calculer le montant par verre (divisé par 2)
-const montantVerreParOeil = parseFloat(formData.montant_verres) / 2;
-
-// Colonne gauche : Détail des montants
-pdf.setFont('helvetica', 'normal');
-pdf.setFontSize(10);
-pdf.setTextColor(70);
-
-// Tableau des détails à gauche
-// ----- CONFIG GLOBALE -----
-const leftXLabel = 40;    // Colonne gauche - label
-const leftXValue = 90;    // Colonne gauche - valeur
-const rightXLabel = 130;  // Colonne droite - label
-const rightXValue = 190;  // Colonne droite - valeur
-const lineHeight = 8;     // Hauteur entre lignes
-
-// ----- DÉTAILS GAUCHE -----
-const leftDetails = [
-    { label: 'Monture', value: `${formData.montant_monture} F` },
-    { label: 'Verre OD', value: `${montantVerreParOeil.toFixed(0)} F` },
-    { label: 'Verre OG', value: `${montantVerreParOeil.toFixed(0)} F` }
-];
-
-leftDetails.forEach((detail, i) => {
-    const y = yPos + (i * lineHeight);
-    pdf.setFontSize(10);
-    pdf.setTextColor(50);
-    pdf.text(detail.label + " :", leftXLabel, y);
-    pdf.text(detail.value, leftXValue, y);
-});
-
-// ----- DÉTAILS DROITE -----
-const rightDetails = [
-    { label: 'Total Brut', value: `${formData.total_brut} F` },
-    { label: 'Remise', value: `${formData.remise} ${formData.remise_type}` },
-    { label: 'Net à Payer', value: `${formData.net_a_payer} F` }
-];
-
-rightDetails.forEach((detail, i) => {
-    const y = yPos + (i * lineHeight);
-    pdf.setFontSize(detail.label === 'Net à Payer' ? 11 : 10);
-    pdf.setTextColor(detail.label === 'Net à Payer' ? 30 : 50);
-    pdf.text(detail.label + " :", rightXLabel, y);
-    pdf.text(detail.value, rightXValue, y, { align: 'right' });
-});
-
-
-// Réinitialiser la couleur et taille de police
-pdf.setTextColor(70);
-pdf.setFontSize(10);
-
-// Ligne de séparation en bas
-yPos += 20;
-pdf.setDrawColor(200);
-pdf.setLineWidth(0.3);
-pdf.line(30, yPos, 180, yPos);
-
-    // --- Montant en lettres ---
-    yPos += 10;
-    pdf.setFontSize(9);
+    // === Montant en lettres ===
+    yPos += 15;
     pdf.setFont('helvetica', 'normal');
-    pdf.text(`ARRETÉE LA PRÉSENTE FACTURE PROFORMA À LA SOMME DE ${formData.net_a_payer} FRANCS CFA`, 30, yPos);
-
-    // ==== Pied de page minimaliste ====
-    const footerY = yPos + 10;
-    pdf.setDrawColor(50, 90, 160);
-    pdf.setLineWidth(0.8);
-    pdf.line(30, footerY, 185, footerY);
-
-    pdf.setFont('helvetica', 'italic');
     pdf.setFontSize(9);
-    pdf.setTextColor(80);
-    pdf.text('Prenez soin de vos yeux avec VOIR PLUS OPTIC.', 105, footerY + 10, { align: 'center' });
+    pdf.text(`ARRETÉE LA PRÉSENTE FACTURE PROFORMA À LA SOMME DE ${numberToFrenchWords(parseInt(formData.net_a_payer))} FRANCS CFA`, 20, yPos);
 
+    // === Pied de page ===
+    const footerY = 275;
+    pdf.setDrawColor(200);
+    pdf.line(20, footerY, 190, footerY);
+
+    pdf.setFontSize(8);
+    pdf.setTextColor(80);
+    pdf.text('Voir Plus Optic Sarl - RCCM RB/COT/23 B 35451 - Capital 1,200,000 F.CFA', 105, footerY+5, { align: 'center' });
+    pdf.text('Ecobank Benin RIB : BJ66 BJ06 01006 111509475001 52', 105, footerY+10, { align: 'center' });
+    pdf.setFont('helvetica', 'italic');
+    pdf.text('Prenez soin de vos yeux !', 105, footerY+15, { align: 'center' });
+
+    // Générer PDF
     const pdfBlob = pdf.output('blob');
     const pdfUrl = URL.createObjectURL(pdfBlob);
-
-    // Créer une nouvelle fenêtre avec le PDF
     const printWindow = window.open(pdfUrl, '_blank');
 
     printWindow.onload = function () {
         printWindow.focus();
-        printWindow.print();  // Lance l'impression
+        printWindow.print();
         printWindow.onafterprint = () => {
-            printWindow.close();  // Ferme après impression
-            URL.revokeObjectURL(pdfUrl); // Libérer mémoire
+            printWindow.close();
+            URL.revokeObjectURL(pdfUrl);
         };
     };
     closeModal();
+}
+
+
+function numberToFrenchWords(number) {
+    if (number === 0) return 'ZÉRO';
+    
+    const units = ['', 'UN', 'DEUX', 'TROIS', 'QUATRE', 'CINQ', 'SIX', 'SEPT', 'HUIT', 'NEUF'];
+    const teens = ['DIX', 'ONZE', 'DOUZE', 'TREIZE', 'QUATORZE', 'QUINZE', 'SEIZE', 'DIX-SEPT', 'DIX-HUIT', 'DIX-NEUF'];
+    const tens = ['', 'DIX', 'VINGT', 'TRENTE', 'QUARANTE', 'CINQUANTE', 'SOIXANTE', 'SOIXANTE', 'QUATRE-VINGT', 'QUATRE-VINGT'];
+    const hundreds = ['CENT', 'DEUX-CENTS', 'TROIS-CENTS', 'QUATRE-CENTS', 'CINQ-CENTS', 'SIX-CENTS', 'SEPT-CENTS', 'HUIT-CENTS', 'NEUF-CENTS'];
+    const thousands = ['MILLE', 'MILLION', 'MILLIARD'];
+    
+    let result = '';
+    
+    if (number < 0) {
+        result = 'MOINS ';
+        number = Math.abs(number);
+    }
+    
+    // Traitement des millions
+    if (number >= 1000000) {
+        const millions = Math.floor(number / 1000000);
+        result += convertLessThanThousand(millions, true) + ' MILLION' + (millions > 1 ? 'S' : '');
+        number %= 1000000;
+        if (number > 0) {
+            result += ' ';
+        }
+    }
+    
+    // Traitement des milliers
+    if (number >= 1000) {
+        const thousandsVal = Math.floor(number / 1000);
+        if (thousandsVal === 1) {
+            result += 'MILLE';
+        } else {
+            result += convertLessThanThousand(thousandsVal, true) + ' MILLE';
+        }
+        number %= 1000;
+        if (number > 0) {
+            result += ' ';
+        }
+    }
+    
+    // Traitement des centaines, dizaines et unités
+    if (number > 0) {
+        result += convertLessThanThousand(number, false);
+    }
+    
+    return result;
+    
+    function convertLessThanThousand(num, isForThousand) {
+        let str = '';
+        
+        // Centaines
+        if (num >= 100) {
+            const hundredsVal = Math.floor(num / 100);
+            if (hundredsVal === 1) {
+                str += 'CENT';
+            } else {
+                str += units[hundredsVal] + '-CENT';
+            }
+            num %= 100;
+            if (num > 0) {
+                str += ' ';
+            }
+        }
+        
+        // Dizaines et unités
+        if (num >= 10 && num <= 19) {
+            str += teens[num - 10];
+        } else if (num >= 20 || num < 10) {
+            const tensVal = Math.floor(num / 10);
+            const unitsVal = num % 10;
+            
+            if (tensVal > 0) {
+                if (tensVal === 7 || tensVal === 9) {
+                    // Soixante-dix, Quatre-vingt-dix
+                    str += tens[tensVal];
+                    const remainder = num - tensVal * 10;
+                    if (remainder > 0) {
+                        if (tensVal === 7) {
+                            str += '-';
+                            if (remainder === 1) {
+                                str += 'ET-';
+                            }
+                            str += teens[remainder];
+                        } else if (tensVal === 9) {
+                            str += '-';
+                            str += teens[remainder];
+                        }
+                    }
+                    return str;
+                } else {
+                    str += tens[tensVal];
+                }
+            }
+            
+            if (unitsVal > 0) {
+                if (tensVal > 0) {
+                    if (unitsVal === 1 && tensVal !== 8 && tensVal !== 9) {
+                        str += '-ET-' + units[unitsVal];
+                    } else {
+                        str += '-' + units[unitsVal];
+                    }
+                } else {
+                    str += units[unitsVal];
+                }
+            } else if (tensVal === 8 && !isForThousand) {
+                // Quatre-vingts (avec un S)
+                str += 'S';
+            }
+        }
+        
+        return str;
+    }
 }
 
 // Fonction utilitaire pour charger les scripts
