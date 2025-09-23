@@ -2987,6 +2987,150 @@ document.head.appendChild(style);
 console.log('Styles d\'animation ajoutés');   
 </script>
 <script>
+// Variables pour stocker le numéro à appeler
+let currentPhoneNumber = '';
+
+// Détection mobile
+function isMobileDevice() {
+    return /Mobi|Android|iPhone|iPad|iPod|IEMobile|WPDesktop/i.test(navigator.userAgent);
+}
+
+// Nettoyer et garder 10 chiffres
+function cleanPhoneNumber(phoneNumber) {
+    let digitsOnly = phoneNumber.replace(/\D/g, '');
+    if (digitsOnly.length > 10) {
+        digitsOnly = digitsOnly.slice(-10);
+    }
+    return digitsOnly;
+}
+
+// Formater pour affichage
+function formatPhoneNumberForDisplay(phoneNumber) {
+    return phoneNumber.replace(/(\d{2})(?=\d)/g, '$1 ');
+}
+
+// Ouvrir la fenêtre de confirmation
+function initiatePhoneCall() {
+    const phoneElement = document.getElementById('client-phone');
+    if (!phoneElement) {
+        alert("Élément numéro de téléphone non trouvé");
+        return;
+    }
+
+    const rawNumber = phoneElement.textContent.trim();
+    if (!rawNumber || rawNumber === 'N/A' || rawNumber === 'Chargement...') {
+        alert("Numéro de téléphone non disponible");
+        return;
+    }
+
+    const cleanedNumber = cleanPhoneNumber(rawNumber);
+
+    if (cleanedNumber.length !== 10) {
+        alert("Numéro de téléphone invalide: " + rawNumber);
+        return;
+    }
+
+    currentPhoneNumber = cleanedNumber;
+    document.getElementById('confirmPhoneNumber').textContent = formatPhoneNumberForDisplay(cleanedNumber);
+    document.getElementById('callConfirmationModal').style.display = 'flex';
+}
+
+// Confirmer l'appel → fonction pour Median
+function confirmCall() {
+    if (currentPhoneNumber) {
+        // Méthode standard pour Android/Median
+        window.location.href = 'tel:' + currentPhoneNumber;
+        
+        // Alternative
+        // window.open('tel:' + currentPhoneNumber, '_system');
+    }
+    cancelCall();
+}
+
+// Annuler
+function cancelCall() {
+    document.getElementById('callConfirmationModal').style.display = 'none';
+    currentPhoneNumber = '';
+}
+
+// Afficher bouton d'appel sur mobile
+document.addEventListener('DOMContentLoaded', function() {
+    const mobileCallBtn = document.getElementById('mobileCallBtn');
+    if (isMobileDevice()) {
+        mobileCallBtn.style.display = 'block';
+        mobileCallBtn.addEventListener('click', initiatePhoneCall);
+    }
+});
+
+// Styles
+if (!document.getElementById('mobileCallBtnStyle')) {
+    const style = document.createElement('style');
+    style.id = 'mobileCallBtnStyle';
+    style.textContent = `
+        .mobile-call-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        .mobile-call-btn:hover {
+            background-color: #218838;
+        }
+        @media (max-width: 768px) {
+            .user-info {
+                display: flex;
+                align-items: center;
+            }
+        }
+        
+        /* Styles pour la modale */
+        #callConfirmationModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 300px;
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+// Créer la modale si elle n'existe pas
+if (!document.getElementById('callConfirmationModal')) {
+    const modal = document.createElement('div');
+    modal.id = 'callConfirmationModal';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <h3>Confirmer l'appel</h3>
+            <p>Appeler le numéro : <strong id="confirmPhoneNumber"></strong></p>
+            <button onclick="confirmCall()" style="background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 5px; margin: 5px;">Appeler</button>
+            <button onclick="cancelCall()" style="background: #6c757d; color: white; padding: 10px 20px; border: none; border-radius: 5px; margin: 5px;">Annuler</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+</script>
+<script>
 // Variables pour stocker le numéro à appeler et les informations du client
 let currentPhoneNumber = '';
 let currentClientId = '';
