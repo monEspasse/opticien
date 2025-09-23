@@ -3364,7 +3364,7 @@ let currentPhoneNumber = '';
 let currentClientId = '';
 let currentUsername = '';
 
-// Détection mobile (garde si tu veux afficher/masquer le bouton)
+// Détection mobile
 function isMobileDevice() {
     return /Mobi|Android|iPhone|iPad|iPod|IEMobile|WPDesktop/i.test(navigator.userAgent);
 }
@@ -3376,11 +3376,6 @@ function cleanPhoneNumber(phoneNumber) {
         digitsOnly = digitsOnly.slice(-10);
     }
     return digitsOnly;
-}
-
-// Formater pour affichage
-function formatPhoneNumberForDisplay(phoneNumber) {
-    return phoneNumber.replace(/(\d{2})(?=\d)/g, '$1 ');
 }
 
 // Ouvrir la fenêtre de confirmation
@@ -3409,29 +3404,27 @@ function initiatePhoneCall() {
     currentClientId = document.getElementById('client-id').textContent;
     currentUsername = sessionStorage.getItem("utilisateur") || localStorage.getItem("utilisateur");
     
-    document.getElementById('confirmPhoneNumber').textContent = cleanedNumber;
+    document.getElementById('confirmPhoneNumber').textContent = formatPhoneNumberForDisplay(cleanedNumber);
     document.getElementById('callConfirmationModal').style.display = 'flex';
 }
 
-// Confirmer l'appel → envoie à Median
+// Formater pour affichage
+function formatPhoneNumberForDisplay(phoneNumber) {
+    return phoneNumber.replace(/(\d{2})(?=\d)/g, '$1 ');
+}
+
+// Confirmer l'appel → fonction principale pour Median
 function confirmCall() {
     if (currentPhoneNumber) {
-        // Méthode 1: Via window.location (pour les liens tel:)
+        console.log("Lancement de l'appel vers:", currentPhoneNumber);
+        
+        // Méthode 1: Directement avec le lien tel: (recommandé pour Median)
         window.location.href = 'tel:' + currentPhoneNumber;
         
-        // Méthode 2: Via postMessage pour Median (au cas où)
-        if (window.postMessage) {
-            try {
-                window.postMessage(JSON.stringify({
-                    type: 'CALL_PHONE',
-                    phoneNumber: currentPhoneNumber
-                }), '*');
-            } catch (e) {
-                console.log('PostMessage non disponible, utilisation de tel:');
-            }
-        }
+        // Méthode 2: Alternative pour certaines WebViews
+        window.open('tel:' + currentPhoneNumber, '_system');
         
-        // Stocker l'information qu'un appel vient d'être passé
+        // Stocker l'information pour la consigne
         localStorage.setItem('lastCallInfo', JSON.stringify({
             clientId: currentClientId,
             username: currentUsername,
@@ -3439,13 +3432,17 @@ function confirmCall() {
             timestamp: new Date().getTime()
         }));
         
-        // Ouvrir automatiquement la modale de consigne après un délai
-        setTimeout(openLogModalAutomatically, 1000);
+        console.log("Appel lancé, ouverture modale de consigne dans 2 secondes...");
+        
+        // Ouvrir la modale de consigne après un court délai
+        setTimeout(function() {
+            openLogModalAutomatically();
+        }, 2000);
     }
     cancelCall();
 }
 
-// Annuler
+// Annuler l'appel
 function cancelCall() {
     document.getElementById('callConfirmationModal').style.display = 'none';
     currentPhoneNumber = '';
@@ -3453,29 +3450,39 @@ function cancelCall() {
 
 // Fonction pour ouvrir automatiquement la modale de consigne
 function openLogModalAutomatically() {
+    console.log("Vérification de l'ouverture automatique de la modale...");
+    
     const lastCallInfo = localStorage.getItem('lastCallInfo');
     if (lastCallInfo) {
         const callInfo = JSON.parse(lastCallInfo);
         
-        // Vérifier si l'appel a été passé il y a moins de 5 minutes
-        const fiveMinutesAgo = new Date().getTime() - (5 * 60 * 1000);
-        if (callInfo.timestamp > fiveMinutesAgo) {
+        // Vérifier si l'appel a été passé il y a moins de 10 minutes
+        const tenMinutesAgo = new Date().getTime() - (10 * 60 * 1000);
+        if (callInfo.timestamp > tenMinutesAgo) {
+            console.log("Ouverture de la modale de consigne pour l'appel récent");
+            
             // Remplir automatiquement les champs
-            document.getElementById('logClientId').value = callInfo.clientId;
-            document.getElementById('logUser').value = callInfo.username;
+            document.getElementById('logClientId').value = callInfo.clientId || '';
+            document.getElementById('logUser').value = callInfo.username || '';
             
             // Afficher la modale
             document.getElementById('logCallModal').style.display = 'flex';
             
-            // Supprimer l'information pour ne pas réafficher la modale
+            // Ne pas supprimer tout de suite pour permettre plusieurs tentatives
+        } else {
+            console.log("Appel trop ancien, suppression des données");
             localStorage.removeItem('lastCallInfo');
         }
+    } else {
+        console.log("Aucune information d'appel récent trouvée");
     }
 }
 
 // Fermer la modale de consigne
 function closeLogModal() {
     document.getElementById('logCallModal').style.display = 'none';
+    // Supprimer les données après fermeture
+    localStorage.removeItem('lastCallInfo');
 }
 
 // Enregistrer la consigne d'appel
@@ -3484,7 +3491,7 @@ async function saveCallLog() {
     const user = document.getElementById('logUser').value;
     const note = document.getElementById('logNote').value;
     
-    if (!note) {
+    if (!note.trim()) {
         alert("Veuillez saisir une note pour cet appel");
         return;
     }
@@ -3495,9 +3502,9 @@ async function saveCallLog() {
         const response = await fetch(apiUrl, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: JSON.stringify({
+            body: new URLSearchParams({
                 clientId: clientId,
                 user: user,
                 note: note,
@@ -3514,69 +3521,72 @@ async function saveCallLog() {
     }
 }
 
-// Écouter les messages de Median (si nécessaire)
-window.addEventListener('message', function(event) {
-    try {
-        const data = JSON.parse(event.data);
-        if (data.type === 'CALL_COMPLETED') {
-            openLogModalAutomatically();
-        }
-    } catch (e) {
-        // Ce n'est pas un message JSON de Median
-    }
-});
-
-// Afficher bouton d'appel sur mobile
+// Initialisation au chargement de la page
 document.addEventListener('DOMContentLoaded', function() {
+    console.log("Initialisation du système d'appel Median");
+    
+    // Configurer le bouton d'appel mobile
     const mobileCallBtn = document.getElementById('mobileCallBtn');
-    if (isMobileDevice()) {
-        mobileCallBtn.style.display = 'block';
-        mobileCallBtn.addEventListener('click', initiatePhoneCall);
+    if (mobileCallBtn) {
+        if (isMobileDevice()) {
+            mobileCallBtn.style.display = 'block';
+            mobileCallBtn.addEventListener('click', initiatePhoneCall);
+        } else {
+            mobileCallBtn.style.display = 'none';
+        }
+    }
+    
+    // Configurer le bouton d'enregistrement
+    const saveLogBtn = document.getElementById('saveLogBtn');
+    if (saveLogBtn) {
+        saveLogBtn.addEventListener('click', saveCallLog);
     }
     
     // Vérifier si on doit ouvrir la modale de consigne au chargement
-    setTimeout(openLogModalAutomatically, 500);
+    setTimeout(openLogModalAutomatically, 1000);
     
     // Écouter les événements de visibilité de page (retour d'appel)
     document.addEventListener('visibilitychange', function() {
         if (!document.hidden) {
-            // La page est redevenue visible (utilisateur est revenu de l'appel)
-            setTimeout(openLogModalAutomatically, 1000);
+            console.log("Page redevenue visible - vérification d'appel récent");
+            setTimeout(openLogModalAutomatically, 1500);
         }
     });
     
-    // Configurer le bouton d'enregistrement
-    document.getElementById('saveLogBtn').addEventListener('click', saveCallLog);
-    
-    // Ajouter un écouteur pour le bouton d'appel principal (si existant)
-    const mainCallBtn = document.querySelector('.call-button, [onclick*="call"]');
-    if (mainCallBtn && !mainCallBtn.hasAttribute('data-listener-added')) {
-        mainCallBtn.setAttribute('data-listener-added', 'true');
-        mainCallBtn.addEventListener('click', initiatePhoneCall);
-    }
+    // Écouter les événements de focus (retour d'appel)
+    window.addEventListener('focus', function() {
+        console.log("Window focus - vérification d'appel récent");
+        setTimeout(openLogModalAutomatically, 1000);
+    });
 });
 
-// Styles
-if (!document.getElementById('mobileCallBtnStyle')) {
+// Styles CSS pour les modales
+if (!document.getElementById('medianCallStyles')) {
     const style = document.createElement('style');
-    style.id = 'mobileCallBtnStyle';
+    style.id = 'medianCallStyles';
     style.textContent = `
+        /* Bouton d'appel mobile */
         .mobile-call-btn {
             background-color: #28a745;
             color: white;
             border: none;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
+            width: 50px;
+            height: 50px;
+            display: none;
             align-items: center;
             justify-content: center;
-            margin-right: 10px;
+            margin: 10px;
             cursor: pointer;
-            font-size: 18px;
+            font-size: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 1000;
         }
+        
         .mobile-call-btn:hover {
             background-color: #218838;
+            transform: scale(1.05);
         }
         
         /* Modal de confirmation d'appel */
@@ -3586,27 +3596,52 @@ if (!document.getElementById('mobileCallBtnStyle')) {
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.7);
             display: none;
             justify-content: center;
             align-items: center;
             z-index: 10000;
+            font-family: Arial, sans-serif;
         }
         
-        #callConfirmationModal > div {
+        .modal-content {
             background: white;
-            padding: 20px;
-            border-radius: 8px;
-            width: 300px;
+            padding: 25px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 350px;
             text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
         
-        #callConfirmationModal button {
-            padding: 10px 20px;
-            margin: 10px 5px;
+        .modal-content h3 {
+            margin: 0 0 15px 0;
+            color: #333;
+            font-size: 1.3em;
+        }
+        
+        .modal-content p {
+            margin: 15px 0;
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .modal-btn {
+            padding: 12px 25px;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s;
+            min-width: 100px;
         }
         
         #confirmCallBtn {
@@ -3614,16 +3649,17 @@ if (!document.getElementById('mobileCallBtnStyle')) {
             color: white;
         }
         
+        #confirmCallBtn:hover {
+            background-color: #218838;
+        }
+        
         #cancelCallBtn {
             background-color: #6c757d;
             color: white;
         }
         
-        @media (max-width: 768px) {
-            .user-info {
-                display: flex;
-                align-items: center;
-            }
+        #cancelCallBtn:hover {
+            background-color: #5a6268;
         }
         
         /* Modal de consigne d'appel */
@@ -3633,63 +3669,76 @@ if (!document.getElementById('mobileCallBtnStyle')) {
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.7);
             display: none;
             justify-content: center;
             align-items: center;
             z-index: 10001;
+            font-family: Arial, sans-serif;
         }
         
-        #logCallModal > div {
+        .log-modal-content {
             background: white;
-            padding: 20px;
-            border-radius: 8px;
+            padding: 25px;
+            border-radius: 12px;
             width: 90%;
             max-width: 400px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
         
-        #logCallModal h3 {
-            margin-top: 0;
-            margin-bottom: 15px;
+        .log-modal-content h3 {
+            margin: 0 0 20px 0;
             color: #333;
+            text-align: center;
+            font-size: 1.3em;
         }
         
-        #logCallModal label {
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        
+        .form-group label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
             color: #555;
         }
         
-        #logCallModal input,
-        #logCallModal textarea {
+        .form-group input,
+        .form-group textarea {
             width: 100%;
             padding: 10px;
-            margin-bottom: 15px;
             border: 1px solid #ddd;
-            border-radius: 4px;
+            border-radius: 6px;
             box-sizing: border-box;
-            font-size: 14px;
+            font-size: 1em;
         }
         
-        #logCallModal textarea {
-            height: 100px;
+        .form-group textarea {
+            height: 120px;
             resize: vertical;
         }
         
-        #logCallModal .button-container {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
+        .form-group input:read-only {
+            background-color: #f5f5f5;
+            color: #666;
         }
         
-        #logCallModal button {
+        .log-modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        
+        .log-modal-btn {
             padding: 10px 20px;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 1em;
+            min-width: 100px;
         }
         
         #saveLogBtn {
@@ -3697,24 +3746,50 @@ if (!document.getElementById('mobileCallBtnStyle')) {
             color: white;
         }
         
+        #saveLogBtn:hover {
+            background-color: #3a56d4;
+        }
+        
         #cancelLogBtn {
             background-color: #6c757d;
             color: white;
+        }
+        
+        #cancelLogBtn:hover {
+            background-color: #5a6268;
+        }
+        
+        @media (max-width: 480px) {
+            .modal-content, .log-modal-content {
+                width: 95%;
+                margin: 10px;
+            }
+            
+            .modal-buttons, .log-modal-buttons {
+                flex-direction: column;
+            }
+            
+            .modal-btn, .log-modal-btn {
+                width: 100%;
+            }
         }
     `;
     document.head.appendChild(style);
 }
 
-// Ajouter les modales HTML si elles n'existent pas
+// Créer les modales HTML si elles n'existent pas
 if (!document.getElementById('callConfirmationModal')) {
     const confirmationModal = document.createElement('div');
     confirmationModal.id = 'callConfirmationModal';
     confirmationModal.innerHTML = `
-        <div>
-            <h3>Confirmer l'appel</h3>
-            <p>Appeler le numéro : <strong id="confirmPhoneNumber"></strong></p>
-            <button id="confirmCallBtn" onclick="confirmCall()">Appeler</button>
-            <button id="cancelCallBtn" onclick="cancelCall()">Annuler</button>
+        <div class="modal-content">
+            <h3>📞 Confirmer l'appel</h3>
+            <p>Vous êtes sur le point d'appeler :</p>
+            <p><strong id="confirmPhoneNumber" style="font-size: 1.2em; color: #000;"></strong></p>
+            <div class="modal-buttons">
+                <button class="modal-btn" id="cancelCallBtn" onclick="cancelCall()">Annuler</button>
+                <button class="modal-btn" id="confirmCallBtn" onclick="confirmCall()">Appeler</button>
+            </div>
         </div>
     `;
     document.body.appendChild(confirmationModal);
@@ -3724,20 +3799,23 @@ if (!document.getElementById('logCallModal')) {
     const logModal = document.createElement('div');
     logModal.id = 'logCallModal';
     logModal.innerHTML = `
-        <div>
-            <h3>Consigner l'appel</h3>
-            <label for="logClientId">ID Client:</label>
-            <input type="text" id="logClientId" readonly>
-            
-            <label for="logUser">Utilisateur:</label>
-            <input type="text" id="logUser" readonly>
-            
-            <label for="logNote">Notes de l'appel:</label>
-            <textarea id="logNote" placeholder="Décrivez le contenu de l'appel..." required></textarea>
-            
-            <div class="button-container">
-                <button id="cancelLogBtn" onclick="closeLogModal()">Annuler</button>
-                <button id="saveLogBtn">Enregistrer</button>
+        <div class="log-modal-content">
+            <h3>📋 Consigner l'appel</h3>
+            <div class="form-group">
+                <label for="logClientId">ID Client:</label>
+                <input type="text" id="logClientId" readonly>
+            </div>
+            <div class="form-group">
+                <label for="logUser">Utilisateur:</label>
+                <input type="text" id="logUser" readonly>
+            </div>
+            <div class="form-group">
+                <label for="logNote">Notes de l'appel: *</label>
+                <textarea id="logNote" placeholder="Décrivez le contenu de l'appel, les décisions prises, les prochaines étapes..." required></textarea>
+            </div>
+            <div class="log-modal-buttons">
+                <button class="log-modal-btn" id="cancelLogBtn" onclick="closeLogModal()">Annuler</button>
+                <button class="log-modal-btn" id="saveLogBtn">Enregistrer</button>
             </div>
         </div>
     `;
