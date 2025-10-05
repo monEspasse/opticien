@@ -13184,7 +13184,7 @@ async function submitGrandCaisse() {
         formMessage.classList.add('success');
 
         setTimeout(() => {
-            closeModalopengrandecaisse;
+            closeModalopengrandecaisse();
             loadGrandCaisseData(); // recharge la table
         }, 1500);
 
@@ -13224,10 +13224,10 @@ function closeModalopengrandecaisse() {
     }
     
     setTimeout(() => {
-        if (typeof openFacturation === 'function') {
+        if (typeof openJournalGrandCaisse === 'function') {
             openJournalGrandCaisse();
         }
-    }, 300);
+    }, 100);
 }
 
 </script>
