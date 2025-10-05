@@ -13119,7 +13119,7 @@ window.openAjoutGrandCaisse = async function() {
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
+                        <button class="btn btn-secondary" onclick="closeModalopengrandecaisse()">Annuler</button>
                         <button class="btn btn-primary" onclick="submitGrandCaisse()">Enregistrer</button>
                     </div>
                 </div>
@@ -13139,7 +13139,7 @@ window.openAjoutGrandCaisse = async function() {
                 <div class="modal-content" style="text-align:center; padding:2rem;">
                     <i class="fas fa-exclamation-triangle" style="color:red;font-size:2rem;"></i>
                     <p>Erreur de chargement : ${err.message}</p>
-                    <button class="btn btn-danger" onclick="closeModal()">Fermer</button>
+                    <button class="btn btn-danger" onclick="closeModalopengrandecaisse()">Fermer</button>
                 </div>
             </div>
         `;
@@ -13184,7 +13184,7 @@ async function submitGrandCaisse() {
         formMessage.classList.add('success');
 
         setTimeout(() => {
-            closeModal();
+            closeModalopengrandecaisse;
             loadGrandCaisseData(); // recharge la table
         }, 1500);
 
@@ -13216,6 +13216,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+function closeModalopengrandecaisse() {
+    const modalContainer = document.getElementById('modal-container');
+    if (modalContainer) {
+        modalContainer.innerHTML = '';
+        document.body.classList.remove('modal-open');
+    }
+    
+    setTimeout(() => {
+        if (typeof openFacturation === 'function') {
+            openJournalGrandCaisse();
+        }
+    }, 300);
+}
+
 </script>
 </body>
 </html>
