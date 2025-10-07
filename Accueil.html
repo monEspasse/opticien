@@ -5612,10 +5612,11 @@ window.openBanque = async function() {
                                         <th>Type de transaction</th>
                                         <th class="text-right">Solde Disponible</th>
                                         <th>Catégorie</th>
+                                        <th>Unique</th>
                                     </tr>
                                 </thead>
                                 <tbody id="${dataId}">
-                                    <tr><td colspan="6" class="text-center"><div class="spinner"></div></td></tr>
+                                    <tr><td colspan="7" class="text-center"><div class="spinner"></div></td></tr>
                                 </tbody>
                                 <tfoot id="${totalsId}"></tfoot>
                             </table>
@@ -5651,7 +5652,7 @@ async function loadBanque(action) {
     const tableTotals = document.getElementById(totalsId);
     const messageDiv = document.getElementById(`banqueMessage-${action}`);
 
-    tableBody.innerHTML = `<tr><td colspan="6" class="text-center"><div class="spinner"></div></td></tr>`;
+    tableBody.innerHTML = `<tr><td colspan="7" class="text-center"><div class="spinner"></div></td></tr>`;
     messageDiv.style.display = 'none';
 
     try {
@@ -5670,6 +5671,7 @@ async function loadBanque(action) {
             const typeIndex = headers.findIndex(h => h.toLowerCase().includes('type'));
             const soldeIndex = headers.findIndex(h => h.toLowerCase().includes('solde'));
             const catIndex = headers.findIndex(h => h.toLowerCase().includes('categorie'));
+            const uniqueIndex = headers.findIndex(h => h === "Unique");
 
             return {
                 Date: row[dateIndex] ? new Date(row[dateIndex]) : null,
@@ -5677,7 +5679,8 @@ async function loadBanque(action) {
                 Montant: parseFloat(row[montantIndex]) || 0,
                 Type: row[typeIndex] || '',
                 Solde: parseFloat(row[soldeIndex]) || 0,
-                Categorie: row[catIndex] || ''
+                Categorie: row[catIndex] || '',
+                Unique: row[uniqueIndex] || '' // Nouvelle propriété
             };
         });
 
@@ -5687,7 +5690,7 @@ async function loadBanque(action) {
         messageDiv.textContent = `❌ Erreur: ${error.message || 'Chargement échoué'}`;
         messageDiv.className = 'alert alert-danger';
         messageDiv.style.display = 'block';
-        tableBody.innerHTML = '<tr><td colspan="6" class="text-center">Erreur de chargement</td></tr>';
+        tableBody.innerHTML = '<tr><td colspan="7" class="text-center">Erreur de chargement</td></tr>';
     }
 }
 
@@ -5727,7 +5730,7 @@ function displayBanque(action, data) {
     data.sort((a, b) => (b.Date || 0) - (a.Date || 0));
 
     if (!data?.length) {
-        tableBody.innerHTML = '<tr><td colspan="6" class="text-center">Aucune donnée disponible</td></tr>';
+        tableBody.innerHTML = '<tr><td colspan="7" class="text-center">Aucune donnée disponible</td></tr>';
         tableTotals.innerHTML = '';
         return;
     }
@@ -5779,7 +5782,7 @@ function displayBanque(action, data) {
     }
 
     // ==========================
-    // 🔹 Fonction d’application des filtres
+    // 🔹 Fonction d'application des filtres
     // ==========================
     function applyFilters() {
         const startDate = document.getElementById(`filterStartDate-${action}`).value;
@@ -5828,21 +5831,22 @@ function displayBanque(action, data) {
         const formatCurrency = val => val.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
         if (!rowsData.length) {
-            tableBody.innerHTML = '<tr><td colspan="6" class="text-center">Aucune donnée trouvée</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="7" class="text-center">Aucune donnée trouvée</td></tr>';
             tableTotals.innerHTML = '';
             return;
         }
 
         const rows = rowsData.map((item, index) => `
-            <tr data-row="${index + 2}">
+            <tr data-unique="${item.Unique}">
                 <td>${item.Date?.toLocaleDateString('fr-FR') || 'N/A'}</td>
                 <td>${item.Banque}</td>
                 <td class="text-right">${formatCurrency(item.Montant)}</td>
                 <td>${item.Type}</td>
                 <td class="text-right">${formatCurrency(item.Solde)}</td>
-                <td class="editable-category" data-row="${index + 2}" data-value="${item.Categorie}">
+                <td class="editable-category" data-unique="${item.Unique}" data-value="${item.Categorie}">
                     <span>${item.Categorie || "Choisir"}</span>
                 </td>
+                <td class="text-center unique-code">${item.Unique || ''}</td>
             </tr>
         `).join('');
 
@@ -5861,7 +5865,7 @@ function displayBanque(action, data) {
                 <td class="text-right"><strong>${formatCurrency(totals.Montant)}</strong></td>
                 <td></td>
                 <td class="text-right"><strong>${formatCurrency(totals.Solde)}</strong></td>
-                <td></td>
+                <td colspan="2"></td>
             </tr>
         `;
 
@@ -5891,7 +5895,7 @@ function attachCategoryEdit() {
             if (cell.querySelector('select')) return;
 
             const currentValue = cell.dataset.value || "";
-            const rowIndex = cell.dataset.row;
+            const uniqueCode = cell.dataset.unique;
 
             const select = document.createElement('select');
             select.innerHTML = banqueCategories.map(cat => 
@@ -5914,7 +5918,7 @@ function attachCategoryEdit() {
                     return;
                 }
 
-                await updateBanqueCategorie(rowIndex, newValue, montant);
+                await updateBanqueCategorie(uniqueCode, newValue, montant);
 
                 cell.dataset.value = newValue;
                 cell.innerHTML = `<span>${newValue}</span>`;
@@ -5928,11 +5932,11 @@ function attachCategoryEdit() {
 }
 
 // =========================
-// 🔹 API Update catégorie
+// 🔹 API Update catégorie (version sécurisée)
 // =========================
-async function updateBanqueCategorie(rowIndex, newCategorie, montant) {
-    const depenseData = {
-        rowIndex: parseInt(rowIndex),
+async function updateBanqueCategorie(uniqueCode, newCategorie, montant) {
+    const updateData = {
+        uniqueCode: uniqueCode,
         updatedData: { Categorie: newCategorie },
         montant: montant
     };
@@ -5941,7 +5945,7 @@ async function updateBanqueCategorie(rowIndex, newCategorie, montant) {
         const apiUrl = "https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=addBanque";
         await fetch(apiUrl, {
             method: 'POST',
-            mode: 'no-cors',
+            mode: 'no-cors',// volontaire
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(depenseData)
         });
