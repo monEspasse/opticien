@@ -7633,6 +7633,7 @@ let uniqueFactureSocietes = [];
 let uniqueFactureAssurances = [];
 let uniqueFactureCompagnies = [];
 let uniqueFactureProprietaires = [];
+let currentFilteredFactures = [];
 
 // Délai pour le filtrage
 let filterTimeout;
@@ -7781,13 +7782,15 @@ async function loadFactureData() {
             return item;
         });
 
+        // Initialiser les données filtrées
+        currentFilteredFactures = [...allFactureData];
+
         // Mettre à jour les filtres
         refreshFilters();
 
         // Afficher les données
         const headers = Object.keys(allFactureData[0] || {});
         displayFilteredFactures(allFactureData, headers);
-        //updateFactureResultCount(allFactureData.length);
         
     } catch (error) {
         console.error('Erreur:', error);
@@ -7901,7 +7904,6 @@ function applyFactureFilter() {
     
     const headers = Object.keys(allFactureData[0] || {});
     displayFilteredFactures(filteredData, headers);
-   // updateFactureResultCount(filteredData.length);
 }
 
 // Réinitialiser les filtres
@@ -7917,12 +7919,14 @@ function resetFactureFilter() {
     
     const headers = Object.keys(allFactureData[0] || {});
     displayFilteredFactures(allFactureData, headers);
-   // updateFactureResultCount(allFactureData.length);
 }
 
 // Affichage des données filtrées
 function displayFilteredFactures(data, headers) {
     const factureData = document.getElementById('factureData');
+    
+    // Stocker les données filtrées actuellement affichées
+    currentFilteredFactures = data;
     
     if (!data?.length) {
         factureData.innerHTML = `<tr><td colspan="${headers.length + 1}" class="text-center">Aucune facture trouvée</td></tr>`;
@@ -7951,14 +7955,14 @@ function displayFilteredFactures(data, headers) {
             }
         });
         
-        // Boutons d'action
+        // Boutons d'action - utiliser l'index des données filtrées
         html += `
             <td>
                 <div class="action-btns">
-                    <button class="action-btn btn-edit" onclick="editFacture(${index})" title="Modifier">
+                    <button class="action-btn btn-edit" onclick="editFilteredFacture(${index})" title="Modifier">
                         <i class="fas fa-pencil-alt"></i>
                     </button>
-                    <button class="action-btn btn-cancel" onclick="cancelFacture(${index})" title="Annuler">
+                    <button class="action-btn btn-cancel" onclick="cancelFilteredFacture(${index})" title="Annuler">
                         <i class="fas fa-trash-alt"></i>
                     </button>
                 </div>
@@ -7971,44 +7975,49 @@ function displayFilteredFactures(data, headers) {
     factureData.innerHTML = html;
 }
 
-// Fonctions utilitaires
-function formatDate(dateString) {
-    if (!dateString) return '';
-    try {
-        const date = new Date(dateString);
-        return isNaN(date.getTime()) ? dateString : date.toLocaleDateString('fr-FR');
-    } catch (e) {
-        return dateString;
+// Édition d'une facture depuis les données filtrées
+function editFilteredFacture(filteredIndex) {
+    // Récupérer la facture depuis les données filtrées actuelles
+    const facture = currentFilteredFactures[filteredIndex];
+    
+    // Trouver l'index correspondant dans allFactureData
+    const originalIndex = allFactureData.findIndex(item => 
+        item['Id Client'] === facture['Id Client'] && 
+        item['N°Police'] === facture['N°Police']
+    );
+    
+    if (originalIndex === -1) {
+        alert('Facture non trouvée dans les données originales');
+        return;
     }
+    
+    // Ouvrir la modal d'édition avec l'index original
+    openEditFactureModal(originalIndex, facture);
 }
 
-function formatCurrency(amount) {
-    if (typeof amount !== 'number') amount = parseFloat(amount) || 0;
-    return amount.toLocaleString('fr-FR', { 
-        minimumFractionDigits: 2, 
-        maximumFractionDigits: 2 
-    });
-}
-
-function getStatusBadgeClass(statut) {
-    switch(statut) {
-        case 'Payé': return 'bg-success';
-        case 'En attente': return 'bg-warning text-dark';
-        case 'Annulé': return 'bg-danger';
-        default: return 'bg-secondary';
+// Annulation d'une facture depuis les données filtrées
+function cancelFilteredFacture(filteredIndex) {
+    // Récupérer la facture depuis les données filtrées actuelles
+    const facture = currentFilteredFactures[filteredIndex];
+    
+    // Trouver l'index correspondant dans allFactureData
+    const originalIndex = allFactureData.findIndex(item => 
+        item['Id Client'] === facture['Id Client'] && 
+        item['N°Police'] === facture['N°Police']
+    );
+    
+    if (originalIndex === -1) {
+        alert('Facture non trouvée dans les données originales');
+        return;
     }
+    
+    // Appeler la fonction d'annulation avec l'index original
+    cancelFacture(originalIndex);
 }
 
-function showFactureMessage(message, type) {
-    const messageDiv = document.getElementById('facture-message');
-    messageDiv.textContent = message;
-    messageDiv.className = `alert alert-${type}`;
-    messageDiv.style.display = 'block';
-}
-
-// Fonctions de gestion des factures (édition, suppression, etc.)
-function editFacture(index) {
-    const facture = allFactureData[index];
+// Ouvrir la modal d'édition de facture
+function openEditFactureModal(index, factureData = null) {
+    const facture = factureData || allFactureData[index];
     const modalContainer = document.getElementById('modal-container');
     
     const modalHTML = `
@@ -8224,8 +8233,57 @@ function closeModalAndOpenFacturation() {
     }, 300);
 }
 
-// Fonction pour générer une facture
+// Fonctions utilitaires
+function formatDate(dateString) {
+    if (!dateString) return '';
+    try {
+        const date = new Date(dateString);
+        return isNaN(date.getTime()) ? dateString : date.toLocaleDateString('fr-FR');
+    } catch (e) {
+        return dateString;
+    }
+}
 
+function formatCurrency(amount) {
+    if (typeof amount !== 'number') amount = parseFloat(amount) || 0;
+    return amount.toLocaleString('fr-FR', { 
+        minimumFractionDigits: 2, 
+        maximumFractionDigits: 2 
+    });
+}
+
+function getStatusBadgeClass(statut) {
+    switch(statut) {
+        case 'Payé': return 'bg-success';
+        case 'En attente': return 'bg-warning text-dark';
+        case 'Annulé': return 'bg-danger';
+        default: return 'bg-secondary';
+    }
+}
+
+function showFactureMessage(message, type) {
+    const messageDiv = document.getElementById('facture-message');
+    messageDiv.textContent = message;
+    messageDiv.className = `alert alert-${type}`;
+    messageDiv.style.display = 'block';
+}
+
+// Fonctions à implémenter ultérieurement
+function openAddFactureModal() {
+    alert('Fonctionnalité d\'ajout de facture à implémenter');
+}
+
+function genererFacture() {
+    alert('Fonctionnalité de génération de facture à implémenter');
+}
+
+function closeModal() {
+    const modalContainer = document.getElementById('modal-container');
+    if (modalContainer) {
+        modalContainer.innerHTML = '';
+        document.body.classList.remove('modal-open');
+    }
+}
 // Fonction pour ouvrir le modal d'ajout
 async function openAddFactureModal() {
     const modalContainer = document.getElementById('modal-container');
