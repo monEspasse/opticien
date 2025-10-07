@@ -5943,26 +5943,13 @@ async function updateBanqueCategorie(uniqueCode, newCategorie, montant) {
 
     try {
         const apiUrl = "https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=addBanque";
-        const response = await fetch(apiUrl, {
+        await fetch(apiUrl, {
             method: 'POST',
+            mode: 'no-cors',// volontaire
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updateData)
+            body: JSON.stringify(depenseData)
         });
-        
-        if (response.ok) {
-            const result = await response.json();
-            if (result.success) {
-                console.log(`✅ Catégorie "${newCategorie}" mise à jour pour le code ${uniqueCode}`);
-            } else {
-                console.error(`❌ Erreur: ${result.message}`);
-                alert(`Erreur: ${result.message}`);
-            }
-        } else {
-            throw new Error(`Erreur HTTP: ${response.status}`);
-        }
     } catch (error) {
-        console.error("❌ Erreur de mise à jour :", error);
-        alert("Erreur lors de la mise à jour de la catégorie");
     }
 }
 
