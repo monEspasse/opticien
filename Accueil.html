@@ -5931,9 +5931,6 @@ function attachCategoryEdit() {
     });
 }
 
-// =========================
-// 🔹 API Update catégorie (version sécurisée)
-// =========================
 async function updateBanqueCategorie(uniqueCode, newCategorie, montant) {
     const updateData = {
         uniqueCode: uniqueCode,
@@ -5943,13 +5940,30 @@ async function updateBanqueCategorie(uniqueCode, newCategorie, montant) {
 
     try {
         const apiUrl = "https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=addBanque";
+        
+        // Utiliser le même pattern que submitFactureUpdate
         await fetch(apiUrl, {
             method: 'POST',
-            mode: 'no-cors',// volontaire
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(depenseData)
+            mode: 'no-cors', // volontaire
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updateData)
         });
+        
+        // Mise à jour optimiste de l'interface
+        console.log(`✅ Catégorie "${newCategorie}" mise à jour pour le code ${uniqueCode}`);
+        
+        // Mettre à jour l'affichage localement sans attendre la réponse
+        const cell = document.querySelector(`[data-unique="${uniqueCode}"] .editable-category`);
+        if (cell) {
+            cell.dataset.value = newCategorie;
+            cell.innerHTML = `<span>${newCategorie}</span>`;
+        }
+        
     } catch (error) {
+        console.error("❌ Erreur de mise à jour :", error);
+        // En mode no-cors, on ne peut pas capturer les erreurs réseau
     }
 }
 
