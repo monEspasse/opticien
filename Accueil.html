@@ -10906,48 +10906,67 @@ async function loadClientsFromScript() {
         thead.appendChild(tr);
     }
 
-    // Affichage des lignes du tableau
-    function renderTableRows(rows) {
-        const tbody = document.querySelector("#client-table tbody");
-        tbody.innerHTML = "";
+// Affichage des lignes du tableau
+function renderTableRows(rows) {
+    const tbody = document.querySelector("#client-table tbody");
+    tbody.innerHTML = "";
 
-        if (!rows || rows.length === 0) {
-            // Créez un message "Aucune donnée" si nécessaire
-            const tr = document.createElement("tr");
-            const td = document.createElement("td");
-            td.colSpan = document.querySelector("#client-table thead th").length;
-            td.textContent = "Aucun client trouvé";
-            td.style.textAlign = "center";
-            tr.appendChild(td);
-            tbody.appendChild(tr);
-            return;
-        }
-
-        rows.forEach((row, rowIndex) => {
-            const tr = document.createElement("tr");
-
-            row.forEach((cell, cellIndex) => {
-                const td = document.createElement("td");
-
-                if (cellIndex === 0) {
-                    const link = document.createElement("a");
-                    link.href = "#";
-                    link.className = "client-link";
-                    link.textContent = cell || "";
-                    link.onclick = (e) => {
-                        e.preventDefault();
-                        selectClient(row);
-                    };
-                    td.appendChild(link);
-                } else {
-                    td.textContent = cell || "0";
-                }
-                tr.appendChild(td);
-            });
-
-            tbody.appendChild(tr);
-        });
+    if (!rows || rows.length === 0) {
+        // Créez un message "Aucune donnée" si nécessaire
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan = document.querySelector("#client-table thead th").length;
+        td.textContent = "Aucun client trouvé";
+        td.style.textAlign = "center";
+        tr.appendChild(td);
+        tbody.appendChild(tr);
+        return;
     }
+
+    rows.forEach((row, rowIndex) => {
+        const tr = document.createElement("tr");
+
+        row.forEach((cell, cellIndex) => {
+            const td = document.createElement("td");
+
+            // Formater la colonne 4 (index 3) comme date DD/MM/YYYY
+            if (cellIndex === 3 && cell) {
+                try {
+                    const date = new Date(cell);
+                    if (!isNaN(date.getTime())) {
+                        // Formater en DD/MM/YYYY
+                        const formattedDate = date.toLocaleDateString('fr-FR', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric'
+                        });
+                        td.textContent = formattedDate;
+                    } else {
+                        td.textContent = cell; // Conserver la valeur originale si ce n'est pas une date valide
+                    }
+                } catch (error) {
+                    console.error("Erreur de formatage de date:", error);
+                    td.textContent = cell; // Conserver la valeur originale en cas d'erreur
+                }
+            } else if (cellIndex === 0) {
+                const link = document.createElement("a");
+                link.href = "#";
+                link.className = "client-link";
+                link.textContent = cell || "";
+                link.onclick = (e) => {
+                    e.preventDefault();
+                    selectClient(row);
+                };
+                td.appendChild(link);
+            } else {
+                td.textContent = cell || "0";
+            }
+            tr.appendChild(td);
+        });
+
+        tbody.appendChild(tr);
+    });
+}
 
     // Sélection d'un client
     function selectClient(clientData) {
