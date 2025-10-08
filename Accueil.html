@@ -7775,7 +7775,7 @@ async function loadFactureData() {
                 const cleanHeader = header.replace(/\t/g, ' ').trim();
                 item[cleanHeader] = row[index] || '';
                 
-                if (cleanHeader.includes('MONTANT') || cleanHeader.includes('PART') || cleanHeader.includes('TOTAL')) {
+                if (cleanHeader.includes('MONTANT TOTAL') || cleanHeader.includes('TOTAL PART ASSURE') || cleanHeader.includes('PART ASSUREUR')) {
                     item[cleanHeader] = parseFloat(row[index]) || 0;
                 }
             });
@@ -7810,7 +7810,7 @@ function generateTableHeaders(headers) {
         const th = document.createElement('th');
         const cleanHeader = header.replace(/\t/g, ' ').trim();
         
-        if (cleanHeader.includes('MONTANT') || cleanHeader.includes('PART') || cleanHeader.includes('TOTAL')) {
+        if (cleanHeader.includes('MONTANT TOTAL') || cleanHeader.includes('TOTAL PART ASSURE') || cleanHeader.includes('PART ASSUREUR')) {
             th.className = 'text-end';
         }
         
