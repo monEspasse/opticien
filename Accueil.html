@@ -8167,7 +8167,6 @@ function submitFactureUpdate(index) {
     .then(() => {
         // Mise à jour optimiste
         allFactureData[index] = {...allFactureData[index], ...updatedData};
-        refreshFilters();
         closeModalAndOpenFacturation();
     })
     .catch(error => {
