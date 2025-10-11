@@ -1,4 +1,10 @@
 <!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+  </head>
+  <body>
+    <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8" />
@@ -11835,25 +11841,25 @@ function openNewSale() {
                                 <input type="text" name="numero_police" id="numero_police" class="form-control" placeholder="Numéro de police d'assurance" />
                             </div>
                             
-                            <div class="form-group">
-                                <label for="taux_couverture">Taux de couverture (%)</label>
-                                <input type="number" name="taux_couverture" id="taux_couverture" class="form-control" placeholder="Ex: 80" min="0" max="100" onchange="calculerPartsAssurance()" />
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="assure_principal">Assuré Principal</label>
-                                <select name="assure_principal" id="assure_principal" class="form-control" onchange="toggleAssurePrincipalNom()">
-                                    <option value="">-- Choisir --</option>
-                                    <option value="oui">Oui</option>
-                                    <option value="non">Non</option>
-                                </select>
-                            </div>
+                                <div class="form-group">
+                                    <label for="taux_couverture">Taux de couverture (%)</label>
+                                    <input type="number" name="taux_couverture" id="taux_couverture" class="form-control" placeholder="Ex: 80" min="0" max="100" />
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="assure_principal">Assuré Principal</label>
+                                    <select name="assure_principal" id="assure_principal" class="form-control">
+                                        <option value="">-- Choisir --</option>
+                                        <option value="oui">Oui</option>
+                                        <option value="non">Non</option>
+                                    </select>
+                                </div>
 
-                            <div class="form-group" id="assure_principal_nom_container" style="display: none;">
-                                <label class="required-field">Nom complet de l'assuré principal</label>
-                                <input type="text" name="assure_principal_nom" id="assure_principal_nom" class="form-control" />
+                                <div class="form-group" id="assure_principal_nom_container" style="display: none;">
+                                    <label class="required-field">Nom complet de l'assuré principal</label>
+                                    <input type="text" name="assure_principal_nom" id="assure_principal_nom" class="form-control" />
+                                </div>
                             </div>
-                        </div>
 
                         <!-- Nouvelle section pour la modification des montants assurance -->
                         <div class="form-grid" id="modification_montants_section" style="display: none; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #eee;">
@@ -12061,13 +12067,33 @@ function calculerPartsAssurance() {
     }
 }
 
+// Fonction pour afficher/masquer le champ nom de l'assuré principal
+function toggleAssurePrincipalNom() {
+    const assurePrincipal = document.getElementById('assure_principal');
+    const nomContainer = document.getElementById('assure_principal_nom_container');
+    
+    if (assurePrincipal && nomContainer) {
+        if (assurePrincipal.value === 'non') {
+            nomContainer.style.display = 'block';
+        } else {
+            nomContainer.style.display = 'none';
+            document.getElementById('assure_principal_nom').value = '';
+        }
+    }
+}
+
 // Fonction pour calculer le total assurance
 function calculerTotalAssurance() {
     const partClient = parseFloat(document.getElementById('part_client_assurance').value) || 0;
     const partAssureur = parseFloat(document.getElementById('part_assureur').value) || 0;
     const totalAssurance = partClient + partAssureur;
     
-    document.getElementById('montant_total_assurance_display').textContent = formatNumber(totalAssurance);
+    // Utiliser formatNumber si disponible, sinon afficher directement
+    try {
+        document.getElementById('montant_total_assurance_display').textContent = formatNumber(totalAssurance);
+    } catch (e) {
+        document.getElementById('montant_total_assurance_display').textContent = totalAssurance;
+    }
     document.getElementById('montant_total_assurance').value = totalAssurance;
 }
 
@@ -12077,8 +12103,10 @@ function toggleChampsMontantsAssurance(afficher) {
     
     if (afficher) {
         champsMontants.style.display = 'block';
-        // Recalculer les parts basées sur le taux de couverture si disponible
-        calculerPartsAssurance();
+        // Initialiser les valeurs à 0
+        document.getElementById('part_client_assurance').value = '0';
+        document.getElementById('part_assureur').value = '0';
+        calculerTotalAssurance();
     } else {
         champsMontants.style.display = 'none';
         // Réinitialiser les valeurs
@@ -12102,10 +12130,15 @@ function verifierAffichageModificationMontants() {
         sectionModification.style.display = 'none';
         document.getElementById('champs_montants_assurance').style.display = 'none';
         // Décocher "Oui" si caché
-        document.querySelector('input[name="modifier_montants"][value="oui"]').checked = false;
-        document.querySelector('input[name="modifier_montants"][value="non"]').checked = true;
+        const ouiRadio = document.querySelector('input[name="modifier_montants"][value="oui"]');
+        const nonRadio = document.querySelector('input[name="modifier_montants"][value="non"]');
+        if (ouiRadio && nonRadio) {
+            ouiRadio.checked = false;
+            nonRadio.checked = true;
+        }
     }
 }
+
 // Mettre à jour l'affichage des étapes
 function updateStepDisplay() {
     const modal = document.getElementById('newSaleModal');
@@ -13532,4 +13565,7 @@ function closeModalopengrandecaisse() {
 
 </script>
 </body>
+</html>
+
+  </body>
 </html>
