@@ -1624,11 +1624,11 @@ async function loadClientData(clientId) {
     }
 }
 
-        // Fonction pour formater les numéros de téléphone
+        // Fonction pour formater les numéros de téléphone - CORRECTION DE L'ERREUR
         function formatPhoneNumber(phoneString) {
             if (!phoneString) return '';
             
-            // Convertir en chaîne de caractères au cas où c'est un nombre
+            // Convertir en chaîne de caractères au cas où c'est un nombre ou autre type
             const phoneStr = String(phoneString);
             
             // Si le numéro commence par 0 et a 10 chiffres, formater avec des espaces
@@ -1646,13 +1646,21 @@ async function displayClientData(data) {
     document.getElementById('client-id').textContent = data["ID client"] || '';
     document.getElementById('client-name').textContent = data["Nom Complet Client"] || 'Nom non renseigné';
     document.getElementById('client-fullname').textContent = data["Nom Complet Client"] || '';
-    document.getElementById('client-phone').textContent = formatPhoneNumber(data["Numéro Contact"]) || 'N/A';
+    
+    // CORRECTION : S'assurer que le numéro de téléphone est une chaîne de caractères
+    const phoneNumber = data["Numéro Contact"] ? String(data["Numéro Contact"]) : '';
+    document.getElementById('client-phone').textContent = formatPhoneNumber(phoneNumber) || 'N/A';
+    
     document.getElementById('client-birthdate').textContent = formatDate(data["Date Naissance"]) || '';
     document.getElementById('client-company').textContent = data.Entreprise || '';
     document.getElementById('client-civility').textContent = data.Civilité || '';
     document.getElementById('client-delivery-date').textContent = formatDate(data["Date Livraison Prévue"]) || '';
     document.getElementById('client-delivery-contact').textContent = data["Contact Livraison"] || '';
-    document.getElementById('client-delivery-phone').textContent = formatPhoneNumber(data["Téléphone du contact"]) || '';
+    
+    // CORRECTION : S'assurer que le numéro de téléphone de livraison est une chaîne de caractères
+    const deliveryPhone = data["Téléphone du contact"] ? String(data["Téléphone du contact"]) : '';
+    document.getElementById('client-delivery-phone').textContent = formatPhoneNumber(deliveryPhone) || '';
+    
     document.getElementById('client-delivery-address').textContent = data["Adresse Livraison"] || '';
     document.getElementById('client-delivery-info').textContent = data["Infos Complémentaires"] || '';   
    
@@ -3016,7 +3024,11 @@ function cleanPhoneNumber(phoneNumber) {
 
 // Formater pour affichage
 function formatPhoneNumber(phoneNumber) {
-    return phoneNumber.replace(/(\d{2})(?=\d)/g, '$1 ');
+    // CORRECTION : S'assurer que phoneNumber est une chaîne de caractères
+    if (!phoneNumber) return '';
+    const phoneStr = String(phoneNumber);
+    
+    return phoneStr.replace(/(\d{2})(?=\d)/g, '$1 ');
 }
 
 // Vérifier si c'est un appareil mobile
