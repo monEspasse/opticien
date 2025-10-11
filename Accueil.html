@@ -11798,97 +11798,136 @@ function openNewSale() {
 
                         <!-- Étape 4: Tier Payant & Livraison -->
                         <div id="step-4" class="form-step">
-                            <h2 class="section-title">Tier Payant</h2>
-                            <div class="form-grid">
-                                <div class="form-group">
-                                    <label for="assurance">Assurance</label>
-                                    <div class="select-with-input">
-                                        <select name="assurance" id="assurance" class="form-control" style="display: none;">
-                                            <option value="">-- Choisir --</option>
-                                        </select>
-                                        <input type="text" id="assurance_input" class="form-control" 
-                                               placeholder="Nom de l'assurance">
-                                    </div>
-                                    <button type="button" class="btn btn-small" onclick="toggleInput('assurance')" 
-                                            style="margin-top: 5px; padding: 0.25rem 0.5rem;">
-                                        <i class="fas fa-exchange-alt"></i> Choisir dans la liste
-                                    </button>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="compagnie">Compagnie</label>
-                                    <div class="select-with-input">
-                                        <select name="compagnie" id="compagnie" class="form-control" style="display: none;">
-                                            <option value="">-- Choisir --</option>
-                                        </select>
-                                        <input type="text" id="compagnie_input" class="form-control" 
-                                               placeholder="Nom de la compagnie">
-                                    </div>
-                                    <button type="button" class="btn btn-small" onclick="toggleInput('compagnie')"
-                                            style="margin-top: 5px; padding: 0.25rem 0.5rem;">
-                                        <i class="fas fa-exchange-alt"></i> Choisir dans la liste
-                                    </button>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="numero_police">N° Police</label>
-                                    <input type="text" name="numero_police" id="numero_police" class="form-control" placeholder="Numéro de police d'assurance" />
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="taux_couverture">Taux de couverture (%)</label>
-                                    <input type="number" name="taux_couverture" id="taux_couverture" class="form-control" placeholder="Ex: 80" min="0" max="100" />
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="assure_principal">Assuré Principal</label>
-                                    <select name="assure_principal" id="assure_principal" class="form-control">
+                        <h2 class="section-title">Tier Payant</h2>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="assurance">Assurance</label>
+                                <div class="select-with-input">
+                                    <select name="assurance" id="assurance" class="form-control" style="display: none;">
                                         <option value="">-- Choisir --</option>
-                                        <option value="oui">Oui</option>
-                                        <option value="non">Non</option>
                                     </select>
+                                    <input type="text" id="assurance_input" class="form-control" 
+                                          placeholder="Nom de l'assurance">
                                 </div>
+                                <button type="button" class="btn btn-small" onclick="toggleInput('assurance')" 
+                                        style="margin-top: 5px; padding: 0.25rem 0.5rem;">
+                                    <i class="fas fa-exchange-alt"></i> Choisir dans la liste
+                                </button>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="compagnie">Compagnie</label>
+                                <div class="select-with-input">
+                                    <select name="compagnie" id="compagnie" class="form-control" style="display: none;">
+                                        <option value="">-- Choisir --</option>
+                                    </select>
+                                    <input type="text" id="compagnie_input" class="form-control" 
+                                          placeholder="Nom de la compagnie">
+                                </div>
+                                <button type="button" class="btn btn-small" onclick="toggleInput('compagnie')"
+                                        style="margin-top: 5px; padding: 0.25rem 0.5rem;">
+                                    <i class="fas fa-exchange-alt"></i> Choisir dans la liste
+                                </button>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="numero_police">N° Police</label>
+                                <input type="text" name="numero_police" id="numero_police" class="form-control" placeholder="Numéro de police d'assurance" />
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="taux_couverture">Taux de couverture (%)</label>
+                                <input type="number" name="taux_couverture" id="taux_couverture" class="form-control" placeholder="Ex: 80" min="0" max="100" onchange="calculerPartsAssurance()" />
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="assure_principal">Assuré Principal</label>
+                                <select name="assure_principal" id="assure_principal" class="form-control" onchange="toggleAssurePrincipalNom()">
+                                    <option value="">-- Choisir --</option>
+                                    <option value="oui">Oui</option>
+                                    <option value="non">Non</option>
+                                </select>
+                            </div>
 
-                                <div class="form-group" id="assure_principal_nom_container" style="display: none;">
-                                    <label class="required-field">Nom complet de l'assuré principal</label>
-                                    <input type="text" name="assure_principal_nom" id="assure_principal_nom" class="form-control" />
+                            <div class="form-group" id="assure_principal_nom_container" style="display: none;">
+                                <label class="required-field">Nom complet de l'assuré principal</label>
+                                <input type="text" name="assure_principal_nom" id="assure_principal_nom" class="form-control" />
+                            </div>
+                        </div>
+
+                        <!-- Nouvelle section pour la modification des montants assurance -->
+                        <div class="form-grid" id="modification_montants_section" style="display: none; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #eee;">
+                            <div class="form-group" style="grid-column: span 3;">
+                                <label>Souhaitez-vous modifier les montants pour l'assurance ?</label>
+                                <div class="radio-group" style="display: flex; gap: 1rem; margin-top: 0.5rem;">
+                                    <label class="radio-label">
+                                        <input type="radio" name="modifier_montants" value="oui" onchange="toggleChampsMontantsAssurance(true)"> Oui
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="modifier_montants" value="non" checked onchange="toggleChampsMontantsAssurance(false)"> Non
+                                    </label>
                                 </div>
                             </div>
 
-                            <h2 class="section-title" style="margin-top: 2rem;">Informations de Livraison</h2>
-                            
-                            <div class="form-grid">
-                                <div class="form-group">
-                                    <label class="required-field">Date de livraison prévue</label>
-                                    <input type="date" class="form-control" name="date_livraison" id="date_livraison" required />
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label class="required-field">Personne à contacter</label>
-                                    <select class="form-control" name="contact_livraison_type" id="contact_livraison_type" required>
-                                        <option value="">-- Choisir --</option>
-                                        <option value="client">Lui-même</option>
-                                        <option value="tiers">Tier Personne</option>
-                                    </select>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label class="required-field">Téléphone du contact</label>
-                                    <input type="tel" class="form-control" name="telephone_contact" id="telephone_contact" required />
-                                </div>
-                                
-                                <div class="form-group" style="grid-column: span 2">
-                                    <label class="required-field">Adresse de livraison</label>
-                                    <textarea class="form-control" name="adresse_livraison" id="adresse_livraison" rows="3" required></textarea>
-                                </div>
-                                
-                                <div class="form-group" style="grid-column: span 2">
-                                    <label>Informations complémentaires</label>
-                                    <textarea class="form-control" name="infos_complementaires" id="infos_complementaires" rows="3"></textarea>
+                            <div id="champs_montants_assurance" style="display: none; grid-column: span 3;">
+                                <div class="payment-card">
+                                    <h4 style="margin-bottom: 1rem; color: #333;">Répartition des montants assurance</h4>
+                                    <div class="payment-row">
+                                        <div class="payment-group">
+                                            <label class="payment-label required-field">Part du client (FCFA)</label>
+                                            <input type="number" class="form-control" name="part_client_assurance" id="part_client_assurance" 
+                                                  value="0" oninput="calculerTotalAssurance()" />
+                                        </div>
+                                        
+                                        <div class="payment-group">
+                                            <label class="payment-label required-field">Part assureur (FCFA)</label>
+                                            <input type="number" class="form-control" name="part_assureur" id="part_assureur" 
+                                                  value="0" oninput="calculerTotalAssurance()" />
+                                        </div>
+                                        
+                                        <div class="payment-group">
+                                            <label class="payment-label">Montant total assurance (FCFA)</label>
+                                            <div class="payment-value" id="montant_total_assurance_display">0</div>
+                                            <input type="hidden" name="montant_total_assurance" id="montant_total_assurance" />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
+                        <h2 class="section-title" style="margin-top: 2rem;">Informations de Livraison</h2>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="required-field">Date de livraison prévue</label>
+                                <input type="date" class="form-control" name="date_livraison" id="date_livraison" required />
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="required-field">Personne à contacter</label>
+                                <select class="form-control" name="contact_livraison_type" id="contact_livraison_type" required>
+                                    <option value="">-- Choisir --</option>
+                                    <option value="client">Lui-même</option>
+                                    <option value="tiers">Tier Personne</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="required-field">Téléphone du contact</label>
+                                <input type="tel" class="form-control" name="telephone_contact" id="telephone_contact" required />
+                            </div>
+                            
+                            <div class="form-group" style="grid-column: span 2">
+                                <label class="required-field">Adresse de livraison</label>
+                                <textarea class="form-control" name="adresse_livraison" id="adresse_livraison" rows="3" required></textarea>
+                            </div>
+                            
+                            <div class="form-group" style="grid-column: span 2">
+                                <label>Informations complémentaires</label>
+                                <textarea class="form-control" name="infos_complementaires" id="infos_complementaires" rows="3"></textarea>
+                            </div>
+                        </div>
+                        </div>
                         <!-- Navigation entre les étapes -->
                         <div class="step-navigation">
                             <div class="nav-group">
@@ -11993,8 +12032,80 @@ function initModal() {
     // Mettre à jour l'affichage des étapes
     updateStepDisplay();
     setupCurrentUserField();
+     // Ajouter les écouteurs pour les champs assurance
+    const champsAssurance = ['assurance', 'assurance_input', 'compagnie', 'compagnie_input', 'numero_police'];
+    champsAssurance.forEach(champ => {
+        const element = document.getElementById(champ);
+        if (element) {
+            element.addEventListener('input', verifierAffichageModificationMontants);
+            element.addEventListener('change', verifierAffichageModificationMontants);
+        }
+    });
+    
+    // Initialiser l'affichage
+    verifierAffichageModificationMontants();
 }
 
+// Fonction pour calculer les parts assurance basées sur le taux de couverture
+function calculerPartsAssurance() {
+    const tauxCouverture = parseFloat(document.getElementById('taux_couverture').value) || 0;
+    const netAPayer = parseFloat(document.getElementById('net_a_payer').value) || 0;
+    
+    if (tauxCouverture > 0 && netAPayer > 0) {
+        const partAssureur = (netAPayer * tauxCouverture) / 100;
+        const partClient = netAPayer - partAssureur;
+        
+        document.getElementById('part_assureur').value = Math.round(partAssureur);
+        document.getElementById('part_client_assurance').value = Math.round(partClient);
+        calculerTotalAssurance();
+    }
+}
+
+// Fonction pour calculer le total assurance
+function calculerTotalAssurance() {
+    const partClient = parseFloat(document.getElementById('part_client_assurance').value) || 0;
+    const partAssureur = parseFloat(document.getElementById('part_assureur').value) || 0;
+    const totalAssurance = partClient + partAssureur;
+    
+    document.getElementById('montant_total_assurance_display').textContent = formatNumber(totalAssurance);
+    document.getElementById('montant_total_assurance').value = totalAssurance;
+}
+
+// Fonction pour afficher/masquer les champs de modification des montants
+function toggleChampsMontantsAssurance(afficher) {
+    const champsMontants = document.getElementById('champs_montants_assurance');
+    
+    if (afficher) {
+        champsMontants.style.display = 'block';
+        // Recalculer les parts basées sur le taux de couverture si disponible
+        calculerPartsAssurance();
+    } else {
+        champsMontants.style.display = 'none';
+        // Réinitialiser les valeurs
+        document.getElementById('part_client_assurance').value = '0';
+        document.getElementById('part_assureur').value = '0';
+        calculerTotalAssurance();
+    }
+}
+
+// Fonction pour afficher la section modification montants si assurance renseignée
+function verifierAffichageModificationMontants() {
+    const assurance = document.getElementById('assurance').value || document.getElementById('assurance_input').value;
+    const compagnie = document.getElementById('compagnie').value || document.getElementById('compagnie_input').value;
+    const numeroPolice = document.getElementById('numero_police').value;
+    
+    const sectionModification = document.getElementById('modification_montants_section');
+    
+    if (assurance || compagnie || numeroPolice) {
+        sectionModification.style.display = 'grid';
+    } else {
+        sectionModification.style.display = 'none';
+        document.getElementById('champs_montants_assurance').style.display = 'none';
+        // Décocher "Oui" si caché
+        document.querySelector('input[name="modifier_montants"][value="oui"]').checked = false;
+        document.querySelector('input[name="modifier_montants"][value="non"]').checked = true;
+    }
+}
 // Mettre à jour l'affichage des étapes
 function updateStepDisplay() {
     const modal = document.getElementById('newSaleModal');
