@@ -7595,7 +7595,7 @@ async function loadCaisse(action) {
     const messageDiv = document.getElementById(messageId);
     const currentCaisseDiv = document.getElementById(currentCaisseId); // Récupérer l'élément correct
 
-    tableBody.innerHTML = `<tr><td colspan="6" class="text-center"><div class="spinner"></div></td></tr>`;
+    tableBody.innerHTML = `<tr><td colspan="5" class="text-center"><div class="spinner"></div></td></tr>`;
     messageDiv.style.display = 'none';
     if (currentCaisseDiv) {
         currentCaisseDiv.textContent = '--'; // Réinitialiser l'affichage pendant le chargement
@@ -7613,16 +7613,14 @@ async function loadCaisse(action) {
         caisseDataStore[action] = responseData.data.rows.map(row => {
             const dateIndex = headers.findIndex(h => h.toLowerCase().includes('date'));
             const acompteIndex = headers.findIndex(h => h.toLowerCase().includes('acompte'));
-            const comp1Index = headers.findIndex(h => h.toLowerCase().includes('complément 1') || h.toLowerCase().includes('complement 1'));
-            const comp2Index = headers.findIndex(h => h.toLowerCase().includes('complément 2') || h.toLowerCase().includes('complement 2'));
+            const comp1Index = headers.findIndex(h => h.toLowerCase().includes('compléments') || h.toLowerCase().includes('complement 1'));
             const depenseIndex = headers.findIndex(h => h.toLowerCase().includes('dépense') || h.toLowerCase().includes('depense'));
             const encaisseIndex = headers.findIndex(h => h.toLowerCase().includes('en caisse') || h.toLowerCase().includes('encaisse'));
 
             return {
                 Date: row[dateIndex] ? new Date(row[dateIndex]) : null,
                 Acompte: parseFloat(row[acompteIndex]) || 0,
-                Complement1: parseFloat(row[comp1Index]) || 0,
-                Complement2: parseFloat(row[comp2Index]) || 0,
+                Complements: parseFloat(row[comp1Index]) || 0,
                 Depense: parseFloat(row[depenseIndex]) || 0,
                 EnCaisse: parseFloat(row[encaisseIndex]) || 0
             };
