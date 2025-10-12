@@ -7538,8 +7538,7 @@ window.openCaisse = function(action, title) {
                                     <tr>
                                         <th>Date</th>
                                         <th class="text-right">Acompte</th>
-                                        <th class="text-right">Complément 1</th>
-                                        <th class="text-right">Complément 2</th>
+                                        <th class="text-right">Compléments</th>
                                         <th class="text-right">Dépense</th>
                                         <th class="text-right">En Caisse</th>
                                     </tr>
@@ -7607,7 +7606,7 @@ async function loadCaisse(action) {
         caisseDataStore[action] = responseData.data.rows.map(row => {
             const dateIndex = headers.findIndex(h => h.toLowerCase().includes('date'));
             const acompteIndex = headers.findIndex(h => h.toLowerCase().includes('acompte'));
-            const comp1Index = headers.findIndex(h => h.toLowerCase().includes('compléments') || h.toLowerCase().includes('complement 1'));
+            const comp1Index = headers.findIndex(h => h.toLowerCase().includes('compléments') || h.toLowerCase().includes('complements'));
             const depenseIndex = headers.findIndex(h => h.toLowerCase().includes('dépense') || h.toLowerCase().includes('depense'));
             const encaisseIndex = headers.findIndex(h => h.toLowerCase().includes('en caisse') || h.toLowerCase().includes('encaisse'));
 
