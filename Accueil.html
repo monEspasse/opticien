@@ -1357,6 +1357,732 @@ select.form-control {
         background-color: #f2f2f2;
     }
 } 
+/* Style unique pour le modal d'ajout */
+#addFactureModal {
+    font-family: 'Poppins', sans-serif;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+#addFactureModal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+#addFactureModal .modal-content {
+    width: 90%;
+    max-width: 800px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transform: translateY(20px);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+#addFactureModal.active .modal-content {
+    transform: translateY(0);
+}
+
+#addFactureModal .modal-header {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: white;
+    padding: 20px;
+    position: relative;
+    border-bottom: none;
+}
+
+#addFactureModal .modal-header::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" fill="%23f8f9fa" opacity=".25"/><path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" fill="%23f8f9fa" opacity=".5"/><path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="%23f8f9fa"/></svg>');
+    background-size: cover;
+}
+
+#addFactureModal .modal-title {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    font-size: 1.4rem;
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+}
+
+#addFactureModal .modal-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+
+#addFactureModal .modal-body {
+    padding: 25px;
+}
+
+#addFactureModal .form-group {
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+#addFactureModal .form-label {
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    display: block;
+}
+
+#addFactureModal .form-control,
+#addFactureModal .form-select {
+    width: 100%;
+    border-radius: 8px;
+    padding: 12px 15px;
+    border: 1px solid #e0e0e0;
+    transition: all 0.3s ease;
+    box-shadow: none;
+    font-family: 'Poppins', sans-serif;
+}
+
+#addFactureModal .form-control:focus,
+#addFactureModal .form-select:focus {
+    border-color: #2575fc;
+    box-shadow: 0 0 0 0.25rem rgba(37, 117, 252, 0.15);
+    outline: none;
+}
+
+#addFactureModal .modal-footer {
+    padding: 20px;
+    background-color: #f8f9fa;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+#addFactureModal .btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#addFactureModal .btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+#addFactureModal .btn-primary {
+    background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%);
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+#addFactureModal .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: 0.5s;
+}
+
+#addFactureModal .btn-primary:hover::before {
+    left: 100%;
+}
+
+#addFactureModal .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Animation de l'onde */
+#addFactureModal .form-group::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #2575fc, #6a11cb);
+    transition: width 0.4s ease;
+}
+
+#addFactureModal .form-group:focus-within::after {
+    width: 100%;
+}
+
+/* Spinner */
+#addFactureModal .spinner {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    #addFactureModal .modal-content {
+        width: 95%;
+    }
+    
+    #addFactureModal .row {
+        flex-direction: column;
+    }
+    
+    #addFactureModal .col-md-6 {
+        width: 100%;
+    }
+}
+
+/* Style unique pour le modal de modification */
+.edit-modal {
+    font-family: 'Poppins', sans-serif;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.edit-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.edit-modal-content {
+    width: 90%;
+    max-width: 800px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transform: translateY(20px);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.edit-modal.active .edit-modal-content {
+    transform: translateY(0);
+}
+
+.edit-modal-header {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: white;
+    padding: 20px;
+    position: relative;
+    border-bottom: none;
+}
+
+.edit-modal-header::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" fill="%23f8f9fa" opacity=".25"/><path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" fill="%23f8f9fa" opacity=".5"/><path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="%23f8f9fa"/></svg>');
+    background-size: cover;
+}
+
+.edit-modal-title {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    font-size: 1.4rem;
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.edit-modal-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+
+.edit-modal-body {
+    padding: 25px;
+}
+
+.edit-form-group {
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.edit-form-label {
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    display: block;
+}
+
+.edit-form-control {
+    width: 100%;
+    border-radius: 8px;
+    padding: 12px 15px;
+    border: 1px solid #e0e0e0;
+    transition: all 0.3s ease;
+    box-shadow: none;
+    font-family: 'Poppins', sans-serif;
+}
+
+.edit-form-control:focus {
+    border-color: #2575fc;
+    box-shadow: 0 0 0 0.25rem rgba(37, 117, 252, 0.15);
+    outline: none;
+}
+
+.edit-form-control[readonly] {
+    background-color: #f8f9fa;
+    border-color: #e9ecef;
+    color: #6c757d;
+}
+
+.edit-modal-footer {
+    padding: 20px;
+    background-color: #f8f9fa;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.edit-btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.edit-btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.edit-btn-primary {
+    background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%);
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.edit-btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: 0.5s;
+}
+
+.edit-btn-primary:hover::before {
+    left: 100%;
+}
+
+.edit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.edit-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -10px;
+}
+
+.edit-col {
+    flex: 1;
+    min-width: 250px;
+    padding: 0 10px;
+}
+
+/* Animation de l'onde */
+.edit-form-group::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #2575fc, #6a11cb);
+    transition: width 0.4s ease;
+}
+
+.edit-form-group:focus-within::after {
+    width: 100%;
+}
+
+/* Spinner */
+.edit-spinner {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: edit-spin 0.75s linear infinite;
+}
+
+@keyframes edit-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Styles personnalisés pour les notifications */
+.notifications-container {
+    position: relative;
+    display: inline-block;
+}
+
+.notifications-icon {
+    cursor: pointer;
+    position: relative;
+}
+
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #ff4757;
+    color: white;
+    border-radius: 50%;
+    padding: 3px 6px;
+    font-size: 10px;
+}
+
+.notifications-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    width: 300px;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-radius: 5px;
+    z-index: 1000;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.notifications-dropdown.show {
+    display: block;
+}
+
+.notifications-header {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.notifications-list {
+    padding: 0;
+}
+
+.notification-item {
+    padding: 10px;
+    border-bottom: 1px solid #f1f1f1;
+    color: #ff4757;
+    font-size: 13px;
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+/* Styles personnalisés pour le logo */
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-image {
+    height: 40px;
+    width: 40px;
+    object-fit: contain;
+    border-radius: 90%;
+}
+
+.logo:hover .logo-image {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+/* Styles personnalisés pour les boutons d'action */
+.action-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 3px;
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-edit {
+    background-color: #4e73df;
+    color: white;
+}
+
+.btn-edit:hover {
+    background-color: #3a5bc7;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(78, 115, 223, 0.3);
+}
+
+.btn-cancel {
+    background-color: #e74a3b;
+    color: white;
+}
+
+.btn-cancel:hover {
+    background-color: #d62c1a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(231, 74, 59, 0.3);
+}
+
+.action-btns {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+}
+
+.action-btn:active {
+    transform: translateY(1px);
+}
+
+.action-btn i {
+    font-size: 14px;
+}
+
+/* Styles personnalisés pour l'animation des boutons */
+@keyframes buttonHighlight {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 10px 5px rgba(40, 167, 69, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+  }
+}
+
+.btn-success.highlight {
+  animation: buttonHighlight 3s ease-out;
+}
+
+/* Styles personnalisés pour les overlays de confirmation */
+.confirmation-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+}
+
+.confirmation-box {
+    background: white;
+    padding: 25px;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    text-align: center;
+}
+
+.confirmation-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-confirm {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-cancel {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Styles personnalisés pour les indicateurs de statut */
+.status-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.status-content {
+    background: white;
+    padding: 25px;
+    border-radius: 8px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.status-spinner {
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
+}
+
+.status-content.success {
+    border: 2px solid #4CAF50;
+}
+
+.status-icon {
+    color: #4CAF50;
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+/* Styles personnalisés pour les filtres compacts */
+.compact-filters .filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.compact-filters .filter-group {
+    flex: 1;
+    min-width: 180px;
+}
+
+.compact-filters .filter-action {
+    flex: 0 0 auto;
+    margin-bottom: 15px;
+}
+
+.compact-filters label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+/* Styles personnalisés pour les loaders */
+.loader-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 9999;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.loader-overlay.active {
+    display: flex;
+}
+
+.loader-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.loader-spinner {
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
 
 /* Styles personnalisés pour les modales uniques */
 #addFactureModal .modal-content {
@@ -6971,8 +7697,7 @@ function displayCaisse(action, data) {
         <tr>
             <td>${item.Date?.toLocaleDateString('fr-FR') || 'N/A'}</td>
             <td class="text-right">${formatCurrency(item.Acompte)}</td>
-            <td class="text-right">${formatCurrency(item.Complement1)}</td>
-            <td class="text-right">${formatCurrency(item.Complement2)}</td>
+            <td class="text-right">${formatCurrency(item.Complements)}</td>
             <td class="text-right">${formatCurrency(item.Depense)}</td>
             <td class="text-right"><strong>${formatCurrency(item.EnCaisse)}</strong></td>
         </tr>
@@ -6982,19 +7707,17 @@ function displayCaisse(action, data) {
 
     const totals = data.reduce((acc, i) => {
         acc.Acompte += i.Acompte;
-        acc.Comp1 += i.Complement1;
-        acc.Comp2 += i.Complement2;
+        acc.Comp1 += i.Complements;
         acc.Depense += i.Depense;
         acc.EnCaisse += i.EnCaisse;
         return acc;
-    }, { Acompte:0, Comp1:0, Comp2:0, Depense:0, EnCaisse:0 });
+    }, { Acompte:0, Comp1:0,  Depense:0, EnCaisse:0 });
 
     tableTotals.innerHTML = `
         <tr class="total-row">
             <td><strong>Total</strong></td>
             <td class="text-right"><strong>${formatCurrency(totals.Acompte)}</strong></td>
             <td class="text-right"><strong>${formatCurrency(totals.Comp1)}</strong></td>
-            <td class="text-right"><strong>${formatCurrency(totals.Comp2)}</strong></td>
             <td class="text-right"><strong>${formatCurrency(totals.Depense)}</strong></td>
             <td class="text-right"><strong>${formatCurrency(totals.EnCaisse)}</strong></td>
         </tr>
