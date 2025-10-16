@@ -1705,7 +1705,7 @@ async function displayClientData(data) {
     document.getElementById('insurance-part').textContent = data["Part Assurance (FCFA)"] ? `${data["Part Assurance (FCFA)"]} FCFA` : '';
     
     // Paiement
-    document.getElementById('net-amount').textContent = data["Net à Payer (FCFA)"] ? `${data["Net à Payer (FCFA)"]} FCFA` : '';
+    document.getElementById('net-amount').textContent = data["Net à Payer (FCFA)"] ? `${data["Net à Payer (FCFA)"]} FCFA` : '0 FCFA';
     document.getElementById('deposit-amount').textContent = data["Acompte (FCFA)"] ? `${data["Acompte (FCFA)"]} FCFA` : '';
     document.getElementById('deposit-date').textContent = data["Acompte (FCFA)"] ? formatDate(data["Date Enregistrement"]) || '' : '';
     document.getElementById('complement1-amount').textContent = data["Complement 1"] ? `${data["Complement 1"]} FCFA` : '';
@@ -1717,9 +1717,8 @@ async function displayClientData(data) {
     
     // Statut du client
 const statusElement = document.getElementById('client-status');
-const statutVente = data["Statut de la vente"] || 'Non défini'; // Valeur importée
-console.log("Statut de la vente importé:", statutVente); // Affiche "Nouvelle vente" dans la console
-
+const statutVente = data["Statut de la vente"] || ''; 
+console.log("Statut de la vente importé:", statutVente); 
 // Afficher le statut brut importé
 statusElement.textContent = statutVente;
 }
