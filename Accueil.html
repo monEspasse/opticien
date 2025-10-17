@@ -5592,7 +5592,157 @@ textarea:focus-visible {
 .table-container::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
 }
-  
+
+
+ /* ===== STYLES POUR LES NOUVELLES FONCTIONNALITÉS ===== */
+
+/* Recherche en temps réel */
+.search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-container .form-control {
+    padding-right: 35px;
+}
+
+.search-clear-btn {
+    position: absolute;
+    right: 8px;
+    background: none;
+    border: none;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+}
+
+.search-clear-btn:hover {
+    background-color: #e9ecef;
+    color: var(--danger-color);
+}
+
+/* En-têtes triables */
+.sortable-header {
+    position: relative;
+    user-select: none;
+    transition: var(--transition);
+}
+
+.sortable-header:hover {
+    background-color: rgba(52, 152, 219, 0.1) !important;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.sort-indicator {
+    font-size: 0.8em;
+    color: rgba(255, 255, 255, 0.7);
+    min-width: 15px;
+}
+
+/* Indicateur de tri actif */
+.sortable-header.active {
+    background-color: rgba(52, 152, 219, 0.2) !important;
+}
+
+/* Statistiques du tableau */
+#tableStats {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #6c757d;
+    white-space: nowrap;
+}
+
+/* Badges de statut améliorés */
+.badge {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+/* Animation pour les nouvelles lignes */
+@keyframes highlightNew {
+    0% {
+        background-color: rgba(52, 152, 219, 0.3);
+    }
+    100% {
+        background-color: transparent;
+    }
+}
+
+.highlight-new {
+    animation: highlightNew 2s ease-out;
+}
+
+/* Responsive amélioré */
+@media (max-width: 768px) {
+    .search-container {
+        min-width: 100%;
+    }
+    
+    .header-content {
+        flex-direction: column;
+        gap: 2px;
+    }
+    
+    .sort-indicator {
+        font-size: 0.7em;
+    }
+    
+    #tableStats {
+        font-size: 0.7rem;
+        margin-top: 5px;
+    }
+}
+
+/* États de chargement améliorés */
+.loading-shimmer {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loadingShimmer 1.5s infinite;
+}
+
+@keyframes loadingShimmer {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Tooltips personnalisés */
+.tooltip-custom {
+    position: absolute;
+    background: var(--dark-color);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    z-index: 1000;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip-custom.show {
+    opacity: 1;
+}
 </style>
 </head>
 <body>
@@ -9202,11 +9352,13 @@ let uniqueFactureAssurances = [];
 let uniqueFactureCompagnies = [];
 let uniqueFactureProprietaires = [];
 let currentFilteredFactures = [];
+let currentSortColumn = null;
+let currentSortDirection = 'asc';
+let searchTimeout = null;
 
 // Délai pour le filtrage
 let filterTimeout;
 
-// Fonction principale pour ouvrir la gestion des facturations
 function openFacturation() {
     const modalContainer = document.getElementById('modal-container');
     const modalHTML = `
@@ -9225,9 +9377,24 @@ function openFacturation() {
 
                 <div class="modal-body" style="display: flex; flex-direction: column; padding: 15px; gap: 10px; overflow: hidden;">
 
-                    <!-- Filtres améliorés -->
+                    <!-- Filtres améliorés avec recherche -->
                     <div class="filters-panel" style="flex-shrink: 0; background: #f8f9fa; padding: 10px; border-radius: 5px;">
                         <div style="display: flex; gap: 12px; align-items: end; flex-wrap: wrap;">
+                            <!-- Recherche en temps réel -->
+                            <div style="flex: 1; min-width: 250px;">
+                                <label for="factureSearch" class="form-label small">
+                                    <i class="fas fa-search me-1"></i> Recherche
+                                </label>
+                                <div class="search-container">
+                                    <input type="text" id="factureSearch" class="form-control form-control-sm" 
+                                           placeholder="Rechercher dans toutes les colonnes..." 
+                                           oninput="handleFactureSearch()">
+                                    <button class="search-clear-btn" onclick="clearSearch()" title="Effacer la recherche">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
                             <!-- Filtre Date Début -->
                             <div style="flex: 1; min-width: 180px;">
                                 <label for="filterFactureDateStart" class="form-label small">Date de début</label>
@@ -9250,18 +9417,6 @@ function openFacturation() {
                                     <option value="">Toutes</option>
                                 </select>
                             </div>
-                            <div style="flex: 1; min-width: 180px;">
-                                <label for="filterFactureCompagnie" class="form-label small">Compagnie</label>
-                                <select id="filterFactureCompagnie" class="form-select form-select-sm" onchange="applyFactureFilter()">
-                                    <option value="">Toutes</option>
-                                </select>
-                            </div>
-                            <div style="flex: 1; min-width: 180px;">
-                                <label for="filterFactureProprietaire" class="form-label small">Propriétaire</label>
-                                <select id="filterFactureProprietaire" class="form-select form-select-sm" onchange="applyFactureFilter()">
-                                    <option value="">Tous</option>
-                                </select>
-                            </div>
                             <div style="align-self: center;">
                                 <button class="btn btn-outline-secondary btn-sm" onclick="resetFactureFilter()">
                                     <i class="fas fa-undo me-1"></i> Réinitialiser
@@ -9270,7 +9425,7 @@ function openFacturation() {
                         </div>
                     </div>
 
-                    <!-- Tableau -->
+                    <!-- Tableau avec en-têtes triables -->
                     <div class="table-container" style="flex-grow: 1; overflow-y: auto;">
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover table-sm" id="factureTable">
@@ -9290,8 +9445,13 @@ function openFacturation() {
                         </div>
                     </div>
 
-                    <!-- Message -->
-                    <div id="facture-message" class="alert alert-info small mt-2" style="display: none;"></div>
+                    <!-- Message et statistiques -->
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div id="facture-message" class="alert alert-info small mt-2" style="display: none; flex: 1;"></div>
+                        <div id="tableStats" class="text-muted small" style="margin-left: 15px;">
+                            Chargement...
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Footer -->
@@ -9309,17 +9469,223 @@ function openFacturation() {
 
     modalContainer.innerHTML = modalHTML;
     document.getElementById('facturationModal').classList.add('active');
+    
+    // Charger les filtres sauvegardés avant de charger les données
+    loadSavedFilters();
     loadFactureData();
 }
 
-// Chargement des données de facturation
+// =============================================================================
+// FONCTIONNALITÉ 1: SYSTÈME DE RECHERCHE EN TEMPS RÉEL
+// =============================================================================
+
+function handleFactureSearch() {
+    const searchInput = document.getElementById('factureSearch');
+    const searchTerm = searchInput.value.toLowerCase().trim();
+    
+    // Debouncing pour améliorer les performances
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+        applyFactureFilter();
+        
+        // Sauvegarder la recherche
+        saveFilters();
+    }, 300);
+}
+
+function clearSearch() {
+    document.getElementById('factureSearch').value = '';
+    applyFactureFilter();
+    saveFilters();
+}
+
+function performSearch(data, searchTerm) {
+    if (!searchTerm) return data;
+    
+    return data.filter(item => {
+        // Recherche dans toutes les valeurs de l'objet
+        return Object.values(item).some(value => {
+            if (value === null || value === undefined) return false;
+            return String(value).toLowerCase().includes(searchTerm);
+        });
+    });
+}
+
+// =============================================================================
+// FONCTIONNALITÉ 2: SAUVEGARDE AUTOMATIQUE DES FILTRES
+// =============================================================================
+
+function saveFilters() {
+    const filters = {
+        search: document.getElementById('factureSearch').value,
+        dateStart: document.getElementById('filterFactureDateStart').value,
+        dateEnd: document.getElementById('filterFactureDateEnd').value,
+        societe: document.getElementById('filterFactureSociete').value,
+        assurance: document.getElementById('filterFactureAssurance').value,
+        compagnie: document.getElementById('filterFactureCompagnie')?.value || '',
+        proprietaire: document.getElementById('filterFactureProprietaire')?.value || '',
+        sortColumn: currentSortColumn,
+        sortDirection: currentSortDirection
+    };
+    
+    localStorage.setItem('factureFilters', JSON.stringify(filters));
+}
+
+function loadSavedFilters() {
+    try {
+        const saved = localStorage.getItem('factureFilters');
+        if (!saved) return;
+        
+        const filters = JSON.parse(saved);
+        
+        // Appliquer les filtres sauvegardés
+        if (filters.search) document.getElementById('factureSearch').value = filters.search;
+        if (filters.dateStart) document.getElementById('filterFactureDateStart').value = filters.dateStart;
+        if (filters.dateEnd) document.getElementById('filterFactureDateEnd').value = filters.dateEnd;
+        if (filters.societe) document.getElementById('filterFactureSociete').value = filters.societe;
+        if (filters.assurance) document.getElementById('filterFactureAssurance').value = filters.assurance;
+        
+        // Restaurer le tri
+        if (filters.sortColumn && filters.sortDirection) {
+            currentSortColumn = filters.sortColumn;
+            currentSortDirection = filters.sortDirection;
+        }
+        
+    } catch (error) {
+        console.error('Erreur lors du chargement des filtres:', error);
+    }
+}
+
+function clearSavedFilters() {
+    localStorage.removeItem('factureFilters');
+}
+
+// =============================================================================
+// FONCTIONNALITÉ 3: TABLEAUX TRIABLES PAR COLONNE
+// =============================================================================
+
+function generateTableHeaders(headers) {
+    const tableHeader = document.getElementById('factureTableHeader');
+    tableHeader.innerHTML = '';
+    
+    const headerRow = document.createElement('tr');
+    
+    headers.forEach(header => {
+        const th = document.createElement('th');
+        const cleanHeader = header.replace(/\t/g, ' ').trim();
+        
+        // Ajouter la fonctionnalité de tri
+        th.addEventListener('click', () => sortTable(cleanHeader));
+        th.style.cursor = 'pointer';
+        th.className = 'sortable-header';
+        
+        // Ajouter l'indicateur de tri
+        let sortIndicator = '';
+        if (currentSortColumn === cleanHeader) {
+            sortIndicator = currentSortDirection === 'asc' ? ' ▲' : ' ▼';
+        }
+        
+        if (cleanHeader.includes('MONTANT TOTAL') || cleanHeader.includes('TOTAL PART ASSURE') || cleanHeader.includes('PART ASSUREUR')) {
+            th.className += ' text-end';
+        }
+        
+        th.innerHTML = `<div class="header-content">
+            <span>${cleanHeader}</span>
+            <span class="sort-indicator">${sortIndicator}</span>
+        </div>`;
+        
+        headerRow.appendChild(th);
+    });
+    
+    // Ajouter la colonne Actions (non triable)
+    const actionsTh = document.createElement('th');
+    actionsTh.textContent = 'Actions';
+    actionsTh.style.cursor = 'default';
+    headerRow.appendChild(actionsTh);
+    
+    tableHeader.appendChild(headerRow);
+}
+
+function sortTable(columnName) {
+    if (!allFactureData.length) return;
+    
+    // Déterminer la direction de tri
+    if (currentSortColumn === columnName) {
+        currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+        currentSortColumn = columnName;
+        currentSortDirection = 'asc';
+    }
+    
+    // Trier les données
+    const sortedData = [...currentFilteredFactures].sort((a, b) => {
+        let valueA = a[columnName];
+        let valueB = b[columnName];
+        
+        // Gestion des valeurs nulles ou indéfinies
+        if (valueA === null || valueA === undefined) valueA = '';
+        if (valueB === null || valueB === undefined) valueB = '';
+        
+        // Conversion pour les colonnes numériques
+        if (columnName.includes('MONTANT') || columnName.includes('PART') || columnName.includes('TOTAL')) {
+            valueA = parseFloat(valueA) || 0;
+            valueB = parseFloat(valueB) || 0;
+        }
+        
+        // Conversion pour les dates
+        if (columnName === 'Date') {
+            valueA = new Date(valueA);
+            valueB = new Date(valueB);
+        }
+        
+        // Comparaison
+        if (valueA < valueB) return currentSortDirection === 'asc' ? -1 : 1;
+        if (valueA > valueB) return currentSortDirection === 'asc' ? 1 : -1;
+        return 0;
+    });
+    
+    // Mettre à jour l'affichage
+    const headers = Object.keys(allFactureData[0] || {});
+    displayFilteredFactures(sortedData, headers);
+    
+    // Sauvegarder le tri
+    saveFilters();
+    
+    // Mettre à jour les indicateurs de tri dans les en-têtes
+    updateSortIndicators();
+}
+
+function updateSortIndicators() {
+    const headers = document.querySelectorAll('#factureTableHeader th.sortable-header');
+    
+    headers.forEach(header => {
+        const headerText = header.querySelector('span:first-child').textContent;
+        const sortIndicator = header.querySelector('.sort-indicator');
+        
+        if (currentSortColumn === headerText) {
+            sortIndicator.textContent = currentSortDirection === 'asc' ? ' ▲' : ' ▼';
+            header.style.backgroundColor = 'rgba(52, 152, 219, 0.2)';
+        } else {
+            sortIndicator.textContent = '';
+            header.style.backgroundColor = '';
+        }
+    });
+}
+
+// =============================================================================
+// FONCTIONS MODIFIÉES POUR INTÉGRER LES NOUVELLES FONCTIONNALITÉS
+// =============================================================================
+
+// Chargement des données de facturation (modifié)
 async function loadFactureData() {
     const factureData = document.getElementById('factureData');
     const messageDiv = document.getElementById('facture-message');
     const tableHeader = document.getElementById('factureTableHeader');
+    const statsDiv = document.getElementById('tableStats');
     
     factureData.innerHTML = '<tr><td colspan="12" class="text-center">Chargement en cours...</td></tr>';
     messageDiv.style.display = 'none';
+    statsDiv.textContent = 'Chargement...';
 
     try {
         const apiUrl = `https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=importassurance`;
@@ -9333,7 +9699,7 @@ async function loadFactureData() {
             throw new Error('Structure de données invalide');
         }
         
-        // Générer les en-têtes du tableau
+        // Générer les en-têtes du tableau avec fonctionnalité de tri
         generateTableHeaders(responseData.data.headers);
         
         // Transformation des données
@@ -9356,95 +9722,42 @@ async function loadFactureData() {
         // Mettre à jour les filtres
         refreshFilters();
 
-        // Afficher les données
-        const headers = Object.keys(allFactureData[0] || {});
-        displayFilteredFactures(allFactureData, headers);
+        // Appliquer les filtres sauvegardés et le tri
+        applyFactureFilter();
         
     } catch (error) {
         console.error('Erreur:', error);
         showFactureMessage(`❌ Erreur: ${error.message || 'Chargement échoué'}`, 'error');
         factureData.innerHTML = '<tr><td colspan="12" class="text-center">Erreur de chargement</td></tr>';
+        document.getElementById('tableStats').textContent = 'Erreur';
     }
 }
 
-// Générer les en-têtes du tableau
-function generateTableHeaders(headers) {
-    const tableHeader = document.getElementById('factureTableHeader');
-    tableHeader.innerHTML = '';
-    
-    const headerRow = document.createElement('tr');
-    
-    headers.forEach(header => {
-        const th = document.createElement('th');
-        const cleanHeader = header.replace(/\t/g, ' ').trim();
-        
-        if (cleanHeader.includes('MONTANT TOTAL') || cleanHeader.includes('TOTAL PART ASSURE') || cleanHeader.includes('PART ASSUREUR')) {
-            th.className = 'text-end';
-        }
-        
-        th.textContent = cleanHeader;
-        headerRow.appendChild(th);
-    });
-    
-    // Ajouter la colonne Actions
-    const actionsTh = document.createElement('th');
-    actionsTh.textContent = 'Actions';
-    headerRow.appendChild(actionsTh);
-    
-    tableHeader.appendChild(headerRow);
-}
-
-// Rafraîchir les filtres
-function refreshFilters() {
-    uniqueFactureSocietes = [...new Set(allFactureData.map(item => item['Société']).filter(Boolean))];
-    uniqueFactureAssurances = [...new Set(allFactureData.map(item => item['Assurance']).filter(Boolean))];
-    uniqueFactureCompagnies = [...new Set(allFactureData.map(item => item['Compagnie']).filter(Boolean))];
-    uniqueFactureProprietaires = [...new Set(allFactureData.map(item => item['Proprietaire']).filter(Boolean))];
-
-    populateFactureFilter('filterFactureSociete', uniqueFactureSocietes);
-    populateFactureFilter('filterFactureAssurance', uniqueFactureAssurances);
-    populateFactureFilter('filterFactureCompagnie', uniqueFactureCompagnies);
-    populateFactureFilter('filterFactureProprietaire', uniqueFactureProprietaires);
-}
-
-// Peupler les filtres
-function populateFactureFilter(selectId, values) {
-    const select = document.getElementById(selectId);
-    if (!select) {
-        console.error(`Element #${selectId} non trouvé`);
-        return;
-    }
-    
-    select.innerHTML = `<option value="">Tous</option>`;
-    
-    if (!values || !values.length) return;
-    
-    values.sort().forEach(value => {
-        if (value) {
-            const option = document.createElement('option');
-            option.value = value;
-            option.textContent = value;
-            select.appendChild(option);
-        }
-    });
-}
-
-// Application des filtres
+// Application des filtres (modifiée)
 function applyFactureFilter() {
     console.log("Application des filtres...");
     
+    const searchTerm = document.getElementById('factureSearch').value.toLowerCase().trim();
     const dateStart = document.getElementById('filterFactureDateStart').value;
     const dateEnd = document.getElementById('filterFactureDateEnd').value;
     const societe = document.getElementById('filterFactureSociete').value;
     const assurance = document.getElementById('filterFactureAssurance').value;
-    const compagnie = document.getElementById('filterFactureCompagnie').value;
-    const proprietaire = document.getElementById('filterFactureProprietaire').value;
+    const compagnie = document.getElementById('filterFactureCompagnie')?.value || '';
+    const proprietaire = document.getElementById('filterFactureProprietaire')?.value || '';
     
     // Convertir les dates une seule fois
     const startDateObj = dateStart ? new Date(dateStart) : null;
     const endDateObj = dateEnd ? new Date(dateEnd) : null;
     
     let filteredData = allFactureData.filter(item => {
+        // Filtrage par recherche texte
+        let searchMatch = true;
+        if (searchTerm) {
+            searchMatch = Object.values(item).some(value => 
+                String(value).toLowerCase().includes(searchTerm)
+            );
+        }
+        
         // Filtrage par date
         let dateMatch = true;
         if (item['Date']) {
@@ -9465,16 +9778,108 @@ function applyFactureFilter() {
         const compagnieMatch = !compagnie || item['Compagnie'] === compagnie;
         const proprietaireMatch = !proprietaire || item['Proprietaire'] === proprietaire;
         
-        return dateMatch && societeMatch && assuranceMatch && compagnieMatch && proprietaireMatch;
+        return searchMatch && dateMatch && societeMatch && assuranceMatch && compagnieMatch && proprietaireMatch;
     });
     
     console.log(`Filtres appliqués - ${filteredData.length} résultats`);
     
+    // Appliquer le tri si défini
+    if (currentSortColumn) {
+        filteredData.sort((a, b) => {
+            let valueA = a[currentSortColumn];
+            let valueB = b[currentSortColumn];
+            
+            if (valueA === null || valueA === undefined) valueA = '';
+            if (valueB === null || valueB === undefined) valueB = '';
+            
+            if (currentSortColumn.includes('MONTANT') || currentSortColumn.includes('PART') || currentSortColumn.includes('TOTAL')) {
+                valueA = parseFloat(valueA) || 0;
+                valueB = parseFloat(valueB) || 0;
+            }
+            
+            if (currentSortColumn === 'Date') {
+                valueA = new Date(valueA);
+                valueB = new Date(valueB);
+            }
+            
+            if (valueA < valueB) return currentSortDirection === 'asc' ? -1 : 1;
+            if (valueA > valueB) return currentSortDirection === 'asc' ? 1 : -1;
+            return 0;
+        });
+    }
+    
     const headers = Object.keys(allFactureData[0] || {});
     displayFilteredFactures(filteredData, headers);
+    
+    // Sauvegarder les filtres
+    saveFilters();
 }
 
-// Réinitialiser les filtres
+// Affichage des données filtrées (modifié)
+function displayFilteredFactures(data, headers) {
+    const factureData = document.getElementById('factureData');
+    const statsDiv = document.getElementById('tableStats');
+    
+    // Stocker les données filtrées actuellement affichées
+    currentFilteredFactures = data;
+    
+    if (!data?.length) {
+        factureData.innerHTML = `<tr><td colspan="${headers.length + 1}" class="text-center">Aucune facture trouvée</td></tr>`;
+        statsDiv.textContent = '0 facture affichée';
+        return;
+    }
+    
+    let html = '';
+    data.forEach((item, index) => {
+        html += '<tr>';
+        
+        headers.forEach(header => {
+            const cleanHeader = header.replace(/\t/g, ' ').trim();
+            const value = item[cleanHeader] || '';
+            
+            if (cleanHeader === 'Date') {
+                html += `<td>${formatDate(value)}</td>`;
+            } 
+            else if (cleanHeader.includes('MONTANT') || cleanHeader.includes('PART') || cleanHeader.includes('TOTAL')) {
+                html += `<td class="text-end">${formatCurrency(value)}</td>`;
+            }
+            else if (cleanHeader === 'Statut') {
+                html += `<td><span class="badge ${getStatusBadgeClass(value)}">${value}</span></td>`;
+            }
+            else {
+                html += `<td>${value}</td>`;
+            }
+        });
+        
+        // Boutons d'action - utiliser l'index des données filtrées
+        html += `
+            <td>
+                <div class="action-btns">
+                    <button class="action-btn btn-edit" onclick="editFilteredFacture(${index})" title="Modifier">
+                        <i class="fas fa-pencil-alt"></i>
+                    </button>
+                    <button class="action-btn btn-cancel" onclick="cancelFilteredFacture(${index})" title="Annuler">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </div>
+            </td>
+        `;
+        
+        html += '</tr>';
+    });
+    
+    factureData.innerHTML = html;
+    
+    // Mettre à jour les statistiques
+    const total = allFactureData.length;
+    const filtered = data.length;
+    statsDiv.textContent = `${filtered} facture${filtered > 1 ? 's' : ''} affichée${filtered > 1 ? 's' : ''} sur ${total}`;
+    
+    // Mettre à jour les indicateurs de tri
+    updateSortIndicators();
+}
+
+// Réinitialiser les filtres (modifiée)
 function resetFactureFilter() {
     console.log("Réinitialisation des filtres");
     
@@ -9484,9 +9889,17 @@ function resetFactureFilter() {
     document.getElementById('filterFactureAssurance').value = '';
     document.getElementById('filterFactureCompagnie').value = '';
     document.getElementById('filterFactureProprietaire').value = '';
+    document.getElementById('factureSearch').value = '';
+    
+    // Réinitialiser le tri
+    currentSortColumn = null;
+    currentSortDirection = 'asc';
     
     const headers = Object.keys(allFactureData[0] || {});
     displayFilteredFactures(allFactureData, headers);
+    
+    // Effacer les filtres sauvegardés
+    clearSavedFilters();
 }
 
 // Affichage des données filtrées
