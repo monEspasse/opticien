@@ -6612,984 +6612,7 @@ async function submitProductForm() {
     }
 }
 
-// =========================
-// 🏦 GESTION BANQUE - Version Pro
-// =========================
 
-class BanqueManager {
-    constructor() {
-        this.cache = {
-            data: null,
-            timestamp: null,
-            ttl: 5 * 60 * 1000 // 5 minutes cache
-        };
-        this.currentAction = null;
-        this.isLoading = false;
-        this.banqueCategories = [];
-        this.filtersState = {};
-        this.init();
-    }
-
-    // =========================
-    // 🔹 INITIALISATION
-    // =========================
-    async init() {
-        await this.loadConfigData();
-        this.setupGlobalEventListeners();
-    }
-
-    // =========================
-    // 🔹 OUVERTURE MODAL BANQUE
-    // =========================
-    async openBanque() {
-        if (!this.hasAdminRights()) {
-            this.showNotification("⛔ Accès refusé - Droits administrateur requis", "error");
-            return;
-        }
-
-        this.currentAction = 'banque';
-        this.renderModal();
-        
-        try {
-            await this.loadBanqueData();
-        } catch (error) {
-            this.handleError("Erreur lors de l'ouverture de la gestion bancaire", error);
-        }
-    }
-
-    hasAdminRights() {
-        // Implémentez votre logique de vérification des droits
-        return true; // Temporaire - à adapter
-    }
-    // =========================
-    // 🔹 RENDU MODAL
-    // =========================
-    renderModal() {
-        const modalContainer = document.getElementById('modal-container');
-        const { tableId, dataId, totalsId, messageId } = this.getElementIds();
-
-        modalContainer.innerHTML = `
-            <div class="modal-overlay" id="modal-${this.currentAction}">
-                <div class="modal-content modal-xl" style="max-width: 1600px; height: 95vh;">
-                    <div class="modal-header bg-primary text-white">
-                        <h3 class="modal-title">
-                            <i class="fas fa-university me-2"></i>Gestion Bancaire
-                        </h3>
-                        <div class="header-actions">
-                            <button type="button" class="btn btn-sm btn-light me-2" onclick="banqueManager.refreshData()" title="Actualiser">
-                                <i class="fas fa-sync-alt"></i>
-                            </button>
-                            <button type="button" class="btn btn-sm btn-light" onclick="banqueManager.closeModal()">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="modal-body">
-                        <div id="filters-container-${this.currentAction}" class="mb-4"></div>
-                        
-                        <div class="table-card border rounded">
-                            <div class="table-responsive" style="max-height: 60vh; overflow-y: auto;">
-                                <table class="banque-table table table-hover table-striped table-bordered" id="${tableId}">
-                                    <thead class="table-dark sticky-top">
-                                        <tr>
-                                            <th scope="col" class="text-nowrap">Date</th>
-                                            <th scope="col" class="text-nowrap">Désignation Banque</th>
-                                            <th scope="col" class="text-end text-nowrap">Montant</th>
-                                            <th scope="col" class="text-nowrap">Type de transaction</th>
-                                            <th scope="col" class="text-end text-nowrap">Solde Disponible</th>
-                                            <th scope="col" class="text-nowrap">Catégorie</th>
-                                            <th scope="col" class="text-center text-nowrap">Unique</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="${dataId}">
-                                        <tr>
-                                            <td colspan="7" class="text-center py-4">
-                                                <div class="d-flex justify-content-center align-items-center">
-                                                    <div class="spinner-border text-primary me-3" role="status">
-                                                        <span class="visually-hidden">Chargement...</span>
-                                                    </div>
-                                                    <span>Chargement des données bancaires...</span>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                    <tfoot id="${totalsId}" class="table-group-divider">
-                                        <!-- Totaux dynamiques -->
-                                    </tfoot>
-                                </table>
-                            </div>
-                        </div>
-                        
-                        <div id="${messageId}" class="alert alert-info mt-3" style="display:none;"></div>
-                    </div>
-                    
-                    <div class="modal-footer bg-light">
-                        <div class="footer-info me-auto" id="summary-${this.currentAction}">
-                            <small class="text-muted" id="data-stats-${this.currentAction}"></small>
-                        </div>
-                        <div class="footer-actions">
-                            <button type="button" class="btn btn-outline-primary me-2" onclick="banqueManager.exportData()">
-                                <i class="fas fa-download me-1"></i>Exporter
-                            </button>
-                            <button type="button" class="btn btn-outline-secondary me-2" onclick="banqueManager.printData()">
-                                <i class="fas fa-print me-1"></i>Imprimer
-                            </button>
-                            <button type="button" class="btn btn-secondary" onclick="banqueManager.closeModal()">
-                                <i class="fas fa-times me-1"></i>Fermer
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        this.animateModalIn();
-    }
-
-    // =========================
-    // 🔹 ANIMATION MODAL
-    // =========================
-    animateModalIn() {
-        setTimeout(() => {
-            const modal = document.getElementById(`modal-${this.currentAction}`);
-            if (modal) {
-                modal.classList.add('active');
-            }
-        }, 10);
-    }
-
-    // =========================
-    // 🔹 CHARGEMENT DONNÉES
-    // =========================
-    async loadBanqueData(forceRefresh = false) {
-        if (this.isLoading) {
-            console.warn('⚠️ Chargement déjà en cours...');
-            return;
-        }
-        
-        this.setLoadingState(true);
-        const { dataId, messageId } = this.getElementIds();
-
-        try {
-            const data = await this.fetchBanqueData(forceRefresh);
-            this.renderFilters(data);
-            this.displayBanqueData(data);
-            this.updateSummary(data);
-            
-        } catch (error) {
-            this.handleError("Erreur lors du chargement des données bancaires", error, messageId);
-        } finally {
-            this.setLoadingState(false);
-        }
-    }
-
-    // =========================
-    // 🔹 RÉCUPÉRATION DONNÉES API
-    // =========================
-    async fetchBanqueData(forceRefresh = false) {
-        const now = Date.now();
-        
-        // Utiliser le cache si possible
-        if (!forceRefresh && this.cache.data && this.cache.timestamp && 
-            (now - this.cache.timestamp) < this.cache.ttl) {
-            console.log('📦 Utilisation des données en cache');
-            return this.cache.data;
-        }
-
-        const apiUrl = `https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=banque`;
-        
-        // Configuration avec timeout
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 30000);
-        
-        try {
-            const response = await fetch(apiUrl, { 
-                signal: controller.signal 
-            });
-            clearTimeout(timeoutId);
-
-            if (!response.ok) {
-                throw new Error(`Erreur HTTP: ${response.status} - ${response.statusText}`);
-            }
-
-            const responseData = await response.json();
-            
-            // Validation de la structure des données
-            if (!responseData || !responseData.data) {
-                throw new Error('Structure de réponse invalide depuis le serveur');
-            }
-
-            if (!responseData.success) {
-                throw new Error(responseData.message || 'Erreur lors du chargement des données');
-            }
-
-            const headers = responseData.data.headers;
-            const rows = responseData.data.rows;
-            
-            if (!Array.isArray(headers) || !Array.isArray(rows)) {
-                throw new Error('Format de données invalide');
-            }
-
-            // Traitement des données
-            const processedData = this.processBanqueData(headers, rows);
-            
-            // Mise en cache
-            this.cache.data = processedData;
-            this.cache.timestamp = now;
-            
-            return processedData;
-            
-        } catch (error) {
-            clearTimeout(timeoutId);
-            throw error;
-        }
-    }
-
-    // =========================
-    // 🔹 TRAITEMENT DES DONNÉES
-    // =========================
-    processBanqueData(headers, rows) {
-        const columnMapping = {
-            date: ['date'],
-            banque: ['banque', 'designation banque'],
-            montant: ['montant'],
-            type: ['type', 'type de transaction'],
-            solde: ['solde', 'solde disponible'],
-            categorie: ['categorie', 'catégorie'],
-            unique: ['unique']
-        };
-
-        // Trouver les index des colonnes
-        const indices = {};
-        Object.keys(columnMapping).forEach(key => {
-            const foundIndex = headers.findIndex(header => 
-                header && columnMapping[key].some(term => 
-                    header.toString().toLowerCase().includes(term.toLowerCase())
-                )
-            );
-            indices[key] = foundIndex !== -1 ? foundIndex : null;
-        });
-
-        // Valider les colonnes requises
-        const requiredColumns = ['date', 'montant', 'banque'];
-        const missingColumns = requiredColumns.filter(col => indices[col] === null);
-        if (missingColumns.length > 0) {
-            throw new Error(`Colonnes manquantes: ${missingColumns.join(', ')}`);
-        }
-
-        return rows
-            .map((row, index) => {
-                try {
-                    return {
-                        Date: this.safeDateParse(row[indices.date]),
-                        Banque: this.safeStringGet(row[indices.banque]),
-                        Montant: this.safeNumberParse(row[indices.montant]),
-                        Type: this.safeStringGet(row[indices.type]),
-                        Solde: this.safeNumberParse(row[indices.solde]),
-                        Categorie: this.safeStringGet(row[indices.categorie]),
-                        Unique: this.safeStringGet(row[indices.unique]),
-                        rowIndex: index + 2 // Pour le débogage (ligne dans le spreadsheet)
-                    };
-                } catch (error) {
-                    console.warn(`⚠️ Erreur traitement ligne ${index + 2}:`, error, row);
-                    return null;
-                }
-            })
-            .filter(item => item !== null && item.Date !== null); // Filtrer les lignes invalides
-    }
-
-    // =========================
-    // 🔹 AFFICHAGE DONNÉES
-    // =========================
-    displayBanqueData(data) {
-        const { dataId, totalsId } = this.getElementIds();
-        const tableBody = document.getElementById(dataId);
-        const tableTotals = document.getElementById(totalsId);
-
-        if (!data || data.length === 0) {
-            tableBody.innerHTML = this.renderEmptyState();
-            tableTotals.innerHTML = '';
-            return;
-        }
-
-        // Appliquer les filtres s'ils existent
-        const filteredData = this.applyCurrentFilters(data);
-        
-        // Tri par date décroissante
-        const sortedData = [...filteredData].sort((a, b) => (b.Date || 0) - (a.Date || 0));
-        
-        tableBody.innerHTML = this.renderTableRows(sortedData);
-        tableTotals.innerHTML = this.renderTableTotals(sortedData);
-        
-        this.attachEventListeners();
-        this.updateDataStats(sortedData, data.length);
-    }
-
-    // =========================
-    // 🔹 RENDU LIGNES TABLEAU
-    // =========================
-    renderTableRows(data) {
-        if (data.length === 0) {
-            return this.renderEmptyState();
-        }
-
-        return data.map(item => `
-            <tr data-unique="${item.Unique}" class="${this.getRowClass(item)}">
-                <td class="text-nowrap">${this.formatDate(item.Date)}</td>
-                <td>${this.escapeHtml(item.Banque)}</td>
-                <td class="text-end ${this.getAmountClass(item.Montant, item.Type)}">
-                    ${this.formatCurrency(item.Montant)}
-                </td>
-                <td>
-                    <span class="badge ${this.getTypeBadgeClass(item.Type)}">
-                        ${item.Type || 'Non spécifié'}
-                    </span>
-                </td>
-                <td class="text-end fw-bold ${this.getSoldeClass(item.Solde)}">
-                    ${this.formatCurrency(item.Solde)}
-                </td>
-                <td class="editable-category" data-unique="${item.Unique}" data-value="${item.Categorie}">
-                    ${this.renderCategoryCell(item.Categorie)}
-                </td>
-                <td class="text-center">
-                    <small class="text-muted unique-code font-monospace">${item.Unique || '-'}</small>
-                </td>
-            </tr>
-        `).join('');
-    }
-
-    // =========================
-    // 🔹 RENDU TOTAUX
-    // =========================
-    renderTableTotals(data) {
-        if (!data || data.length === 0) return '';
-
-        const totals = data.reduce((acc, item) => {
-            acc.totalMontant += item.Montant || 0;
-            // Le solde est le dernier solde disponible
-            acc.lastSolde = item.Solde || 0;
-            return acc;
-        }, { totalMontant: 0, lastSolde: 0 });
-
-        return `
-            <tr class="table-active total-row">
-                <td colspan="2" class="fw-bold">TOTAL FILTRÉ</td>
-                <td class="text-end fw-bold text-primary">${this.formatCurrency(totals.totalMontant)}</td>
-                <td></td>
-                <td class="text-end fw-bold text-success">${this.formatCurrency(totals.lastSolde)}</td>
-                <td colspan="2"></td>
-            </tr>
-        `;
-    }
-
-    // =========================
-    // 🔹 ÉTAT VIDE
-    // =========================
-    renderEmptyState() {
-        return `
-            <tr>
-                <td colspan="7" class="text-center py-5">
-                    <div class="empty-state">
-                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
-                        <h5 class="text-muted">Aucune donnée disponible</h5>
-                        <p class="text-muted">Aucune transaction ne correspond aux critères sélectionnés</p>
-                        <button type="button" class="btn btn-outline-primary mt-2" onclick="banqueManager.resetFilters()">
-                            Réinitialiser les filtres
-                        </button>
-                    </div>
-                </td>
-            </tr>
-        `;
-    }
-
-    // =========================
-    // 🔹 RENDU FILTRES
-    // =========================
-    renderFilters(data) {
-        const filtersContainer = document.getElementById(`filters-container-${this.currentAction}`);
-        if (!filtersContainer) return;
-
-        const types = [...new Set(data.map(d => d.Type).filter(Boolean))];
-        const categories = [...new Set(data.map(d => d.Categorie).filter(Boolean))];
-        const banques = [...new Set(data.map(d => d.Banque).filter(Boolean))];
-
-        filtersContainer.innerHTML = `
-            <div class="filters-card card border-0 shadow-sm">
-                <div class="card-body">
-                    <h6 class="card-title mb-3">
-                        <i class="fas fa-filter me-2"></i>Filtres
-                    </h6>
-                    <div class="row g-3 align-items-end">
-                        <div class="col-md-2">
-                            <label class="form-label small fw-bold">Date de début</label>
-                            <input type="date" 
-                                   class="form-control form-control-sm" 
-                                   id="filterStartDate-${this.currentAction}"
-                                   title="Filtrer à partir de cette date">
-                        </div>
-                        <div class="col-md-2">
-                            <label class="form-label small fw-bold">Date de fin</label>
-                            <input type="date" 
-                                   class="form-control form-control-sm" 
-                                   id="filterEndDate-${this.currentAction}"
-                                   title="Filtrer jusqu'à cette date">
-                        </div>
-                        <div class="col-md-2">
-                            <label class="form-label small fw-bold">Type</label>
-                            <select class="form-select form-select-sm" id="filterType-${this.currentAction}">
-                                <option value="">Tous les types</option>
-                                ${types.map(t => `<option value="${t}">${t}</option>`).join('')}
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <label class="form-label small fw-bold">Catégorie</label>
-                            <select class="form-select form-select-sm" id="filterCategorie-${this.currentAction}">
-                                <option value="">Toutes catégories</option>
-                                ${categories.map(c => `<option value="${c}">${c}</option>`).join('')}
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <label class="form-label small fw-bold">Recherche Banque</label>
-                            <input type="text" 
-                                   class="form-control form-control-sm" 
-                                   id="filterBanque-${this.currentAction}"
-                                   placeholder="Nom de la banque..."
-                                   title="Rechercher par nom de banque">
-                        </div>
-                        <div class="col-md-2">
-                            <button type="button" 
-                                    class="btn btn-danger btn-sm w-100" 
-                                    id="resetFilters-${this.currentAction}"
-                                    title="Réinitialiser tous les filtres">
-                                <i class="fas fa-undo me-1"></i>Réinitialiser
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        this.attachFilterListeners();
-    }
-
-    // =========================
-    // 🔹 APPLICATION FILTRES
-    // =========================
-    applyCurrentFilters(data) {
-        const startDate = document.getElementById(`filterStartDate-${this.currentAction}`)?.value;
-        const endDate = document.getElementById(`filterEndDate-${this.currentAction}`)?.value;
-        const typeFilter = document.getElementById(`filterType-${this.currentAction}`)?.value.toLowerCase();
-        const catFilter = document.getElementById(`filterCategorie-${this.currentAction}`)?.value.toLowerCase();
-        const banqueSearch = document.getElementById(`filterBanque-${this.currentAction}`)?.value.toLowerCase();
-
-        return data.filter(item => {
-            let match = true;
-
-            // Filtre date début
-            if (startDate && item.Date) {
-                const filterDate = new Date(startDate);
-                if (item.Date < filterDate) match = false;
-            }
-
-            // Filtre date fin
-            if (endDate && item.Date) {
-                const filterDate = new Date(endDate);
-                filterDate.setHours(23, 59, 59, 999); // Inclure toute la journée
-                if (item.Date > filterDate) match = false;
-            }
-
-            // Filtre type
-            if (typeFilter && item.Type?.toLowerCase() !== typeFilter) {
-                match = false;
-            }
-
-            // Filtre catégorie
-            if (catFilter && item.Categorie?.toLowerCase() !== catFilter) {
-                match = false;
-            }
-
-            // Filtre recherche banque
-            if (banqueSearch && !item.Banque?.toLowerCase().includes(banqueSearch)) {
-                match = false;
-            }
-
-            return match;
-        });
-    }
-
-    // =========================
-    // 🔹 ÉDITION CATÉGORIE
-    // =========================
-    attachCategoryEdit() {
-        document.querySelectorAll('.editable-category').forEach(cell => {
-            cell.addEventListener('click', (e) => {
-                if (cell.querySelector('select') || e.target.tagName === 'SELECT') return;
-
-                const currentValue = cell.dataset.value || "";
-                const uniqueCode = cell.dataset.unique;
-
-                const select = document.createElement('select');
-                select.className = 'form-select form-select-sm';
-                select.innerHTML = `
-                    <option value="">-- Choisir une catégorie --</option>
-                    ${this.banqueCategories.map(cat => 
-                        `<option value="${cat.label}" ${cat.label === currentValue ? 'selected' : ''}>
-                            ${cat.label}
-                        </option>`
-                    ).join('')}
-                `;
-
-                const originalContent = cell.innerHTML;
-                cell.innerHTML = '';
-                cell.appendChild(select);
-                select.focus();
-
-                // Gestion changement
-                const handleChange = async () => {
-                    const newValue = select.value;
-                    if (newValue === currentValue) {
-                        cell.innerHTML = originalContent;
-                        return;
-                    }
-
-                    const row = cell.closest('tr');
-                    const montantCell = row.querySelector('td.text-end');
-                    const montant = this.parseCurrency(montantCell.textContent) || 0;
-
-                    const confirmed = await this.showConfirmation(
-                        `Changer la catégorie`,
-                        `Voulez-vous vraiment changer la catégorie de "${currentValue}" à "${newValue}" ?`,
-                        'warning'
-                    );
-
-                    if (!confirmed) {
-                        cell.innerHTML = originalContent;
-                        return;
-                    }
-
-                    await this.updateBanqueCategorie(uniqueCode, newValue, montant);
-                    
-                    // Mise à jour optimiste
-                    cell.dataset.value = newValue;
-                    cell.innerHTML = this.renderCategoryCell(newValue);
-                };
-
-                // Gestion perte de focus
-                const handleBlur = () => {
-                    if (!select.parentNode) return;
-                    cell.innerHTML = originalContent;
-                };
-
-                select.addEventListener('change', handleChange);
-                select.addEventListener('blur', handleBlur, { once: true });
-                
-                // Empêcher la propagation pour éviter le blur immédiat
-                select.addEventListener('mousedown', (e) => e.stopPropagation());
-            });
-        });
-    }
-
-    // =========================
-    // 🔹 MISE À JOUR CATÉGORIE
-    // =========================
-    async updateBanqueCategorie(uniqueCode, newCategorie, montant) {
-        const cell = document.querySelector(`[data-unique="${uniqueCode}"] .editable-category`);
-        const originalValue = cell?.dataset.value;
-
-        // Mise à jour optimiste immédiate
-        if (cell) {
-            cell.innerHTML = `<span class="text-warning">⏳ Mise à jour...</span>`;
-        }
-
-        try {
-            const updateData = {
-                uniqueCode: uniqueCode,
-                updatedData: { Categorie: newCategorie },
-                montant: montant
-            };
-
-            const apiUrl = "https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=updateBanqueCategorie";
-            
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 15000);
-            
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(updateData),
-                signal: controller.signal
-            });
-            
-            clearTimeout(timeoutId);
-
-            if (!response.ok) {
-                throw new Error(`Erreur HTTP: ${response.status}`);
-            }
-
-            // Succès
-            if (cell) {
-                cell.dataset.value = newCategorie;
-                cell.innerHTML = `<span class="text-success">${newCategorie} ✅</span>`;
-                
-                // Revenir à l'affichage normal après 2s
-                setTimeout(() => {
-                    if (cell) {
-                        cell.innerHTML = this.renderCategoryCell(newCategorie);
-                    }
-                }, 2000);
-            }
-
-            this.showNotification(`✅ Catégorie mise à jour: "${newCategorie}"`, 'success');
-            
-        } catch (error) {
-            console.error("❌ Erreur mise à jour catégorie:", error);
-            
-            // Restaurer la valeur originale en cas d'erreur
-            if (cell) {
-                cell.dataset.value = originalValue;
-                cell.innerHTML = `<span class="text-danger" title="Erreur: ${error.message}">${originalValue} ❌</span>`;
-                
-                setTimeout(() => {
-                    if (cell) {
-                        cell.innerHTML = this.renderCategoryCell(originalValue);
-                    }
-                }, 3000);
-            }
-
-            this.showNotification(`❌ Erreur mise à jour: ${error.message}`, 'error');
-        }
-    }
-
-    // =========================
-    // 🔹 CHARGEMENT CONFIG
-    // =========================
-    async loadConfigData() {
-        try {
-            const response = await fetch('https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=getconfigdata');
-            const json = await response.json();
-
-            if (json.success && json.data?.categories) {
-                this.banqueCategories = json.data.categories;
-                console.log("✅ Catégories chargées:", this.banqueCategories.length);
-            } else {
-                this.banqueCategories = [];
-                console.warn("⚠️ Aucune catégorie trouvée dans la configuration");
-            }
-        } catch (error) {
-            console.error("❌ Erreur chargement catégories:", error);
-            this.banqueCategories = [];
-            this.showNotification("⚠️ Impossible de charger les catégories", "warning");
-        }
-    }
-
-    // =========================
-    // 🔹 HELPERS & UTILITAIRES
-    // =========================
-
-    getElementIds() {
-        return {
-            tableId: `banqueTable-${this.currentAction}`,
-            dataId: `banqueData-${this.currentAction}`,
-            totalsId: `banqueTotals-${this.currentAction}`,
-            messageId: `banqueMessage-${this.currentAction}`
-        };
-    }
-
-    formatDate(date) {
-        if (!date) return 'N/A';
-        try {
-            return new Date(date).toLocaleDateString('fr-FR');
-        } catch {
-            return 'Date invalide';
-        }
-    }
-
-    formatCurrency(amount) {
-        return new Intl.NumberFormat('fr-FR', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        }).format(amount);
-    }
-
-    parseCurrency(currencyString) {
-        const cleaned = currencyString.replace(/\s/g, '').replace(',', '.');
-        return parseFloat(cleaned) || 0;
-    }
-
-    escapeHtml(unsafe) {
-        if (unsafe === null || unsafe === undefined) return '';
-        return unsafe.toString()
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-    }
-
-    safeDateParse(dateValue) {
-        try {
-            if (dateValue instanceof Date) return dateValue;
-            if (typeof dateValue === 'string' || typeof dateValue === 'number') {
-                const date = new Date(dateValue);
-                return isNaN(date.getTime()) ? null : date;
-            }
-            return null;
-        } catch {
-            return null;
-        }
-    }
-
-    safeNumberParse(value) {
-        if (typeof value === 'number') return value;
-        if (typeof value === 'string') {
-            const cleaned = value.replace(/\s/g, '').replace(',', '.');
-            const num = parseFloat(cleaned);
-            return isNaN(num) ? 0 : num;
-        }
-        return 0;
-    }
-
-    safeStringGet(value) {
-        return value ? value.toString().trim() : '';
-    }
-
-    getRowClass(item) {
-        const classes = [];
-        if (item.Montant > 10000) classes.push('table-warning');
-        if (item.Solde < 0) classes.push('table-danger');
-        return classes.join(' ');
-    }
-
-    getAmountClass(amount, type) {
-        if (amount > 0) return 'text-success';
-        if (amount < 0) return 'text-danger';
-        return 'text-muted';
-    }
-
-    getSoldeClass(solde) {
-        if (solde > 0) return 'text-success';
-        if (solde < 0) return 'text-danger';
-        return 'text-muted';
-    }
-
-    getTypeBadgeClass(type) {
-        const typeMap = {
-            'dépôt': 'bg-success',
-            'retrait': 'bg-danger',
-            'transfert': 'bg-primary',
-            'virement': 'bg-info'
-        };
-        return typeMap[type?.toLowerCase()] || 'bg-secondary';
-    }
-
-    renderCategoryCell(categorie) {
-        if (!categorie) {
-            return `<span class="text-muted fst-italic">-- Non catégorisé --</span>`;
-        }
-        return `<span class="category-badge">${categorie}</span>`;
-    }
-
-    // =========================
-    // 🔹 GESTION ÉTATS
-    // =========================
-
-    setLoadingState(loading) {
-        this.isLoading = loading;
-        const { dataId } = this.getElementIds();
-        const tableBody = document.getElementById(dataId);
-        
-        if (loading && tableBody) {
-            tableBody.innerHTML = `
-                <tr>
-                    <td colspan="7" class="text-center py-4">
-                        <div class="d-flex justify-content-center align-items-center">
-                            <div class="spinner-border text-primary me-3" role="status">
-                                <span class="visually-hidden">Chargement...</span>
-                            </div>
-                            <span>Chargement en cours...</span>
-                        </div>
-                    </td>
-                </tr>
-            `;
-        }
-    }
-
-    updateDataStats(filteredData, totalData) {
-        const statsElement = document.getElementById(`data-stats-${this.currentAction}`);
-        if (statsElement) {
-            const filteredCount = filteredData.length;
-            const totalCount = totalData;
-            const statsText = filteredCount === totalCount ? 
-                `${totalCount} transaction(s)` : 
-                `${filteredCount} / ${totalCount} transaction(s)`;
-            
-            statsElement.textContent = statsText;
-        }
-    }
-
-    updateSummary(data) {
-        const summaryElement = document.getElementById(`summary-${this.currentAction}`);
-        if (summaryElement && data.length > 0) {
-            const totalMontant = data.reduce((sum, item) => sum + (item.Montant || 0), 0);
-            const lastSolde = data[0]?.Solde || 0; // Premier élément (le plus récent)
-            
-            summaryElement.innerHTML = `
-                <div class="summary-stats">
-                    <span class="badge bg-primary me-2">Total: ${this.formatCurrency(totalMontant)}</span>
-                    <span class="badge bg-success">Solde actuel: ${this.formatCurrency(lastSolde)}</span>
-                </div>
-            `;
-        }
-    }
-
-    // =========================
-    // 🔹 GESTION ERREURS
-    // =========================
-
-    handleError(context, error, messageElementId = null) {
-        console.error(`❌ ${context}:`, error);
-        
-        const errorMessage = error.message || 'Erreur inconnue';
-        
-        if (messageElementId) {
-            const messageDiv = document.getElementById(messageElementId);
-            if (messageDiv) {
-                messageDiv.textContent = `❌ ${context}: ${errorMessage}`;
-                messageDiv.className = 'alert alert-danger';
-                messageDiv.style.display = 'block';
-            }
-        }
-        
-        this.showNotification(`❌ ${context}: ${errorMessage}`, 'error');
-    }
-
-    async showConfirmation(title, message, type = 'warning') {
-        return new Promise((resolve) => {
-            // Implémentation basique - vous pouvez utiliser une librairie de modals
-            const confirmed = confirm(`${title}\n\n${message}`);
-            resolve(confirmed);
-        });
-    }
-
-    showNotification(message, type = 'info') {
-        // Implémentez votre système de notification
-        console.log(`📢 ${type.toUpperCase()}: ${message}`);
-        
-        // Exemple basique avec alert
-        if (type === 'error') {
-            alert(`❌ ${message}`);
-        } else if (type === 'success') {
-            alert(`✅ ${message}`);
-        }
-    }
-
-    // =========================
-    // 🔹 ÉVÉNEMENTS
-    // =========================
-
-    setupGlobalEventListeners() {
-        // Écouteurs globaux si nécessaires
-    }
-
-    attachEventListeners() {
-        this.attachCategoryEdit();
-        this.attachFilterListeners();
-    }
-
-    attachFilterListeners() {
-        const debouncedApplyFilters = this.debounce(() => this.applyFilters(), 300);
-        
-        ['change', 'input'].forEach(eventType => {
-            document.getElementById(`filterStartDate-${this.currentAction}`)?.addEventListener(eventType, debouncedApplyFilters);
-            document.getElementById(`filterEndDate-${this.currentAction}`)?.addEventListener(eventType, debouncedApplyFilters);
-            document.getElementById(`filterType-${this.currentAction}`)?.addEventListener(eventType, debouncedApplyFilters);
-            document.getElementById(`filterCategorie-${this.currentAction}`)?.addEventListener(eventType, debouncedApplyFilters);
-            document.getElementById(`filterBanque-${this.currentAction}`)?.addEventListener(eventType, debouncedApplyFilters);
-        });
-
-        document.getElementById(`resetFilters-${this.currentAction}`)?.addEventListener('click', () => this.resetFilters());
-    }
-
-    // =========================
-    // 🔹 ACTIONS
-    // =========================
-
-    applyFilters() {
-        if (!this.cache.data) return;
-        this.displayBanqueData(this.cache.data);
-    }
-
-    resetFilters() {
-        // Réinitialiser les valeurs des filtres
-        document.getElementById(`filterStartDate-${this.currentAction}`).value = '';
-        document.getElementById(`filterEndDate-${this.currentAction}`).value = '';
-        document.getElementById(`filterType-${this.currentAction}`).value = '';
-        document.getElementById(`filterCategorie-${this.currentAction}`).value = '';
-        document.getElementById(`filterBanque-${this.currentAction}`).value = '';
-        
-        // Réappliquer les filtres
-        this.applyFilters();
-    }
-
-    async refreshData() {
-        await this.loadBanqueData(true);
-        this.showNotification('✅ Données actualisées', 'success');
-    }
-
-    exportData() {
-        if (!this.cache.data) {
-            this.showNotification('❌ Aucune donnée à exporter', 'error');
-            return;
-        }
-
-        // Implémentez l'export (CSV, Excel, etc.)
-        this.showNotification('📤 Fonctionnalité d\'export à implémenter', 'info');
-    }
-
-    printData() {
-        window.print();
-    }
-
-    closeModal() {
-        const modal = document.getElementById(`modal-${this.currentAction}`);
-        if (modal) {
-            modal.classList.remove('active');
-            setTimeout(() => {
-                modal.remove();
-            }, 300);
-        }
-    }
-
-    // =========================
-    // 🔹 UTILITAIRES AVANCÉS
-    // =========================
-
-    debounce(func, wait) {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
-                clearTimeout(timeout);
-                func(...args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
-    }
-}
-
-// =========================
-// 🔹 INITIALISATION GLOBALE
-// =========================
-
-const banqueManager = new BanqueManager();
-
-// Export pour usage global
-window.openBanque = () => banqueManager.openBanque();
-window.banqueManager = banqueManager;
-
-console.log('🏦 BanqueManager initialisé');
 // Fonction pour vérifier les droits d'administration
 function hasAdminRights() {
     // Récupère l'utilisateur actuel depuis sessionStorage ou localStorage
@@ -9820,22 +8843,7 @@ function showFactureMessage(message, type) {
     messageDiv.style.display = 'block';
 }
 
-// Fonctions à implémenter ultérieurement
-function openAddFactureModal() {
-    alert('Fonctionnalité d\'ajout de facture à implémenter');
-}
 
-function genererFacture() {
-    alert('Fonctionnalité de génération de facture à implémenter');
-}
-
-function closeModal() {
-    const modalContainer = document.getElementById('modal-container');
-    if (modalContainer) {
-        modalContainer.innerHTML = '';
-        document.body.classList.remove('modal-open');
-    }
-}
 // Fonction pour ouvrir le modal d'ajout
 async function openAddFactureModal() {
     const modalContainer = document.getElementById('modal-container');
@@ -14078,6 +13086,722 @@ function closeModalopengrandecaisse() {
             openJournalGrandCaisse();
         }
     }, 100);
+}
+
+// Variables globales pour les transactions bancaires
+let allBanqueData = [];
+let uniqueBanqueDesignations = [];
+let uniqueBanqueTypes = [];
+let uniqueBanqueCategories = [];
+let currentFilteredBanque = [];
+
+// Fonction principale pour ouvrir la gestion du compte banque
+function openBanque() {
+    const modalContainer = document.getElementById('modal-container');
+    const modalHTML = `
+        <div class="modal-overlay" id="banqueModal">
+            <div class="modal-content" style="width: 95vw; max-width: none; height: 90vh;">
+                <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; border-bottom: 1px solid #ddd;">
+                    <h3 class="modal-title" style="margin: 0; font-size: 1.25rem;">
+                        <i class="fas fa-university me-2"></i> Gestion du Compte Banque
+                    </h3>
+                </div>
+
+                <div class="modal-body" style="display: flex; flex-direction: column; padding: 15px; gap: 10px; overflow: hidden;">
+
+                    <!-- Filtres améliorés -->
+                    <div class="filters-panel" style="flex-shrink: 0; background: #f8f9fa; padding: 10px; border-radius: 5px;">
+                        <div style="display: flex; gap: 12px; align-items: end; flex-wrap: wrap;">
+                            <!-- Filtre Date Début -->
+                            <div style="flex: 1; min-width: 180px;">
+                                <label for="filterBanqueDateStart" class="form-label small">Date de début</label>
+                                <input type="date" id="filterBanqueDateStart" class="form-control form-control-sm" onchange="applyBanqueFilter()">
+                            </div>
+                            <!-- Filtre Date Fin -->
+                            <div style="flex: 1; min-width: 180px;">
+                                <label for="filterBanqueDateEnd" class="form-label small">Date de fin</label>
+                                <input type="date" id="filterBanqueDateEnd" class="form-control form-control-sm" onchange="applyBanqueFilter()">
+                            </div>
+                            <div style="flex: 1; min-width: 180px;">
+                                <label for="filterBanqueDesignation" class="form-label small">Désignation</label>
+                                <select id="filterBanqueDesignation" class="form-select form-select-sm" onchange="applyBanqueFilter()">
+                                    <option value="">Toutes</option>
+                                </select>
+                            </div>
+                            <div style="flex: 1; min-width: 180px;">
+                                <label for="filterBanqueType" class="form-label small">Type de transaction</label>
+                                <select id="filterBanqueType" class="form-select form-select-sm" onchange="applyBanqueFilter()">
+                                    <option value="">Tous</option>
+                                </select>
+                            </div>
+                            <div style="flex: 1; min-width: 180px;">
+                                <label for="filterBanqueCategorie" class="form-label small">Catégorie</label>
+                                <select id="filterBanqueCategorie" class="form-select form-select-sm" onchange="applyBanqueFilter()">
+                                    <option value="">Toutes</option>
+                                </select>
+                            </div>
+                            <div style="align-self: center;">
+                                <button class="btn btn-outline-secondary btn-sm" onclick="resetBanqueFilter()">
+                                    <i class="fas fa-undo me-1"></i> Réinitialiser
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tableau -->
+                    <div class="table-container" style="flex-grow: 1; overflow-y: auto;">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-sm" id="banqueTable">
+                                <thead class="table-dark sticky-top" id="banqueTableHeader">
+                                    <!-- Les en-têtes seront générés dynamiquement -->
+                                </thead>
+                                <tbody id="banqueData">
+                                    <tr>
+                                        <td colspan="8" class="text-center py-4">
+                                            <div class="spinner-border text-primary" role="status">
+                                                <span class="visually-hidden">Chargement...</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Message -->
+                    <div id="banque-message" class="alert alert-info small mt-2" style="display: none;"></div>
+                </div>
+
+                <!-- Footer -->
+                <div class="modal-footer d-flex justify-content-between align-items-center p-2 border-top">
+                    <button type="button" class="btn btn-success btn-sm" onclick="addTransaction()">
+                        <i class="fas fa-plus me-1"></i> Nouvelle Transaction
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="closeModal()">
+                        <i class="fas fa-times me-1"></i> Fermer
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    modalContainer.innerHTML = modalHTML;
+    document.getElementById('banqueModal').classList.add('active');
+    loadBanqueData();
+}
+
+// Chargement des données bancaires
+async function loadBanqueData() {
+    const banqueData = document.getElementById('banqueData');
+    const messageDiv = document.getElementById('banque-message');
+    const tableHeader = document.getElementById('banqueTableHeader');
+    
+    banqueData.innerHTML = '<tr><td colspan="8" class="text-center">Chargement en cours...</td></tr>';
+    messageDiv.style.display = 'none';
+
+    try {
+        const apiUrl = `https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=banque`;
+        
+        const response = await fetch(apiUrl);
+        if (!response.ok) throw new Error(`Erreur HTTP: ${response.status}`);
+        
+        const responseData = await response.json();
+        
+        if (!responseData?.data?.rows || !responseData?.data?.headers) {
+            throw new Error('Structure de données invalide');
+        }
+        
+        // Générer les en-têtes du tableau
+        generateBanqueTableHeaders(responseData.data.headers);
+        
+        // Transformation des données
+        allBanqueData = responseData.data.rows.map(row => {
+            const item = {};
+            responseData.data.headers.forEach((header, index) => {
+                const cleanHeader = header.replace(/\t/g, ' ').trim();
+                item[cleanHeader] = row[index] || '';
+                
+                if (cleanHeader.includes('Montant') || cleanHeader.includes('SOLDE DISPONIBLE')) {
+                    item[cleanHeader] = parseFloat(row[index]) || 0;
+                }
+            });
+            return item;
+        });
+
+        // Initialiser les données filtrées
+        currentFilteredBanque = [...allBanqueData];
+
+        // Mettre à jour les filtres
+        refreshBanqueFilters();
+
+        // Afficher les données
+        const headers = Object.keys(allBanqueData[0] || {});
+        displayFilteredBanque(allBanqueData, headers);
+        
+    } catch (error) {
+        console.error('Erreur:', error);
+        showBanqueMessage(`❌ Erreur: ${error.message || 'Chargement échoué'}`, 'error');
+        banqueData.innerHTML = '<tr><td colspan="8" class="text-center">Erreur de chargement</td></tr>';
+    }
+}
+
+// Générer les en-têtes du tableau banque
+function generateBanqueTableHeaders(headers) {
+    const tableHeader = document.getElementById('banqueTableHeader');
+    tableHeader.innerHTML = '';
+    
+    const headerRow = document.createElement('tr');
+    
+    headers.forEach(header => {
+        const th = document.createElement('th');
+        const cleanHeader = header.replace(/\t/g, ' ').trim();
+        
+        if (cleanHeader.includes('Montant') || cleanHeader.includes('SOLDE DISPONIBLE')) {
+            th.className = 'text-end';
+        }
+        
+        th.textContent = cleanHeader;
+        headerRow.appendChild(th);
+    });
+    
+    // Ajouter la colonne Actions
+    const actionsTh = document.createElement('th');
+    actionsTh.textContent = 'Actions';
+    headerRow.appendChild(actionsTh);
+    
+    tableHeader.appendChild(headerRow);
+}
+
+// Rafraîchir les filtres banque
+function refreshBanqueFilters() {
+    uniqueBanqueDesignations = [...new Set(allBanqueData.map(item => item['Designation']).filter(Boolean))];
+    uniqueBanqueTypes = [...new Set(allBanqueData.map(item => item['Type de transation']).filter(Boolean))];
+    uniqueBanqueCategories = [...new Set(allBanqueData.map(item => item['Categorie']).filter(Boolean))];
+
+    populateBanqueFilter('filterBanqueDesignation', uniqueBanqueDesignations);
+    populateBanqueFilter('filterBanqueType', uniqueBanqueTypes);
+    populateBanqueFilter('filterBanqueCategorie', uniqueBanqueCategories);
+}
+
+// Peupler les filtres banque
+function populateBanqueFilter(selectId, values) {
+    const select = document.getElementById(selectId);
+    if (!select) {
+        console.error(`Element #${selectId} non trouvé`);
+        return;
+    }
+    
+    select.innerHTML = `<option value="">Tous</option>`;
+    
+    if (!values || !values.length) return;
+    
+    values.sort().forEach(value => {
+        if (value) {
+            const option = document.createElement('option');
+            option.value = value;
+            option.textContent = value;
+            select.appendChild(option);
+        }
+    });
+}
+
+// Application des filtres banque
+function applyBanqueFilter() {
+    console.log("Application des filtres banque...");
+    
+    const dateStart = document.getElementById('filterBanqueDateStart').value;
+    const dateEnd = document.getElementById('filterBanqueDateEnd').value;
+    const designation = document.getElementById('filterBanqueDesignation').value;
+    const type = document.getElementById('filterBanqueType').value;
+    const categorie = document.getElementById('filterBanqueCategorie').value;
+    
+    // Convertir les dates
+    const startDateObj = dateStart ? new Date(dateStart) : null;
+    const endDateObj = dateEnd ? new Date(dateEnd) : null;
+    
+    let filteredData = allBanqueData.filter(item => {
+        // Filtrage par date
+        let dateMatch = true;
+        if (item['Date']) {
+            const itemDate = new Date(item['Date']);
+            
+            if (startDateObj && endDateObj) {
+                dateMatch = itemDate >= startDateObj && itemDate <= endDateObj;
+            } else if (startDateObj) {
+                dateMatch = itemDate >= startDateObj;
+            } else if (endDateObj) {
+                dateMatch = itemDate <= endDateObj;
+            }
+        }
+        
+        // Filtrage par autres critères
+        const designationMatch = !designation || item['Designation'] === designation;
+        const typeMatch = !type || item['Type de transation'] === type;
+        const categorieMatch = !categorie || item['Categorie'] === categorie;
+        
+        return dateMatch && designationMatch && typeMatch && categorieMatch;
+    });
+    
+    console.log(`Filtres appliqués - ${filteredData.length} résultats`);
+    
+    const headers = Object.keys(allBanqueData[0] || {});
+    displayFilteredBanque(filteredData, headers);
+}
+
+// Réinitialiser les filtres banque
+function resetBanqueFilter() {
+    console.log("Réinitialisation des filtres banque");
+    
+    document.getElementById('filterBanqueDateStart').value = '';
+    document.getElementById('filterBanqueDateEnd').value = '';
+    document.getElementById('filterBanqueDesignation').value = '';
+    document.getElementById('filterBanqueType').value = '';
+    document.getElementById('filterBanqueCategorie').value = '';
+    
+    const headers = Object.keys(allBanqueData[0] || {});
+    displayFilteredBanque(allBanqueData, headers);
+}
+
+// Affichage des données filtrées banque
+function displayFilteredBanque(data, headers) {
+    const banqueData = document.getElementById('banqueData');
+    
+    // Stocker les données filtrées actuellement affichées
+    currentFilteredBanque = data;
+    
+    if (!data?.length) {
+        banqueData.innerHTML = `<tr><td colspan="${headers.length + 1}" class="text-center">Aucune transaction trouvée</td></tr>`;
+        return;
+    }
+    
+    let html = '';
+    data.forEach((item, index) => {
+        html += '<tr>';
+        
+        headers.forEach(header => {
+            const cleanHeader = header.replace(/\t/g, ' ').trim();
+            const value = item[cleanHeader] || '';
+            
+            if (cleanHeader === 'Date') {
+                html += `<td>${formatDate(value)}</td>`;
+            } 
+            else if (cleanHeader.includes('Montant') || cleanHeader.includes('SOLDE DISPONIBLE')) {
+                const amount = parseFloat(value) || 0;
+                const amountClass = amount < 0 ? 'text-danger' : 'text-success';
+                html += `<td class="text-end ${amountClass} fw-bold">${formatCurrency(value)}</td>`;
+            }
+            else if (cleanHeader === 'Type de transation') {
+                html += `<td><span class="badge ${getTransactionTypeBadgeClass(value)}">${value}</span></td>`;
+            }
+            else {
+                html += `<td>${value}</td>`;
+            }
+        });
+        
+        // Boutons d'action
+        html += `
+            <td>
+                <div class="action-btns">
+                    <button class="action-btn btn-edit" onclick="editFilteredBanque(${index})" title="Modifier">
+                        <i class="fas fa-pencil-alt"></i>
+                    </button>
+                    <button class="action-btn btn-cancel" onclick="deleteFilteredBanque(${index})" title="Supprimer">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </div>
+            </td>
+        `;
+        
+        html += '</tr>';
+    });
+    
+    banqueData.innerHTML = html;
+}
+
+// Édition d'une transaction depuis les données filtrées
+function editFilteredBanque(filteredIndex) {
+    const transaction = currentFilteredBanque[filteredIndex];
+    
+    // Trouver l'index correspondant dans allBanqueData
+    const originalIndex = allBanqueData.findIndex(item => 
+        item['Idunique'] === transaction['Idunique']
+    );
+    
+    if (originalIndex === -1) {
+        alert('Transaction non trouvée dans les données originales');
+        return;
+    }
+    
+    // Ouvrir la modal d'édition avec l'index original
+    openEditBanqueModal(originalIndex, transaction);
+}
+
+// Suppression d'une transaction depuis les données filtrées
+function deleteFilteredBanque(filteredIndex) {
+    const transaction = currentFilteredBanque[filteredIndex];
+    
+    // Trouver l'index correspondant dans allBanqueData
+    const originalIndex = allBanqueData.findIndex(item => 
+        item['Idunique'] === transaction['Idunique']
+    );
+    
+    if (originalIndex === -1) {
+        alert('Transaction non trouvée dans les données originales');
+        return;
+    }
+    
+    // Appeler la fonction de suppression avec l'index original
+    deleteBanqueTransaction(originalIndex);
+}
+
+// Ouvrir la modal d'édition de transaction
+function openEditBanqueModal(index, transactionData = null) {
+    const transaction = transactionData || allBanqueData[index];
+    const modalContainer = document.getElementById('modal-container');
+    
+    const modalHTML = `
+        <div class="edit-modal active" id="editBanqueModal">
+            <div class="edit-modal-content">
+                <div class="edit-modal-header">
+                    <h3 class="edit-modal-title">
+                        <i class="fas fa-edit me-2"></i> 
+                        Modifier Transaction
+                    </h3>
+                </div>
+                
+                <div class="edit-modal-body">
+                    <form id="editBanqueForm">
+                        <div class="edit-row">
+                            <div class="edit-col">
+                                <div class="edit-form-group">
+                                    <label class="edit-form-label">Date</label>
+                                    <input type="date" class="edit-form-control" id="editBanqueDate" value="${formatDateForInput(transaction['Date'])}" required>
+                                </div>
+                                
+                                <div class="edit-form-group">
+                                    <label class="edit-form-label">Désignation</label>
+                                    <input type="text" class="edit-form-control" id="editBanqueDesignation" value="${transaction['Designation'] || ''}" required>
+                                </div>
+                                
+                                <div class="edit-form-group">
+                                    <label class="edit-form-label">Montant</label>
+                                    <input type="number" step="0.01" class="edit-form-control" id="editBanqueMontant" value="${transaction['Montant'] || ''}" required>
+                                </div>
+                                
+                                <div class="edit-form-group">
+                                    <label class="edit-form-label">Type de transaction</label>
+                                    <select class="edit-form-control" id="editBanqueType" required>
+                                        <option value="">Sélectionner...</option>
+                                        <option value="Débit" ${transaction['Type de transation'] === 'Débit' ? 'selected' : ''}>Débit</option>
+                                        <option value="Crédit" ${transaction['Type de transation'] === 'Crédit' ? 'selected' : ''}>Crédit</option>
+                                        <option value="Virement" ${transaction['Type de transation'] === 'Virement' ? 'selected' : ''}>Virement</option>
+                                        <option value="Prélèvement" ${transaction['Type de transation'] === 'Prélèvement' ? 'selected' : ''}>Prélèvement</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="edit-col">
+                                <div class="edit-form-group">
+                                    <label class="edit-form-label">SOLDE DISPONIBLE</label>
+                                    <input type="number" step="0.01" class="edit-form-control" id="editBanqueSolde" value="${transaction['SOLDE DISPONIBLE'] || ''}" required>
+                                </div>
+                                
+                                <div class="edit-form-group">
+                                    <label class="edit-form-label">Catégorie</label>
+                                    <select class="edit-form-control" id="editBanqueCategorie" required>
+                                        <option value="">Sélectionner...</option>
+                                        <option value="Salaire" ${transaction['Categorie'] === 'Salaire' ? 'selected' : ''}>Salaire</option>
+                                        <option value="Facture" ${transaction['Categorie'] === 'Facture' ? 'selected' : ''}>Facture</option>
+                                        <option value="Achat" ${transaction['Categorie'] === 'Achat' ? 'selected' : ''}>Achat</option>
+                                        <option value="Loyer" ${transaction['Categorie'] === 'Loyer' ? 'selected' : ''}>Loyer</option>
+                                        <option value="Transport" ${transaction['Categorie'] === 'Transport' ? 'selected' : ''}>Transport</option>
+                                        <option value="Alimentation" ${transaction['Categorie'] === 'Alimentation' ? 'selected' : ''}>Alimentation</option>
+                                        <option value="Divers" ${transaction['Categorie'] === 'Divers' ? 'selected' : ''}>Divers</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="edit-form-group">
+                                    <label class="edit-form-label">ID Unique</label>
+                                    <input type="text" class="edit-form-control" value="${transaction['Idunique'] || ''}" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="edit-modal-footer">
+                    <button type="button" class="edit-btn edit-btn-secondary" onclick="closeModalAndOpenBanque()">
+                        <i class="fas fa-times"></i> Annuler
+                    </button>
+                    <button type="button" class="edit-btn edit-btn-primary" onclick="submitBanqueUpdate(${index})">
+                        <i class="fas fa-save"></i> Enregistrer
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    modalContainer.innerHTML = modalHTML;
+    document.body.classList.add('modal-open');
+}
+
+// Soumettre la mise à jour d'une transaction
+function submitBanqueUpdate(index) {
+    const transaction = allBanqueData[index];
+    const idUnique = transaction['Idunique'];
+    
+    // Récupération des valeurs des champs
+    const updatedData = {
+        'Date': document.getElementById('editBanqueDate').value,
+        'Designation': document.getElementById('editBanqueDesignation').value,
+        'Montant': parseFloat(document.getElementById('editBanqueMontant').value) || 0,
+        'Type de transation': document.getElementById('editBanqueType').value,
+        'SOLDE DISPONIBLE': parseFloat(document.getElementById('editBanqueSolde').value) || 0,
+        'Categorie': document.getElementById('editBanqueCategorie').value,
+        'Idunique': idUnique
+    };
+
+    const submitBtn = document.querySelector('.edit-btn-primary');
+    const originalBtnText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement...';
+    submitBtn.disabled = true;
+
+    const url = `https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=updatebanque`;
+    
+    fetch(url, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            idUnique: idUnique,
+            updatedData: updatedData
+        })
+    })
+    .then(() => {
+        // Mise à jour optimiste
+        allBanqueData[index] = {...allBanqueData[index], ...updatedData};
+        closeModalAndOpenBanque();
+    })
+    .catch(error => {
+        console.error("Erreur d'envoi:", error);
+        closeModalAndOpenBanque();
+    })
+    .finally(() => {
+        submitBtn.innerHTML = originalBtnText;
+        submitBtn.disabled = false;
+    });
+}
+
+// Supprimer une transaction
+async function deleteBanqueTransaction(index) {
+    const transaction = allBanqueData[index];
+    const idUnique = transaction['Idunique'];
+    const designation = transaction['Designation'] || '';
+
+    if (!confirm(`Confirmez-vous la suppression de la transaction "${designation}" ?`)) {
+        return;
+    }
+
+    const btn = event.target.closest('button');
+    const originalContent = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+    btn.disabled = true;
+
+    try {
+        await fetch(`https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=deleteBanque`, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                idUnique: idUnique
+            })
+        });
+
+        // Suppression optimiste
+        allBanqueData.splice(index, 1);
+        refreshBanqueFilters();
+        closeModalAndOpenBanque();
+    } catch (e) {
+        console.error('Erreur réseau:', e);
+    } finally {
+        btn.innerHTML = originalContent;
+        btn.disabled = false;
+    }
+}
+
+// Ajouter une nouvelle transaction
+function addTransaction() {
+    const modalContainer = document.getElementById('modal-container');
+    
+    const modalHTML = `
+        <div class="edit-modal active" id="addBanqueModal">
+            <div class="edit-modal-content">
+                <div class="edit-modal-header">
+                    <h3 class="edit-modal-title">
+                        <i class="fas fa-plus me-2"></i> 
+                        Nouvelle Transaction
+                    </h3>
+                </div>
+                
+                <div class="edit-modal-body">
+                    <form id="addBanqueForm">
+                        <div class="edit-row">
+                            <div class="edit-col">
+                                <div class="edit-form-group">
+                                    <label class="edit-form-label">Date *</label>
+                                    <input type="date" class="edit-form-control" id="addBanqueDate" required>
+                                </div>
+                                
+                                <div class="edit-form-group">
+                                    <label class="edit-form-label">Désignation *</label>
+                                    <input type="text" class="edit-form-control" id="addBanqueDesignation" required>
+                                </div>
+                                
+                                <div class="edit-form-group">
+                                    <label class="edit-form-label">Montant *</label>
+                                    <input type="number" step="0.01" class="edit-form-control" id="addBanqueMontant" required>
+                                </div>
+                                
+                                <div class="edit-form-group">
+                                    <label class="edit-form-label">Type de transaction *</label>
+                                    <select class="edit-form-control" id="addBanqueType" required>
+                                        <option value="">Sélectionner...</option>
+                                        <option value="Débit">Débit</option>
+                                        <option value="Crédit">Crédit</option>
+                                        <option value="Virement">Virement</option>
+                                        <option value="Prélèvement">Prélèvement</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="edit-col">
+                                <div class="edit-form-group">
+                                    <label class="edit-form-label">SOLDE DISPONIBLE *</label>
+                                    <input type="number" step="0.01" class="edit-form-control" id="addBanqueSolde" required>
+                                </div>
+                                
+                                <div class="edit-form-group">
+                                    <label class="edit-form-label">Catégorie *</label>
+                                    <select class="edit-form-control" id="addBanqueCategorie" required>
+                                        <option value="">Sélectionner...</option>
+                                        <option value="Salaire">Salaire</option>
+                                        <option value="Facture">Facture</option>
+                                        <option value="Achat">Achat</option>
+                                        <option value="Loyer">Loyer</option>
+                                        <option value="Transport">Transport</option>
+                                        <option value="Alimentation">Alimentation</option>
+                                        <option value="Divers">Divers</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="edit-modal-footer">
+                    <button type="button" class="edit-btn edit-btn-secondary" onclick="closeModalAndOpenBanque()">
+                        <i class="fas fa-times"></i> Annuler
+                    </button>
+                    <button type="button" class="edit-btn edit-btn-success" onclick="submitNewTransaction()">
+                        <i class="fas fa-plus"></i> Ajouter
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    modalContainer.innerHTML = modalHTML;
+    document.body.classList.add('modal-open');
+    
+    // Définir la date d'aujourd'hui par défaut
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('addBanqueDate').value = today;
+}
+
+// Soumettre une nouvelle transaction
+function submitNewTransaction() {
+    const newData = {
+        'Date': document.getElementById('addBanqueDate').value,
+        'Designation': document.getElementById('addBanqueDesignation').value,
+        'Montant': parseFloat(document.getElementById('addBanqueMontant').value) || 0,
+        'Type de transation': document.getElementById('addBanqueType').value,
+        'SOLDE DISPONIBLE': parseFloat(document.getElementById('addBanqueSolde').value) || 0,
+        'Categorie': document.getElementById('addBanqueCategorie').value,
+        'Idunique': 'ID_' + Date.now() // Générer un ID unique temporaire
+    };
+
+    // Validation basique
+    if (!newData.Date || !newData.Designation || !newData.Montant || !newData['Type de transation'] || !newData.Categorie) {
+        alert('Veuillez remplir tous les champs obligatoires (*)');
+        return;
+    }
+
+    const submitBtn = document.querySelector('.edit-btn-success');
+    const originalBtnText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Ajout...';
+    submitBtn.disabled = true;
+
+    const url = `https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=addBanque`;
+    
+    fetch(url, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            newData: newData
+        })
+    })
+    .then(() => {
+        // Ajout optimiste
+        allBanqueData.unshift(newData);
+        closeModalAndOpenBanque();
+    })
+    .catch(error => {
+        console.error("Erreur d'ajout:", error);
+        closeModalAndOpenBanque();
+    })
+    .finally(() => {
+        submitBtn.innerHTML = originalBtnText;
+        submitBtn.disabled = false;
+    });
+}
+
+function closeModalAndOpenBanque() {
+    const modalContainer = document.getElementById('modal-container');
+    if (modalContainer) {
+        modalContainer.innerHTML = '';
+        document.body.classList.remove('modal-open');
+    }
+    
+    setTimeout(() => {
+        if (typeof openBanque === 'function') {
+            openBanque();
+        }
+    }, 300);
+}
+
+// Fonctions utilitaires pour banque
+function getTransactionTypeBadgeClass(type) {
+    switch(type) {
+        case 'Crédit': return 'bg-success';
+        case 'Débit': return 'bg-danger';
+        case 'Virement': return 'bg-primary';
+        case 'Prélèvement': return 'bg-warning text-dark';
+        default: return 'bg-secondary';
+    }
+}
+
+function showBanqueMessage(message, type) {
+    const messageDiv = document.getElementById('banque-message');
+    messageDiv.textContent = message;
+    messageDiv.className = `alert alert-${type}`;
+    messageDiv.style.display = 'block';
 }
 
 </script>
