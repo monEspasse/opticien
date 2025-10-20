@@ -13094,6 +13094,26 @@ let uniqueBanqueDesignations = [];
 let uniqueBanqueTypes = [];
 let uniqueBanqueCategories = [];
 let currentFilteredBanque = [];
+let banqueCategories = [];
+
+// Charger les catégories de configuration
+async function loadConfigData() {
+    try {
+        const response = await fetch('https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=getconfigdata');
+        const json = await response.json();
+
+        if (json.success && json.data?.categories) {
+            banqueCategories = json.data.categories;
+            console.log("✅ Catégories chargées :", banqueCategories);
+        } else {
+            banqueCategories = [];
+            console.warn("⚠️ Aucune catégorie trouvée");
+        }
+    } catch (error) {
+        console.error("❌ Erreur lors du chargement des catégories :", error);
+        banqueCategories = [];
+    }
+}
 
 // Fonction principale pour ouvrir la gestion du compte banque
 function openBanque() {
@@ -13173,10 +13193,7 @@ function openBanque() {
                 </div>
 
                 <!-- Footer -->
-                <div class="modal-footer d-flex justify-content-between align-items-center p-2 border-top">
-                    <button type="button" class="btn btn-success btn-sm" onclick="addTransaction()">
-                        <i class="fas fa-plus me-1"></i> Nouvelle Transaction
-                    </button>
+                <div class="modal-footer d-flex justify-content-end align-items-center p-2 border-top">
                     <button type="button" class="btn btn-primary btn-sm" onclick="closeModal()">
                         <i class="fas fa-times me-1"></i> Fermer
                     </button>
@@ -13398,15 +13415,12 @@ function displayFilteredBanque(data, headers) {
             }
         });
         
-        // Boutons d'action
+        // Bouton d'action uniquement pour l'édition
         html += `
             <td>
                 <div class="action-btns">
                     <button class="action-btn btn-edit" onclick="editFilteredBanque(${index})" title="Modifier">
                         <i class="fas fa-pencil-alt"></i>
-                    </button>
-                    <button class="action-btn btn-cancel" onclick="deleteFilteredBanque(${index})" title="Supprimer">
-                        <i class="fas fa-trash-alt"></i>
                     </button>
                 </div>
             </td>
@@ -13436,28 +13450,23 @@ function editFilteredBanque(filteredIndex) {
     openEditBanqueModal(originalIndex, transaction);
 }
 
-// Suppression d'une transaction depuis les données filtrées
-function deleteFilteredBanque(filteredIndex) {
-    const transaction = currentFilteredBanque[filteredIndex];
-    
-    // Trouver l'index correspondant dans allBanqueData
-    const originalIndex = allBanqueData.findIndex(item => 
-        item['Idunique'] === transaction['Idunique']
-    );
-    
-    if (originalIndex === -1) {
-        alert('Transaction non trouvée dans les données originales');
-        return;
-    }
-    
-    // Appeler la fonction de suppression avec l'index original
-    deleteBanqueTransaction(originalIndex);
-}
-
 // Ouvrir la modal d'édition de transaction
 function openEditBanqueModal(index, transactionData = null) {
+
+loadConfigData();
     const transaction = transactionData || allBanqueData[index];
     const modalContainer = document.getElementById('modal-container');
+    
+    // Générer les options de catégorie
+    let categoryOptions = '';
+    if (banqueCategories && banqueCategories.length > 0) {
+        banqueCategories.forEach(category => {
+            const selected = category === transaction['Categorie'] ? 'selected' : '';
+            categoryOptions += `<option value="${category}" ${selected}>${category}</option>`;
+        });
+    } else {
+        categoryOptions = `<option value="${transaction['Categorie']}" selected>${transaction['Categorie']}</option>`;
+    }
     
     const modalHTML = `
         <div class="edit-modal active" id="editBanqueModal">
@@ -13475,48 +13484,36 @@ function openEditBanqueModal(index, transactionData = null) {
                             <div class="edit-col">
                                 <div class="edit-form-group">
                                     <label class="edit-form-label">Date</label>
-                                    <input type="date" class="edit-form-control" id="editBanqueDate" value="${formatDateForInput(transaction['Date'])}" required>
+                                    <input type="date" class="edit-form-control" id="editBanqueDate" value="${formatDateForInput(transaction['Date'])}" readonly>
                                 </div>
                                 
                                 <div class="edit-form-group">
                                     <label class="edit-form-label">Désignation</label>
-                                    <input type="text" class="edit-form-control" id="editBanqueDesignation" value="${transaction['Designation'] || ''}" required>
+                                    <input type="text" class="edit-form-control" id="editBanqueDesignation" value="${transaction['Designation'] || ''}" readonly>
                                 </div>
                                 
                                 <div class="edit-form-group">
                                     <label class="edit-form-label">Montant</label>
-                                    <input type="number" step="0.01" class="edit-form-control" id="editBanqueMontant" value="${transaction['Montant'] || ''}" required>
+                                    <input type="number" step="0.01" class="edit-form-control" id="editBanqueMontant" value="${transaction['Montant'] || ''}" readonly>
                                 </div>
                                 
                                 <div class="edit-form-group">
                                     <label class="edit-form-label">Type de transaction</label>
-                                    <select class="edit-form-control" id="editBanqueType" required>
-                                        <option value="">Sélectionner...</option>
-                                        <option value="Débit" ${transaction['Type de transation'] === 'Débit' ? 'selected' : ''}>Débit</option>
-                                        <option value="Crédit" ${transaction['Type de transation'] === 'Crédit' ? 'selected' : ''}>Crédit</option>
-                                        <option value="Virement" ${transaction['Type de transation'] === 'Virement' ? 'selected' : ''}>Virement</option>
-                                        <option value="Prélèvement" ${transaction['Type de transation'] === 'Prélèvement' ? 'selected' : ''}>Prélèvement</option>
-                                    </select>
+                                    <input type="text" class="edit-form-control" id="editBanqueType" value="${transaction['Type de transation'] || ''}" readonly>
                                 </div>
                             </div>
                             
                             <div class="edit-col">
                                 <div class="edit-form-group">
                                     <label class="edit-form-label">SOLDE DISPONIBLE</label>
-                                    <input type="number" step="0.01" class="edit-form-control" id="editBanqueSolde" value="${transaction['SOLDE DISPONIBLE'] || ''}" required>
+                                    <input type="number" step="0.01" class="edit-form-control" id="editBanqueSolde" value="${transaction['SOLDE DISPONIBLE'] || ''}" readonly>
                                 </div>
                                 
                                 <div class="edit-form-group">
-                                    <label class="edit-form-label">Catégorie</label>
+                                    <label class="edit-form-label">Catégorie *</label>
                                     <select class="edit-form-control" id="editBanqueCategorie" required>
-                                        <option value="">Sélectionner...</option>
-                                        <option value="Salaire" ${transaction['Categorie'] === 'Salaire' ? 'selected' : ''}>Salaire</option>
-                                        <option value="Facture" ${transaction['Categorie'] === 'Facture' ? 'selected' : ''}>Facture</option>
-                                        <option value="Achat" ${transaction['Categorie'] === 'Achat' ? 'selected' : ''}>Achat</option>
-                                        <option value="Loyer" ${transaction['Categorie'] === 'Loyer' ? 'selected' : ''}>Loyer</option>
-                                        <option value="Transport" ${transaction['Categorie'] === 'Transport' ? 'selected' : ''}>Transport</option>
-                                        <option value="Alimentation" ${transaction['Categorie'] === 'Alimentation' ? 'selected' : ''}>Alimentation</option>
-                                        <option value="Divers" ${transaction['Categorie'] === 'Divers' ? 'selected' : ''}>Divers</option>
+                                        <option value="">Sélectionner une catégorie...</option>
+                                        ${categoryOptions}
                                     </select>
                                 </div>
                                 
@@ -13550,16 +13547,22 @@ function submitBanqueUpdate(index) {
     const transaction = allBanqueData[index];
     const idUnique = transaction['Idunique'];
     
-    // Récupération des valeurs des champs
+    // Récupération uniquement de la catégorie (seul champ modifiable)
     const updatedData = {
-        'Date': document.getElementById('editBanqueDate').value,
-        'Designation': document.getElementById('editBanqueDesignation').value,
-        'Montant': parseFloat(document.getElementById('editBanqueMontant').value) || 0,
-        'Type de transation': document.getElementById('editBanqueType').value,
-        'SOLDE DISPONIBLE': parseFloat(document.getElementById('editBanqueSolde').value) || 0,
+        'Date': transaction['Date'],
+        'Designation': transaction['Designation'],
+        'Montant': transaction['Montant'],
+        'Type de transation': transaction['Type de transation'],
+        'SOLDE DISPONIBLE': transaction['SOLDE DISPONIBLE'],
         'Categorie': document.getElementById('editBanqueCategorie').value,
         'Idunique': idUnique
     };
+
+    // Validation de la catégorie
+    if (!updatedData.Categorie) {
+        alert('Veuillez sélectionner une catégorie');
+        return;
+    }
 
     const submitBtn = document.querySelector('.edit-btn-primary');
     const originalBtnText = submitBtn.innerHTML;
@@ -13586,184 +13589,6 @@ function submitBanqueUpdate(index) {
     })
     .catch(error => {
         console.error("Erreur d'envoi:", error);
-        closeModalAndOpenBanque();
-    })
-    .finally(() => {
-        submitBtn.innerHTML = originalBtnText;
-        submitBtn.disabled = false;
-    });
-}
-
-// Supprimer une transaction
-async function deleteBanqueTransaction(index) {
-    const transaction = allBanqueData[index];
-    const idUnique = transaction['Idunique'];
-    const designation = transaction['Designation'] || '';
-
-    if (!confirm(`Confirmez-vous la suppression de la transaction "${designation}" ?`)) {
-        return;
-    }
-
-    const btn = event.target.closest('button');
-    const originalContent = btn.innerHTML;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-    btn.disabled = true;
-
-    try {
-        await fetch(`https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=deleteBanque`, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                idUnique: idUnique
-            })
-        });
-
-        // Suppression optimiste
-        allBanqueData.splice(index, 1);
-        refreshBanqueFilters();
-        closeModalAndOpenBanque();
-    } catch (e) {
-        console.error('Erreur réseau:', e);
-    } finally {
-        btn.innerHTML = originalContent;
-        btn.disabled = false;
-    }
-}
-
-// Ajouter une nouvelle transaction
-function addTransaction() {
-    const modalContainer = document.getElementById('modal-container');
-    
-    const modalHTML = `
-        <div class="edit-modal active" id="addBanqueModal">
-            <div class="edit-modal-content">
-                <div class="edit-modal-header">
-                    <h3 class="edit-modal-title">
-                        <i class="fas fa-plus me-2"></i> 
-                        Nouvelle Transaction
-                    </h3>
-                </div>
-                
-                <div class="edit-modal-body">
-                    <form id="addBanqueForm">
-                        <div class="edit-row">
-                            <div class="edit-col">
-                                <div class="edit-form-group">
-                                    <label class="edit-form-label">Date *</label>
-                                    <input type="date" class="edit-form-control" id="addBanqueDate" required>
-                                </div>
-                                
-                                <div class="edit-form-group">
-                                    <label class="edit-form-label">Désignation *</label>
-                                    <input type="text" class="edit-form-control" id="addBanqueDesignation" required>
-                                </div>
-                                
-                                <div class="edit-form-group">
-                                    <label class="edit-form-label">Montant *</label>
-                                    <input type="number" step="0.01" class="edit-form-control" id="addBanqueMontant" required>
-                                </div>
-                                
-                                <div class="edit-form-group">
-                                    <label class="edit-form-label">Type de transaction *</label>
-                                    <select class="edit-form-control" id="addBanqueType" required>
-                                        <option value="">Sélectionner...</option>
-                                        <option value="Débit">Débit</option>
-                                        <option value="Crédit">Crédit</option>
-                                        <option value="Virement">Virement</option>
-                                        <option value="Prélèvement">Prélèvement</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <div class="edit-col">
-                                <div class="edit-form-group">
-                                    <label class="edit-form-label">SOLDE DISPONIBLE *</label>
-                                    <input type="number" step="0.01" class="edit-form-control" id="addBanqueSolde" required>
-                                </div>
-                                
-                                <div class="edit-form-group">
-                                    <label class="edit-form-label">Catégorie *</label>
-                                    <select class="edit-form-control" id="addBanqueCategorie" required>
-                                        <option value="">Sélectionner...</option>
-                                        <option value="Salaire">Salaire</option>
-                                        <option value="Facture">Facture</option>
-                                        <option value="Achat">Achat</option>
-                                        <option value="Loyer">Loyer</option>
-                                        <option value="Transport">Transport</option>
-                                        <option value="Alimentation">Alimentation</option>
-                                        <option value="Divers">Divers</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                
-                <div class="edit-modal-footer">
-                    <button type="button" class="edit-btn edit-btn-secondary" onclick="closeModalAndOpenBanque()">
-                        <i class="fas fa-times"></i> Annuler
-                    </button>
-                    <button type="button" class="edit-btn edit-btn-success" onclick="submitNewTransaction()">
-                        <i class="fas fa-plus"></i> Ajouter
-                    </button>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    modalContainer.innerHTML = modalHTML;
-    document.body.classList.add('modal-open');
-    
-    // Définir la date d'aujourd'hui par défaut
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('addBanqueDate').value = today;
-}
-
-// Soumettre une nouvelle transaction
-function submitNewTransaction() {
-    const newData = {
-        'Date': document.getElementById('addBanqueDate').value,
-        'Designation': document.getElementById('addBanqueDesignation').value,
-        'Montant': parseFloat(document.getElementById('addBanqueMontant').value) || 0,
-        'Type de transation': document.getElementById('addBanqueType').value,
-        'SOLDE DISPONIBLE': parseFloat(document.getElementById('addBanqueSolde').value) || 0,
-        'Categorie': document.getElementById('addBanqueCategorie').value,
-        'Idunique': 'ID_' + Date.now() // Générer un ID unique temporaire
-    };
-
-    // Validation basique
-    if (!newData.Date || !newData.Designation || !newData.Montant || !newData['Type de transation'] || !newData.Categorie) {
-        alert('Veuillez remplir tous les champs obligatoires (*)');
-        return;
-    }
-
-    const submitBtn = document.querySelector('.edit-btn-success');
-    const originalBtnText = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Ajout...';
-    submitBtn.disabled = true;
-
-    const url = `https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=addBanque`;
-    
-    fetch(url, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            newData: newData
-        })
-    })
-    .then(() => {
-        // Ajout optimiste
-        allBanqueData.unshift(newData);
-        closeModalAndOpenBanque();
-    })
-    .catch(error => {
-        console.error("Erreur d'ajout:", error);
         closeModalAndOpenBanque();
     })
     .finally(() => {
