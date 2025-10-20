@@ -4630,8 +4630,8 @@ select.form-control {
     to { transform: rotate(360deg); }
 }
 
-/* Custom Styles for Caisse Modal */
-#modal-${action} {
+/* Custom Styles for Banque Modal */
+.banqueModal {
     /* Base Modal Overlay */
     position: fixed;
     top: 0;
@@ -4648,12 +4648,12 @@ select.form-control {
     transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
 }
 
-#modal-${action}.active {
+.banqueModal.active {
     opacity: 1;
     visibility: visible;
 }
 
-#modal-${action} .modal-content {
+.banqueModal .modal-content {
     background-color: #ffffff;
     border-radius: 12px; /* Smoother, modern corners */
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Deeper shadow for a "lifted" effect */
@@ -4663,11 +4663,11 @@ select.form-control {
     transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
 }
 
-#modal-${action}.active .modal-content {
+.banqueModal.active .modal-content {
     transform: scale(1);
 }
 
-#modal-${action} .modal-header {
+.banqueModal .modal-header {
     background-color: #4A90E2; /* Professional blue header */
     color: #fff;
     padding: 20px 30px;
@@ -4679,7 +4679,7 @@ select.form-control {
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-#modal-${action} .modal-title {
+.banqueModal .modal-title {
     margin: 0;
     font-size: 1.5rem;
     font-weight: 600;
@@ -4687,12 +4687,12 @@ select.form-control {
     align-items: center;
 }
 
-#modal-${action} .modal-title i {
+.banqueModal .modal-title i {
     margin-right: 12px;
     font-size: 1.8rem;
 }
 
-#modal-${action} .modal-body {
+.banqueModal .modal-body {
     padding: 30px;
     display: flex;
     flex-direction: column;
@@ -4700,27 +4700,27 @@ select.form-control {
 }
 
 /* Filters Card */
-#modal-${action} .filters-card {
+.banqueModal .filters-card {
     background-color: #F8F9FA;
     border-radius: 8px;
     padding: 20px;
     border: 1px solid #E0E0E0;
 }
 
-#modal-${action} .filters-container {
+.banqueModal .filters-container {
     display: flex;
     align-items: flex-end; /* Align items to the bottom */
     gap: 20px;
     flex-wrap: wrap;
 }
 
-#modal-${action} .filter-item {
+.banqueModal .filter-item {
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-#modal-${action} .filter-item label {
+.banqueModal .filter-item label {
     font-weight: 500;
     color: #555;
     display: flex;
@@ -4728,13 +4728,13 @@ select.form-control {
     gap: 8px;
 }
 
-#modal-${action} .date-range {
+.banqueModal .date-range {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-#modal-${action} .date-range input {
+.banqueModal .date-range input {
     border: 1px solid #CED4DA;
     border-radius: 6px;
     padding: 8px 12px;
@@ -4742,69 +4742,69 @@ select.form-control {
     font-size: 0.95rem;
 }
 
-#modal-${action} .date-range input:focus {
+.banqueModal .date-range input:focus {
     border-color: #4A90E2;
     outline: none;
     box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
 }
 
 /* Table Card */
-#modal-${action} .table-card {
+.banqueModal .table-card {
     border: 1px solid #E0E0E0;
     border-radius: 8px;
     overflow: hidden; /* Ensures table corners are rounded */
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
-#modal-${action} .caisse-table {
+.banqueModal .caisse-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.9rem;
 }
 
-#modal-${action} .caisse-table thead {
+.banqueModal .caisse-table thead {
     background-color: #f2f2f2;
     border-bottom: 2px solid #E0E0E0;
 }
 
-#modal-${action} .caisse-table th,
-#modal-${action} .caisse-table td {
+.banqueModal .caisse-table th,
+.banqueModal .caisse-table td {
     padding: 15px 20px;
     text-align: left;
     border-bottom: 1px solid #E9ECEF;
     vertical-align: middle;
 }
 
-#modal-${action} .caisse-table th {
+.banqueModal .caisse-table th {
     font-weight: 600;
     color: #495057;
     white-space: nowrap;
 }
 
-#modal-${action} .caisse-table tbody tr:last-child td {
+.banqueModal .caisse-table tbody tr:last-child td {
     border-bottom: none;
 }
 
-#modal-${action} .caisse-table tbody tr:hover {
+.banqueModal .caisse-table tbody tr:hover {
     background-color: #F8F9FA;
 }
 
-#modal-${action} .caisse-table tfoot {
+.banqueModal .caisse-table tfoot {
     background-color: #E6F0F8;
     font-weight: 700;
 }
 
-#modal-${action} .caisse-table tfoot td {
+.banqueModal .caisse-table tfoot td {
     border-top: 2px solid #4A90E2;
     color: #212529;
 }
 
-#modal-${action} .caisse-table .text-right {
+.banqueModal .caisse-table .text-right {
     text-align: right;
     font-weight: 500;
 }
 
-#modal-${action} .spinner {
+.banqueModal .spinner {
     border: 4px solid rgba(0, 0, 0, 0.1);
     border-top-color: #4A90E2;
     border-radius: 50%;
@@ -4819,20 +4819,20 @@ select.form-control {
     100% { transform: rotate(360deg); }
 }
 
-#modal-${action} .alert {
+.banqueModal .alert {
     padding: 15px;
     border-radius: 8px;
     border: 1px solid transparent;
 }
 
-#modal-${action} .alert-info {
+.banqueModal .alert-info {
     color: #0c5460;
     background-color: #d1ecf1;
     border-color: #bee5eb;
 }
 
 /* Footer & Buttons */
-#modal-${action} .modal-footer {
+.banqueModal .modal-footer {
     padding: 20px 30px;
     border-top: 1px solid #E9ECEF;
     background-color: #f8f9fa;
@@ -4843,7 +4843,7 @@ select.form-control {
     gap: 15px;
 }
 
-#modal-${action} .btn {
+.banqueModal .btn {
     border-radius: 6px;
     padding: 10px 20px;
     font-size: 1rem;
@@ -4854,32 +4854,32 @@ select.form-control {
     gap: 8px;
 }
 
-#modal-${action} .btn:hover {
+.banqueModal .btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-#modal-${action} .btn-secondary {
+.banqueModal .btn-secondary {
     background-color: #6c757d;
     color: #fff;
     border: none;
 }
 
-#modal-${action} .btn-secondary:hover {
+.banqueModal .btn-secondary:hover {
     background-color: #5a6268;
 }
 
-#modal-${action} .btn-close-modal {
+.banqueModal .btn-close-modal {
     background-color: #dc3545; /* A subtle red for 'close' */
     color: #fff;
     border: none;
 }
 
-#modal-${action} .btn-close-modal:hover {
+.banqueModal .btn-close-modal:hover {
     background-color: #c82333;
 }
 
-.caisse-summary-item {
+.banqueModal .caisse-summary-item {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     border-radius: 12px;
     padding: 15px 20px;
@@ -4891,13 +4891,13 @@ select.form-control {
     text-align: center;
 }
 
-.caisse-summary-item:hover {
+.banqueModal .caisse-summary-item:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
     border-color: #007bff;
 }
 
-.caisse-summary-item label {
+.banqueModal .caisse-summary-item label {
     display: block;
     font-weight: 600;
     color: #495057;
@@ -4906,7 +4906,7 @@ select.form-control {
 }
 
 /* Style pour la valeur numérique */
-.caisse-value-display {
+.banqueModal .caisse-value-display {
     font-size: 1.8rem;
     font-weight: 700;
     color: #28a745;
@@ -4921,7 +4921,7 @@ select.form-control {
     animation: pulse 2s infinite;
 }
 
-.caisse-value-display:hover {
+.banqueModal .caisse-value-display:hover {
     transform: scale(1.03);
     box-shadow: 0 4px 12px rgba(40, 167, 69, 0.25);
 }
@@ -4941,46 +4941,46 @@ select.form-control {
 
 /* Adaptation pour mobile */
 @media (max-width: 768px) {
-    #modal-${action} .modal-content {
+    .banqueModal .modal-content {
         width: 95%;
         margin: 20px;
         max-height: 90vh;
         overflow-y: auto;
     }
     
-    #modal-${action} .modal-header {
+    .banqueModal .modal-header {
         padding: 15px 20px;
     }
     
-    #modal-${action} .modal-title {
+    .banqueModal .modal-title {
         font-size: 1.2rem;
     }
     
-    #modal-${action} .modal-body {
+    .banqueModal .modal-body {
         padding: 20px 15px;
         gap: 15px;
     }
     
-    #modal-${action} .filters-container {
+    .banqueModal .filters-container {
         flex-direction: column;
         align-items: stretch;
         gap: 15px;
     }
     
-    #modal-${action} .filter-item {
+    .banqueModal .filter-item {
         width: 100%;
     }
     
-    #modal-${action} .date-range {
+    .banqueModal .date-range {
         flex-direction: column;
         gap: 8px;
     }
     
-    #modal-${action} .date-range span {
+    .banqueModal .date-range span {
         display: none;
     }
     
-    .caisse-summary-item {
+    .banqueModal .caisse-summary-item {
         min-width: auto;
         width: 100%;
         margin-left: 0;
@@ -4988,32 +4988,32 @@ select.form-control {
         padding: 12px 15px;
     }
     
-    .caisse-value-display {
+    .banqueModal .caisse-value-display {
         font-size: 1.4rem;
         padding: 8px 12px;
     }
     
-    #modal-${action} .table-responsive {
+    .banqueModal .table-responsive {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
     }
     
-    #modal-${action} .caisse-table {
+    .banqueModal .caisse-table {
         min-width: 600px; /* Force le défilement horizontal sur tablettes/mobiles */
         font-size: 0.8rem;
     }
     
-    #modal-${action} .caisse-table th,
-    #modal-${action} .caisse-table td {
+    .banqueModal .caisse-table th,
+    .banqueModal .caisse-table td {
         padding: 10px 12px;
     }
     
-    #modal-${action} .modal-footer {
+    .banqueModal .modal-footer {
         padding: 15px 20px;
         flex-direction: column-reverse;
     }
     
-    #modal-${action} .btn {
+    .banqueModal .btn {
         width: 100%;
         justify-content: center;
         padding: 12px;
@@ -5022,30 +5022,30 @@ select.form-control {
 
 /* Adaptation pour très petits écrans */
 @media (max-width: 480px) {
-    #modal-${action} .modal-content {
+    .banqueModal .modal-content {
         margin: 10px;
         width: calc(100% - 20px);
     }
     
-    #modal-${action} .modal-header {
+    .banqueModal .modal-header {
         padding: 12px 15px;
     }
     
-    #modal-${action} .modal-title {
+    .banqueModal .modal-title {
         font-size: 1.1rem;
     }
     
-    #modal-${action} .modal-body {
+    .banqueModal .modal-body {
         padding: 15px 10px;
         gap: 12px;
     }
     
-    .caisse-value-display {
+    .banqueModal .caisse-value-display {
         font-size: 1.3rem;
         padding: 6px 10px;
     }
     
-    #modal-${action} .caisse-table {
+    .banqueModal .caisse-table {
         min-width: 650px; /* Un peu plus large pour assurer la lisibilité */
     }
 }
@@ -13382,7 +13382,6 @@ function resetBanqueFilter() {
     const headers = Object.keys(allBanqueData[0] || {});
     displayFilteredBanque(allBanqueData, headers);
 }
-
 // Affichage des données filtrées banque
 function displayFilteredBanque(data, headers) {
     const banqueData = document.getElementById('banqueData');
@@ -13395,8 +13394,15 @@ function displayFilteredBanque(data, headers) {
         return;
     }
     
+    // Trier les données par date (plus récent en premier)
+    const sortedData = [...data].sort((a, b) => {
+        const dateA = new Date(a['Date'] || 0);
+        const dateB = new Date(b['Date'] || 0);
+        return dateB - dateA; // Ordre décroissant (plus récent en premier)
+    });
+    
     let html = '';
-    data.forEach((item, index) => {
+    sortedData.forEach((item, index) => {
         html += '<tr>';
         
         headers.forEach(header => {
