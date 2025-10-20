@@ -13471,7 +13471,7 @@ async function openEditBanqueModal(index, transactionData = null) {
         console.log("✅ Affichage des catégories:", banqueCategories);
         banqueCategories.forEach(category => {
             const selected = category === transaction['Categorie'] ? 'selected' : '';
-            categoryOptions += `<option value="${category}" ${selected}>${category}</option>`;
+            categoryOptions += `<option value="${category.value}" ${selected}>${category.label}</option>`;
         });
     } else {
         console.warn("⚠️ Aucune catégorie disponible");
@@ -13639,9 +13639,6 @@ function showBanqueMessage(message, type) {
     messageDiv.style.display = 'block';
 }
 
-
-// Charger les catégories au démarrage
-loadConfigData();
 </script>
 </body>
 </html>
