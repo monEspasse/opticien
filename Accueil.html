@@ -13204,7 +13204,11 @@ function openBanque() {
 
     modalContainer.innerHTML = modalHTML;
     document.getElementById('banqueModal').classList.add('active');
-    loadBanqueData();
+    
+    // Charger les données de banque ET les catégories
+    Promise.all([loadBanqueData(), loadConfigData()]).then(() => {
+        console.log("✅ Toutes les données sont chargées");
+    });
 }
 
 // Chargement des données bancaires
@@ -13451,21 +13455,27 @@ function editFilteredBanque(filteredIndex) {
 }
 
 // Ouvrir la modal d'édition de transaction
-function openEditBanqueModal(index, transactionData = null) {
-
-loadConfigData();
+async function openEditBanqueModal(index, transactionData = null) {
+    // S'assurer que les catégories sont chargées
+    if (banqueCategories.length === 0) {
+        console.log("📥 Chargement des catégories...");
+        await loadConfigData();
+    }
+    
     const transaction = transactionData || allBanqueData[index];
     const modalContainer = document.getElementById('modal-container');
     
     // Générer les options de catégorie
     let categoryOptions = '';
     if (banqueCategories && banqueCategories.length > 0) {
+        console.log("✅ Affichage des catégories:", banqueCategories);
         banqueCategories.forEach(category => {
             const selected = category === transaction['Categorie'] ? 'selected' : '';
             categoryOptions += `<option value="${category}" ${selected}>${category}</option>`;
         });
     } else {
-        categoryOptions = `<option value="${transaction['Categorie']}" selected>${transaction['Categorie']}</option>`;
+        console.warn("⚠️ Aucune catégorie disponible");
+        categoryOptions = `<option value="${transaction['Categorie'] || ''}" selected>${transaction['Categorie'] || 'Aucune catégorie'}</option>`;
     }
     
     const modalHTML = `
@@ -13629,6 +13639,9 @@ function showBanqueMessage(message, type) {
     messageDiv.style.display = 'block';
 }
 
+
+// Charger les catégories au démarrage
+loadConfigData();
 </script>
 </body>
 </html>
