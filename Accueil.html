@@ -9433,7 +9433,8 @@ try {
     logError(error.message);
     // Affichez aussi à l'utilisateur si nécessaire
 }
-</script>  
+
+
     <script>
                 // Fonctions pour gérer la modale
 async function openDevis() {
@@ -9456,8 +9457,8 @@ async function openDevis() {
     }
 }
 
-    // Fonction pour afficher un loader pendant la génération du PDF
- async function generatePDFWithLoader() {
+// Fonction pour afficher un loader pendant la génération du PDF
+async function generatePDFWithLoader() {
     const loader = document.getElementById('loaderOverlay');
     const loaderText = loader.querySelector('.loader-text');
     
@@ -9495,8 +9496,7 @@ document.getElementById('client-form').addEventListener('submit', async function
     }
 });
 
-
-        // Calcul des totaux
+// Calcul des totaux
 document.addEventListener("DOMContentLoaded", function() {
     function calculerTotalPro() {
         const montantMonture = parseFloat(document.getElementById('montant_monture').value) || 0;
@@ -9516,28 +9516,28 @@ document.addEventListener("DOMContentLoaded", function() {
     window.calculerTotalPro = calculerTotalPro;
 });
 
-
 function validateStep() {
     return true; // Valide toujours
 }
 
-        function updateStepper(activeStep) {
-            document.querySelectorAll('.step').forEach(step => {
-                step.classList.remove('active', 'completed');
-                
-                const stepNumber = parseInt(step.id.replace('step', ''));
-                if (stepNumber < activeStep) {
-                    step.classList.add('completed');
-                } else if (stepNumber == activeStep) {
-                    step.classList.add('active');
-                }
-            });
+function updateStepper(activeStep) {
+    document.querySelectorAll('.step').forEach(step => {
+        step.classList.remove('active', 'completed');
+        
+        const stepNumber = parseInt(step.id.replace('step', ''));
+        if (stepNumber < activeStep) {
+            step.classList.add('completed');
+        } else if (stepNumber == activeStep) {
+            step.classList.add('active');
         }
-    // Initialisation au chargement
+    });
+}
+
+// Initialisation au chargement
 document.addEventListener('DOMContentLoaded', async () => {
     // Charger les données au premier affichage de la modale
     document.getElementById('proformaModal').addEventListener('click', async function(e) {
-        if (e.target === this && !appDataCache) {
+        if (e.target === this && !window.appDataCache) {
             await loadDataFromSheet();
         }
     });
@@ -9614,24 +9614,14 @@ async function generatePDF() {
         
         // Même en cas d'erreur, fermer et ouvrir le PDF
         setTimeout(() => {
-            closeModalProforma();
             checkAndOpenPDF();
+            closeModal();
         }, 3000);
     } finally {
         // Restaurer le bouton (au cas où)
         submitBtn.innerHTML = originalBtnText;
         submitBtn.disabled = false;
     }
-}
-
-
-function closeModalProforma() {
-    const modalContainer = document.getElementById('proformaModal');
-    if (modalContainer) {
-        modalContainer.innerHTML = '';
-        document.body.classList.remove('modal-open');
-    }
-    console.log("📋 Modal Proforma fermée");
 }
 
 // Fonction pour ouvrir le PDF directement
@@ -9641,12 +9631,18 @@ async function checkAndOpenPDF() {
         
         if (pdfUrl) {
             console.log("📄 Ouverture du PDF:", pdfUrl);
+            // Ouvrir dans un nouvel onglet
             window.open(pdfUrl, '_blank');
+            
+            // Optionnel: Afficher un message de succès
+            alert("PDF généré avec succès! Ouverture dans un nouvel onglet.");
         } else {
             console.warn("⚠️ Aucun PDF trouvé");
+            alert("Le PDF est en cours de génération. Veuillez patienter quelques secondes puis réessayer.");
         }
     } catch (error) {
         console.error("❌ Erreur ouverture PDF:", error);
+        alert("Erreur lors de l'ouverture du PDF: " + error.message);
     }
 }
 
@@ -9656,14 +9652,34 @@ async function getPDFUrlFromHistorique() {
         const url = `https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=getlastpdf`;
         
         const response = await fetch(url);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const result = await response.json();
         
-        return result.pdfUrl;
+        console.log("📄 Réponse API:", result); // Pour debug
+        
+        // Vérifier la structure de la réponse
+        if (result.success && result.message && result.message.pdfUrl) {
+            const pdfUrl = result.message.pdfUrl;
+            console.log("✅ PDF trouvé:", pdfUrl);
+            return pdfUrl;
+        } else if (result.message && result.message.success === false) {
+            console.warn("⚠️ Aucun PDF disponible:", result.message);
+            return null;
+        } else {
+            console.warn("⚠️ Structure de réponse inattendue:", result);
+            return null;
+        }
+        
     } catch (error) {
-        console.error("Erreur récupération PDF:", error);
+        console.error("❌ Erreur récupération PDF:", error);
         return null;
     }
 }
+
 //fin proforma
 </script>
 
