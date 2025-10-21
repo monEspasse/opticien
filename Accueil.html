@@ -9600,10 +9600,10 @@ async function generatePDF() {
 
         // Attendre 3 secondes pour la génération du PDF
         setTimeout(() => {
-          closeModal();
-            
+          
             // Ouvrir le PDF
             checkAndOpenPDF();
+            
         }, 3000);
 
     } catch (error) {
@@ -9621,59 +9621,54 @@ async function generatePDF() {
     }
 }
 
-// Fonction pour ouvrir le PDF directement
+// Fonction unique pour récupérer et ouvrir le PDF (version robuste)
 async function checkAndOpenPDF() {
     try {
-        const pdfUrl = await getPDFUrlFromHistorique();
+        console.log("🔍 Recherche du PDF...");
         
-        if (pdfUrl) {
-            console.log("📄 Ouverture du PDF:", pdfUrl);
-            // Ouvrir dans un nouvel onglet
-            window.open(pdfUrl, '_blank');
-            
-            // Optionnel: Afficher un message de succès
-            alert("PDF généré avec succès! Ouverture dans un nouvel onglet.");
-        } else {
-            console.warn("⚠️ Aucun PDF trouvé");
-            alert("Le PDF est en cours de génération. Veuillez patienter quelques secondes puis réessayer.");
-        }
-    } catch (error) {
-        console.error("❌ Erreur ouverture PDF:", error);
-        alert("Erreur lors de l'ouverture du PDF: " + error.message);
-    }
-}
-
-// Fonction pour récupérer le lien PDF depuis Historique
-async function getPDFUrlFromHistorique() {
-    try {
         const url = `https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=getlastpdf`;
         
         const response = await fetch(url);
         
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            throw new Error(`Erreur HTTP! statut: ${response.status}`);
         }
         
         const result = await response.json();
         
-        console.log("📄 Réponse API:", result); // Pour debug
+        console.log("📄 Réponse API:", result);
         
-        // Vérifier la structure de la réponse
-        if (result.success && result.message && result.message.pdfUrl) {
-            const pdfUrl = result.message.pdfUrl;
+        // Vérifier les deux orthographes possibles (succès/success)
+        const isSuccess = result.succès || result.success;
+        const message = result.message || {};
+        const isMessageSuccess = message.succès || message.success;
+        
+        let pdfUrl = null;
+        
+        if (isSuccess && message && message.pdfUrl) {
+            pdfUrl = message.pdfUrl;
             console.log("✅ PDF trouvé:", pdfUrl);
-            return pdfUrl;
-        } else if (result.message && result.message.success === false) {
-            console.warn("⚠️ Aucun PDF disponible:", result.message);
-            return null;
+        } else if (message && isMessageSuccess === false) {
+            console.warn("⚠️ Aucun PDF disponible:", message);
+            alert("Le PDF est en cours de génération. Veuillez patienter quelques secondes puis réessayer.");
+            return;
         } else {
             console.warn("⚠️ Structure de réponse inattendue:", result);
-            return null;
+            alert("Erreur inattendue lors de la génération du PDF.");
+            return;
+        }
+        
+        // Ouvrir le PDF
+        if (pdfUrl) {
+            console.log("📄 Ouverture du PDF:", pdfUrl);
+            closeModal();
+            window.open(pdfUrl, '_blank');
+            alert("PDF généré avec succès! Ouverture dans un nouvel onglet.");
         }
         
     } catch (error) {
-        console.error("❌ Erreur récupération PDF:", error);
-        return null;
+        console.error("❌ Erreur ouverture PDF:", error);
+        alert("Erreur lors de l'ouverture du PDF: " + error.message);
     }
 }
 
