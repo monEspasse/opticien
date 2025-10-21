@@ -9626,7 +9626,7 @@ async function generatePDF() {
 
 
 function closeModalProforma() {
-    const modalContainer = document.getElementById('modal-container');
+    const modalContainer = document.getElementById('proformaModal');
     if (modalContainer) {
         modalContainer.innerHTML = '';
         document.body.classList.remove('modal-open');
@@ -9653,7 +9653,7 @@ async function checkAndOpenPDF() {
 // Fonction pour récupérer le lien PDF depuis Historique
 async function getPDFUrlFromHistorique() {
     try {
-        const url = `https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=getLastPDF`;
+        const url = `https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=getlastpdf`;
         
         const response = await fetch(url);
         const result = await response.json();
