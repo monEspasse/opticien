@@ -9586,10 +9586,10 @@ async function generatePDF() {
     try {
         const url = `https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=addproforma`;
         
-        // SOLUTION : Utiliser mode: 'no-cors' et ignorer la réponse
+        // Envoyer les données en no-cors
         await fetch(url, {
             method: 'POST',
-            mode: 'no-cors', // ← C'est la clé !
+            mode: 'no-cors',
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -9600,42 +9600,53 @@ async function generatePDF() {
 
         console.log("✅ Données envoyées (mode no-cors)");
 
-        // Attendre un peu pour que le PDF soit généré
+        // Attendre 3 secondes pour la génération du PDF
         setTimeout(() => {
-            // Essayer de récupérer le lien PDF depuis Historique
+            // Fermer la boîte de dialogue
+            closeModalProforma();
+            
+            // Ouvrir le PDF
             checkAndOpenPDF();
-        }, 3000); // Attendre 3 secondes
+        }, 3000);
 
     } catch (error) {
         console.log("⚠️ Erreur ignorée (mode no-cors):", error);
         
-        // Même en cas d'erreur, essayer d'ouvrir le PDF
+        // Même en cas d'erreur, fermer et ouvrir le PDF
         setTimeout(() => {
+            closeModalProforma();
             checkAndOpenPDF();
         }, 3000);
     } finally {
-        // Restaurer le bouton
+        // Restaurer le bouton (au cas où)
         submitBtn.innerHTML = originalBtnText;
         submitBtn.disabled = false;
     }
 }
 
-// Fonction pour vérifier et ouvrir le PDF
+
+function closeModalProforma() {
+    const modalContainer = document.getElementById('modal-container');
+    if (modalContainer) {
+        modalContainer.innerHTML = '';
+        document.body.classList.remove('modal-open');
+    }
+    console.log("📋 Modal Proforma fermée");
+}
+
+// Fonction pour ouvrir le PDF directement
 async function checkAndOpenPDF() {
     try {
-        // Récupérer le lien depuis Historique (vous aurez besoin d'une autre API pour ça)
         const pdfUrl = await getPDFUrlFromHistorique();
         
         if (pdfUrl) {
+            console.log("📄 Ouverture du PDF:", pdfUrl);
             window.open(pdfUrl, '_blank');
-            alert('Proforma généré avec succès ! Le PDF s\'ouvre dans une nouvelle fenêtre.');
         } else {
-            // Fallback : ouvrir un PDF générique ou afficher un message
-            alert('Le PDF est en cours de génération. Veuillez vérifier votre Drive dans quelques instants.');
+            console.warn("⚠️ Aucun PDF trouvé");
         }
     } catch (error) {
-        console.error("Erreur lors de la récupération du PDF:", error);
-        alert('PDF généré ! Vérifiez votre dossier Drive.');
+        console.error("❌ Erreur ouverture PDF:", error);
     }
 }
 
