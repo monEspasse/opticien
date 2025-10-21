@@ -9600,8 +9600,7 @@ async function generatePDF() {
 
         // Attendre 3 secondes pour la génération du PDF
         setTimeout(() => {
-            // Fermer la boîte de dialogue
-            closeModalProforma();
+          closeModal();
             
             // Ouvrir le PDF
             checkAndOpenPDF();
