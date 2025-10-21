@@ -9549,18 +9549,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 });
 
-
 async function generatePDF() {
-    // Vérifier si jsPDF est chargé
-    if (typeof window.jspdf === 'undefined') {
-        await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
-        await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js');
-    }
-
-    // Utiliser jsPDF via window.jspdf
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-
     // Récupérer les données du formulaire
     const formData = {
         nom_complet: document.getElementById('nom_complet').value,
@@ -9588,372 +9577,51 @@ async function generatePDF() {
         net_a_payer: document.getElementById('net_a_payer').value
     };
 
-    // === Barre colorée à gauche ===
-    pdf.setFillColor(50, 90, 160);
-    pdf.rect(15, 15, 5, 250, 'F'); // Barre verticale
+    // Afficher un indicateur de chargement
+    const submitBtn = document.querySelector('button[type="submit"]');
+    const originalBtnText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Génération en cours...';
+    submitBtn.disabled = true;
 
-    // === En-tête simplifié, moderne ===
-    pdf.setFont('helvetica', 'normal');
-    pdf.setFontSize(24);
-    pdf.setTextColor(50, 90, 160);
-    pdf.text('VOIR PLUS OPTIC Sarl', 30, 30);
+    try {
+        const url = `https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=addproforma`;
+        
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                formData: formData
+            })
+        });
 
-    pdf.setFontSize(10);
-    pdf.setTextColor(100, 100, 100);
-    pdf.text('Tel: +229 01 427 494 95', 30, 38);
-    pdf.text('optiquevoirplus@gmail.com', 30, 44);
-    pdf.text('Gbédomidji, Cotonou-Benin.', 30, 50);
+        const result = await response.json();
 
-    // Date et N° facture en haut à droite
-    pdf.setFont('helvetica', 'normal');
-    pdf.setFontSize(9);
-    pdf.setTextColor(120, 120, 120);
-    const today = new Date().toISOString().slice(0,10);
-    pdf.text(`Date: ${today}`, 180, 30, { align: 'right' });
-    pdf.text(`Facture Proforma`, 180, 40, { align: 'right', fontStyle: 'bold' });
-
-    pdf.setDrawColor(200);
-    pdf.setLineWidth(0.5);
-    pdf.line(30, 55, 185, 55);
-
-    // === Deux colonnes à partir d'ici ===
-    let startY = 65;
-    const colLeftX = 30;
-    const colRightX = 110;
-    
-    // ==== Colonne gauche : Infos client ====
-    pdf.setFont('helvetica', 'bold');
-    pdf.setFontSize(11);
-    pdf.setTextColor(50, 90, 160);
-    pdf.text('Informations Client', colLeftX, startY);
-
-    pdf.setFont('helvetica', 'normal');
-    pdf.setFontSize(10);
-    pdf.setTextColor(70);
-
-    const leftLines = [
-        `${formData.civilite} ${formData.nom_complet}`,
-        `Téléphone : ${formData.contact}`,
-        `Né le    : ${formData.date_naissance}`
-    ];
-
-    let lineY = startY + 8;
-    leftLines.forEach(line => {
-        pdf.text(line, colLeftX, lineY);
-        lineY += 6;
-    });
-
-    // ==== Colonne droite : Commande ====
-    pdf.setFont('helvetica', 'bold');
-    pdf.setFontSize(11);
-    pdf.setTextColor(50, 90, 160);
-    pdf.text('Commande', colRightX, startY);
-
-    pdf.setFont('helvetica', 'normal');
-    pdf.setFontSize(10);
-    pdf.setTextColor(70);
-
-    // Vérifier si le type de verre est trop long
-    const typeVerreText = `Type de verre : ${formData.type_verre}`;
-    const maxWidth = 70; // Largeur maximale pour la colonne droite
-    
-    // Diviser le texte si nécessaire
-    const splitTypeVerre = pdf.splitTextToSize(typeVerreText, maxWidth);
-    
-    let rightY = startY + 8;
-    pdf.text(splitTypeVerre[0], colRightX, rightY);
-    rightY += 6;
-    
-    // Ajouter les lignes supplémentaires si le texte a été divisé
-    if (splitTypeVerre.length > 1) {
-        for (let i = 1; i < splitTypeVerre.length; i++) {
-            pdf.text(splitTypeVerre[i], colRightX, rightY);
-            rightY += 6;
-        }
-    }
-    
-    // Continuer avec les autres informations
-    const rightLines = [
-        `Gamme        : ${formData.gamme_verre}`,
-        `Monture     : ${formData.choix_monture}`,
-        `Date soin  : ${formData.date_soin}`
-    ];
-
-    rightLines.forEach(line => {
-        pdf.text(line, colRightX, rightY);
-        rightY += 6;
-    });
-
-    const maxY = Math.max(lineY, rightY) + 10;
-
-    // ==== Prescription en pleine largeur ====
-    pdf.setDrawColor(50, 90, 160);
-    pdf.setLineWidth(1);
-    pdf.rect(25, maxY, 160, 50);
-
-    pdf.setFont('helvetica', 'bold');
-    pdf.setFontSize(12);
-    pdf.setTextColor(50, 90, 160);
-    pdf.text('Prescription Verres', 30, maxY + 12);
-
-    pdf.setFont('helvetica', 'normal');
-    pdf.setFontSize(10);
-    pdf.setTextColor(0);
-
-    const prescriptionHead = ['Œil', 'Sphère', 'Cylindre', 'Axe', 'Add'];
-    const prescriptionBody = [
-        ['OD', formData.od_sphere, formData.od_cylindre, formData.od_axe, formData.od_add],
-        ['OG', formData.og_sphere, formData.og_cylindre, formData.og_axe, formData.og_add]
-    ];
-
-    pdf.autoTable({
-        startY: maxY + 16,
-        head: [prescriptionHead],
-        body: prescriptionBody,
-        headStyles: {
-            fillColor: [50, 90, 160],
-            textColor: 255,
-            fontStyle: 'bold',
-            fontSize: 11
-        },
-        styles: {
-            fontSize: 10,
-            textColor: 30,
-            cellPadding: 4
-        },
-        margin: { left: 30, right: 30 },
-        tableWidth: 160
-    });
-
-    const paymentY = pdf.autoTable.previous.finalY + 15;
-
-// --- Détail des montants ---
-let yPos = pdf.autoTable.previous.finalY + 15;
-
-// Ligne de séparation
-pdf.setDrawColor(200);
-pdf.setLineWidth(0.3);
-pdf.line(30, yPos - 5, 180, yPos - 5);
-
-// Titre de la section
-pdf.setFont('helvetica', 'bold');
-pdf.setFontSize(11);
-pdf.setTextColor(50, 90, 160);
-pdf.text('DÉTAIL DES MONTANTS', 105, yPos, { align: 'center' });
-yPos += 8;
-
-// Calculer le montant par verre (divisé par 2)
-const montantVerreParOeil = parseFloat(formData.montant_verres) / 2;
-
-// Colonne gauche : Détail des montants
-pdf.setFont('helvetica', 'normal');
-pdf.setFontSize(10);
-pdf.setTextColor(70);
-
-// Tableau des détails à gauche
-// ----- CONFIG GLOBALE -----
-const leftXLabel = 40;    // Colonne gauche - label
-const leftXValue = 90;    // Colonne gauche - valeur
-const rightXLabel = 130;  // Colonne droite - label
-const rightXValue = 190;  // Colonne droite - valeur
-const lineHeight = 8;     // Hauteur entre lignes
-
-// ----- DÉTAILS GAUCHE -----
-const leftDetails = [
-    { label: 'Monture', value: `${formData.montant_monture} F` },
-    { label: 'Verre OD', value: `${montantVerreParOeil.toFixed(0)} F` },
-    { label: 'Verre OG', value: `${montantVerreParOeil.toFixed(0)} F` }
-];
-
-leftDetails.forEach((detail, i) => {
-    const y = yPos + (i * lineHeight);
-    pdf.setFontSize(10);
-    pdf.setTextColor(50);
-    pdf.text(detail.label + " :", leftXLabel, y);
-    pdf.text(detail.value, leftXValue, y);
-});
-
-// ----- DÉTAILS DROITE -----
-const rightDetails = [
-    { label: 'Total Brut', value: `${formData.total_brut} F` },
-    { label: 'Remise', value: `${formData.remise} ${formData.remise_type}` },
-    { label: 'Net à Payer', value: `${formData.net_a_payer} F` }
-];
-
-rightDetails.forEach((detail, i) => {
-    const y = yPos + (i * lineHeight);
-    pdf.setFontSize(detail.label === 'Net à Payer' ? 11 : 10);
-    pdf.setTextColor(detail.label === 'Net à Payer' ? 30 : 50);
-    pdf.text(detail.label + " :", rightXLabel, y);
-    pdf.text(detail.value, rightXValue, y, { align: 'right' });
-});
-
-
-// Réinitialiser la couleur et taille de police
-pdf.setTextColor(70);
-pdf.setFontSize(10);
-
-// Ligne de séparation en bas
-yPos += 20;
-pdf.setDrawColor(200);
-pdf.setLineWidth(0.3);
-pdf.line(30, yPos, 180, yPos);
-
-    // --- Montant en lettres ---
-    yPos += 10;
-    pdf.setFontSize(9);
-    pdf.setFont('helvetica', 'normal');
-    pdf.text(`ARRETÉE LA PRÉSENTE FACTURE PROFORMA À LA SOMME DE ${formData.net_a_payer} FRANCS CFA`, 30, yPos);
-
-    // ==== Pied de page minimaliste ====
-    const footerY = yPos + 10;
-    pdf.setDrawColor(50, 90, 160);
-    pdf.setLineWidth(0.8);
-    pdf.line(30, footerY, 185, footerY);
-
-    pdf.setFont('helvetica', 'italic');
-    pdf.setFontSize(9);
-    pdf.setTextColor(80);
-    pdf.text('Prenez soin de vos yeux avec VOIR PLUS OPTIC.', 105, footerY + 10, { align: 'center' });
-    // Générer PDF
-    const pdfBlob = pdf.output('blob');
-    const pdfUrl = URL.createObjectURL(pdfBlob);
-    const printWindow = window.open(pdfUrl, '_blank');
-
-    printWindow.onload = function () {
-        printWindow.focus();
-        printWindow.print();
-        printWindow.onafterprint = () => {
-            printWindow.close();
-            URL.revokeObjectURL(pdfUrl);
-        };
-    };
-    closeModal();
-}
-
-// Fonction utilitaire pour charger les scripts
-function loadScript(url) {
-    return new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = url;
-        script.onload = resolve;
-        script.onerror = reject;
-        document.head.appendChild(script);
-    });
-}
-function numberToFrenchWords(number) {
-    if (number === 0) return 'ZÉRO';
-    
-    const units = ['', 'UN', 'DEUX', 'TROIS', 'QUATRE', 'CINQ', 'SIX', 'SEPT', 'HUIT', 'NEUF'];
-    const teens = ['DIX', 'ONZE', 'DOUZE', 'TREIZE', 'QUATORZE', 'QUINZE', 'SEIZE', 'DIX-SEPT', 'DIX-HUIT', 'DIX-NEUF'];
-    const tens = ['', 'DIX', 'VINGT', 'TRENTE', 'QUARANTE', 'CINQUANTE', 'SOIXANTE', 'SOIXANTE', 'QUATRE-VINGT', 'QUATRE-VINGT'];
-    const hundreds = ['CENT', 'DEUX-CENTS', 'TROIS-CENTS', 'QUATRE-CENTS', 'CINQ-CENTS', 'SIX-CENTS', 'SEPT-CENTS', 'HUIT-CENTS', 'NEUF-CENTS'];
-    const thousands = ['MILLE', 'MILLION', 'MILLIARD'];
-    
-    let result = '';
-    
-    if (number < 0) {
-        result = 'MOINS ';
-        number = Math.abs(number);
-    }
-    
-    // Traitement des millions
-    if (number >= 1000000) {
-        const millions = Math.floor(number / 1000000);
-        result += convertLessThanThousand(millions, true) + ' MILLION' + (millions > 1 ? 'S' : '');
-        number %= 1000000;
-        if (number > 0) {
-            result += ' ';
-        }
-    }
-    
-    // Traitement des milliers
-    if (number >= 1000) {
-        const thousandsVal = Math.floor(number / 1000);
-        if (thousandsVal === 1) {
-            result += 'MILLE';
+        if (result.success) {
+            console.log("✅ PDF généré avec succès:", result.pdfUrl);
+            
+            // Ouvrir le PDF dans une nouvelle page
+            window.open(result.pdfUrl, '_blank');
+            
+            // Afficher un message de succès
+            alert('Proforma généré avec succès ! Le PDF s\'ouvre dans une nouvelle fenêtre.');
+            
         } else {
-            result += convertLessThanThousand(thousandsVal, true) + ' MILLE';
+            console.error("❌ Erreur:", result.message);
+            alert('Erreur lors de la génération du PDF: ' + result.message);
         }
-        number %= 1000;
-        if (number > 0) {
-            result += ' ';
-        }
-    }
-    
-    // Traitement des centaines, dizaines et unités
-    if (number > 0) {
-        result += convertLessThanThousand(number, false);
-    }
-    
-    return result;
-    
-    function convertLessThanThousand(num, isForThousand) {
-        let str = '';
-        
-        // Centaines
-        if (num >= 100) {
-            const hundredsVal = Math.floor(num / 100);
-            if (hundredsVal === 1) {
-                str += 'CENT';
-            } else {
-                str += units[hundredsVal] + '-CENT';
-            }
-            num %= 100;
-            if (num > 0) {
-                str += ' ';
-            }
-        }
-        
-        // Dizaines et unités
-        if (num >= 10 && num <= 19) {
-            str += teens[num - 10];
-        } else if (num >= 20 || num < 10) {
-            const tensVal = Math.floor(num / 10);
-            const unitsVal = num % 10;
-            
-            if (tensVal > 0) {
-                if (tensVal === 7 || tensVal === 9) {
-                    // Soixante-dix, Quatre-vingt-dix
-                    str += tens[tensVal];
-                    const remainder = num - tensVal * 10;
-                    if (remainder > 0) {
-                        if (tensVal === 7) {
-                            str += '-';
-                            if (remainder === 1) {
-                                str += 'ET-';
-                            }
-                            str += teens[remainder];
-                        } else if (tensVal === 9) {
-                            str += '-';
-                            str += teens[remainder];
-                        }
-                    }
-                    return str;
-                } else {
-                    str += tens[tensVal];
-                }
-            }
-            
-            if (unitsVal > 0) {
-                if (tensVal > 0) {
-                    if (unitsVal === 1 && tensVal !== 8 && tensVal !== 9) {
-                        str += '-ET-' + units[unitsVal];
-                    } else {
-                        str += '-' + units[unitsVal];
-                    }
-                } else {
-                    str += units[unitsVal];
-                }
-            } else if (tensVal === 8 && !isForThousand) {
-                // Quatre-vingts (avec un S)
-                str += 'S';
-            }
-        }
-        
-        return str;
+
+    } catch (error) {
+        console.error("❌ Erreur réseau:", error);
+        alert('Erreur de connexion lors de la génération du PDF');
+    } finally {
+        // Restaurer le bouton
+        submitBtn.innerHTML = originalBtnText;
+        submitBtn.disabled = false;
     }
 }
+
 //fin proforma
 </script>
 
