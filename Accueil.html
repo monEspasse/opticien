@@ -8623,7 +8623,6 @@ async function genererFacture() {
     }
 }
 
-// Fonction pour ouvrir le point des facturations
 function openPointFacturation() {
     const modalContainer = document.getElementById('modal-container');
     const modalHTML = `
@@ -8773,16 +8772,24 @@ async function loadFacturationData() {
                 
             };
         });
+
+        // TRI DES DONNÉES PAR DATE DE DÉPÔT DÉCROISSANTE (les plus récentes en premier)
+        allFacturationData.sort((a, b) => {
+            const dateA = a.DateDepot ? new Date(a.DateDepot) : new Date(0);
+            const dateB = b.DateDepot ? new Date(b.DateDepot) : new Date(0);
+            return dateB - dateA; // Ordre décroissant
+        });
+        
         // Récupération des valeurs uniques pour les filtres
         uniqueAssurances = [...new Set(allFacturationData.map(item => item.Assurance).filter(Boolean))];
         uniqueCompagnies = [...new Set(allFacturationData.map(item => item.Compagnie).filter(Boolean))];
+        
         // Peuplement des filtres
         populatePointdesfacture('filterAssurance', uniqueAssurances);
         populatePointdesfacture('filterCompagnie', uniqueCompagnies);
 
         displayFilteredFacturation(allFacturationData);
        
-        
     } catch (error) {
         console.error('Erreur:', error);
         showFacturationMessage(`❌ Erreur: ${error.message || 'Chargement échoué'}`, 'error');
@@ -8811,10 +8818,6 @@ function displayFilteredFacturation(data) {
         facturationData.innerHTML = '<tr><td colspan="11" class="text-center">Aucune donnée trouvée</td></tr>';
         return;
     }
-       console.log("=== LIENS PDF IMPORTÉS ===");
-    data.forEach(item => {
-        console.log("PDF Récap:", item.PdfRecap, "| PDF Détail:", item.PdfDetail);
-    });
     
     let html = '';
     data.forEach(item => {
@@ -8900,7 +8903,7 @@ function applyFacturationFilter() {
         // Conversion des dates en objets Date pour comparaison
         const itemDateDebut = item.DateDebut ? new Date(item.DateDebut) : null;
         const itemDateFin = item.DateFin ? new Date(item.DateFin) : null;
-        const itemDateDepot = item.DateDepot ? new Date(item.DateDepot) : null; // AJOUTER CETTE LIGNE
+        const itemDateDepot = item.DateDepot ? new Date(item.DateDepot) : null;
         const startDate = dateStart ? new Date(dateStart) : null;
         const endDate = dateEnd ? new Date(dateEnd) : null;
         const filterDateDepotObj = dateDepot ? new Date(dateDepot) : null;
@@ -9132,7 +9135,6 @@ function formatCurrency(amount) {
         maximumFractionDigits: 2 
     });
 }
-
 function openListeProduit() {
     const modalContainer = document.getElementById('modal-container');
     const modalHTML = `
