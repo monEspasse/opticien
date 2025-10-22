@@ -12562,7 +12562,7 @@ function displayFilteredBanque(data, headers) {
         html += `
             <td>
                 <div class="action-btns">
-                    <button class="action-btn btn-edit" onclick="editFilteredBanque(${index})" title="Modifier">
+                    <button class="action-btn btn-edit" onclick="editBanqueByUniqueId('${item['Idunique']}')" title="Modifier">
                         <i class="fas fa-pencil-alt"></i>
                     </button>
                 </div>
@@ -12576,33 +12576,24 @@ function displayFilteredBanque(data, headers) {
 }
 
 // Édition d'une transaction depuis les données filtrées
-function editFilteredBanque(filteredIndex) {
-    const transaction = currentFilteredBanque[filteredIndex];
-    
-    if (!transaction || !transaction['Idunique']) {
-        alert('Transaction invalide ou ID manquant');
+function editBanqueByUniqueId(idUnique) {
+    if (!idUnique) {
+        alert('ID de transaction manquant');
         return;
     }
     
-    // Trouver l'index correspondant dans allBanqueData en utilisant l'Idunique
+    // Trouver la transaction dans allBanqueData
     const originalIndex = allBanqueData.findIndex(item => 
-        item['Idunique'] && item['Idunique'].toString() === transaction['Idunique'].toString()
+        item['Idunique'] && item['Idunique'].toString() === idUnique.toString()
     );
     
     if (originalIndex === -1) {
-        console.error('Transaction non trouvée dans les données originales:', transaction);
-        alert('Erreur: Transaction non trouvée dans les données originales');
+        console.error('Transaction non trouvée avec ID:', idUnique);
+        alert('Erreur: Transaction non trouvée');
         return;
     }
     
-    console.log('Transaction trouvée:', {
-        filteredIndex: filteredIndex,
-        originalIndex: originalIndex,
-        idUnique: transaction['Idunique'],
-        designation: transaction['Designation']
-    });
-    
-    // Ouvrir la modal d'édition avec l'index original
+    const transaction = allBanqueData[originalIndex];
     openEditBanqueModal(originalIndex, transaction);
 }
 
