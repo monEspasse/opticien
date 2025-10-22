@@ -12516,7 +12516,6 @@ function resetBanqueFilter() {
     displayFilteredBanque(allBanqueData, headers);
 }
 // Affichage des données filtrées banque
-// Affichage des données filtrées banque
 function displayFilteredBanque(data, headers) {
     const banqueData = document.getElementById('banqueData');
     
@@ -12528,9 +12527,15 @@ function displayFilteredBanque(data, headers) {
         return;
     }
     
+    // Trier les données par date (plus récent en premier)
+    const sortedData = [...data].sort((a, b) => {
+        const dateA = new Date(a['Date'] || 0);
+        const dateB = new Date(b['Date'] || 0);
+        return dateB - dateA; // Ordre décroissant (plus récent en premier)
+    });
+    
     let html = '';
-    // Utiliser data directement au lieu de sortedData
-    data.forEach((item, index) => {
+    sortedData.forEach((item, index) => {
         html += '<tr>';
         
         headers.forEach(header => {
@@ -12574,15 +12579,28 @@ function displayFilteredBanque(data, headers) {
 function editFilteredBanque(filteredIndex) {
     const transaction = currentFilteredBanque[filteredIndex];
     
-    // Trouver l'index correspondant dans allBanqueData
+    if (!transaction || !transaction['Idunique']) {
+        alert('Transaction invalide ou ID manquant');
+        return;
+    }
+    
+    // Trouver l'index correspondant dans allBanqueData en utilisant l'Idunique
     const originalIndex = allBanqueData.findIndex(item => 
-        item['Idunique'] === transaction['Idunique']
+        item['Idunique'] && item['Idunique'].toString() === transaction['Idunique'].toString()
     );
     
     if (originalIndex === -1) {
-        alert('Transaction non trouvée dans les données originales');
+        console.error('Transaction non trouvée dans les données originales:', transaction);
+        alert('Erreur: Transaction non trouvée dans les données originales');
         return;
     }
+    
+    console.log('Transaction trouvée:', {
+        filteredIndex: filteredIndex,
+        originalIndex: originalIndex,
+        idUnique: transaction['Idunique'],
+        designation: transaction['Designation']
+    });
     
     // Ouvrir la modal d'édition avec l'index original
     openEditBanqueModal(originalIndex, transaction);
