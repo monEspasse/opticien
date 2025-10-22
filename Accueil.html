@@ -48,20 +48,57 @@ body {
     min-height: 100vh;
 }
 
-/* Sidebar */
+
+/* Sidebar fixe avec espace en haut */
 .sidebar {
-    background-color: var(--sidebar-bg);
-    color: var(--sidebar-text);
     width: 280px;
-    padding: 1.5rem 1rem;
+    background: var(--sidebar-bg);
+    color: var(--sidebar-text);
     transition: var(--transition);
-    position: relative;
-    z-index: 10;
+    overflow-y: auto;
+    position: fixed;
+    height: 100vh;
+    z-index: 1000;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    top: 0;
+    left: 0;
+    /* Espace en haut */
+    padding-top: 25px; /* Ajustez cette valeur (15px, 20px, 25px, etc.) */
 }
 
-.logo-container {
+/* Contenu principal avec marge pour la sidebar */
+.main {
+    flex: 1;
+    margin-left: 280px;
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+/* Scrollbar personnalisée pour la sidebar */
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* Ajuster le logo pour qu'il ne soit pas trop haut */
+.logo-container {
+    padding: 1.5rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 1rem;
 }
 
 .logo {
