@@ -1425,9 +1425,6 @@
             </div>
 
             <div class="user-info">
-                <button class="mobile-call-btn" id="mobileCallBtn" aria-label="Appeler le client" style="display: none;">
-                    <i class="fas fa-phone" aria-hidden="true"></i>
-                </button>
                 
                 <div class="profile-dropdown" tabindex="0" aria-haspopup="true" aria-expanded="false">
                     <span class="profile-name" id="username-display"></span>
@@ -3767,6 +3764,7 @@ async function saveCallLog() {
     const noteField = document.getElementById('logNote');
     if (!noteField) {
         showTemporaryMessage('Champ de note non trouvé', 'error', 2000);
+        closeLogModal();
         return;
     }
 
@@ -3785,13 +3783,13 @@ async function saveCallLog() {
         user: document.getElementById('logUser').value,
         phoneNumber: cleanPhoneNumber(document.getElementById('logPhoneNumber').value),
         note: note,
-        timestamp: new Date().toISOString(),
-        duration: document.getElementById('logDuration')?.value || 'Non spécifié'
+        timestamp: new Date().toISOString()
     };
 
     const saveButton = document.getElementById('saveLogBtn');
     if (!saveButton) {
         showTemporaryMessage('Bouton de sauvegarde non trouvé', 'error', 2000);
+        closeLogModal();
         return;
     }
 
@@ -3825,7 +3823,6 @@ async function saveCallLog() {
         localStorage.removeItem('pendingCallLog');
     }
 }
-
 // Fermer la modale de consigne
 function closeLogModal() {
     hideModal('logCallModal');
