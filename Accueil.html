@@ -1539,6 +1539,648 @@ body {
             inset 4px 0 0 var(--accent-color);
     }
 }
+
+/* Grille pour les deux sections */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Carte des graphiques */
+.charts-card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    border: 1px solid var(--gray-light);
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    position: relative;
+    transition: var(--transition);
+}
+
+.charts-card:hover {
+    box-shadow: var(--card-shadow-hover);
+    transform: translateY(-2px);
+}
+
+/* Conteneur des graphiques */
+.charts-container {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* Section de graphique */
+.chart-section {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--gray-light);
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.chart-header h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--dark-color);
+    margin: 0;
+}
+
+.chart-stats {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.stat-item {
+    text-align: right;
+}
+
+.stat-value {
+    display: block;
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--success-color);
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--gray-color);
+}
+
+.chart-wrapper {
+    height: 200px;
+    position: relative;
+}
+
+/* Grille des métriques */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.metric-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--gray-light);
+    transition: var(--transition);
+}
+
+.metric-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.metric-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.metric-content {
+    flex: 1;
+}
+
+.metric-value {
+    display: block;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--dark-color);
+    line-height: 1.2;
+}
+
+.metric-label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--gray-color);
+    margin-top: 0.25rem;
+}
+
+.metric-trend {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.metric-trend.positive {
+    background: rgba(74, 222, 128, 0.1);
+    color: var(--success-color);
+}
+
+.metric-trend.negative {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger-color);
+}
+
+/* Sélecteur de période pour les graphiques */
+.chart-period-selector {
+    position: relative;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .metrics-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .metrics-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .chart-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .chart-stats {
+        align-self: flex-end;
+    }
+}
+
+/* Grille pour les tableaux de données */
+.data-tables-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+}
+
+.data-table-section {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 
+        0 2px 8px rgba(0, 0, 0, 0.04),
+        0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    max-height: 400px;
+}
+
+.data-table-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.data-table-section:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.08),
+        0 4px 12px rgba(67, 97, 238, 0.05);
+    border-color: rgba(67, 97, 238, 0.2);
+}
+
+.data-table-section:hover::before {
+    transform: scaleX(1);
+}
+
+.data-table-section h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--dark-color);
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid rgba(67, 97, 238, 0.1);
+    position: relative;
+    flex-shrink: 0;
+}
+
+.data-table-section h4::before {
+    content: '';
+    width: 4px;
+    height: 20px;
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(67, 97, 238, 0.3);
+}
+
+/* Conteneur de tableau avec défilement horizontal amélioré */
+.table-responsive {
+    border-radius: 12px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    flex: 1;
+    min-height: 200px;
+    position: relative;
+}
+
+/* Scrollbar personnalisée pour le défilement horizontal */
+.table-responsive::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+}
+
+.table-responsive::-webkit-scrollbar-corner {
+    background: transparent;
+}
+
+/* Tableaux de statistiques optimisés avec défilement */
+.stats-table {
+    font-size: 0.875rem;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    min-width: 500px; /* Largeur minimale pour forcer le défilement si nécessaire */
+}
+
+.stats-table th {
+    font-size: 0.8rem;
+    padding: 1rem 0.875rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    color: var(--dark-color);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid rgba(67, 97, 238, 0.2);
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    white-space: nowrap;
+}
+
+.stats-table td {
+    padding: 0.875rem;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+    transition: all 0.2s ease;
+    position: relative;
+    white-space: nowrap;
+}
+
+.stats-table tbody tr {
+    transition: all 0.3s ease;
+    background: linear-gradient(90deg, transparent 50%, rgba(67, 97, 238, 0.02) 50%);
+    background-size: 200% 100%;
+    background-position: right bottom;
+}
+
+.stats-table tbody tr:hover {
+    background-position: left bottom;
+    transform: translateX(2px);
+}
+
+.stats-table tbody tr:hover td {
+    background: rgba(67, 97, 238, 0.03);
+}
+
+.stats-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* En-têtes de colonnes spécifiques */
+.stats-table th:first-child,
+.stats-table td:first-child {
+    padding-left: 1.25rem;
+    font-weight: 600;
+    position: sticky;
+    left: 0;
+    background: inherit;
+    z-index: 1;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+}
+
+.stats-table th:last-child,
+.stats-table td:last-child {
+    padding-right: 1.25rem;
+    text-align: center;
+}
+
+/* Indicateurs d'évolution améliorés */
+.evolution-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    min-width: 80px;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    position: relative;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.evolution-indicator::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s;
+}
+
+.evolution-indicator:hover::before {
+    left: 100%;
+}
+
+.evolution-positive {
+    background: linear-gradient(135deg, rgba(74, 222, 128, 0.15), rgba(74, 222, 128, 0.08));
+    color: #059669;
+    border: 1px solid rgba(74, 222, 128, 0.3);
+}
+
+.evolution-positive:hover {
+    background: linear-gradient(135deg, rgba(74, 222, 128, 0.2), rgba(74, 222, 128, 0.12));
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(74, 222, 128, 0.2);
+}
+
+.evolution-negative {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.08));
+    color: #dc2626;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.evolution-negative:hover {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.12));
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+}
+
+.evolution-neutral {
+    background: linear-gradient(135deg, rgba(148, 163, 184, 0.15), rgba(148, 163, 184, 0.08));
+    color: #64748b;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+.evolution-neutral:hover {
+    background: linear-gradient(135deg, rgba(148, 163, 184, 0.2), rgba(148, 163, 184, 0.12));
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(148, 163, 184, 0.2);
+}
+
+/* Indicateur de défilement visuel */
+.data-table-section::after {
+    content: '';
+    position: absolute;
+    right: 1rem;
+    bottom: 1rem;
+    width: 6px;
+    height: 6px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    animation: pulse 2s infinite;
+}
+
+.data-table-section.scrollable::after {
+    opacity: 0.6;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.2); opacity: 0.8; }
+}
+
+/* États vides améliorés */
+.stats-table tbody:empty::after {
+    content: "Aucune donnée disponible";
+    display: block;
+    text-align: center;
+    padding: 2rem;
+    color: var(--gray-color);
+    font-style: italic;
+    white-space: normal;
+}
+
+/* Animation d'apparition des lignes */
+.stats-table tbody tr {
+    animation: fadeInUp 0.4s ease-out;
+    animation-fill-mode: both;
+}
+
+.stats-table tbody tr:nth-child(1) { animation-delay: 0.1s; }
+.stats-table tbody tr:nth-child(2) { animation-delay: 0.2s; }
+.stats-table tbody tr:nth-child(3) { animation-delay: 0.3s; }
+.stats-table tbody tr:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive amélioré avec défilement */
+@media (max-width: 1200px) {
+    .data-tables-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .data-table-section {
+        padding: 1.25rem;
+        max-height: 350px;
+    }
+    
+    .stats-table {
+        min-width: 450px;
+    }
+}
+
+@media (max-width: 768px) {
+    .data-table-section {
+        padding: 1rem;
+        border-radius: 12px;
+        max-height: 300px;
+    }
+    
+    .data-table-section h4 {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .stats-table {
+        font-size: 0.8rem;
+        min-width: 400px;
+    }
+    
+    .stats-table th,
+    .stats-table td {
+        padding: 0.75rem 0.5rem;
+    }
+    
+    .stats-table th:first-child,
+    .stats-table td:first-child {
+        padding-left: 0.75rem;
+    }
+    
+    .stats-table th:last-child,
+    .stats-table td:last-child {
+        padding-right: 0.75rem;
+    }
+    
+    .evolution-indicator {
+        padding: 0.375rem 0.5rem;
+        font-size: 0.75rem;
+        min-width: 70px;
+    }
+    
+    .table-responsive {
+        min-height: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    .data-tables-grid {
+        gap: 0.875rem;
+    }
+    
+    .data-table-section {
+        padding: 0.875rem;
+        max-height: 250px;
+    }
+    
+    .stats-table {
+        min-width: 350px;
+    }
+    
+    .stats-table th,
+    .stats-table td {
+        padding: 0.625rem 0.375rem;
+        font-size: 0.75rem;
+    }
+    
+    .evolution-indicator {
+        min-width: 60px;
+        padding: 0.25rem 0.375rem;
+        font-size: 0.7rem;
+    }
+}
+
+/* Amélioration de la lisibilité */
+.stats-table td:nth-child(2),
+.stats-table td:nth-child(3) {
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    color: var(--dark-color);
+}
+
+/* Effet de focus pour l'accessibilité */
+.stats-table tbody tr:focus-within {
+    outline: 2px solid var(--primary-color);
+    outline-offset: -2px;
+    border-radius: 4px;
+}
+
+/* Loading state amélioré */
+.stats-table tbody tr.loading td {
+    color: transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.stats-table tbody tr.loading td::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(67, 97, 238, 0.2);
+    border-left: 2px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* JavaScript pour détecter le défilement */
+.scroll-indicator {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary-color);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.table-responsive:hover .scroll-indicator {
+    opacity: 1;
+}
+
+
+
+
+
+
+
+
+
 .product-table, .entrees-table, .verre-catalogue-table {
     width: 100%;
     border-collapse: collapse;
@@ -5966,6 +6608,9 @@ body.modal-open {
     padding: 0.6rem;
   }
 }
+
+
+
 </style>
 </head>
 <body>
@@ -5976,9 +6621,6 @@ body.modal-open {
         <div class="logo">
             <img src="logoAppli.png" alt="VOIR PLUS OPTIC Logo" class="logo-image">
             <span class="logo-text">VOIR PLUS OPTIC</span>
-        </div>
-        <div class="sidebar-toggle">
-            <i class="fas fa-chevron-left"></i>
         </div>
     </div>
     
@@ -6286,97 +6928,189 @@ body.modal-open {
         <div class="card-badge trending">Admin</div>
     </button>
 </div>
-<div class="card clients-card">
-    <div class="card-header">
-        <div class="header-content">
-            <h2 class="section-title">
-                <div class="title-icon">
-                    <i class="fas fa-users"></i>
+<div class="dashboard-grid">
+    <!-- Section Liste des Clients -->
+    <div class="card clients-card">
+        <div class="card-header">
+            <div class="header-content">
+                <h2 class="section-title">
+                    <div class="title-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <span>Liste des Clients</span>
+                </h2>
+                <div class="header-actions">
+                    <div class="search-container">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="searchInput" placeholder="Rechercher ID..." />
+                        <div class="search-focus-line"></div>
+                    </div>
                 </div>
-                <span>Liste des Clients</span>
-            </h2>
-            <div class="header-actions">
-                <div class="search-container">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" id="searchInput" placeholder="Rechercher ID..." />
-                    <div class="search-focus-line"></div>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div id="loading-indicator" class="loading-indicator">
+                <div class="loading-animation">
+                    <div class="loading-spinner"></div>
+                    <div class="loading-pulse"></div>
+                </div>
+                <p>Chargement des données clients...</p>
+                <div class="loading-progress">
+                    <div class="progress-bar"></div>
+                </div>
+            </div>
+            
+            <div id="error-message" class="error-message">
+                <div class="error-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="error-content">
+                    <h3>Erreur de chargement</h3>
+                    <p>Impossible de charger les données clients</p>
+                </div>
+                <button class="retry-btn">Réessayer</button>
+            </div>
+
+            <div id="table-container" class="table-container">
+                <div class="table-responsive">
+                    <table id="client-table" class="modern-table">
+                        <thead>
+                            <!-- Les données seront injectées ici -->
+                        </thead>
+                        <tbody>
+                            <!-- Les données seront injectées ici -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="table-overlay">
+                    <div class="empty-state">
+                        <i class="fas fa-users-slash"></i>
+                        <h3>Aucun client trouvé</h3>
+                        <p>Aucune donnée ne correspond à votre recherche</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pagination-controls">
+                <div class="pagination-info" id="page-info">
+                   <!-- Les données seront injectées ici -->
+                </div>
+                <div class="pagination-navigation">
+                    <button class="pagination-btn prev-btn" id="prevPage" disabled>
+                        <i class="fas fa-chevron-left"></i>
+                        <span>Précédent</span>
+                    </button>
+                    <button class="pagination-btn next-btn" id="nextPage">
+                        <span>Suivant</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                <div class="items-per-page">
+                    <span class="per-page-label">Ligne:</span>
+                    <div class="select-wrapper">
+                        <select id="itemsPerPageSelect" class="modern-select">
+                            <option value="5">5</option>
+                            <option value="10" selected>10</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                        </select>
+                        <i class="fas fa-chevron-down select-arrow"></i>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="card-body">
-        <div id="loading-indicator" class="loading-indicator">
-            <div class="loading-animation">
-                <div class="loading-spinner"></div>
-                <div class="loading-pulse"></div>
-            </div>
-            <p>Chargement des données clients...</p>
-            <div class="loading-progress">
-                <div class="progress-bar"></div>
-            </div>
-        </div>
-        
-        <div id="error-message" class="error-message">
-            <div class="error-icon">
-                <i class="fas fa-exclamation-triangle"></i>
-            </div>
-            <div class="error-content">
-                <h3>Erreur de chargement</h3>
-                <p>Impossible de charger les données clients</p>
-            </div>
-            <button class="retry-btn">Réessayer</button>
-        </div>
-
-        <div id="table-container" class="table-container">
-            <div class="table-responsive">
-                <table id="client-table" class="modern-table">
-                    <thead>
-<!-- Les données seront injectées ici -->
-                    </thead>
-                    <tbody>
-                        <!-- Les données seront injectées ici -->
-                    </tbody>
-                </table>
-            </div>
-            
-            <div class="table-overlay">
-                <div class="empty-state">
-                    <i class="fas fa-users-slash"></i>
-                    <h3>Aucun client trouvé</h3>
-                    <p>Aucune donnée ne correspond à votre recherche</p>
+    <!-- Section Graphiques -->
+<!-- Section Graphiques -->
+<div class="card charts-card">
+    <div class="card-header">
+        <div class="header-content">
+            <h2 class="section-title">
+                <div class="title-icon">
+                    <i class="fas fa-chart-line"></i>
                 </div>
-            </div>
-        </div>
-
-        <div class="pagination-controls">
-            <div class="pagination-info" id="page-info">
-               <!-- Les données seront injectées ici -->
-            </div>
-            <div class="pagination-navigation">
-                <button class="pagination-btn prev-btn" id="prevPage" disabled>
-                    <i class="fas fa-chevron-left"></i>
-                    <span>Précédent</span>
-                </button>
-                <button class="pagination-btn next-btn" id="nextPage">
-                    <span>Suivant</span>
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-            </div>
-            <div class="items-per-page">
-                <span class="per-page-label">Ligne:</span>
-                <div class="select-wrapper">
-                    <select id="itemsPerPageSelect" class="modern-select">
-                        <option value="5">5</option>
-                        <option value="10" selected>10</option>
-                        <option value="20">20</option>
-                        <option value="50">50</option>
+                <span>Analytiques</span>
+            </h2>
+            <div class="header-actions">
+                <div class="chart-period-selector">
+                    <select id="chartPeriod" class="modern-select">
+                        <option value="today">Aujourd'hui</option>
+                        <option value="thisWeek" >Cette semaine</option>
+                        <option value="lastWeek">Semaine passée</option>
+                        <option value="thisMonth"selected>Ce mois</option>
+                        <option value="lastMonth">Le mois passé</option>
+                        <option value="thisYear">Cette année</option>
+                        <option value="lastYear">L'année passée</option>
                     </select>
                     <i class="fas fa-chevron-down select-arrow"></i>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="card-body">
+        <div class="charts-container">
+            <!-- Graphique des ventes -->
+            <div class="chart-section">
+                <div class="chart-header">
+                    <h3>Évolution du Chiffre d'Affaires</h3>
+                    <div class="chart-stats">
+                        <div class="stat-item">
+                            <span class="stat-value" id="totalCA">0 FCFA</span>
+                            <span class="stat-label">CA Total</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="salesChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Tableaux de données -->
+            <div class="data-tables-grid">
+                <div class="data-table-section">
+                    <h4>Performance par Agence</h4>
+                    <div class="table-responsive">
+                        <table class="modern-table stats-table">
+                            <thead>
+                                <tr>
+                                    <th>Agence</th>
+                                    <th>CA Période</th>
+                                    <th>CA Précédent</th>
+                                    <th>Évolution</th>
+                                </tr>
+                            </thead>
+                            <tbody id="agencyStatsBody">
+                                <!-- Données injectées dynamiquement -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="data-table-section">
+                    <h4>Indicateurs Clés</h4>
+                    <div class="table-responsive">
+                        <table class="modern-table stats-table">
+                            <thead>
+                                <tr>
+                                    <th>Indicateur</th>
+                                    <th>Valeur</th>
+                                    <th>Évolution</th>
+                                </tr>
+                            </thead>
+                            <tbody id="keyMetricsBody">
+                                <!-- Données injectées dynamiquement -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </div>
             </section>
         </div>
@@ -7207,7 +7941,8 @@ body.modal-open {
         </div>
     </div>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
    
@@ -11284,7 +12019,7 @@ async function loadClientsFromScript() {
 
         const responseData = await response.json();
         
-        console.log("Réponse API:", responseData); // Pour débogage
+        console.log("Réponse API:", responseData);
         
         if (!responseData.success || !responseData.data) {
             throw new Error("Réponse inattendue de l'API");
@@ -11292,20 +12027,17 @@ async function loadClientsFromScript() {
 
         const { headers, rows } = responseData.data;
         
-        // Vérification des données reçues
-        console.log("En-têtes reçus:", headers);
-        console.log("Première ligne reçue:", rows.length > 0 ? rows[0] : "Aucune donnée");
-        
-        if (!Array.isArray(headers) || !Array.isArray(rows)) {
-            throw new Error("Structure de données invalide");
-        }
-
-        allClientsData = rows;
+        allClientsData = [headers, ...rows]; // Inclure les headers dans les données
         filteredClients = [...allClientsData];
         
         renderTableHeaders(headers);
         updateTableAndPagination();
-
+        
+        // Initialiser les graphiques après le chargement des données
+        setTimeout(() => {
+            initializeCharts();
+        }, 500);
+        
     } catch (error) {
         console.error("Erreur de chargement:", error);
         displayError(error.message || "Erreur lors du chargement des clients");
@@ -14376,6 +15108,866 @@ function showBanqueMessage(message, type) {
     messageDiv.textContent = message;
     messageDiv.className = `alert alert-${type}`;
     messageDiv.style.display = 'block';
+}
+// Variables pour les graphiques
+let salesChart = null;
+let currentPeriod = 'thisMonth';
+
+// Initialisation des graphiques
+function initializeCharts() {
+    console.log("Initialisation des graphiques...");
+    console.log("Données clients disponibles:", allClientsData.length, "clients");
+    
+    setupChartPeriodListener();
+    loadChartData();
+}
+
+// Écouteur pour le changement de période
+function setupChartPeriodListener() {
+    const periodSelect = document.getElementById('chartPeriod');
+    if (periodSelect) {
+        periodSelect.addEventListener('change', function() {
+            currentPeriod = this.value;
+            console.log("Période changée:", currentPeriod);
+            loadChartData();
+        });
+    }
+}
+
+// Chargement des données pour les graphiques
+async function loadChartData() {
+    console.log("Chargement des données graphiques...");
+    
+    try {
+        if (allClientsData.length === 0) {
+            console.warn("Aucune donnée client disponible");
+            return;
+        }
+        
+        const chartData = await generateChartData(currentPeriod);
+        console.log("Données graphiques générées:", chartData);
+        renderSalesChart(chartData);
+        renderDataTables(chartData);
+    } catch (error) {
+        console.error('Erreur chargement données graphiques:', error);
+    }
+}
+
+// Fonction manquante : Génération de données de démonstration basées sur les clients
+function generateChartData(period) {
+    return new Promise((resolve) => {
+        console.log("Génération données pour période:", period);
+        
+        // Normaliser les données clients
+        const normalizedClients = normalizeClientData(allClientsData);
+        console.log("Clients normalisés:", normalizedClients);
+        
+        // Filtrer les données clients selon la période
+        const filteredData = filterClientsByPeriod(normalizedClients, period);
+        console.log("Données filtrées:", filteredData.length, "clients");
+        
+        // Calculer les statistiques
+        const stats = calculateStatistics(filteredData, period);
+        console.log("Statistiques calculées:", stats);
+        
+        resolve(stats);
+    });
+}
+
+// Fonction pour normaliser les données clients
+function normalizeClientData(clients) {
+    if (clients.length === 0) return [];
+    
+    // Vérifier si c'est un tableau d'objets ou de tableaux
+    const firstItem = clients[0];
+    
+    if (Array.isArray(firstItem)) {
+        // Cas tableau de tableaux (structure actuelle)
+        const headers = firstItem; // La première ligne contient les en-têtes
+        return clients.slice(1).map(row => {
+            const client = {};
+            headers.forEach((header, index) => {
+                client[header] = row[index] || '';
+            });
+            return client;
+        });
+    } else {
+        // Cas tableau d'objets (déjà normalisé)
+        return clients;
+    }
+}
+
+// Parse date au format DD/MM/YYYY
+function parseDate(dateString) {
+    if (!dateString) return new Date();
+    
+    console.log("Parsing date:", dateString);
+    
+    // Essayer le format DD/MM/YYYY
+    const parts = dateString.split('/');
+    if (parts.length === 3) {
+        const day = parseInt(parts[0]);
+        const month = parseInt(parts[1]) - 1;
+        const year = parseInt(parts[2]);
+        return new Date(year, month, day);
+    }
+    
+    // Essayer le format YYYY-MM-DD
+    if (dateString.includes('-')) {
+        return new Date(dateString);
+    }
+    
+    // Essayer de parser directement
+    return new Date(dateString);
+}
+
+// Filtrage des clients par période (nouvelle version)
+function filterClientsByPeriod(clients, period) {
+    const now = new Date();
+    let startDate = new Date();
+    let endDate = new Date();
+    
+    switch(period) {
+        case 'today':
+            // Aujourd'hui seulement
+            startDate.setHours(0, 0, 0, 0);
+            endDate.setHours(23, 59, 59, 999);
+            break;
+            
+        case 'thisWeek':
+            // Cette semaine (lundi à dimanche)
+            const dayOfWeek = now.getDay();
+            const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+            startDate.setDate(now.getDate() + diffToMonday);
+            startDate.setHours(0, 0, 0, 0);
+            endDate.setHours(23, 59, 59, 999);
+            break;
+            
+        case 'lastWeek':
+            // Semaine passée
+            const dayOfWeekLast = now.getDay();
+            const diffToMondayLast = dayOfWeekLast === 0 ? -6 : 1 - dayOfWeekLast;
+            startDate.setDate(now.getDate() + diffToMondayLast - 7);
+            startDate.setHours(0, 0, 0, 0);
+            endDate.setDate(startDate.getDate() + 6);
+            endDate.setHours(23, 59, 59, 999);
+            break;
+            
+        case 'thisMonth':
+            // Ce mois (du 1er au dernier jour)
+            startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+            endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+            break;
+            
+        case 'lastMonth':
+            // Mois passé
+            startDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+            endDate = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59, 999);
+            break;
+            
+        case 'thisYear':
+            // Cette année
+            startDate = new Date(now.getFullYear(), 0, 1);
+            endDate = new Date(now.getFullYear(), 11, 31, 23, 59, 59, 999);
+            break;
+            
+        case 'lastYear':
+            // Année passée
+            startDate = new Date(now.getFullYear() - 1, 0, 1);
+            endDate = new Date(now.getFullYear() - 1, 11, 31, 23, 59, 59, 999);
+            break;
+            
+        default:
+            // Cette semaine par défaut
+            const dayOfWeekDefault = now.getDay();
+            const diffToMondayDefault = dayOfWeekDefault === 0 ? -6 : 1 - dayOfWeekDefault;
+            startDate.setDate(now.getDate() + diffToMondayDefault);
+            startDate.setHours(0, 0, 0, 0);
+            endDate.setHours(23, 59, 59, 999);
+    }
+    
+    console.log(`Filtrage période ${period}:`, startDate, "à", endDate);
+    
+    return clients.filter(client => {
+        const dateStr = client['Date Enregistrement'] || client['Date'] || '';
+        if (!dateStr) return false;
+        
+        const clientDate = parseDate(dateStr);
+        return clientDate >= startDate && clientDate <= endDate;
+    });
+}
+
+// Génération des données de timeline adaptée aux nouvelles périodes
+function generateTimelineData(clients, period) {
+    console.log("Génération timeline pour période:", period);
+    
+    const now = new Date();
+    let timeline = [];
+    
+    switch(period) {
+        case 'today':
+            timeline = generateHourlyTimeline(clients, now);
+            break;
+            
+        case 'thisWeek':
+        case 'lastWeek':
+            timeline = generateDailyTimeline(clients, period);
+            break;
+            
+        case 'thisMonth':
+        case 'lastMonth':
+            timeline = generateWeeklyTimeline(clients, period);
+            break;
+            
+        case 'thisYear':
+        case 'lastYear':
+            timeline = generateMonthlyTimeline(clients, period);
+            break;
+            
+        default:
+            timeline = generateDailyTimeline(clients, 'thisWeek');
+    }
+    
+    console.log("Timeline générée:", timeline);
+    return timeline;
+}
+
+// Timeline horaire pour "Aujourd'hui"
+function generateHourlyTimeline(clients, date) {
+    const timeline = [];
+    const agencies = getAgenciesFromClients(clients);
+    
+    for (let hour = 0; hour < 24; hour++) {
+        const periodStart = new Date(date);
+        periodStart.setHours(hour, 0, 0, 0);
+        
+        const periodEnd = new Date(date);
+        periodEnd.setHours(hour, 59, 59, 999);
+        
+        const point = {
+            date: `${hour}h`,
+            total: 0
+        };
+        
+        // Initialiser les agences
+        agencies.forEach(agency => {
+            point[agency] = 0;
+        });
+        
+        // Calculer les CA pour cette heure
+        clients.forEach(client => {
+            const dateStr = client['Date Enregistrement'] || client['Date'] || '';
+            if (!dateStr) return;
+            
+            const clientDate = parseDate(dateStr);
+            if (clientDate >= periodStart && clientDate <= periodEnd) {
+                const agency = getAgencyFromClient(client);
+                const montant = parseFloat(client['Montant TTC'] || client['Montant'] || 0);
+                
+                point[agency] = (point[agency] || 0) + montant;
+                point.total += montant;
+            }
+        });
+        
+        timeline.push(point);
+    }
+    
+    return timeline;
+}
+
+// Timeline quotidienne pour les semaines
+function generateDailyTimeline(clients, period) {
+    const timeline = [];
+    const agencies = getAgenciesFromClients(clients);
+    const now = new Date();
+    
+    let startDate = new Date();
+    let days = 7;
+    
+    if (period === 'thisWeek') {
+        const dayOfWeek = now.getDay();
+        const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+        startDate.setDate(now.getDate() + diffToMonday);
+    } else if (period === 'lastWeek') {
+        const dayOfWeek = now.getDay();
+        const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+        startDate.setDate(now.getDate() + diffToMonday - 7);
+    }
+    
+    startDate.setHours(0, 0, 0, 0);
+    
+    for (let i = 0; i < days; i++) {
+        const currentDate = new Date(startDate);
+        currentDate.setDate(startDate.getDate() + i);
+        
+        const periodStart = new Date(currentDate);
+        periodStart.setHours(0, 0, 0, 0);
+        
+        const periodEnd = new Date(currentDate);
+        periodEnd.setHours(23, 59, 59, 999);
+        
+        const point = {
+            date: currentDate.toLocaleDateString('fr-FR', { 
+                weekday: 'short',
+                day: 'numeric'
+            }),
+            total: 0
+        };
+        
+        // Initialiser les agences
+        agencies.forEach(agency => {
+            point[agency] = 0;
+        });
+        
+        // Calculer les CA pour ce jour
+        clients.forEach(client => {
+            const dateStr = client['Date Enregistrement'] || client['Date'] || '';
+            if (!dateStr) return;
+            
+            const clientDate = parseDate(dateStr);
+            if (clientDate >= periodStart && clientDate <= periodEnd) {
+                const agency = getAgencyFromClient(client);
+                const montant = parseFloat(client['Montant TTC'] || client['Montant'] || 0);
+                
+                point[agency] = (point[agency] || 0) + montant;
+                point.total += montant;
+            }
+        });
+        
+        timeline.push(point);
+    }
+    
+    return timeline;
+}
+
+// Timeline hebdomadaire pour les mois
+function generateWeeklyTimeline(clients, period) {
+    const timeline = [];
+    const agencies = getAgenciesFromClients(clients);
+    const now = new Date();
+    
+    let startDate = new Date();
+    let endDate = new Date();
+    
+    if (period === 'thisMonth') {
+        startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    } else if (period === 'lastMonth') {
+        startDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        endDate = new Date(now.getFullYear(), now.getMonth(), 0);
+    }
+    
+    // Calculer le nombre de semaines dans le mois
+    const firstDay = startDate.getDay();
+    const lastDate = endDate.getDate();
+    const weeks = Math.ceil((firstDay + lastDate) / 7);
+    
+    for (let week = 0; week < weeks; week++) {
+        const weekStart = new Date(startDate);
+        weekStart.setDate(startDate.getDate() + (week * 7) - firstDay);
+        
+        const weekEnd = new Date(weekStart);
+        weekEnd.setDate(weekStart.getDate() + 6);
+        weekEnd.setHours(23, 59, 59, 999);
+        
+        // Ajuster pour ne pas dépasser la fin du mois
+        if (weekEnd > endDate) {
+            weekEnd.setTime(endDate.getTime());
+        }
+        
+        const point = {
+            date: `S${week + 1} (${weekStart.getDate()}/${weekStart.getMonth() + 1})`,
+            total: 0
+        };
+        
+        // Initialiser les agences
+        agencies.forEach(agency => {
+            point[agency] = 0;
+        });
+        
+        // Calculer les CA pour cette semaine
+        clients.forEach(client => {
+            const dateStr = client['Date Enregistrement'] || client['Date'] || '';
+            if (!dateStr) return;
+            
+            const clientDate = parseDate(dateStr);
+            if (clientDate >= weekStart && clientDate <= weekEnd) {
+                const agency = getAgencyFromClient(client);
+                const montant = parseFloat(client['Montant TTC'] || client['Montant'] || 0);
+                
+                point[agency] = (point[agency] || 0) + montant;
+                point.total += montant;
+            }
+        });
+        
+        timeline.push(point);
+    }
+    
+    return timeline;
+}
+
+// Timeline mensuelle pour les années
+function generateMonthlyTimeline(clients, period) {
+    const timeline = [];
+    const agencies = getAgenciesFromClients(clients);
+    const now = new Date();
+    
+    const year = period === 'thisYear' ? now.getFullYear() : now.getFullYear() - 1;
+    const months = 12;
+    
+    for (let month = 0; month < months; month++) {
+        const monthStart = new Date(year, month, 1);
+        const monthEnd = new Date(year, month + 1, 0, 23, 59, 59, 999);
+        
+        const point = {
+            date: monthStart.toLocaleDateString('fr-FR', { 
+                month: 'short'
+            }),
+            total: 0
+        };
+        
+        // Initialiser les agences
+        agencies.forEach(agency => {
+            point[agency] = 0;
+        });
+        
+        // Calculer les CA pour ce mois
+        clients.forEach(client => {
+            const dateStr = client['Date Enregistrement'] || client['Date'] || '';
+            if (!dateStr) return;
+            
+            const clientDate = parseDate(dateStr);
+            if (clientDate >= monthStart && clientDate <= monthEnd) {
+                const agency = getAgencyFromClient(client);
+                const montant = parseFloat(client['Montant TTC'] || client['Montant'] || 0);
+                
+                point[agency] = (point[agency] || 0) + montant;
+                point.total += montant;
+            }
+        });
+        
+        timeline.push(point);
+    }
+    
+    return timeline;
+}
+
+// Helper functions
+function getAgenciesFromClients(clients) {
+    return Array.from(new Set(clients.map(client => getAgencyFromClient(client))));
+}
+
+function getAgencyFromClient(client) {
+    if (client['Agence']) {
+        return client['Agence'];
+    } else if (client['ID'] && client['ID'].includes('CALA')) {
+        return 'Calavi';
+    } else if (client['ID'] && client['ID'].includes('COTO')) {
+        return 'Cotonou';
+    }
+    return 'Cotonou'; // Par défaut
+}
+
+// Fonction manquante : Calcul des indicateurs clés
+function calculateKeyMetrics(clients) {
+    const totalVentes = clients.length;
+    const totalCA = clients.reduce((sum, client) => {
+        const montant = parseFloat(client['Montant TTC'] || client['Montant'] || 0);
+        return sum + montant;
+    }, 0);
+    
+    const moyennePanier = totalVentes > 0 ? totalCA / totalVentes : 0;
+    
+    // Taux de conversion basé sur les clients avec montant > 0
+    const clientsAvecAchat = clients.filter(client => {
+        const montant = parseFloat(client['Montant TTC'] || client['Montant'] || 0);
+        return montant > 0;
+    }).length;
+    
+    const tauxConversion = totalVentes > 0 ? (clientsAvecAchat / totalVentes) * 100 : 0;
+    
+    // Nouveaux clients (inscrits dans les 30 derniers jours)
+    const nouveauxClients = clients.filter(client => {
+        const dateStr = client['Date Enregistrement'] || client['Date'] || '';
+        if (!dateStr) return false;
+        
+        const clientDate = parseDate(dateStr);
+        const now = new Date();
+        const diffTime = Math.abs(now - clientDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        return diffDays <= 30;
+    }).length;
+    
+    return {
+        totalVentes,
+        moyennePanier,
+        tauxConversion,
+        nouveauxClients
+    };
+}
+
+// Calcul des statistiques avec données de comparaison
+function calculateStatistics(clients, period) {
+    console.log("Calcul statistiques pour", clients.length, "clients, période:", period);
+    
+    const agencies = getAgenciesFromClients(clients);
+    const stats = {
+        totalCA: 0,
+        previousCA: 0,
+        agencies: {},
+        timeline: [],
+        keyMetrics: {},
+        period: period
+    };
+    
+    // Initialiser les agences
+    agencies.forEach(agency => {
+        stats.agencies[agency] = {
+            currentCA: 0,
+            previousCA: 0,
+            evolution: 0
+        };
+    });
+    
+    // Calculer le CA par agence pour la période actuelle
+    clients.forEach(client => {
+        const agency = getAgencyFromClient(client);
+        const montant = parseFloat(client['Montant TTC'] || client['Montant'] || 0);
+        
+        if (stats.agencies[agency]) {
+            stats.agencies[agency].currentCA += montant;
+        } else {
+            stats.agencies[agency] = {
+                currentCA: montant,
+                previousCA: 0,
+                evolution: 0
+            };
+        }
+        stats.totalCA += montant;
+    });
+    
+    // Calculer le CA pour la période de comparaison
+    const comparisonClients = getComparisonClients(period);
+    let comparisonTotalCA = 0;
+    
+    comparisonClients.forEach(client => {
+        const agency = getAgencyFromClient(client);
+        const montant = parseFloat(client['Montant TTC'] || client['Montant'] || 0);
+        
+        if (stats.agencies[agency]) {
+            stats.agencies[agency].previousCA += montant;
+        }
+        comparisonTotalCA += montant;
+    });
+    
+    stats.previousCA = comparisonTotalCA;
+    
+    // Calculer les évolutions
+    Object.keys(stats.agencies).forEach(agency => {
+        const agencyStats = stats.agencies[agency];
+        agencyStats.evolution = agencyStats.previousCA > 0 ? 
+            ((agencyStats.currentCA - agencyStats.previousCA) / agencyStats.previousCA) * 100 : 
+            (agencyStats.currentCA > 0 ? 100 : 0);
+    });
+    
+    // Générer la timeline
+    stats.timeline = generateTimelineData(clients, period);
+    
+    // Calculer les indicateurs clés
+    const comparisonMetrics = calculateKeyMetrics(comparisonClients);
+    stats.keyMetrics = calculateKeyMetrics(clients);
+    
+    // Ajouter les évolutions aux métriques
+    stats.keyMetrics.totalVentesEvolution = calculateEvolution(stats.keyMetrics.totalVentes, comparisonMetrics.totalVentes);
+    stats.keyMetrics.moyennePanierEvolution = calculateEvolution(stats.keyMetrics.moyennePanier, comparisonMetrics.moyennePanier);
+    stats.keyMetrics.tauxConversionEvolution = calculateEvolution(stats.keyMetrics.tauxConversion, comparisonMetrics.tauxConversion);
+    stats.keyMetrics.nouveauxClientsEvolution = calculateEvolution(stats.keyMetrics.nouveauxClients, comparisonMetrics.nouveauxClients);
+    
+    return stats;
+}
+
+// Obtenir les clients pour la période de comparaison
+function getComparisonClients(period) {
+    const now = new Date();
+    let startDate = new Date();
+    let endDate = new Date();
+    
+    switch(period) {
+        case 'today':
+            // Hier
+            startDate.setDate(now.getDate() - 1);
+            startDate.setHours(0, 0, 0, 0);
+            endDate.setDate(now.getDate() - 1);
+            endDate.setHours(23, 59, 59, 999);
+            break;
+            
+        case 'thisWeek':
+            // Semaine passée
+            const dayOfWeek = now.getDay();
+            const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+            startDate.setDate(now.getDate() + diffToMonday - 7);
+            startDate.setHours(0, 0, 0, 0);
+            endDate.setDate(startDate.getDate() + 6);
+            endDate.setHours(23, 59, 59, 999);
+            break;
+            
+        case 'lastWeek':
+            // Avant-dernière semaine
+            const dayOfWeekLast = now.getDay();
+            const diffToMondayLast = dayOfWeekLast === 0 ? -6 : 1 - dayOfWeekLast;
+            startDate.setDate(now.getDate() + diffToMondayLast - 14);
+            startDate.setHours(0, 0, 0, 0);
+            endDate.setDate(startDate.getDate() + 6);
+            endDate.setHours(23, 59, 59, 999);
+            break;
+            
+        case 'thisMonth':
+            // Mois passé
+            startDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+            endDate = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59, 999);
+            break;
+            
+        case 'lastMonth':
+            // Avant-dernier mois
+            startDate = new Date(now.getFullYear(), now.getMonth() - 2, 1);
+            endDate = new Date(now.getFullYear(), now.getMonth() - 1, 0, 23, 59, 59, 999);
+            break;
+            
+        case 'thisYear':
+            // Année passée
+            startDate = new Date(now.getFullYear() - 1, 0, 1);
+            endDate = new Date(now.getFullYear() - 1, 11, 31, 23, 59, 59, 999);
+            break;
+            
+        case 'lastYear':
+            // Avant-dernière année
+            startDate = new Date(now.getFullYear() - 2, 0, 1);
+            endDate = new Date(now.getFullYear() - 2, 11, 31, 23, 59, 59, 999);
+            break;
+    }
+    
+    // Normaliser les données avant de filtrer
+    const normalizedClients = normalizeClientData(allClientsData);
+    
+    return normalizedClients.filter(client => {
+        const dateStr = client['Date Enregistrement'] || client['Date'] || '';
+        if (!dateStr) return false;
+        
+        const clientDate = parseDate(dateStr);
+        return clientDate >= startDate && clientDate <= endDate;
+    });
+}
+
+// Calcul de l'évolution entre deux valeurs
+function calculateEvolution(current, previous) {
+    if (previous === 0) {
+        return current > 0 ? 100 : 0;
+    }
+    return ((current - previous) / previous) * 100;
+}
+
+// Rendu du graphique des ventes
+function renderSalesChart(data) {
+    const ctx = document.getElementById('salesChart');
+    if (!ctx) {
+        console.error("Canvas salesChart non trouvé");
+        return;
+    }
+    
+    // Détruire le graphique existant
+    if (salesChart) {
+        salesChart.destroy();
+    }
+    
+    const labels = data.timeline.map(point => point.date);
+    const agencies = Object.keys(data.agencies);
+    
+    console.log("Labels:", labels);
+    console.log("Agences:", agencies);
+    
+    const datasets = agencies.map((agency, index) => {
+        const colors = [
+            { border: '#4361ee', background: 'rgba(67, 97, 238, 0.1)' },
+            { border: '#3a56d4', background: 'rgba(58, 86, 212, 0.1)' },
+            { border: '#4895ef', background: 'rgba(72, 149, 239, 0.1)' }
+        ];
+        
+        return {
+            label: agency,
+            data: data.timeline.map(point => point[agency] || 0),
+            borderColor: colors[index % colors.length].border,
+            backgroundColor: colors[index % colors.length].background,
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4
+        };
+    });
+    
+    // Ajouter la ligne du total
+    datasets.push({
+        label: 'Total',
+        data: data.timeline.map(point => point.total),
+        borderColor: '#ef4444',
+        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+        borderWidth: 3,
+        borderDash: [5, 5],
+        fill: false,
+        tension: 0.4
+    });
+    
+    salesChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: datasets
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        usePointStyle: true,
+                        padding: 15
+                    }
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.dataset.label}: ${context.parsed.y.toLocaleString()} FCFA`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString() + ' FCFA';
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            },
+            interaction: {
+                intersect: false,
+                mode: 'nearest'
+            }
+        }
+    });
+    
+    // Mettre à jour le total CA
+    const totalCAElement = document.getElementById('totalCA');
+    if (totalCAElement) {
+        totalCAElement.textContent = `${data.totalCA.toLocaleString()} FCFA`;
+    }
+}
+
+// Rendu des tableaux de données
+function renderDataTables(data) {
+    renderAgencyStats(data);
+    renderKeyMetrics(data);
+}
+
+// Rendu des statistiques par agence
+function renderAgencyStats(data) {
+    const tbody = document.getElementById('agencyStatsBody');
+    if (!tbody) {
+        console.error("Tableau agencyStatsBody non trouvé");
+        return;
+    }
+    
+    tbody.innerHTML = '';
+    
+    Object.keys(data.agencies).forEach(agency => {
+        const agencyData = data.agencies[agency];
+        const evolution = agencyData.evolution;
+        const evolutionClass = evolution > 0 ? 'evolution-positive' : 
+                             evolution < 0 ? 'evolution-negative' : 'evolution-neutral';
+        
+        const row = `
+            <tr>
+                <td><strong>${agency}</strong></td>
+                <td>${agencyData.currentCA.toLocaleString()} FCFA</td>
+                <td>${agencyData.previousCA.toLocaleString()} FCFA</td>
+                <td>
+                    <span class="evolution-indicator ${evolutionClass}">
+                        <i class="fas fa-arrow-${evolution > 0 ? 'up' : 'down'}"></i>
+                        ${Math.abs(evolution).toFixed(1)}%
+                    </span>
+                </td>
+            </tr>
+        `;
+        tbody.innerHTML += row;
+    });
+}
+
+// Rendu des indicateurs clés
+function renderKeyMetrics(data) {
+    const tbody = document.getElementById('keyMetricsBody');
+    if (!tbody) {
+        console.error("Tableau keyMetricsBody non trouvé");
+        return;
+    }
+    
+    const metrics = data.keyMetrics;
+    
+    const rows = [
+        {
+            label: 'Total Ventes',
+            value: metrics.totalVentes,
+            evolution: metrics.totalVentesEvolution,
+            icon: 'shopping-cart'
+        },
+        {
+            label: 'Panier Moyen',
+            value: `${Math.round(metrics.moyennePanier).toLocaleString()} FCFA`,
+            evolution: metrics.moyennePanierEvolution,
+            icon: 'receipt'
+        },
+        {
+            label: 'Nouveaux Clients',
+            value: metrics.nouveauxClients,
+            evolution: metrics.nouveauxClientsEvolution,
+            icon: 'user-plus'
+        }
+    ];
+    
+    tbody.innerHTML = '';
+    
+    rows.forEach(row => {
+        const evolutionClass = row.evolution > 0 ? 'evolution-positive' : 
+                             row.evolution < 0 ? 'evolution-negative' : 'evolution-neutral';
+        
+        const html = `
+            <tr>
+                <td>
+                    <i class="fas fa-${row.icon}"></i>
+                    ${row.label}
+                </td>
+                <td><strong>${row.value}</strong></td>
+                <td>
+                    <span class="evolution-indicator ${evolutionClass}">
+                        <i class="fas fa-arrow-${row.evolution > 0 ? 'up' : 'down'}"></i>
+                        ${Math.abs(row.evolution).toFixed(1)}%
+                    </span>
+                </td>
+            </tr>
+        `;
+        tbody.innerHTML += html;
+    });
 }
 
 </script>
