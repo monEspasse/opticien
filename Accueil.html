@@ -12872,8 +12872,8 @@ function openNewSale() {
 
                                 <div class="form-group">
                                     <label for="numero" class="required-field">Téléphone</label>
-                                    <input type="text" name="indicatif" id="indicatif" placeholder="+229" value="+229" style="width: 70px;" required/>
-                                    <input type="tel" name="numero" id="numero" class="form-control" placeholder="0142749795" required />
+                                    <input type="text" name="indicatif" id="indicatif" placeholder="+229" value="+229" required/>
+                                    <input type="tel" name="numero" id="numero" class="form-control" placeholder="01XXXXXXXX" required />
                                 </div>
 
                                 <div class="form-group">
@@ -12908,7 +12908,6 @@ function openNewSale() {
                                 <div class="form-group">
                                     <label for="agence" class="required-field">Agence</label>
                                     <select name="agence" id="agence" class="form-control" required>
-                                        <option value="">-- Choisir --</option>
                                     </select>
                                 </div>
 
@@ -12957,22 +12956,22 @@ function openNewSale() {
                                         <td>OD</td>
                                         <td>
                                             <select name="od_sphere" required>
-                                                <option value="">-- Choisir --</option>
+                                                
                                             </select>
                                         </td>
                                         <td>
                                             <select name="od_cylindre">
-                                                <option value="">-- Choisir --</option>
+                                               
                                             </select>
                                         </td>
                                         <td>
                                             <select name="od_axe">
-                                                <option value="">-- Choisir --</option>
+                                                
                                             </select>
                                         </td>
                                         <td>
                                             <select name="od_add">
-                                                <option value="">-- Choisir --</option>
+                                                
                                             </select>
                                         </td>
                                         <td>
@@ -12988,22 +12987,22 @@ function openNewSale() {
                                         <td>OG</td>
                                         <td>
                                             <select name="og_sphere" required>
-                                                <option value="">-- Choisir --</option>
+                                                
                                             </select>
                                         </td>
                                         <td>
                                             <select name="og_cylindre">
-                                                <option value="">-- Choisir --</option>
+                                               
                                             </select>
                                         </td>
                                         <td>
                                             <select name="og_axe">
-                                                <option value="">-- Choisir --</option>
+                                                
                                             </select>
                                         </td>
                                         <td>
                                             <select name="og_add">
-                                                <option value="">-- Choisir --</option>
+                                                
                                             </select>
                                         </td>
                                         <td>
@@ -13067,14 +13066,14 @@ function openNewSale() {
                                 <div class="form-group">
                                     <label for="gamme_verre" class="required-field">Gamme des Verres</label>
                                     <select name="gamme_verre" id="gamme_verre" class="form-control" required>
-                                        <option value="">-- Gamme --</option>
+                                       
                                     </select>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="choix_monture" class="required-field">Choix de Monture</label>
                                     <select name="choix_monture" id="choix_monture" class="form-control" required>
-                                        <option value="">-- Choix de Monture --</option>
+                                       
                                     </select>
                                 </div>
                             </div>
@@ -13088,12 +13087,12 @@ function openNewSale() {
                                 <div class="payment-row">
                                     <div class="payment-group">
                                         <label class="payment-label required-field">Montant Monture (FCFA)</label>
-                                        <input type="number" class="form-control" name="montant_monture" id="montant_monture" required oninput="calculerTotal()" />
+                                        <input type="number" class="form-control" name="montant_monture" id="montant_monture" required value="0" oninput="calculerTotal()" />
                                     </div>
                                     
                                     <div class="payment-group">
                                         <label class="payment-label required-field">Montant Verres (FCFA)</label>
-                                        <input type="number" class="form-control" name="montant_verres" id="montant_verres" required oninput="calculerTotal()" />
+                                        <input type="number" class="form-control" name="montant_verres" id="montant_verres" required value="0" oninput="calculerTotal()" />
                                     </div>
                                     
                                     <div class="payment-group">
@@ -13740,6 +13739,22 @@ function initModal() {
     
     // Initialiser l'affichage
     verifierAffichageModificationMontants();
+     // Obtenir la date d'aujourd'hui
+    const today = new Date();
+    
+    // Ajouter 15 jours
+    const deliveryDate = new Date(today);
+    deliveryDate.setDate(today.getDate() + 15);
+    
+    // Formater en YYYY-MM-DD
+    const year = deliveryDate.getFullYear();
+    const month = String(deliveryDate.getMonth() + 1).padStart(2, '0');
+    const day = String(deliveryDate.getDate()).padStart(2, '0');
+    
+    const formattedDate = `${year}-${month}-${day}`;
+    
+    // Définir la valeur par défaut
+    document.getElementById('date_livraison').value = formattedDate;
 }
 
 // Fonction pour calculer les parts assurance basées sur le taux de couverture
@@ -13827,6 +13842,7 @@ function verifierAffichageModificationMontants() {
             nonRadio.checked = true;
         }
     }
+    
 }
 
 // Mettre à jour l'affichage des étapes
