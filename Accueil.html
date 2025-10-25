@@ -2395,7 +2395,7 @@ tr:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+    z-index: 30000;
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
@@ -3805,7 +3805,7 @@ tr:hover {
 }
 
 /* Effet de bordure lumineuse */
-newSaleModal .modal-content::before {
+#newSaleModal .modal-content::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -3825,6 +3825,131 @@ newSaleModal .modal-content::before {
     pointer-events: none;
 }
 
+/* =======================
+   STYLES MANQUANTS POUR LA PRESCRIPTION
+   ======================= */
+
+/* Styles pour la table desktop */
+#newSaleModal .prescription-table.desktop-view {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.6));
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+#newSaleModal .prescription-table.desktop-view th {
+    background: linear-gradient(135deg, rgba(106, 17, 203, 0.9), rgba(37, 117, 252, 0.9));
+    color: white;
+    padding: 18px 16px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+}
+
+#newSaleModal .prescription-table.desktop-view td {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    padding: 16px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.5);
+    transition: all 0.3s;
+}
+
+#newSaleModal .prescription-table.desktop-view select,
+#newSaleModal .prescription-table.desktop-view input {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(106, 17, 203, 0.2);
+    background: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+}
+
+/* Styles pour la version mobile */
+#newSaleModal .prescription-mobile.mobile-view .prescription-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+#newSaleModal .prescription-mobile.mobile-view .card-header {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid rgba(106, 17, 203, 0.2);
+}
+
+#newSaleModal .prescription-mobile.mobile-view .card-header h4 {
+    margin: 0;
+    color: #6a11cb;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+#newSaleModal .prescription-mobile.mobile-view .card-body {
+    display: grid;
+    gap: 15px;
+}
+
+#newSaleModal .prescription-mobile.mobile-view .mobile-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+#newSaleModal .prescription-mobile.mobile-view .mobile-form-group label {
+    font-weight: 600;
+    color: #4a5568;
+    font-size: 0.9rem;
+}
+
+#newSaleModal .prescription-mobile.mobile-view .measures-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+#newSaleModal .prescription-mobile.mobile-view .measure-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+#newSaleModal .prescription-mobile.mobile-view .measure-group label {
+    font-weight: 600;
+    color: #4a5568;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+/* Responsive breakpoints pour la prescription */
+@media (min-width: 1025px) {
+    #newSaleModal .prescription-table.desktop-view {
+        display: table;
+    }
+    #newSaleModal .prescription-mobile.mobile-view {
+        display: none;
+    }
+}
+
+@media (max-width: 1024px) {
+    #newSaleModal .prescription-table.desktop-view {
+        display: none;
+    }
+    #newSaleModal .prescription-mobile.mobile-view {
+        display: block;
+    }
+}
 /* -----------------------
    HEADER AVEC GRADIENT ANIMÉ
    ----------------------- */
@@ -4577,6 +4702,230 @@ newSaleModal .modal-content::before {
         transition-duration: 0.01ms !important;
     }
 }
+/* =======================
+   PRESCRIPTION RESPONSIVE
+   ======================= */
+
+.prescription-container {
+    margin: 25px 0;
+}
+
+/* Version desktop visible par défaut */
+.prescription-table.desktop-view {
+    display: table;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.6));
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+/* Version mobile cachée par défaut */
+.prescription-mobile.mobile-view {
+    display: none;
+}
+
+/* Cartes pour la version mobile */
+.prescription-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.prescription-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.card-header {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid rgba(106, 17, 203, 0.2);
+}
+
+.card-header h4 {
+    margin: 0;
+    color: #6a11cb;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+/* Corps des cartes */
+.card-body {
+    display: grid;
+    gap: 15px;
+}
+
+.mobile-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.mobile-form-group label {
+    font-weight: 600;
+    color: #4a5568;
+    font-size: 0.9rem;
+}
+
+.mobile-form-group select,
+.mobile-form-group input {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 2px solid transparent;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.mobile-form-group select:focus,
+.mobile-form-group input:focus {
+    border-color: #6a11cb;
+    box-shadow: 0 8px 30px rgba(106, 17, 203, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    outline: none;
+}
+
+/* Grille pour les mesures */
+.measures-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.measure-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.measure-group label {
+    font-weight: 600;
+    color: #4a5568;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.measure-group input {
+    text-align: center;
+    padding: 12px;
+}
+
+/* Carte mesures spéciale */
+.measures-card .card-header {
+    text-align: center;
+    border-bottom-color: rgba(37, 117, 252, 0.3);
+}
+
+.measures-card .card-header h4 {
+    color: #2575fc;
+}
+
+/* Inputs plus petits pour desktop */
+.small-input {
+    padding: 8px 12px !important;
+    text-align: center;
+}
+
+/* =======================
+   RESPONSIVE BREAKPOINTS
+   ======================= */
+
+@media (max-width: 1024px) {
+    .prescription-table.desktop-view {
+        display: none;
+    }
+    
+    .prescription-mobile.mobile-view {
+        display: block;
+    }
+}
+
+@media (max-width: 768px) {
+    .prescription-card {
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .card-body {
+        gap: 12px;
+    }
+    
+    .mobile-form-group select,
+    .mobile-form-group input {
+        padding: 10px 14px;
+        font-size: 0.9rem;
+    }
+    
+    .measures-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .prescription-card {
+        padding: 12px;
+        border-radius: 16px;
+    }
+    
+    .card-header {
+        margin-bottom: 15px;
+        padding-bottom: 12px;
+    }
+    
+    .card-header h4 {
+        font-size: 1.1rem;
+    }
+    
+    .mobile-form-group select,
+    .mobile-form-group input {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
+}
+
+/* Support pour les appareils avec préférence de mouvement réduit */
+@media (prefers-reduced-motion: reduce) {
+    .prescription-card {
+        transition: none;
+    }
+    
+    .prescription-card:hover {
+        transform: none;
+    }
+}
+/* Cacher/montrer selon l'écran */
+@media (min-width: 1025px) {
+    .prescription-table.desktop-view {
+        display: table;
+    }
+    .prescription-mobile.mobile-view {
+        display: none;
+    }
+}
+
+@media (max-width: 1024px) {
+    .prescription-table.desktop-view {
+        display: none;
+    }
+    .prescription-mobile.mobile-view {
+        display: block;
+    }
+}
+
+
 /* ---------- OVERLAY ---------- */
 #ajoutGrandCaisseModal.modal-overlay,
 #loadingModal.modal-overlay,
@@ -5616,7 +5965,7 @@ body.modal-open {
 #produitModal.modal-overlay,
 #journalModal.modal-overlay,
 #grandCaisseModal.modal-overlay,
-#depenseModal.modal-overlay,
+#montureModal.modal-overlay,
 [id^="modal-"].modal-overlay {
   position: fixed;
   inset: 0;
@@ -5634,7 +5983,7 @@ body.modal-open {
 #produitModal.modal-overlay.active,
 #journalModal.modal-overlay.active,
 #grandCaisseModal.modal-overlay.active,
-#depenseModal.modal-overlay.active,
+#montureModal.modal-overlay.active,
 [id^="modal-"].modal-overlay.active {
   display: flex;
   animation: fadeIn 0.3s ease-out;
@@ -5646,7 +5995,7 @@ body.modal-open {
 #produitModal .modal-content,
 #journalModal .modal-content,
 #grandCaisseModal .modal-content,
-#depenseModal .modal-content,
+#montureModal .modal-content,
 [id^="modal-"] .modal-content {
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
@@ -5666,7 +6015,7 @@ body.modal-open {
 #produitModal .modal-header,
 #journalModal .modal-header,
 #grandCaisseModal .modal-header,
-#depenseModal .modal-header,
+#montureModal .modal-header,
 [id^="modal-"] .modal-header {
   background: linear-gradient(135deg, #4e73df, #224abe);
   color: #fff;
@@ -5681,7 +6030,7 @@ body.modal-open {
 #produitModal .modal-title,
 #journalModal .modal-title,
 #grandCaisseModal .modal-title,
-#depenseModal .modal-title,
+#montureModal .modal-title,
 [id^="modal-"] .modal-title {
   font-size: 1.3rem;
   font-weight: 600;
@@ -5692,7 +6041,7 @@ body.modal-open {
 #produitModal .modal-close,
 #journalModal .modal-close,
 #grandCaisseModal .modal-close,
-#depenseModal .modal-close,
+#montureModal .modal-close,
 [id^="modal-"] .modal-close {
   background: none;
   border: none;
@@ -5707,7 +6056,7 @@ body.modal-open {
 #produitModal .modal-close:hover,
 #journalModal .modal-close:hover,
 #grandCaisseModal .modal-close:hover,
-#depenseModal .modal-close:hover,
+#montureModal .modal-close:hover,
 [id^="modal-"] .modal-close:hover {
   transform: scale(1.2);
 }
@@ -5718,7 +6067,7 @@ body.modal-open {
 #produitModal .modal-body,
 #journalModal .modal-body,
 #grandCaisseModal .modal-body,
-#depenseModal .modal-body,
+#montureModal .modal-body,
 [id^="modal-"] .modal-body {
   padding: 1.5rem;
   max-height: 85vh;
@@ -5731,7 +6080,7 @@ body.modal-open {
 #produitModal .filters-panel,
 #journalModal .filters-panel,
 #grandCaisseModal .filters-panel,
-#depenseModal .filters-panel,
+#montureModal .filters-panel,
 [id^="modal-"] .filters-panel {
   background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(8px);
@@ -5751,7 +6100,7 @@ body.modal-open {
 #produitModal .filters-panel .filter-group,
 #journalModal .filters-panel .filter-group,
 #grandCaisseModal .filters-panel .filter-group,
-#depenseModal .filters-panel .filter-group,
+#montureModal .filters-panel .filter-group,
 [id^="modal-"] .filters-panel .filter-group {
   display: flex;
   flex-direction: column;
@@ -5762,7 +6111,7 @@ body.modal-open {
 #produitModal .filters-panel label,
 #journalModal .filters-panel label,
 #grandCaisseModal .filters-panel label,
-#depenseModal .filters-panel label,
+#montureModal .filters-panel label,
 [id^="modal-"] .filters-panel label {
   font-size: 0.85rem;
   font-weight: 600;
@@ -5776,14 +6125,14 @@ body.modal-open {
 #produitModal .filters-panel .form-select,
 #journalModal .filters-panel .form-select,
 #grandCaisseModal .filters-panel .form-select,
-#depenseModal .filters-panel .form-select,
+#montureModal .filters-panel .form-select,
 [id^="modal-"] .filters-panel .form-select,
 #facturationModal .filters-panel .form-control,
 #pointfacturationModal .filters-panel .form-control,
 #produitModal .filters-panel .form-control,
 #journalModal .filters-panel .form-control,
 #grandCaisseModal .filters-panel .form-control,
-#depenseModal .filters-panel .form-control,
+#montureModal .filters-panel .form-control,
 [id^="modal-"] .filters-panel .form-control {
   border: 1px solid #e2e8f0;
   border-radius: 8px;
@@ -5800,14 +6149,14 @@ body.modal-open {
 #produitModal .filters-panel .form-select:focus,
 #journalModal .filters-panel .form-select:focus,
 #grandCaisseModal .filters-panel .form-select:focus,
-#depenseModal .filters-panel .form-select:focus,
+#montureModal .filters-panel .form-select:focus,
 [id^="modal-"] .filters-panel .form-select:focus,
 #facturationModal .filters-panel .form-control:focus,
 #pointfacturationModal .filters-panel .form-control:focus,
 #produitModal .filters-panel .form-control:focus,
 #journalModal .filters-panel .form-control:focus,
 #grandCaisseModal .filters-panel .form-control:focus,
-#depenseModal .filters-panel .form-control:focus,
+#montureModal .filters-panel .form-control:focus,
 [id^="modal-"] .filters-panel .form-control:focus {
   border-color: #4e73df;
   outline: none;
@@ -5819,7 +6168,7 @@ body.modal-open {
 #produitModal .filter-actions,
 #journalModal .filter-actions,
 #grandCaisseModal .filter-actions,
-#depenseModal .filter-actions,
+#montureModal .filter-actions,
 [id^="modal-"] .filter-actions {
   grid-column: 1 / -1;
   display: flex;
@@ -5833,7 +6182,7 @@ body.modal-open {
 #produitModal .btn-outline-secondary,
 #journalModal .btn-outline-secondary,
 #grandCaisseModal .btn-outline-secondary,
-#depenseModal .btn-outline-secondary,
+#montureModal .btn-outline-secondary,
 [id^="modal-"] .btn-outline-secondary {
   background: transparent;
   border: 1px solid #6c757d;
@@ -5853,7 +6202,7 @@ body.modal-open {
 #produitModal .btn-outline-secondary:hover,
 #journalModal .btn-outline-secondary:hover,
 #grandCaisseModal .btn-outline-secondary:hover,
-#depenseModal .btn-outline-secondary:hover,
+#montureModal .btn-outline-secondary:hover,
 [id^="modal-"] .btn-outline-secondary:hover {
   background: #6c757d;
   color: #fff;
@@ -5866,7 +6215,7 @@ body.modal-open {
 #produitModal .btn-icon,
 #journalModal .btn-icon,
 #grandCaisseModal .btn-icon,
-#depenseModal .btn-icon,
+#montureModal .btn-icon,
 [id^="modal-"] .btn-icon {
   display: flex;
   align-items: center;
@@ -5878,7 +6227,7 @@ body.modal-open {
 #produitModal .fas,
 #journalModal .fas,
 #grandCaisseModal .fas,
-#depenseModal .fas,
+#montureModal .fas,
 [id^="modal-"] .fas {
   font-size: 0.8rem;
 }
@@ -5889,7 +6238,7 @@ body.modal-open {
 #produitModal .table-card,
 #journalModal .table-card,
 #grandCaisseModal .table-card,
-#depenseModal .table-card,
+#montureModal .table-card,
 [id^="modal-"] .table-card {
   background: rgba(255, 255, 255, 0.75);
   border-radius: 12px;
@@ -5903,7 +6252,7 @@ body.modal-open {
 #produitModal table,
 #journalModal table,
 #grandCaisseModal table,
-#depenseModal table,
+#montureModal table,
 [id^="modal-"] table {
   width: 100%;
   border-collapse: collapse;
@@ -5915,14 +6264,14 @@ body.modal-open {
 #produitModal th,
 #journalModal th,
 #grandCaisseModal th,
-#depenseModal th,
+#montureModal th,
 [id^="modal-"] th,
 #facturationModal td,
 #pointfacturationModal td,
 #produitModal td,
 #journalModal td,
 #grandCaisseModal td,
-#depenseModal td,
+#montureModal td,
 [id^="modal-"] td {
   padding: 0.8rem;
   text-align: left;
@@ -5934,7 +6283,7 @@ body.modal-open {
 #produitModal th,
 #journalModal th,
 #grandCaisseModal th,
-#depenseModal th,
+#montureModal th,
 [id^="modal-"] th {
   background: rgba(78, 115, 223, 0.1);
   color: #224abe;
@@ -5948,7 +6297,7 @@ body.modal-open {
 #produitModal tr:hover,
 #journalModal tr:hover,
 #grandCaisseModal tr:hover,
-#depenseModal tr:hover,
+#montureModal tr:hover,
 [id^="modal-"] tr:hover {
   background: rgba(78, 115, 223, 0.08);
   transition: background 0.2s ease;
@@ -5959,7 +6308,7 @@ body.modal-open {
 #produitModal .text-right,
 #journalModal .text-right,
 #grandCaisseModal .text-right,
-#depenseModal .text-right,
+#montureModal .text-right,
 [id^="modal-"] .text-right {
   text-align: right;
 }
@@ -5969,7 +6318,7 @@ body.modal-open {
 #produitModal .text-center,
 #journalModal .text-center,
 #grandCaisseModal .text-center,
-#depenseModal .text-center,
+#montureModal .text-center,
 [id^="modal-"] .text-center {
   text-align: center;
 }
@@ -5980,7 +6329,7 @@ body.modal-open {
 #produitModal .spinner,
 #journalModal .spinner,
 #grandCaisseModal .spinner,
-#depenseModal .spinner,
+#montureModal .spinner,
 [id^="modal-"] .spinner {
   width: 24px;
   height: 24px;
@@ -5997,7 +6346,7 @@ body.modal-open {
 #produitModal .modal-footer,
 #journalModal .modal-footer,
 #grandCaisseModal .modal-footer,
-#depenseModal .modal-footer,
+#montureModal .modal-footer,
 [id^="modal-"] .modal-footer {
   background: rgba(255, 255, 255, 0.9);
   padding: 0.8rem 1.5rem;
@@ -6013,7 +6362,7 @@ body.modal-open {
 #produitModal .btn,
 #journalModal .btn,
 #grandCaisseModal .btn,
-#depenseModal .btn,
+#montureModal .btn,
 [id^="modal-"] .btn {
   border: none;
   padding: 0.5rem 1rem;
@@ -6031,7 +6380,7 @@ body.modal-open {
 #produitModal .btn-primary,
 #journalModal .btn-primary,
 #grandCaisseModal .btn-primary,
-#depenseModal .btn-primary,
+#montureModal .btn-primary,
 [id^="modal-"] .btn-primary {
   background: #4e73df;
   color: #fff;
@@ -6042,7 +6391,7 @@ body.modal-open {
 #produitModal .btn-primary:hover,
 #journalModal .btn-primary:hover,
 #grandCaisseModal .btn-primary:hover,
-#depenseModal .btn-primary:hover,
+#montureModal .btn-primary:hover,
 [id^="modal-"] .btn-primary:hover {
   background: #224abe;
   transform: translateY(-1px);
@@ -6053,7 +6402,7 @@ body.modal-open {
 #produitModal .btn-secondary,
 #journalModal .btn-secondary,
 #grandCaisseModal .btn-secondary,
-#depenseModal .btn-secondary,
+#montureModal .btn-secondary,
 [id^="modal-"] .btn-secondary {
   background: #f8f9fc;
   color: #333;
@@ -6065,7 +6414,7 @@ body.modal-open {
 #produitModal .btn-secondary:hover,
 #journalModal .btn-secondary:hover,
 #grandCaisseModal .btn-secondary:hover,
-#depenseModal .btn-secondary:hover,
+#montureModal .btn-secondary:hover,
 [id^="modal-"] .btn-secondary:hover {
   background: #e2e6ea;
 }
@@ -6075,7 +6424,7 @@ body.modal-open {
 #produitModal .btn-close-modal,
 #journalModal .btn-close-modal,
 #grandCaisseModal .btn-close-modal,
-#depenseModal .btn-close-modal,
+#montureModal .btn-close-modal,
 [id^="modal-"] .btn-close-modal {
   background: #ff6b6b;
   color: #fff;
@@ -6086,7 +6435,7 @@ body.modal-open {
 #produitModal .btn-close-modal:hover,
 #journalModal .btn-close-modal:hover,
 #grandCaisseModal .btn-close-modal:hover,
-#depenseModal .btn-close-modal:hover,
+#montureModal .btn-close-modal:hover,
 [id^="modal-"] .btn-close-modal:hover {
   background: #e63946;
 }
@@ -6097,7 +6446,7 @@ body.modal-open {
 #produitModal .alert,
 #journalModal .alert,
 #grandCaisseModal .alert,
-#depenseModal .alert,
+#montureModal .alert,
 [id^="modal-"] .alert {
   border-radius: 8px;
   padding: 0.8rem;
@@ -6110,7 +6459,7 @@ body.modal-open {
 #produitModal .alert-info,
 #journalModal .alert-info,
 #grandCaisseModal .alert-info,
-#depenseModal .alert-info,
+#montureModal .alert-info,
 [id^="modal-"] .alert-info {
   background: #e7f1ff;
   color: #224abe;
@@ -6123,7 +6472,7 @@ body.modal-open {
 #produitModal .table-loading,
 #journalModal .table-loading,
 #grandCaisseModal .table-loading,
-#depenseModal .table-loading,
+#montureModal .table-loading,
 [id^="modal-"] .table-loading {
   opacity: 0.6;
   pointer-events: none;
@@ -6134,7 +6483,7 @@ body.modal-open {
 #produitModal .no-results,
 #journalModal .no-results,
 #grandCaisseModal .no-results,
-#depenseModal .no-results,
+#montureModal .no-results,
 [id^="modal-"] .no-results {
   text-align: center;
   padding: 2rem;
@@ -6148,7 +6497,7 @@ body.modal-open {
 #produitModal .badge,
 #journalModal .badge,
 #grandCaisseModal .badge,
-#depenseModal .badge,
+#montureModal .badge,
 [id^="modal-"] .badge {
   padding: 0.3rem 0.6rem;
   border-radius: 6px;
@@ -6161,7 +6510,7 @@ body.modal-open {
 #produitModal .badge-success,
 #journalModal .badge-success,
 #grandCaisseModal .badge-success,
-#depenseModal .badge-success,
+#montureModal .badge-success,
 [id^="modal-"] .badge-success {
   background: #d1fae5;
   color: #065f46;
@@ -6172,7 +6521,7 @@ body.modal-open {
 #produitModal .badge-warning,
 #journalModal .badge-warning,
 #grandCaisseModal .badge-warning,
-#depenseModal .badge-warning,
+#montureModal .badge-warning,
 [id^="modal-"] .badge-warning {
   background: #fef3c7;
   color: #92400e;
@@ -6183,7 +6532,7 @@ body.modal-open {
 #produitModal .badge-danger,
 #journalModal .badge-danger,
 #grandCaisseModal .badge-danger,
-#depenseModal .badge-danger,
+#montureModal .badge-danger,
 [id^="modal-"] .badge-danger {
   background: #fee2e2;
   color: #991b1b;
@@ -6195,7 +6544,7 @@ body.modal-open {
 #produitModal .modal-body::-webkit-scrollbar,
 #journalModal .modal-body::-webkit-scrollbar,
 #grandCaisseModal .modal-body::-webkit-scrollbar,
-#depenseModal .modal-body::-webkit-scrollbar,
+#montureModal .modal-body::-webkit-scrollbar,
 [id^="modal-"] .modal-body::-webkit-scrollbar {
   width: 6px;
 }
@@ -6205,7 +6554,7 @@ body.modal-open {
 #produitModal .modal-body::-webkit-scrollbar-track,
 #journalModal .modal-body::-webkit-scrollbar-track,
 #grandCaisseModal .modal-body::-webkit-scrollbar-track,
-#depenseModal .modal-body::-webkit-scrollbar-track,
+#montureModal .modal-body::-webkit-scrollbar-track,
 [id^="modal-"] .modal-body::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.05);
   border-radius: 3px;
@@ -6216,7 +6565,7 @@ body.modal-open {
 #produitModal .modal-body::-webkit-scrollbar-thumb,
 #journalModal .modal-body::-webkit-scrollbar-thumb,
 #grandCaisseModal .modal-body::-webkit-scrollbar-thumb,
-#depenseModal .modal-body::-webkit-scrollbar-thumb,
+#montureModal .modal-body::-webkit-scrollbar-thumb,
 [id^="modal-"] .modal-body::-webkit-scrollbar-thumb {
   background: rgba(78, 115, 223, 0.3);
   border-radius: 3px;
@@ -6227,7 +6576,7 @@ body.modal-open {
 #produitModal .modal-body::-webkit-scrollbar-thumb:hover,
 #journalModal .modal-body::-webkit-scrollbar-thumb:hover,
 #grandCaisseModal .modal-body::-webkit-scrollbar-thumb:hover,
-#depenseModal .modal-body::-webkit-scrollbar-thumb:hover,
+#montureModal .modal-body::-webkit-scrollbar-thumb:hover,
 [id^="modal-"] .modal-body::-webkit-scrollbar-thumb:hover {
   background: rgba(78, 115, 223, 0.5);
 }
@@ -6254,7 +6603,7 @@ body.modal-open {
   #produitModal .modal-content,
   #journalModal .modal-content,
   #grandCaisseModal .modal-content,
-  #depenseModal .modal-content,
+  #montureModal .modal-content,
   [id^="modal-"] .modal-content {
     width: 98%;
     max-width: none;
@@ -6266,7 +6615,7 @@ body.modal-open {
   #produitModal .filters-panel,
   #journalModal .filters-panel,
   #grandCaisseModal .filters-panel,
-  #depenseModal .filters-panel,
+  #montureModal .filters-panel,
   [id^="modal-"] .filters-panel {
     grid-template-columns: 1fr;
     gap: 1rem;
@@ -6278,7 +6627,7 @@ body.modal-open {
   #produitModal .filter-actions,
   #journalModal .filter-actions,
   #grandCaisseModal .filter-actions,
-  #depenseModal .filter-actions,
+  #montureModal .filter-actions,
   [id^="modal-"] .filter-actions {
     justify-content: center;
   }
@@ -6288,7 +6637,7 @@ body.modal-open {
   #produitModal .btn-outline-secondary,
   #journalModal .btn-outline-secondary,
   #grandCaisseModal .btn-outline-secondary,
-  #depenseModal .btn-outline-secondary,
+  #montureModal .btn-outline-secondary,
   [id^="modal-"] .btn-outline-secondary {
     width: 100%;
     justify-content: center;
@@ -6299,7 +6648,7 @@ body.modal-open {
   #produitModal .modal-body,
   #journalModal .modal-body,
   #grandCaisseModal .modal-body,
-  #depenseModal .modal-body,
+  #montureModal .modal-body,
   [id^="modal-"] .modal-body {
     padding: 1rem;
   }
@@ -6309,7 +6658,7 @@ body.modal-open {
   #produitModal table,
   #journalModal table,
   #grandCaisseModal table,
-  #depenseModal table,
+  #montureModal table,
   [id^="modal-"] table {
     font-size: 0.8rem;
   }
@@ -6319,14 +6668,14 @@ body.modal-open {
   #produitModal th,
   #journalModal th,
   #grandCaisseModal th,
-  #depenseModal th,
+  #montureModal th,
   [id^="modal-"] th,
   #facturationModal td,
   #pointfacturationModal td,
   #produitModal td,
   #journalModal td,
   #grandCaisseModal td,
-  #depenseModal td,
+  #montureModal td,
   [id^="modal-"] td {
     padding: 0.5rem;
   }
@@ -6336,7 +6685,7 @@ body.modal-open {
   #produitModal .modal-footer,
   #journalModal .modal-footer,
   #grandCaisseModal .modal-footer,
-  #depenseModal .modal-footer,
+  #montureModal .modal-footer,
   [id^="modal-"] .modal-footer {
     flex-direction: column;
   }
@@ -6346,7 +6695,7 @@ body.modal-open {
   #produitModal .modal-footer .btn,
   #journalModal .modal-footer .btn,
   #grandCaisseModal .modal-footer .btn,
-  #depenseModal .modal-footer .btn,
+  #montureModal .modal-footer .btn,
   [id^="modal-"] .modal-footer .btn {
     width: 100%;
     justify-content: center;
@@ -6359,7 +6708,7 @@ body.modal-open {
   #produitModal .filters-panel,
   #journalModal .filters-panel,
   #grandCaisseModal .filters-panel,
-  #depenseModal .filters-panel,
+  #montureModal .filters-panel,
   [id^="modal-"] .filters-panel {
     padding: 0.8rem;
   }
@@ -6369,14 +6718,14 @@ body.modal-open {
   #produitModal .filters-panel .form-select,
   #journalModal .filters-panel .form-select,
   #grandCaisseModal .filters-panel .form-select,
-  #depenseModal .filters-panel .form-select,
+  #montureModal .filters-panel .form-select,
   [id^="modal-"] .filters-panel .form-select,
   #facturationModal .filters-panel .form-control,
   #pointfacturationModal .filters-panel .form-control,
   #produitModal .filters-panel .form-control,
   #journalModal .filters-panel .form-control,
   #grandCaisseModal .filters-panel .form-control,
-  #depenseModal .filters-panel .form-control,
+  #montureModal .filters-panel .form-control,
   [id^="modal-"] .filters-panel .form-control {
     padding: 0.6rem;
   }
@@ -6386,7 +6735,7 @@ body.modal-open {
   #produitModal .table-card,
   #journalModal .table-card,
   #grandCaisseModal .table-card,
-  #depenseModal .table-card,
+  #montureModal .table-card,
   [id^="modal-"] .table-card {
     padding: 0.5rem;
   }
@@ -6396,7 +6745,7 @@ body.modal-open {
   #produitModal .modal-header,
   #journalModal .modal-header,
   #grandCaisseModal .modal-header,
-  #depenseModal .modal-header,
+  #montureModal .modal-header,
   [id^="modal-"] .modal-header {
     padding: 0.8rem 1rem;
   }
@@ -6406,7 +6755,7 @@ body.modal-open {
   #produitModal .modal-title,
   #journalModal .modal-title,
   #grandCaisseModal .modal-title,
-  #depenseModal .modal-title,
+  #montureModal .modal-title,
   [id^="modal-"] .modal-title {
     font-size: 1.1rem;
   }
@@ -6417,7 +6766,7 @@ body.modal-open {
 #produitModal .filters-card,
 #journalModal .filters-card,
 #grandCaisseModal .filters-card,
-#depenseModal .filters-card,
+#montureModal .filters-card,
 [id^="modal-"] .filters-card {
   background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(8px);
@@ -6433,7 +6782,7 @@ body.modal-open {
 #produitModal .filters-container,
 #journalModal .filters-container,
 #grandCaisseModal .filters-container,
-#depenseModal .filters-container,
+#montureModal .filters-container,
 [id^="modal-"] .filters-container {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
@@ -6446,7 +6795,7 @@ body.modal-open {
 #produitModal .filter-item,
 #journalModal .filter-item,
 #grandCaisseModal .filter-item,
-#depenseModal .filter-item,
+#montureModal .filter-item,
 [id^="modal-"] .filter-item {
   display: flex;
   flex-direction: column;
@@ -6458,7 +6807,7 @@ body.modal-open {
 #produitModal .filters-card label,
 #journalModal .filters-card label,
 #grandCaisseModal .filters-card label,
-#depenseModal .filters-card label,
+#montureModal .filters-card label,
 [id^="modal-"] .filters-card label {
   font-size: 0.85rem;
   font-weight: 600;
@@ -6475,7 +6824,7 @@ body.modal-open {
 #produitModal .date-range,
 #journalModal .date-range,
 #grandCaisseModal .date-range,
-#depenseModal .date-range,
+#montureModal .date-range,
 [id^="modal-"] .date-range {
   display: flex;
   align-items: center;
@@ -6487,7 +6836,7 @@ body.modal-open {
 #produitModal .date-range input,
 #journalModal .date-range input,
 #grandCaisseModal .date-range input,
-#depenseModal .date-range input,
+#montureModal .date-range input,
 [id^="modal-"] .date-range input {
   flex: 1;
   border: 1px solid #e2e8f0;
@@ -6503,7 +6852,7 @@ body.modal-open {
 #produitModal .date-range input:focus,
 #journalModal .date-range input:focus,
 #grandCaisseModal .date-range input:focus,
-#depenseModal .date-range input:focus,
+#montureModal .date-range input:focus,
 [id^="modal-"] .date-range input:focus {
   border-color: #4e73df;
   outline: none;
@@ -6515,7 +6864,7 @@ body.modal-open {
 #produitModal .date-range span,
 #journalModal .date-range span,
 #grandCaisseModal .date-range span,
-#depenseModal .date-range span,
+#montureModal .date-range span,
 [id^="modal-"] .date-range span {
   color: #6c757d;
   font-size: 0.9rem;
@@ -6529,7 +6878,7 @@ body.modal-open {
 #produitModal .filters-card .btn-outline-secondary,
 #journalModal .filters-card .btn-outline-secondary,
 #grandCaisseModal .filters-card .btn-outline-secondary,
-#depenseModal .filters-card .btn-outline-secondary,
+#montureModal .filters-card .btn-outline-secondary,
 [id^="modal-"] .filters-card .btn-outline-secondary {
   background: transparent;
   border: 1px solid #6c757d;
@@ -6551,7 +6900,7 @@ body.modal-open {
 #produitModal .filters-card .btn-outline-secondary:hover,
 #journalModal .filters-card .btn-outline-secondary:hover,
 #grandCaisseModal .filters-card .btn-outline-secondary:hover,
-#depenseModal .filters-card .btn-outline-secondary:hover,
+#montureModal .filters-card .btn-outline-secondary:hover,
 [id^="modal-"] .filters-card .btn-outline-secondary:hover {
   background: #6c757d;
   color: #fff;
@@ -6564,7 +6913,7 @@ body.modal-open {
 #produitModal .caisse-summary-item,
 #journalModal .caisse-summary-item,
 #grandCaisseModal .caisse-summary-item,
-#depenseModal .caisse-summary-item,
+#montureModal .caisse-summary-item,
 [id^="modal-"] .caisse-summary-item {
   background: linear-gradient(135deg, #f8f9fa, #e9ecef);
   border-radius: 8px;
@@ -6578,7 +6927,7 @@ body.modal-open {
 #produitModal .caisse-summary-item label,
 #journalModal .caisse-summary-item label,
 #grandCaisseModal .caisse-summary-item label,
-#depenseModal .caisse-summary-item label,
+#montureModal .caisse-summary-item label,
 [id^="modal-"] .caisse-summary-item label {
   font-size: 0.8rem;
   color: #6c757d;
@@ -6591,7 +6940,7 @@ body.modal-open {
 #produitModal .caisse-value-display,
 #journalModal .caisse-value-display,
 #grandCaisseModal .caisse-value-display,
-#depenseModal .caisse-value-display,
+#montureModal .caisse-value-display,
 [id^="modal-"] .caisse-value-display {
   font-size: 1.4rem;
   font-weight: 700;
@@ -6605,7 +6954,7 @@ body.modal-open {
 #produitModal .fas,
 #journalModal .fas,
 #grandCaisseModal .fas,
-#depenseModal .fas,
+#montureModal .fas,
 [id^="modal-"] .fas {
   font-size: 0.8rem;
   opacity: 0.8;
@@ -6618,7 +6967,7 @@ body.modal-open {
   #produitModal .filters-container,
   #journalModal .filters-container,
   #grandCaisseModal .filters-container,
-  #depenseModal .filters-container,
+  #montureModal .filters-container,
   [id^="modal-"] .filters-container {
     grid-template-columns: 1fr;
     gap: 1rem;
@@ -6629,7 +6978,7 @@ body.modal-open {
   #produitModal .date-range,
   #journalModal .date-range,
   #grandCaisseModal .date-range,
-  #depenseModal .date-range,
+  #montureModal .date-range,
   [id^="modal-"] .date-range {
     flex-direction: column;
     gap: 0.5rem;
@@ -6640,7 +6989,7 @@ body.modal-open {
   #produitModal .date-range span,
   #journalModal .date-range span,
   #grandCaisseModal .date-range span,
-  #depenseModal .date-range span,
+  #montureModal .date-range span,
   [id^="modal-"] .date-range span {
     display: none;
   }
@@ -6650,7 +6999,7 @@ body.modal-open {
   #produitModal .filters-card .btn-outline-secondary,
   #journalModal .filters-card .btn-outline-secondary,
   #grandCaisseModal .filters-card .btn-outline-secondary,
-  #depenseModal .filters-card .btn-outline-secondary,
+  #montureModal .filters-card .btn-outline-secondary,
   [id^="modal-"] .filters-card .btn-outline-secondary {
     margin-top: 0;
     justify-content: center;
@@ -6661,7 +7010,7 @@ body.modal-open {
   #produitModal .caisse-summary-item,
   #journalModal .caisse-summary-item,
   #grandCaisseModal .caisse-summary-item,
-  #depenseModal .caisse-summary-item,
+  #montureModal .caisse-summary-item,
   [id^="modal-"] .caisse-summary-item {
     order: -1;
   }
@@ -6673,7 +7022,7 @@ body.modal-open {
   #produitModal .filters-card,
   #journalModal .filters-card,
   #grandCaisseModal .filters-card,
-  #depenseModal .filters-card,
+  #montureModal .filters-card,
   [id^="modal-"] .filters-card {
     padding: 1rem;
   }
@@ -6683,7 +7032,7 @@ body.modal-open {
   #produitModal .caisse-value-display,
   #journalModal .caisse-value-display,
   #grandCaisseModal .caisse-value-display,
-  #depenseModal .caisse-value-display,
+  #montureModal .caisse-value-display,
   [id^="modal-"] .caisse-value-display {
     font-size: 1.2rem;
   }
@@ -6695,7 +7044,7 @@ body.modal-open {
 #produitModal .filters-card,
 #journalModal .filters-card,
 #grandCaisseModal .filters-card,
-#depenseModal .filters-card {
+#montureModal .filters-card {
   background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(8px);
   border-radius: 12px;
@@ -6710,7 +7059,7 @@ body.modal-open {
 #produitModal .filters-container,
 #journalModal .filters-container,
 #grandCaisseModal .filters-container,
-#depenseModal .filters-container {
+#montureModal .filters-container {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
@@ -6722,7 +7071,7 @@ body.modal-open {
 #produitModal .filter-item,
 #journalModal .filter-item,
 #grandCaisseModal .filter-item,
-#depenseModal .filter-item {
+#montureModal .filter-item {
   display: flex;
   flex-direction: column;
 }
@@ -6733,7 +7082,7 @@ body.modal-open {
 #produitModal .filters-card label,
 #journalModal .filters-card label,
 #grandCaisseModal .filters-card label,
-#depenseModal .filters-card label {
+#montureModal .filters-card label {
   font-size: 0.85rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
@@ -6749,7 +7098,7 @@ body.modal-open {
 #produitModal .filters-card .form-control,
 #journalModal .filters-card .form-control,
 #grandCaisseModal .filters-card .form-control,
-#depenseModal .filters-card .form-control {
+#montureModal .filters-card .form-control {
   border: 1px solid #e2e8f0;
   border-radius: 8px;
   padding: 0.75rem;
@@ -6765,7 +7114,7 @@ body.modal-open {
 #produitModal .filters-card .form-control:focus,
 #journalModal .filters-card .form-control:focus,
 #grandCaisseModal .filters-card .form-control:focus,
-#depenseModal .filters-card .form-control:focus {
+#montureModal .filters-card .form-control:focus {
   border-color: #4e73df;
   outline: none;
   box-shadow: 0 0 0 3px rgba(78, 115, 223, 0.1);
@@ -6777,7 +7126,7 @@ body.modal-open {
 #produitModal .date-range,
 #journalModal .date-range,
 #grandCaisseModal .date-range,
-#depenseModal .date-range {
+#montureModal .date-range {
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -6788,7 +7137,7 @@ body.modal-open {
 #produitModal .date-range input,
 #journalModal .date-range input,
 #grandCaisseModal .date-range input,
-#depenseModal .date-range input {
+#montureModal .date-range input {
   flex: 1;
   border: 1px solid #e2e8f0;
   border-radius: 8px;
@@ -6803,7 +7152,7 @@ body.modal-open {
 #produitModal .date-range input:focus,
 #journalModal .date-range input:focus,
 #grandCaisseModal .date-range input:focus,
-#depenseModal .date-range input:focus {
+#montureModal .date-range input:focus {
   border-color: #4e73df;
   outline: none;
   box-shadow: 0 0 0 3px rgba(78, 115, 223, 0.1);
@@ -6814,7 +7163,7 @@ body.modal-open {
 #produitModal .date-range span,
 #journalModal .date-range span,
 #grandCaisseModal .date-range span,
-#depenseModal .date-range span {
+#montureModal .date-range span {
   color: #6c757d;
   font-size: 0.9rem;
   font-weight: 500;
@@ -6827,7 +7176,7 @@ body.modal-open {
 #produitModal .filters-card .btn-outline-secondary,
 #journalModal .filters-card .btn-outline-secondary,
 #grandCaisseModal .filters-card .btn-outline-secondary,
-#depenseModal .filters-card .btn-outline-secondary {
+#montureModal .filters-card .btn-outline-secondary {
   background: transparent;
   border: 1px solid #6c757d;
   color: #6c757d;
@@ -6849,7 +7198,7 @@ body.modal-open {
 #produitModal .filters-card .btn-outline-secondary:hover,
 #journalModal .filters-card .btn-outline-secondary:hover,
 #grandCaisseModal .filters-card .btn-outline-secondary:hover,
-#depenseModal .filters-card .btn-outline-secondary:hover {
+#montureModal .filters-card .btn-outline-secondary:hover {
   background: #6c757d;
   color: #fff;
   transform: translateY(-1px);
@@ -6861,7 +7210,7 @@ body.modal-open {
 #produitModal .fas,
 #journalModal .fas,
 #grandCaisseModal .fas,
-#depenseModal .fas {
+#montureModal .fas {
   font-size: 0.8rem;
   opacity: 0.8;
   width: 14px;
@@ -6874,7 +7223,7 @@ body.modal-open {
   #produitModal .filters-container,
   #journalModal .filters-container,
   #grandCaisseModal .filters-container,
-  #depenseModal .filters-container {
+  #montureModal .filters-container {
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
   }
@@ -6884,7 +7233,7 @@ body.modal-open {
   #produitModal .filters-card .btn-outline-secondary,
   #journalModal .filters-card .btn-outline-secondary,
   #grandCaisseModal .filters-card .btn-outline-secondary,
-  #depenseModal .filters-card .btn-outline-secondary {
+  #montureModal .filters-card .btn-outline-secondary {
     margin-top: 0;
     grid-column: span 2;
     max-width: 200px;
@@ -6898,7 +7247,7 @@ body.modal-open {
   #produitModal .filters-container,
   #journalModal .filters-container,
   #grandCaisseModal .filters-container,
-  #depenseModal .filters-container {
+  #montureModal .filters-container {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
@@ -6908,7 +7257,7 @@ body.modal-open {
   #produitModal .date-range,
   #journalModal .date-range,
   #grandCaisseModal .date-range,
-  #depenseModal .date-range {
+  #montureModal .date-range {
     flex-direction: column;
     gap: 0.5rem;
   }
@@ -6918,7 +7267,7 @@ body.modal-open {
   #produitModal .date-range span,
   #journalModal .date-range span,
   #grandCaisseModal .date-range span,
-  #depenseModal .date-range span {
+  #montureModal .date-range span {
     display: none;
   }
   
@@ -6927,7 +7276,7 @@ body.modal-open {
   #produitModal .filters-card .btn-outline-secondary,
   #journalModal .filters-card .btn-outline-secondary,
   #grandCaisseModal .filters-card .btn-outline-secondary,
-  #depenseModal .filters-card .btn-outline-secondary {
+  #montureModal .filters-card .btn-outline-secondary {
     grid-column: 1;
     max-width: none;
     margin-top: 0.5rem;
@@ -6940,7 +7289,7 @@ body.modal-open {
   #produitModal .filters-card,
   #journalModal .filters-card,
   #grandCaisseModal .filters-card,
-  #depenseModal .filters-card {
+  #montureModal .filters-card {
     padding: 1rem;
   }
   
@@ -6949,19 +7298,269 @@ body.modal-open {
   #produitModal .filters-card .form-control,
   #journalModal .filters-card .form-control,
   #grandCaisseModal .filters-card .form-control,
-  #depenseModal .filters-card .form-control,
+  #montureModal .filters-card .form-control,
   #facturationModal .date-range input,
   #pointfacturationModal .date-range input,
   #produitModal .date-range input,
   #journalModal .date-range input,
   #grandCaisseModal .date-range input,
-  #depenseModal .date-range input {
+  #montureModal .date-range input {
     padding: 0.6rem;
   }
 }
+/* Styles spécifiques pour la modal de dépense */
+#depenseModal.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    backdrop-filter: blur(5px);
+}
 
+#depenseModal.modal-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
 
+#depenseModal .modal-content {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: translateY(20px);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+}
 
+#depenseModal.modal-overlay.active .modal-content {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+#depenseModal .modal-header {
+    padding: 1.5rem 1.5rem 1rem;
+    border-bottom: 1px solid #e2e8f0;
+    background: linear-gradient(135deg, #4361ee, #4895ef);
+    color: white;
+    border-radius: 12px 12px 0 0;
+}
+
+#depenseModal .modal-title {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+#depenseModal .modal-body {
+    padding: 1.5rem;
+}
+
+#depenseModal .modal-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    background: #f8fafc;
+    border-radius: 0 0 12px 12px;
+}
+
+/* Styles du formulaire spécifique à depenseModal */
+#depenseModal .form-group {
+    margin-bottom: 1.25rem;
+}
+
+#depenseModal .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #1e293b;
+}
+
+#depenseModal .form-control {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    background: white;
+}
+
+#depenseModal .form-control:focus {
+    outline: none;
+    border-color: #4361ee;
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+}
+
+#depenseModal .select-control {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 2.5rem;
+}
+
+/* Messages du formulaire spécifiques */
+#depenseModal #form-message {
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    display: none;
+}
+
+#depenseModal #form-message.error {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    display: block;
+}
+
+#depenseModal #form-message.success {
+    background-color: rgba(74, 222, 128, 0.1);
+    color: #4ade80;
+    border: 1px solid rgba(74, 222, 128, 0.2);
+    display: block;
+}
+
+/* Indicateur requis spécifique */
+#depenseModal .required {
+    color: #ef4444;
+}
+
+/* Styles responsives spécifiques */
+@media (max-width: 768px) {
+    #depenseModal .modal-content {
+        width: 95%;
+        margin: 1rem;
+    }
+    
+    #depenseModal .modal-header {
+        padding: 1.25rem 1.25rem 0.75rem;
+    }
+    
+    #depenseModal .modal-body {
+        padding: 1.25rem;
+    }
+    
+    #depenseModal .modal-footer {
+        padding: 1rem 1.25rem;
+        flex-direction: column;
+    }
+    
+    #depenseModal .modal-footer .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    #depenseModal .modal-content {
+        width: 100%;
+        margin: 0.5rem;
+        border-radius: 12px;
+    }
+    
+    #depenseModal .modal-header {
+        padding: 1rem 1rem 0.5rem;
+    }
+    
+    #depenseModal .modal-body {
+        padding: 1rem;
+    }
+    
+    #depenseModal .form-group {
+        margin-bottom: 1rem;
+    }
+    
+    #depenseModal .form-control {
+        padding: 0.65rem 0.75rem;
+    }
+}
+
+/* Animation d'entrée spécifique */
+@keyframes depenseModalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+#depenseModal.modal-overlay.active .modal-content {
+    animation: depenseModalSlideIn 0.3s ease-out;
+}
+
+/* Amélioration de l'accessibilité spécifique */
+#depenseModal .modal-content:focus {
+    outline: none;
+}
+
+#depenseModal .form-control:invalid {
+    border-color: #ef4444;
+}
+
+#depenseModal .form-control:valid {
+    border-color: #4ade80;
+}
+
+/* Style pour les options du select spécifique */
+#depenseModal .select-control option {
+    padding: 0.5rem;
+}
+
+/* Hover states spécifiques */
+#depenseModal .btn:hover {
+    transform: translateY(-1px);
+}
+
+#depenseModal .form-control:hover {
+    border-color: #4361ee;
+}
+
+/* Styles pour les champs spécifiques de la dépense */
+#depenseDate,
+#depenseAgence,
+#depenseDesignation,
+#depenseCategorie,
+#depenseMontant {
+    font-family: 'Montserrat', sans-serif;
+}
+
+#depenseMontant {
+    font-weight: 600;
+    color: #1e293b;
+}
+
+/* Style spécial pour le champ montant */
+#depenseMontant::placeholder {
+    color: #94a3b8;
+    font-weight: normal;
+}
+
+/* Focus personnalisé pour les champs de dépense */
+#depenseModal .form-control:focus {
+    border-color: #4361ee;
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+    background-color: #f8fafc;
+}
 </style>
 </head>
 <body>
@@ -12938,82 +13537,181 @@ function openNewSale() {
                         <div id="step-2" class="form-step">
                             <h2 class="section-title">Prescription Médicale</h2>
                             
-                            <table class="prescription-table">
-                                <thead>
-                                    <tr>
-                                        <th>Œil</th>
-                                        <th>Sphere</th>
-                                        <th>Cylindre</th>
-                                        <th>Axe</th>
-                                        <th>ADD</th>
-                                        <th>DP</th>
-                                        <th>Hauteur</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- OD -->
-                                    <tr>
-                                        <td>OD</td>
-                                        <td>
-                                            <select name="od_sphere" required>
-                                                
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <select name="od_cylindre">
-                                               
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <select name="od_axe">
-                                                
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <select name="od_add">
-                                                
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <input type="number" name="od_dp" value="0" min="0">
-                                        </td>
-                                        <td>
-                                            <input type="number" name="od_hauteur" value="0" min="0">
-                                        </td>
-                                    </tr>
+<div class="prescription-container">
+    <!-- Version desktop (table normale) -->
+    <table class="prescription-table desktop-view">
+        <thead>
+            <tr>
+                <th>Œil</th>
+                <th>Sphere</th>
+                <th>Cylindre</th>
+                <th>Axe</th>
+                <th>ADD</th>
+                <th>DP</th>
+                <th>Hauteur</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- OD -->
+            <tr>
+                <td>OD</td>
+                <td>
+                    <select name="od_sphere" required>
+                        <!-- Options -->
+                    </select>
+                </td>
+                <td>
+                    <select name="od_cylindre">
+                        <!-- Options -->
+                    </select>
+                </td>
+                <td>
+                    <select name="od_axe">
+                        <!-- Options -->
+                    </select>
+                </td>
+                <td>
+                    <select name="od_add">
+                        <!-- Options -->
+                    </select>
+                </td>
+                <td>
+                    <input type="number" name="od_dp" value="0" min="0" class="small-input">
+                </td>
+                <td>
+                    <input type="number" name="od_hauteur" value="0" min="0" class="small-input">
+                </td>
+            </tr>
 
-                                    <!-- OG -->
-                                    <tr>
-                                        <td>OG</td>
-                                        <td>
-                                            <select name="og_sphere" required>
-                                                
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <select name="og_cylindre">
-                                               
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <select name="og_axe">
-                                                
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <select name="og_add">
-                                                
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <input type="number" name="og_dp" value="0" min="0">
-                                        </td>
-                                        <td>
-                                            <input type="number" name="og_hauteur" value="0" min="0">
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+            <!-- OG -->
+            <tr>
+                <td>OG</td>
+                <td>
+                    <select name="og_sphere" required>
+                        <!-- Options -->
+                    </select>
+                </td>
+                <td>
+                    <select name="og_cylindre">
+                        <!-- Options -->
+                    </select>
+                </td>
+                <td>
+                    <select name="og_axe">
+                        <!-- Options -->
+                    </select>
+                </td>
+                <td>
+                    <select name="og_add">
+                        <!-- Options -->
+                    </select>
+                </td>
+                <td>
+                    <input type="number" name="og_dp" value="0" min="0" class="small-input">
+                </td>
+                <td>
+                    <input type="number" name="og_hauteur" value="0" min="0" class="small-input">
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Version mobile (cartes) -->
+    <div class="prescription-mobile mobile-view">
+        <!-- Carte OD -->
+        <div class="prescription-card">
+            <div class="card-header">
+                <h4>Œil Droit (OD)</h4>
+            </div>
+            <div class="card-body">
+                <div class="mobile-form-group">
+                    <label>Sphere</label>
+                    <select name="od_sphere" required>
+                        <!-- Options -->
+                    </select>
+                </div>
+                <div class="mobile-form-group">
+                    <label>Cylindre</label>
+                    <select name="od_cylindre">
+                        <!-- Options -->
+                    </select>
+                </div>
+                <div class="mobile-form-group">
+                    <label>Axe</label>
+                    <select name="od_axe">
+                        <!-- Options -->
+                    </select>
+                </div>
+                <div class="mobile-form-group">
+                    <label>ADD</label>
+                    <select name="od_add">
+                        <!-- Options -->
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Carte OG -->
+        <div class="prescription-card">
+            <div class="card-header">
+                <h4>Œil Gauche (OG)</h4>
+            </div>
+            <div class="card-body">
+                <div class="mobile-form-group">
+                    <label>Sphere</label>
+                    <select name="og_sphere" required>
+                        <!-- Options -->
+                    </select>
+                </div>
+                <div class="mobile-form-group">
+                    <label>Cylindre</label>
+                    <select name="og_cylindre">
+                        <!-- Options -->
+                    </select>
+                </div>
+                <div class="mobile-form-group">
+                    <label>Axe</label>
+                    <select name="og_axe">
+                        <!-- Options -->
+                    </select>
+                </div>
+                <div class="mobile-form-group">
+                    <label>ADD</label>
+                    <select name="og_add">
+                        <!-- Options -->
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Carte Mesures -->
+        <div class="prescription-card measures-card">
+            <div class="card-header">
+                <h4>Mesures</h4>
+            </div>
+            <div class="card-body">
+                <div class="measures-grid">
+                    <div class="measure-group">
+                        <label>DP OD</label>
+                        <input type="number" name="od_dp" value="0" min="0">
+                    </div>
+                    <div class="measure-group">
+                        <label>DP OG</label>
+                        <input type="number" name="og_dp" value="0" min="0">
+                    </div>
+                    <div class="measure-group">
+                        <label>Hauteur OD</label>
+                        <input type="number" name="od_hauteur" value="0" min="0">
+                    </div>
+                    <div class="measure-group">
+                        <label>Hauteur OG</label>
+                        <input type="number" name="og_hauteur" value="0" min="0">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
                             <div class="form-grid">
                                 <div class="form-group">
@@ -14353,29 +15051,33 @@ function populatePrescriptionOptions(selectName, values) {
     const modal = document.getElementById('newSaleModal');
     if (!modal) return;
     
-    const selects = modal.querySelectorAll(`[name="${selectName}"]`);
+    // ✅ CORRECTION : Sélectionner TOUS les selects avec ce nom
+    const selects = modal.querySelectorAll(`select[name="${selectName}"]`);
+    
     if (!selects || selects.length === 0) return;
     
-    const select = selects[0];
-    const currentValue = select.value;
-    
-    // Vider le select sauf la première option
-    while (select.options.length > 1) {
-        select.remove(1);
-    }
-    
-    // Ajouter les nouvelles options
-    values.forEach(value => {
-        const opt = document.createElement('option');
-        opt.value = value;
-        opt.textContent = value;
-        select.appendChild(opt);
+    // ✅ CORRECTION : Parcourir TOUS les selects
+    selects.forEach(select => {
+        const currentValue = select.value;
+        
+        // Vider le select sauf la première option
+        while (select.options.length > 1) {
+            select.remove(1);
+        }
+        
+        // Ajouter les nouvelles options
+        values.forEach(value => {
+            const opt = document.createElement('option');
+            opt.value = value;
+            opt.textContent = value;
+            select.appendChild(opt);
+        });
+        
+        // Restaurer la valeur sélectionnée si elle existe toujours
+        if (currentValue && values.includes(currentValue)) {
+            select.value = currentValue;
+        }
     });
-    
-    // Restaurer la valeur sélectionnée si elle existe toujours
-    if (currentValue && values.includes(currentValue)) {
-        select.value = currentValue;
-    }
 }
 
 // Fonction principale de chargement des données
