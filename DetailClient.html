@@ -1414,6 +1414,154 @@
 .btn-status:hover::after {
     opacity: 1;
 }
+
+/* Styles élégants pour le statut verrouillé */
+.status-locked {
+    opacity: 0.7 !important;
+    cursor: not-allowed !important;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+    border: 2px dashed #adb5bd !important;
+    color: #6c757d !important;
+}
+
+.status-container-locked {
+    position: relative;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+.status-container-locked::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(248, 249, 250, 0.9) 0%, rgba(233, 236, 239, 0.9) 100%);
+    backdrop-filter: blur(2px);
+    pointer-events: none;
+    z-index: 2;
+}
+
+.status-container-locked::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, #6c757d, #495057);
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='11' width='18' height='11' rx='2' ry='2'%3E%3C/rect%3E%3Cpath d='M7 11V7a5 5 0 0 1 10 0v4'%3E%3C/path%3E%3C/svg%3E");
+    mask-repeat: no-repeat;
+    mask-position: center;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.lock-indicator {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, #495057, #343a40);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    pointer-events: none;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    animation: elegantFadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.lock-indicator i {
+    font-size: 1rem;
+    color: #ffd43b;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+/* Animation plus fluide */
+@keyframes elegantFadeIn {
+    from { 
+        opacity: 0; 
+        transform: translate(-50%, -30%) scale(0.9);
+    }
+    to { 
+        opacity: 1; 
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+/* Effet de brillance sur l'indicateur */
+.lock-indicator::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.status-container-locked:hover .lock-indicator::before {
+    left: 100%;
+}
+
+/* Style amélioré pour le select désactivé */
+.btn-status:disabled {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+    border: 2px dashed #adb5bd !important;
+    color: #6c757d !important;
+    cursor: not-allowed !important;
+    background-image: none !important;
+    box-shadow: 0 2px 8px rgba(108, 117, 125, 0.1) !important;
+}
+
+.btn-status:disabled:hover {
+    transform: none !important;
+    box-shadow: 0 2px 8px rgba(108, 117, 125, 0.1) !important;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+}
+
+/* Effet de pulse subtil sur le container verrouillé */
+.status-container-locked {
+    animation: subtlePulse 3s ease-in-out infinite;
+}
+
+@keyframes subtlePulse {
+    0%, 100% { 
+        box-shadow: 0 4px 12px rgba(108, 117, 125, 0.1);
+    }
+    50% { 
+        box-shadow: 0 4px 16px rgba(108, 117, 125, 0.15);
+    }
+}
+
+/* Adaptation responsive */
+@media (max-width: 768px) {
+    .lock-indicator {
+        padding: 10px 16px;
+        font-size: 0.8rem;
+        gap: 8px;
+    }
+    
+    .lock-indicator i {
+        font-size: 0.9rem;
+    }
+    
+    .status-container-locked::after {
+        width: 20px;
+        height: 20px;
+    }
+}
     </style>
 </head>
 <body>
@@ -3299,33 +3447,13 @@ function printDesktop(clientData) {
     }, 500);
 }
 
-// Version simplifiée pour mobile
+// Fonction pour générer et télécharger le PDF (version mobile)
 function generatePDF(clientData) {
+    // Créer le contenu HTML pour le PDF
     const htmlContent = generateHTMLContent(clientData);
-    
-    // Méthode universelle qui fonctionne sur la plupart des devices
-    const blob = new Blob([htmlContent], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    
-    // Essayer d'abord de télécharger
-    try {
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `fiche_client_${clientData.id}.html`;
-        a.style.display = 'none';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        
-        showMobileMessage('Téléchargement démarré!');
-    } catch (error) {
-        // Si le téléchargement échoue, ouvrir dans un nouvel onglet
-        window.open(url, '_blank');
-        showMobileMessage('Document ouvert dans un nouvel onglet');
-    }
-    
-    // Libérer l'URL après un délai
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+    // Télécharger directement comme fichier HTML
+    downloadAsHTML(htmlContent, clientData);
 }
 
 // Fonction pour télécharger comme fichier HTML
@@ -3352,14 +3480,9 @@ function downloadAsHTML(htmlContent, clientData) {
     }
 }
 
+// Fonction pour afficher un message sur mobile
 function showMobileMessage(message) {
-    const existingMessage = document.querySelector('.mobile-message');
-    if (existingMessage) {
-        existingMessage.remove();
-    }
-    
     const messageDiv = document.createElement('div');
-    messageDiv.className = 'mobile-message';
     messageDiv.style.cssText = `
         position: fixed;
         top: 20px;
@@ -3367,24 +3490,19 @@ function showMobileMessage(message) {
         transform: translateX(-50%);
         background: #4361ee;
         color: white;
-        padding: 15px 25px;
-        border-radius: 10px;
+        padding: 12px 20px;
+        border-radius: 8px;
         z-index: 10000;
         font-family: Arial, sans-serif;
-        font-size: 16px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        text-align: center;
-        max-width: 80%;
-        word-wrap: break-word;
+        font-size: 14px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     `;
     messageDiv.textContent = message;
     document.body.appendChild(messageDiv);
     
     setTimeout(() => {
-        if (document.body.contains(messageDiv)) {
-            document.body.removeChild(messageDiv);
-        }
-    }, 4000);
+        document.body.removeChild(messageDiv);
+    }, 3000);
 }
 
 // Fonction pour générer le contenu HTML (identique à celui utilisé dans printDesktop)
@@ -4321,61 +4439,177 @@ function showComplementDialog() {
     const modalContainer = document.getElementById('modal-container');
     const clientId = document.getElementById('client-id').textContent;
     const clientName = document.getElementById('client-name').textContent;
-
-    const modalHTML = `
-        <div class="dialog-overlay" id="complement-dialog">
-            <div class="dialog-card">
-                <div class="dialog-header">
-                    <h3 class="dialog-title">Ajout de complément</h3>
-                    <button class="dialog-close" onclick="closeModal()">&times;</button>
-                </div>
-                <div class="dialog-body">
-                    <p class="text-muted">Client: <strong>${clientName}</strong> (ID: ${clientId})</p>
-                    
-                    <form id="complementForm">
-                        <input type="hidden" id="clientId" value="${clientId}">
-                        
-                        <div class="form-group">
-                            <label for="complementAmount" class="form-label">Montant (FCFA)</label>
-                            <input type="number" id="complementAmount" class="form-control" 
-                                   placeholder="5000" required min="1">
+    
+    // Récupérer les données financières actuelles
+    const netAPayer = parseFloat(document.getElementById('net-amount').textContent.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+    const acompte = parseFloat(document.getElementById('deposit-amount-payment').textContent.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+    const complement1 = parseFloat(document.getElementById('complement1-amount').textContent.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+    const complement2 = parseFloat(document.getElementById('complement2-amount').textContent.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+    const resteAPayer = parseFloat(document.getElementById('remaining-amount').textContent.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+    
+    // Déterminer le type de paiement
+    let paymentType = '';
+    let maxAmount = resteAPayer;
+    
+    if (resteAPayer <= 0) {
+        // Impossible d'ajouter un complément
+        const modalHTML = `
+            <div class="dialog-overlay" id="complement-dialog">
+                <div class="dialog-card">
+                    <div class="dialog-header">
+                        <h3 class="dialog-title">Ajout de complément</h3>
+                        <button class="dialog-close" onclick="closeModal()">&times;</button>
+                    </div>
+                    <div class="dialog-body">
+                        <p class="text-muted">Client: <strong>${clientName}</strong> (ID: ${clientId})</p>
+                        <div class="alert-message error" style="position: relative; margin: 15px 0;">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Impossible d'ajouter un complément - Le solde est déjà réglé
                         </div>
-                        
-                        <div class="form-group">
-                            <label for="complementDate" class="form-label">Date</label>
-                            <input type="date" id="complementDate" class="form-control" required>
+                        <div style="text-align: center; padding: 15px;">
+                            <p><strong>Reste à payer: 0 FCFA</strong></p>
+                            <p style="color: var(--success-color); font-weight: 600;">
+                                <i class="fas fa-check-circle"></i> Ce client n'a plus de solde à régler
+                            </p>
                         </div>
-                        
-                        <div class="form-group">
-                            <label for="complementNotes" class="form-label">Notes</label>
-                            <textarea id="complementNotes" class="form-control" rows="3"
-                                      placeholder="Moyen de paiement, référence..."></textarea>
-                        </div>
-                        <div id="complement-message" class="form-message"></div>
-                    </form>
-                </div>
-                <div class="dialog-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal()">
-                        Annuler
-                    </button>
-                    <button type="button" class="btn btn-primary" onclick="submitComplementForm()">
-                        <i class="fas fa-check"></i> Enregistrer
-                    </button>
+                    </div>
+                    <div class="dialog-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal()">
+                            Fermer
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-    `;
+        `;
+        modalContainer.innerHTML = modalHTML;
+    } else {
+        // Déterminer le type de paiement
+        if (acompte === 0) {
+            paymentType = 'Acompte';
+        } else if (complement1 === 0) {
+            paymentType = 'Complement 1';
+        } else if (complement2 === 0) {
+            paymentType = 'Complement 2';
+        } else {
+            // Tous les compléments sont remplis, on ajoute à Complement 2
+            paymentType = 'Complement 2 (Addition)';
+            // On peut ajouter au complément 2 existant
+            maxAmount = resteAPayer;
+        }
 
-    modalContainer.innerHTML = modalHTML;
-    
-    // Définir la date du jour par défaut
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('complementDate').value = today;
+        const modalHTML = `
+            <div class="dialog-overlay" id="complement-dialog">
+                <div class="dialog-card">
+                    <div class="dialog-header">
+                        <h3 class="dialog-title">Ajout de complément</h3>
+                        <button class="dialog-close" onclick="closeModal()">&times;</button>
+                    </div>
+                    <div class="dialog-body">
+                        <p class="text-muted">Client: <strong>${clientName}</strong> (ID: ${clientId})</p>
+                        
+                        <!-- Résumé financier -->
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid var(--primary-color);">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span>Net à payer:</span>
+                                <strong>${netAPayer.toLocaleString('fr-FR')} FCFA</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span>Déjà payé:</span>
+                                <strong>${(acompte + complement1 + complement2).toLocaleString('fr-FR')} FCFA</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-weight: 600; color: var(--primary-color);">
+                                <span>Reste à payer:</span>
+                                <strong>${resteAPayer.toLocaleString('fr-FR')} FCFA</strong>
+                            </div>
+                        </div>
+                        
+                        <!-- Type de paiement déterminé automatiquement -->
+                        <div style="background: #e8f5e8; padding: 12px; border-radius: 6px; margin-bottom: 20px; text-align: center;">
+                            <i class="fas fa-info-circle" style="color: var(--success-color);"></i>
+                            <strong>Type de paiement: ${paymentType}</strong>
+                        </div>
+                        
+                        <form id="complementForm">
+                            <input type="hidden" id="clientId" value="${clientId}">
+                            <input type="hidden" id="paymentType" value="${paymentType}">
+                            
+                            <div class="form-group">
+                                <label for="complementAmount" class="form-label">
+                                    Montant (FCFA) 
+                                    <span style="color: var(--gray-color); font-size: 0.8rem;">
+                                        (Maximum: ${maxAmount.toLocaleString('fr-FR')} FCFA)
+                                    </span>
+                                </label>
+                                <input type="number" id="complementAmount" class="form-control" 
+                                       placeholder="5000" required min="1" max="${maxAmount}"
+                                       oninput="validateComplementAmount(this)">
+                                <div id="amountFeedback" style="font-size: 0.8rem; margin-top: 5px;"></div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="complementDate" class="form-label">Date</label>
+                                <input type="date" id="complementDate" class="form-control" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="complementNotes" class="form-label">Notes</label>
+                                <textarea id="complementNotes" class="form-control" rows="3"
+                                          placeholder="Moyen de paiement, référence..."></textarea>
+                            </div>
+                            <div id="complement-message" class="form-message"></div>
+                        </form>
+                    </div>
+                    <div class="dialog-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal()">
+                            Annuler
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="submitComplementForm()" id="submitComplementBtn">
+                            <i class="fas fa-check"></i> Enregistrer ${paymentType}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        modalContainer.innerHTML = modalHTML;
+        
+        // Définir la date du jour par défaut
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('complementDate').value = today;
+        
+        // Initialiser la validation
+        validateComplementAmount(document.getElementById('complementAmount'));
+    }
     
     // Afficher avec animation
     setTimeout(() => {
         document.getElementById('complement-dialog').classList.add('active');
     }, 10);
+}
+
+// Validation du montant du complément
+function validateComplementAmount(input) {
+    const amount = parseFloat(input.value) || 0;
+    const maxAmount = parseFloat(input.max) || 0;
+    const feedback = document.getElementById('amountFeedback');
+    const submitBtn = document.getElementById('submitComplementBtn');
+    
+    if (!feedback) return;
+    
+    if (amount <= 0) {
+        feedback.innerHTML = '<span style="color: var(--gray-color);">Veuillez saisir un montant</span>';
+        feedback.className = '';
+        if (submitBtn) submitBtn.disabled = true;
+    } else if (amount > maxAmount) {
+        feedback.innerHTML = `<span style="color: var(--danger-color);"><i class="fas fa-exclamation-triangle"></i> Le montant ne peut pas dépasser ${maxAmount.toLocaleString('fr-FR')} FCFA</span>`;
+        feedback.className = 'error';
+        if (submitBtn) submitBtn.disabled = true;
+    } else {
+        const resteApres = maxAmount - amount;
+        feedback.innerHTML = `<span style="color: var(--success-color);"><i class="fas fa-check-circle"></i> Montant valide - Reste après paiement: ${resteApres.toLocaleString('fr-FR')} FCFA</span>`;
+        feedback.className = 'success';
+        if (submitBtn) submitBtn.disabled = false;
+    }
 }
 
 async function submitComplementForm() {
@@ -4391,14 +4625,32 @@ async function submitComplementForm() {
         return;
     }
     
+    // Validation supplémentaire du montant
+    const amount = parseFloat(document.getElementById('complementAmount').value);
+    const maxAmount = parseFloat(document.getElementById('complementAmount').max);
+    
+    if (amount > maxAmount) {
+        formMessage.textContent = `Le montant ne peut pas dépasser ${maxAmount.toLocaleString('fr-FR')} FCFA`;
+        formMessage.classList.add('error');
+        return;
+    }
+    
     const username = sessionStorage.getItem("utilisateur") || localStorage.getItem("utilisateur");
+    const clientName = document.getElementById('client-name').textContent;
+    const agency = document.getElementById('agency').textContent;
+    const paymentType = document.getElementById('paymentType').value;
+    
     const complementData = {
         action: 'addComplement',
         clientId: document.getElementById('clientId').value,
-        amount: document.getElementById('complementAmount').value.trim(),
+        amount: amount,
         date: document.getElementById('complementDate').value,
         notes: document.getElementById('complementNotes').value.trim(),
-        utilisateur: username
+        utilisateur: username,
+        clientName: clientName,
+        agence: agency,
+        paymentType: paymentType,
+        maxAmount: maxAmount
     };
 
     const submitButton = document.querySelector('#complement-dialog .btn-primary');
@@ -4417,22 +4669,25 @@ async function submitComplementForm() {
             body: JSON.stringify(complementData)
         });
 
-        formMessage.textContent = '✅ Enregistrement en cours...';
+        formMessage.textContent = `✅ ${paymentType} enregistré avec succès !`;
         formMessage.classList.add('success');
         
         // Fermer la modale après un délai
         setTimeout(() => {
             closeModal();
-            loadClientData(complementData.clientId);
-        }, 1500);
+            // Recharger les données du client pour mettre à jour l'affichage
+            const clientId = complementData.clientId;
+            if (typeof loadClientData === 'function') {
+                loadClientData(clientId);
+            }
+        }, 2000);
 
     } catch (error) {
         console.error("Erreur:", error);
         formMessage.innerHTML = `❌ Erreur de connexion au serveur`;
         formMessage.classList.add('error');
-    } finally {
         submitButton.disabled = false;
-        submitButton.textContent = 'Enregistrer';
+        submitButton.innerHTML = '<i class="fas fa-check"></i> Enregistrer';
     }
 }
 
@@ -4445,12 +4700,76 @@ function closeModal() {
         }, 300);
     }
 }
-
 // ==================== GESTION DU STATUT ====================
 
 let pendingStatusChange = null;
 let currentClientId = null;
 let currentOldStatus = null;
+
+// Fonction pour vérifier si le statut est bloquant
+function isStatusLocked(status) {
+    return status === 'Perdu' || status === 'Cancel';
+}
+
+// Fonction pour mettre à jour l'interface en fonction du statut
+function updateStatusInterface(status) {
+    const statusSelect = document.getElementById('status-select');
+    const statusContainer = document.querySelector('.status-select-container');
+    const badge = document.getElementById('current-status-badge');
+    
+    if (!statusSelect || !statusContainer) return;
+    
+    if (isStatusLocked(status)) {
+        // Désactiver et styliser le select pour indiquer qu'il est verrouillé
+        statusSelect.disabled = true;
+        statusSelect.classList.add('status-locked');
+        statusContainer.classList.add('status-container-locked');
+        
+        // Ajouter un indicateur visuel
+        if (!statusContainer.querySelector('.lock-indicator')) {
+            const lockIcon = document.createElement('div');
+            lockIcon.className = 'lock-indicator';
+            lockIcon.innerHTML = '<i class="fas fa-lock"></i> Statut verrouillé';
+            lockIcon.style.cssText = `
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(0,0,0,0.8);
+                color: white;
+                padding: 10px 15px;
+                border-radius: 6px;
+                font-size: 0.9rem;
+                font-weight: 600;
+                z-index: 10;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                pointer-events: none;
+            `;
+            statusContainer.style.position = 'relative';
+            statusContainer.appendChild(lockIcon);
+        }
+        
+        // Mettre à jour le tooltip
+        statusSelect.title = "Ce statut ne peut plus être modifié";
+        
+    } else {
+        // Réactiver le select
+        statusSelect.disabled = false;
+        statusSelect.classList.remove('status-locked');
+        statusContainer.classList.remove('status-container-locked');
+        
+        // Supprimer l'indicateur de verrouillage
+        const lockIndicator = statusContainer.querySelector('.lock-indicator');
+        if (lockIndicator) {
+            lockIndicator.remove();
+        }
+        
+        // Réinitialiser le tooltip
+        statusSelect.title = "Changer l'étape du deal";
+    }
+}
 
 // Fonction pour mettre à jour le badge de statut
 function updateStatusBadge(status) {
@@ -4488,6 +4807,199 @@ function updateStatusBadge(status) {
     setTimeout(() => {
         badge.classList.remove('status-transition');
     }, 500);
+}
+
+// Fonction pour charger les références d'étuis depuis l'API
+async function loadEtuiReferences() {
+    try {
+        console.log('[loadEtuiReferences] Début du chargement des références');
+        const apiUrl = 'https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=catalogue';
+        
+        console.log('[loadEtuiReferences] URL appelée:', apiUrl);
+        const response = await fetch(apiUrl);
+        
+        if (!response.ok) {
+            console.error('[loadEtuiReferences] Erreur HTTP:', response.status, response.statusText);
+            throw new Error('Erreur de chargement des références');
+        }
+        
+        const data = await response.json();
+        console.log('[loadEtuiReferences] Données brutes reçues:', data);
+        
+        if (data.success && data.data) {
+            console.log('[loadEtuiReferences] Données reçues:', data.data);
+            
+            const etuiSelect = document.getElementById('etuiReference');
+            if (!etuiSelect) {
+                console.error('[loadEtuiReferences] Select etuiReference non trouvé');
+                return;
+            }
+            
+            // Vider et remplir le select
+            etuiSelect.innerHTML = '<option value="">-- Sélectionnez une référence --</option>';
+            
+            // Vérifier que les données contiennent les références d'étuis
+            if (data.data.reference && Array.isArray(data.data.reference)) {
+                const references = data.data.reference;
+                console.log('[loadEtuiReferences] Références disponibles:', references);
+                
+                if (references.length > 0) {
+                    // Trier et ajouter les références uniques
+                    references.sort().forEach(reference => {
+                        const option = document.createElement('option');
+                        option.value = reference;
+                        option.textContent = reference;
+                        etuiSelect.appendChild(option);
+                    });
+                    console.log('[loadEtuiReferences] Références ajoutées au select');
+                } else {
+                    console.warn('[loadEtuiReferences] Aucune référence d\'étui trouvée');
+                }
+            } else {
+                console.error('[loadEtuiReferences] Structure de données invalide pour les références:', data.data);
+                throw new Error('Structure de données invalide pour les références');
+            }
+            
+            // Ajouter l'option "Autre"
+            const otherOption = document.createElement('option');
+            otherOption.value = 'autre';
+            otherOption.textContent = 'Autre';
+            etuiSelect.appendChild(otherOption);
+            console.log('[loadEtuiReferences] Option "Autre" ajoutée');
+            
+        } else {
+            console.error('[loadEtuiReferences] Structure de données invalide:', {
+                success: data.success,
+                hasData: !!data.data
+            });
+            throw new Error('Structure de données invalide');
+        }
+    } catch (error) {
+        console.error('[loadEtuiReferences] Erreur complète:', error);
+        console.error('[loadEtuiReferences] Stack:', error.stack);
+    }
+}
+
+// Afficher la modal de livraison
+function showDeliveryModal() {
+    // Créer la modal si elle n'existe pas
+    if (!document.getElementById('deliveryModal')) {
+        const modalHTML = `
+            <div id="deliveryModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+                <div style="position: relative; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 8px; max-width: 500px; width: 90%;">
+                    <h3>📦 Confirmation de Livraison</h3>
+                    <p>Vous êtes sur le point de marquer ce deal comme <strong>"Livré"</strong>.</p>
+                    
+                    <div style="margin: 15px 0;">
+                        <label for="nettoyantQuantity">Quantité de nettoyant:</label>
+                        <input type="number" id="nettoyantQuantity" value="1" min="0" style="width: 100%; padding: 8px; margin: 5px 0;">
+                    </div>
+                    
+                    <div style="margin: 15px 0;">
+                        <label for="etuiQuantity">Quantité d'étui:</label>
+                        <input type="number" id="etuiQuantity" value="1" min="0" style="width: 100%; padding: 8px; margin: 5px 0;">
+                    </div>
+                    
+                    <div style="margin: 15px 0;">
+                        <label for="etuiReference">Référence de l'étui:</label>
+                        <select id="etuiReference" style="width: 100%; padding: 8px; margin: 5px 0;">
+                            <option value="">-- Chargement des références --</option>
+                        </select>
+                    </div>
+                    
+                    <div id="customEtuiContainer" style="margin: 15px 0; display: none;">
+                        <label for="customEtuiReference">Référence personnalisée:</label>
+                        <input type="text" id="customEtuiReference" style="width: 100%; padding: 8px; margin: 5px 0;" placeholder="Saisissez la référence">
+                    </div>
+                    
+                    <div style="margin-top: 20px; text-align: right;">
+                        <button onclick="cancelDelivery()" style="padding: 8px 16px; margin-right: 10px; background: #6c757d; color: white; border: none; border-radius: 4px;">Annuler</button>
+                        <button onclick="confirmDelivery()" style="padding: 8px 16px; background: #28a745; color: white; border: none; border-radius: 4px;">✅ Confirmer la Livraison</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        
+        // Configurer l'écouteur pour le changement de référence
+        setupEtuiReferenceListener();
+    }
+    
+    const modal = document.getElementById('deliveryModal');
+    modal.style.display = 'block';
+    
+    // Réinitialiser les valeurs par défaut
+    document.getElementById('nettoyantQuantity').value = 1;
+    document.getElementById('etuiQuantity').value = 1;
+    document.getElementById('etuiReference').innerHTML = '<option value="">-- Chargement des références --</option>';
+    document.getElementById('customEtuiReference').value = '';
+    document.getElementById('customEtuiContainer').style.display = 'none';
+    
+    // Charger les références d'étuis dynamiquement
+    loadEtuiReferences();
+}
+
+// Masquer la modal de livraison
+function hideDeliveryModal() {
+    const modal = document.getElementById('deliveryModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+    const statusSelect = document.getElementById('status-select');
+    if (statusSelect && currentOldStatus) {
+        statusSelect.value = currentOldStatus;
+    }
+}
+
+// Annuler la livraison
+function cancelDelivery() {
+    hideDeliveryModal();
+    pendingStatusChange = null;
+}
+
+// Confirmer la livraison avec les informations supplémentaires
+function confirmDelivery() {
+    const nettoyantQuantity = document.getElementById('nettoyantQuantity').value;
+    const etuiQuantity = document.getElementById('etuiQuantity').value;
+    let etuiReference = document.getElementById('etuiReference').value;
+    
+    // Si "autre" est sélectionné, utiliser la référence personnalisée
+    if (etuiReference === 'autre') {
+        etuiReference = document.getElementById('customEtuiReference').value;
+        if (!etuiReference) {
+            alert('Veuillez saisir la référence de l\'étui');
+            return;
+        }
+    } else if (!etuiReference) {
+        alert('Veuillez sélectionner une référence d\'étui');
+        return;
+    }
+    
+    if (!nettoyantQuantity || !etuiQuantity) {
+        alert('Veuillez saisir les quantités');
+        return;
+    }
+    
+    // Cacher la modal et procéder à la mise à jour
+    hideDeliveryModal();
+    updateDealStatus(pendingStatusChange, {
+        nettoyantQuantity: parseInt(nettoyantQuantity),
+        etuiQuantity: parseInt(etuiQuantity),
+        etuiReference: etuiReference
+    });
+}
+
+// Gérer le changement de référence d'étui
+function setupEtuiReferenceListener() {
+    const etuiSelect = document.getElementById('etuiReference');
+    if (etuiSelect) {
+        etuiSelect.addEventListener('change', function() {
+            const customContainer = document.getElementById('customEtuiContainer');
+            if (customContainer) {
+                customContainer.style.display = this.value === 'autre' ? 'block' : 'none';
+            }
+        });
+    }
 }
 
 // Fonction principale de gestion du changement de statut
@@ -4532,8 +5044,8 @@ async function updateDealStatus(newStatus, deliveryInfo = null) {
     console.log(`[updateDealStatus] Nouveau statut: ${newStatus}`, deliveryInfo);
     
     const statusSelect = document.getElementById('status-select');
-    const clientId = currentClientId;
-    const oldStatus = currentOldStatus;
+    const clientId = currentClientId || document.getElementById('client-id').textContent;
+    const oldStatus = currentOldStatus || document.getElementById('payment-status').textContent;
     const username = sessionStorage.getItem("utilisateur") || localStorage.getItem("utilisateur");
     
     if (!clientId) {
@@ -4585,7 +5097,9 @@ async function updateDealStatus(newStatus, deliveryInfo = null) {
         
         // Recharger les données du client pour synchronisation
         setTimeout(() => {
-            loadClientData(clientId);
+            if (typeof loadClientData === 'function') {
+                loadClientData(clientId);
+            }
         }, 500);
         
     } catch (error) {
@@ -4638,6 +5152,9 @@ function updateStatusDisplay(newStatus) {
         statusSelect.value = newStatus;
     }
     
+    // Mettre à jour l'interface pour verrouiller si nécessaire
+    updateStatusInterface(newStatus);
+    
     console.log(`[updateStatusDisplay] Statut mis à jour: ${newStatus}`);
 }
 
@@ -4652,9 +5169,61 @@ function initializeStatus() {
         if (statusSelect) {
             statusSelect.value = currentStatus;
         }
+        
+        // Vérifier si le statut doit être verrouillé
+        updateStatusInterface(currentStatus);
     }
 }
 
+// Fonction pour afficher des messages temporaires stylés
+function showTemporaryMessage(message, type, duration) {
+    console.log(`[showTemporaryMessage] Affichage message: ${message} (type: ${type}, durée: ${duration}ms)`);
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `alert-message ${type}`;
+    messageDiv.textContent = message;
+    
+    // Style CSS intégré
+    messageDiv.style.position = 'fixed';
+    messageDiv.style.top = '20px';
+    messageDiv.style.right = '20px';
+    messageDiv.style.padding = '12px 24px';
+    messageDiv.style.borderRadius = '4px';
+    messageDiv.style.color = 'white';
+    messageDiv.style.fontWeight = 'bold';
+    messageDiv.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+    messageDiv.style.zIndex = '1000';
+    messageDiv.style.animation = 'fadeIn 0.3s ease-out';
+    
+    // Couleurs selon le type
+    if (type === 'success') {
+        messageDiv.style.backgroundColor = '#4CAF50';
+    } else if (type === 'error') {
+        messageDiv.style.backgroundColor = '#F44336';
+    } else {
+        messageDiv.style.backgroundColor = '#2196F3';
+    }
+    
+    document.body.appendChild(messageDiv);
+    console.log('[showTemporaryMessage] Message ajouté au DOM');
+    
+    // Disparaître après la durée spécifiée
+    setTimeout(() => {
+        console.log('[showTemporaryMessage] Début de la disparition du message');
+        messageDiv.style.animation = 'fadeOut 0.3s ease-out';
+        setTimeout(() => {
+            if (messageDiv.parentNode) {
+                document.body.removeChild(messageDiv);
+                console.log('[showTemporaryMessage] Message retiré du DOM');
+            }
+        }, 300);
+    }, duration);
+}
+
+// Initialiser les écouteurs d'événements après le chargement du DOM
+document.addEventListener('DOMContentLoaded', function() {
+    setupEtuiReferenceListener();
+    initializeStatus();
+});
 // ==================== GESTION DES APPELS ====================
 
 // Configuration des appels
