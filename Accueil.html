@@ -7897,7 +7897,7 @@ body.modal-open {
             </span>
             <button class="download-app-btn" onclick="showDownloadModal()">
                         <i class="fas fa-download"></i>
-                        <span>Télécharger l'App</span>
+                        <span>Mobile</span>
                 </button>
         </div>
     </div>
@@ -17609,8 +17609,8 @@ document.addEventListener('DOMContentLoaded', function() {
 function downloadAPK() {
     // Créer un lien de téléchargement
     const downloadLink = document.createElement('a');
-    downloadLink.href = 'https://raw.githubusercontent.com/monEspasse/opticien/861e16784a4cf0300ea4894ec65321e359a41c32/optic-app.apk';
-    downloadLink.download = 'optic-app.apk';
+    downloadLink.href = 'https://raw.githubusercontent.com/monEspasse/opticien/main/optic-app.apk';
+
     
     // Déclencher le téléchargement
     document.body.appendChild(downloadLink);
@@ -17620,8 +17620,6 @@ function downloadAPK() {
     // Fermer le modal après téléchargement
     closeDownloadModal();
     
-    // Optionnel : Afficher un message de confirmation
-    alert('Téléchargement lancé ! Une fois téléchargé, ouvrez le fichier .apk pour installer l\'application.');
 }
 
         // Fermer le modal en cliquant à l'extérieur
