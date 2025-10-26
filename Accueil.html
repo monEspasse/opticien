@@ -7562,6 +7562,101 @@ body.modal-open {
     background-color: #f8fafc;
 }
 </style>
+    <style>
+        /* Nouveaux styles pour le téléchargement */
+        .download-app-btn {
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .download-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .download-modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .download-steps {
+            text-align: left;
+            margin: 20px 0;
+        }
+
+        .download-step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            gap: 10px;
+        }
+
+        .step-number {
+            background: #4361ee;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .download-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .btn-primary {
+            background: #4361ee;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #495057;
+            border: 1px solid #dee2e6;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+    </style>
 </head>
 <body>
     <div class="dashboard">
@@ -7800,6 +7895,10 @@ body.modal-open {
                 <i class="fas fa-circle"></i>
                 Session active
             </span>
+            <button class="download-app-btn" onclick="showDownloadModal()">
+                        <i class="fas fa-download"></i>
+                        <span>Télécharger l'App</span>
+                </button>
         </div>
     </div>
     <div class="footer-actions">
@@ -17447,5 +17546,91 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+    <script>
+        // Fonctions pour le téléchargement
+        function showDownloadModal() {
+            // Créer le modal s'il n'existe pas
+            if (!document.getElementById('downloadModal')) {
+                const modalHTML = `
+                    <div class="download-modal" id="downloadModal">
+                        <div class="download-modal-content">
+                            <h2>📱 Télécharger Optic'App</h2>
+                            <p>Installez l'application mobile pour une meilleure expérience</p>
+                            
+                            <div class="download-steps">
+                                <div class="download-step">
+                                    <div class="step-number">1</div>
+                                    <div>
+                                        <strong>Téléchargez le fichier APK</strong>
+                                        <p>Cliquez sur "Télécharger APK"</p>
+                                    </div>
+                                </div>
+                                <div class="download-step">
+                                    <div class="step-number">2</div>
+                                    <div>
+                                        <strong>Autorisez l'installation</strong>
+                                        <p>Activez "Sources inconnues" dans Paramètres → Sécurité</p>
+                                    </div>
+                                </div>
+                                <div class="download-step">
+                                    <div class="step-number">3</div>
+                                    <div>
+                                        <strong>Installez l'application</strong>
+                                        <p>Ouvrez le fichier .apk et suivez les instructions</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="download-actions">
+                                <button class="btn-primary" onclick="downloadAPK()">
+                                    <i class="fas fa-download"></i>
+                                    Télécharger APK
+                                </button>
+                                <button class="btn-secondary" onclick="closeDownloadModal()">
+                                    Plus tard
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.insertAdjacentHTML('beforeend', modalHTML);
+            }
+            
+            document.getElementById('downloadModal').style.display = 'flex';
+        }
+
+        function closeDownloadModal() {
+            const modal = document.getElementById('downloadModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+function downloadAPK() {
+    // Créer un lien de téléchargement
+    const downloadLink = document.createElement('a');
+    downloadLink.href = 'https://raw.githubusercontent.com/monEspasse/opticien/861e16784a4cf0300ea4894ec65321e359a41c32/optic-app.apk';
+    downloadLink.download = 'optic-app.apk';
+    
+    // Déclencher le téléchargement
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+    
+    // Fermer le modal après téléchargement
+    closeDownloadModal();
+    
+    // Optionnel : Afficher un message de confirmation
+    alert('Téléchargement lancé ! Une fois téléchargé, ouvrez le fichier .apk pour installer l\'application.');
+}
+
+        // Fermer le modal en cliquant à l'extérieur
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('downloadModal');
+            if (event.target === modal) {
+                closeDownloadModal();
+            }
+        });
+    </script>
 </body>
 </html>
