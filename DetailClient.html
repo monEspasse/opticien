@@ -2378,7 +2378,7 @@ async function loadClientData(clientId) {
         // Ajouter les styles CSS pour le loader
         addLoaderStyles();
         
-        const apiUrl = `https://script.google.com/macros/s/AKfycbzcgbKkkfBZgxlarLyLnsXy6sHpQBWox33RXi_W_DRwhM-fAqTvAWO5tkvBZnRcdxt4aQ/exec?action=getClientDetails&clientId=${encodeURIComponent(clientId)}`;
+        const apiUrl = `https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=getClientDetails&clientId=${encodeURIComponent(clientId)}`;
         console.log("URL de l'API:", apiUrl);
         
         const response = await fetch(apiUrl);
@@ -2532,7 +2532,7 @@ async function printClientDetails() {
         showLoadingIndicator('Génération du PDF en cours...');
 
         // 1. D'abord, envoyer les données au serveur pour créer le reçu
-        const apiUrl = "https://script.google.com/macros/s/AKfycbzcgbKkkfBZgxlarLyLnsXy6sHpQBWox33RXi_W_DRwhM-fAqTvAWO5tkvBZnRcdxt4aQ/exec?action=addrecu";
+        const apiUrl = "https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=addrecu";
         
         console.log("📤 Envoi des données au serveur...");
         
@@ -2555,7 +2555,7 @@ async function printClientDetails() {
         await new Promise(resolve => setTimeout(resolve, 2000));
 
         // 3. Récupérer le lien du PDF généré - URL FIXE
-        const pdfUrl = "https://script.google.com/macros/s/AKfycbzcgbKkkfBZgxlarLyLnsXy6sHpQBWox33RXi_W_DRwhM-fAqTvAWO5tkvBZnRcdxt4aQ/exec?action=getrecucaissepdf";
+        const pdfUrl = "https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=getrecucaissepdf";
         
         console.log("📥 Récupération du PDF depuis:", pdfUrl);
         
@@ -2960,7 +2960,7 @@ async function submitComplementForm() {
     submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Enregistrement...';
 
     try {
-        const apiUrl = "https://script.google.com/macros/s/AKfycbzcgbKkkfBZgxlarLyLnsXy6sHpQBWox33RXi_W_DRwhM-fAqTvAWO5tkvBZnRcdxt4aQ/exec?action=addComplement";
+        const apiUrl = "https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=addComplement";
 
         const response = await fetch(apiUrl, {
             method: 'POST',
@@ -3117,7 +3117,7 @@ function updateStatusBadge(status) {
 async function loadEtuiReferences() {
     try {
         console.log('[loadEtuiReferences] Début du chargement des références');
-        const apiUrl = 'https://script.google.com/macros/s/AKfycbzcgbKkkfBZgxlarLyLnsXy6sHpQBWox33RXi_W_DRwhM-fAqTvAWO5tkvBZnRcdxt4aQ/exec?action=catalogue';
+        const apiUrl = 'https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=catalogue';
         
         console.log('[loadEtuiReferences] URL appelée:', apiUrl);
         const response = await fetch(apiUrl);
@@ -3380,7 +3380,7 @@ async function updateDealStatus(newStatus, deliveryInfo = null) {
     }
 
     try {
-        const apiUrl = "https://script.google.com/macros/s/AKfycbzcgbKkkfBZgxlarLyLnsXy6sHpQBWox33RXi_W_DRwhM-fAqTvAWO5tkvBZnRcdxt4aQ/exec?action=updateDealStatus";
+        const apiUrl = "https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=updateDealStatus";
         
         console.log('[updateDealStatus] Envoi des données:', statusData);
         
@@ -3707,7 +3707,7 @@ async function saveCallLog() {
     saveButton.disabled = true;
 
     try {
-        const apiUrl = "https://script.google.com/macros/s/AKfycbzcgbKkkfBZgxlarLyLnsXy6sHpQBWox33RXi_W_DRwhM-fAqTvAWO5tkvBZnRcdxt4aQ/exec?action=logCall";
+        const apiUrl = "https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=logCall";
         
         const response = await fetch(apiUrl, {
             method: 'POST',
