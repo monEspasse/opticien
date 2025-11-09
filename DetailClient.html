@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Détails Client - Optic'APP</title>
+    <title>Détails Client -VisioPro</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -2378,7 +2378,7 @@ async function loadClientData(clientId) {
         // Ajouter les styles CSS pour le loader
         addLoaderStyles();
         
-        const apiUrl = `https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=getClientDetails&clientId=${encodeURIComponent(clientId)}`;
+        const apiUrl = `https://script.google.com/macros/s/AKfycbzcgbKkkfBZgxlarLyLnsXy6sHpQBWox33RXi_W_DRwhM-fAqTvAWO5tkvBZnRcdxt4aQ/exec?action=getClientDetails&clientId=${encodeURIComponent(clientId)}`;
         console.log("URL de l'API:", apiUrl);
         
         const response = await fetch(apiUrl);
@@ -2522,1061 +2522,154 @@ function formatDate(dateString) {
     const date = new Date(dateString);
     return date.toLocaleDateString('fr-FR');
 }
-
 // ==================== IMPRESSION ====================
-function printClientDetails() {
-    // Récupération de toutes les données depuis le DOM
-    const clientData = {
-        // Informations client
-        id: document.getElementById('client-id').textContent,
-        name: document.getElementById('client-name').textContent,
-        fullname: document.getElementById('client-fullname').textContent,
-        phone: document.getElementById('client-phone').textContent,
-        birthdate: document.getElementById('client-birthdate').textContent,
-        company: document.getElementById('client-company').textContent,
-        status: document.getElementById('client-status').textContent,
-        
-        // Données médicales OD
-        odSphere: document.getElementById('od-sphere').textContent,
-        odCylinder: document.getElementById('od-cylinder').textContent,
-        odAxis: document.getElementById('od-axis').textContent,
-        odAdd: document.getElementById('od-add').textContent,
-        odDp: document.getElementById('od-dp').textContent,
-        odHeight: document.getElementById('od-height').textContent,
-        
-        // Données médicales OG
-        ogSphere: document.getElementById('og-sphere').textContent,
-        ogCylinder: document.getElementById('og-cylinder').textContent,
-        ogAxis: document.getElementById('og-axis').textContent,
-        ogAdd: document.getElementById('og-add').textContent,
-        ogDp: document.getElementById('og-dp').textContent,
-        ogHeight: document.getElementById('og-height').textContent,
-        
-        // Infos médicales
-        clinic: document.getElementById('clinic').textContent,
-        ophthalmologist: document.getElementById('ophthalmologist').textContent,
-        careDate: document.getElementById('care-date').textContent,
-        
-        // Commande
-        lensType: document.getElementById('lens-type').textContent,
-        lensRange: document.getElementById('lens-range').textContent,
-        frameChoice: document.getElementById('frame-choice').textContent,
-        frameAmount: document.getElementById('frame-amount').textContent,
-        lensAmount: document.getElementById('lens-amount').textContent,
-        agency: document.getElementById('agency').textContent,
-        salesperson: document.getElementById('salesperson').textContent,
-        userperson: document.getElementById('userperson').textContent,
-        
-        // Paiement
-        netAmount: document.getElementById('net-amount').textContent,
-        depositAmount: document.getElementById('deposit-amount-payment').textContent,
-        depositDate: document.getElementById('deposit-date').textContent,
-        complement1Amount: document.getElementById('complement1-amount').textContent,
-        complement1Date: document.getElementById('complement1-date').textContent,
-        complement2Amount: document.getElementById('complement2-amount').textContent,
-        complement2Date: document.getElementById('complement2-date').textContent,
-        remainingAmount: document.getElementById('remaining-amount').textContent,
-        paymentStatus: document.getElementById('payment-status').textContent,
-        
-        // Tier payant
-        insurance: document.getElementById('insurance').textContent,
-        insuranceCompany: document.getElementById('insurance-company').textContent,
-        policyNumber: document.getElementById('policy-number').textContent,
-        coverageRate: document.getElementById('coverage-rate').textContent,
-        insuredName: document.getElementById('insured-name').textContent,
-        insurancePart: document.getElementById('insurance-part').textContent
-    };
+async function printClientDetails() {
+    // Récupération de l'ID du client depuis le DOM
+    const clientId = document.getElementById('client-id').textContent;
 
-    // Détection mobile améliorée
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
-                    window.innerWidth <= 768;
-    
-    if (isMobile) {
-        // Version mobile : génération et téléchargement du PDF
-        generatePDF(clientData);
-    } else {
-        // Version desktop : impression normale
-        printDesktop(clientData);
-    }
-}
-
-// Fonction pour l'impression desktop (inchangée)
-function printDesktop(clientData) {
-    // Votre code existant pour printDesktop...
-    // Créer un élément iframe caché pour l'impression
-    const iframe = document.createElement('iframe');
-    iframe.style.position = 'fixed';
-    iframe.style.right = '0';
-    iframe.style.bottom = '0';
-    iframe.style.width = '0';
-    iframe.style.height = '0';
-    iframe.style.border = 'none';
-    document.body.appendChild(iframe);
-
-    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-    
-    iframeDoc.write(`
-        <!DOCTYPE html>
-        <html lang="fr">
-        <head>
-            <meta charset="UTF-8">
-            <title>${clientData.name} | VOIR PLUS OPTIC</title>
-            <style>
-                /* === STYLES MODERNES POUR L'IMPRESSION === */
-                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-                
-                :root {
-                    --primary: #4361ee;
-                    --primary-light: #4895ef;
-                    --secondary: #3a0ca3;
-                    --accent: #7209b7;
-                    --success: #4cc9f0;
-                    --dark: #1e293b;
-                    --light: #f8fafc;
-                    --gray: #64748b;
-                    --border: #e2e8f0;
-                }
-                
-                * {
-                    margin: 0;
-                    padding: 0;
-                    box-sizing: border-box;
-                }
-                
-                body {
-                    font-family: 'Inter', sans-serif;
-                    line-height: 1.6;
-                    color: var(--dark);
-                    background: #ffffff;
-                    font-size: 10pt;
-                    width: 210mm;
-                    min-height: 297mm;
-                    margin: 0 auto;
-                    padding: 0;
-                }
-                
-                /* === LAYOUT PRINCIPAL === */
-                .print-container {
-                    max-width: 190mm;
-                    margin: 0 auto;
-                    padding: 15mm 0;
-                }
-                
-                .page {
-                    page-break-after: always;
-                    margin-bottom: 10mm;
-                }
-                
-                .page:last-child {
-                    page-break-after: auto;
-                }
-                
-                /* === EN-TÊTE PROFESSIONNELLE === */
-                .print-header {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: flex-start;
-                    margin-bottom: 6mm;
-                    padding-bottom: 4mm;
-                    border-bottom: 2px solid var(--primary);
-                    background: linear-gradient(135deg, var(--light) 0%, #ffffff 100%);
-                    padding: 4mm;
-                    border-radius: 12px;
-                    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-                }
-                
-                .company-brand {
-                    display: flex;
-                    align-items: center;
-                    gap: 3mm;
-                }
-                
-                .company-logo {
-                    width: 25mm;
-                    height: 25mm;
-                    border-radius: 8px;
-                    object-fit: contain;
-                    border: 1px solid var(--border);
-                    padding: 1mm;
-                    background: white;
-                }
-                
-                .company-info {
-                    flex: 1;
-                }
-                
-                .company-name {
-                    font-size: 14pt;
-                    font-weight: 700;
-                    color: var(--primary);
-                    margin-bottom: 1mm;
-                }
-                
-                .company-details {
-                    font-size: 8pt;
-                    color: var(--gray);
-                    line-height: 1.4;
-                }
-                
-                .document-meta {
-                    text-align: right;
-                    border-left: 1px solid var(--border);
-                    padding-left: 4mm;
-                }
-                
-                .document-title {
-                    font-size: 16pt;
-                    font-weight: 700;
-                    color: var(--dark);
-                    margin-bottom: 2mm;
-                }
-                
-                .document-subtitle {
-                    font-size: 9pt;
-                    color: var(--gray);
-                    font-weight: 500;
-                }
-                
-                /* === CARTE CLIENT PRINCIPALE === */
-                .client-hero-card {
-                    background: linear-gradient(135deg, #ffffff 0%, var(--light) 100%);
-                    border-radius: 16px;
-                    padding: 5mm;
-                    margin-bottom: 6mm;
-                    border: 1px solid var(--border);
-                    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-                    position: relative;
-                    overflow: hidden;
-                }
-                
-                .client-hero-card::before {
-                    content: '';
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 4px;
-                    height: 100%;
-                    background: linear-gradient(135deg, var(--primary), var(--accent));
-                }
-                
-                .client-main-info {
-                    display: grid;
-                    grid-template-columns: 2fr 1fr;
-                    gap: 4mm;
-                    margin-bottom: 3mm;
-                }
-                
-                .client-identity h1 {
-                    font-size: 18pt;
-                    font-weight: 700;
-                    color: var(--dark);
-                    margin-bottom: 1mm;
-                }
-                
-                .client-id {
-                    display: inline-block;
-                    background: var(--primary);
-                    color: white;
-                    padding: 1mm 3mm;
-                    border-radius: 20px;
-                    font-size: 8pt;
-                    font-weight: 600;
-                    margin-bottom: 2mm;
-                }
-                
-                .client-contact {
-                    display: flex;
-                    gap: 4mm;
-                    flex-wrap: wrap;
-                    font-size: 9pt;
-                    color: var(--gray);
-                }
-                
-                .client-status-badge {
-                    background: linear-gradient(135deg, var(--success), #4ade80);
-                    color: white;
-                    padding: 2mm 4mm;
-                    border-radius: 8px;
-                    font-weight: 600;
-                    font-size: 9pt;
-                    text-align: center;
-                    box-shadow: 0 2px 8px rgba(76, 201, 240, 0.3);
-                }
-                
-                /* === SECTIONS MODULAIRES === */
-                .section {
-                    margin-bottom: 6mm;
-                }
-                
-                .section-header {
-                    display: flex;
-                    align-items: center;
-                    gap: 3mm;
-                    margin-bottom: 3mm;
-                    padding-bottom: 2mm;
-                    border-bottom: 1px solid var(--border);
-                }
-                
-                .section-icon {
-                    width: 6mm;
-                    height: 6mm;
-                    background: linear-gradient(135deg, var(--primary), var(--accent));
-                    border-radius: 6px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    color: white;
-                    font-size: 7pt;
-                }
-                
-                .section-title {
-                    font-size: 12pt;
-                    font-weight: 700;
-                    color: var(--dark);
-                    flex: 1;
-                }
-                
-                /* === GRILLES MODERNES === */
-                .grid-2col {
-                    display: grid;
-                    grid-template-columns: 1fr 1fr;
-                    gap: 3mm;
-                }
-                
-                .grid-3col {
-                    display: grid;
-                    grid-template-columns: 1fr 1fr 1fr;
-                    gap: 3mm;
-                }
-                
-                .info-card {
-                    background: white;
-                    border: 1px solid var(--border);
-                    border-radius: 12px;
-                    padding: 3mm;
-                }
-                
-                .card-header {
-                    display: flex;
-                    align-items: center;
-                    gap: 2mm;
-                    margin-bottom: 2mm;
-                    padding-bottom: 1mm;
-                    border-bottom: 1px solid var(--border);
-                }
-                
-                .card-icon {
-                    width: 4mm;
-                    height: 4mm;
-                    background: var(--primary-light);
-                    border-radius: 4px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    color: white;
-                    font-size: 6pt;
-                }
-                
-                .card-title {
-                    font-size: 9pt;
-                    font-weight: 600;
-                    color: var(--dark);
-                }
-                
-                .detail-item {
-                    display: flex;
-                    justify-content: space-between;
-                    margin-bottom: 1mm;
-                    padding: 1mm 0;
-                    border-bottom: 1px dashed var(--border);
-                }
-                
-                .detail-item:last-child {
-                    border-bottom: none;
-                }
-                
-                .detail-label {
-                    font-size: 8pt;
-                    color: var(--gray);
-                    font-weight: 500;
-                }
-                
-                .detail-value {
-                    font-size: 9pt;
-                    color: var(--dark);
-                    font-weight: 600;
-                    text-align: right;
-                }
-                
-                /* === SECTION MÉDICALE AVANCÉE === */
-                .medical-grid {
-                    display: grid;
-                    grid-template-columns: 1fr 1fr;
-                    gap: 3mm;
-                }
-                
-                .eye-prescription {
-                    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-                    border-radius: 12px;
-                    padding: 3mm;
-                    border: 1px solid #bae6fd;
-                }
-                
-                .eye-title {
-                    text-align: center;
-                    font-size: 10pt;
-                    font-weight: 700;
-                    color: var(--primary);
-                    margin-bottom: 2mm;
-                    padding-bottom: 1mm;
-                    border-bottom: 2px solid var(--primary-light);
-                }
-                
-                .prescription-grid {
-                    display: grid;
-                    grid-template-columns: 1fr 1fr;
-                    gap: 2mm;
-                }
-                
-                .prescription-item {
-                    text-align: center;
-                }
-                
-                .prescription-label {
-                    font-size: 7pt;
-                    color: var(--gray);
-                    font-weight: 500;
-                    margin-bottom: 0.5mm;
-                }
-                
-                .prescription-value {
-                    font-size: 9pt;
-                    font-weight: 700;
-                    color: var(--dark);
-                    background: white;
-                    padding: 1mm;
-                    border-radius: 6px;
-                    border: 1px solid var(--border);
-                }
-                
-                /* === TABLEAUX FINANCIERS === */
-                .financial-summary {
-                    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-                    border-radius: 12px;
-                    padding: 4mm;
-                    border: 1px solid #bbf7d0;
-                }
-                
-                .amount-grid {
-                    display: grid;
-                    grid-template-columns: repeat(auto-fit, minmax(40mm, 1fr));
-                    gap: 2mm;
-                }
-                
-                .amount-item {
-                    text-align: center;
-                    padding: 2mm;
-                    background: white;
-                    border-radius: 8px;
-                    border: 1px solid var(--border);
-                }
-                
-                .amount-label {
-                    font-size: 7pt;
-                    color: var(--gray);
-                    margin-bottom: 1mm;
-                }
-                
-                .amount-value {
-                    font-size: 11pt;
-                    font-weight: 700;
-                    color: var(--primary);
-                }
-                
-                .amount-date {
-                    font-size: 6pt;
-                    color: var(--gray);
-                    margin-top: 0.5mm;
-                }
-                
-                /* === DÉCHARGE DE RÉCEPTION === */
-                .discharge-page {
-                    background: white;
-                    min-height: 148mm;
-                    padding: 15mm;
-                    border: 2px solid var(--border);
-                    border-radius: 8px;
-                    position: relative;
-                }
-                
-                .discharge-header {
-                    text-align: center;
-                    margin-bottom: 6mm;
-                    padding-bottom: 3mm;
-                    border-bottom: 3px double var(--primary);
-                }
-                
-                .discharge-title {
-                    font-size: 16pt;
-                    font-weight: 700;
-                    color: var(--dark);
-                    margin-bottom: 2mm;
-                    text-transform: uppercase;
-                    letter-spacing: 1px;
-                }
-                
-                .discharge-subtitle {
-                    font-size: 10pt;
-                    color: var(--gray);
-                }
-                
-                .discharge-content {
-                    margin-bottom: 4mm;
-                    line-height: 1.8;
-                }
-                
-                .discharge-list {
-                    margin: 3mm 0 3mm 5mm;
-                }
-                
-                .discharge-list li {
-                    margin-bottom: 1mm;
-                    position: relative;
-                }
-                
-                .discharge-list li::before {
-                    content: "▸";
-                    color: var(--primary);
-                    font-weight: bold;
-                    position: absolute;
-                    left: -3mm;
-                }
-                
-                .signature-area {
-                    display: grid;
-                    grid-template-columns: 1fr 1fr;
-                    gap: 10mm;
-                    margin-top: 10mm;
-                    padding-top: 4mm;
-                    border-top: 2px dashed var(--border);
-                }
-                
-                .signature-box {
-                    text-align: center;
-                }
-                
-                .signature-line {
-                    width: 80%;
-                    height: 1px;
-                    background: var(--dark);
-                    margin: 8mm auto 2mm;
-                }
-                
-                .signature-label {
-                    font-size: 8pt;
-                    color: var(--gray);
-                    font-weight: 500;
-                }
-                
-                /* === PIED DE PAGE === */
-                .print-footer {
-                    text-align: center;
-                    margin-top: 8mm;
-                    padding-top: 3mm;
-                    border-top: 1px solid var(--border);
-                    font-size: 7pt;
-                    color: var(--gray);
-                    line-height: 1.4;
-                }
-                
-                /* === IMPRESSION OPTIMISÉE === */
-                @media print {
-                    body {
-                        width: 210mm;
-                        height: 297mm;
-                        margin: 0;
-                        padding: 0;
-                    }
-                    
-                    .print-container {
-                        max-width: 190mm;
-                        margin: 0 auto;
-                        padding: 15mm 0;
-                    }
-                    
-                    .page {
-                        page-break-after: always;
-                        margin-bottom: 0;
-                    }
-                    
-                    .page:last-child {
-                        page-break-after: auto;
-                    }
-                }
-                
-                /* === UTILITAIRES === */
-                .text-center { text-align: center; }
-                .text-right { text-align: right; }
-                .mb-2 { margin-bottom: 2mm; }
-                .mb-3 { margin-bottom: 3mm; }
-                .mt-2 { margin-top: 2mm; }
-                .mt-3 { margin-top: 3mm; }
-            </style>
-        </head>
-        <body>
-            <div class="print-container">
-                
-                <!-- PAGE 1: FICHE CLIENT COMPLÈTE -->
-                <div class="page">
-                    <!-- En-tête professionnel -->
-                    <div class="print-header">
-                        <div class="company-brand">
-                            <img src="logo.png" alt="VOIR PLUS OPTIC" class="company-logo">
-                            <div class="company-info">
-                                <div class="company-name">VOIR PLUS OPTIC SARL</div>
-                                <div class="company-details">
-                                    0142749495 | IFU: 3202368717681<br>
-                                    optivoirplus@gmail.com
-                                </div>
-                            </div>
-                        </div>
-                        <div class="document-meta">
-                            <div class="document-title"> Reçu de caisse</div>
-                            <div class="document-subtitle">
-                                Généré le ${new Date().toLocaleDateString('fr-FR', { 
-                                    year: 'numeric', 
-                                    month: 'long', 
-                                    day: 'numeric',
-                                    hour: '2-digit',
-                                    minute: '2-digit'
-                                })}
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Carte client principale -->
-                    <div class="client-hero-card">
-                        <div class="client-main-info">
-                            <div class="client-identity">
-                                <h1>${clientData.fullname}</h1>
-                                <span class="client-id">${clientData.id}</span>
-                                <div class="client-contact">
-                                    <span>📞 ${clientData.phone}</span>
-                                    <span>🏢 ${clientData.company}</span>
-                                    <span>🎂 ${clientData.birthdate}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Section financière -->
-                    <div class="section">
-                        <div class="section-header">
-                            <div class="section-icon">💰</div>
-                            <div class="section-title">INFORMATION FINANCIÈRE</div>
-                        </div>
-                        <div class="financial-summary">
-                            <div class="amount-grid">
-                                <div class="amount-item">
-                                    <div class="amount-label">Net à Payer</div>
-                                    <div class="amount-value">${clientData.netAmount}</div>
-                                </div>
-                                <div class="amount-item">
-                                    <div class="amount-label">Acompte</div>
-                                    <div class="amount-value">${clientData.depositAmount || '0 FCFA'}</div>
-                                    <div class="amount-date">${clientData.depositDate || ''}</div>
-                                </div>
-                                ${clientData.complement1Amount ? `
-                                <div class="amount-item">
-                                    <div class="amount-label">Complément 1</div>
-                                    <div class="amount-value">${clientData.complement1Amount}</div>
-                                    <div class="amount-date">${clientData.complement1Date || ''}</div>
-                                </div>` : ''}
-                                ${clientData.complement2Amount ? `
-                                <div class="amount-item">
-                                    <div class="amount-label">Complément 2</div>
-                                    <div class="amount-value">${clientData.complement2Amount}</div>
-                                    <div class="amount-date">${clientData.complement2Date || ''}</div>
-                                </div>` : ''}
-                                <div class="amount-item">
-                                    <div class="amount-label">Reste à Payer</div>
-                                    <div class="amount-value">${clientData.remainingAmount}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Section prescription médicale -->
-                    <div class="section">
-                        <div class="section-header">
-                            <div class="section-icon">👁️</div>
-                            <div class="section-title">PRESCRIPTION MÉDICALE</div>
-                        </div>
-                        <div class="medical-grid">
-                            <div class="eye-prescription">
-                                <div class="eye-title">ŒIL DROIT (OD)</div>
-                                <div class="prescription-grid">
-                                    <div class="prescription-item">
-                                        <div class="prescription-label">Sphere</div>
-                                        <div class="prescription-value">${clientData.odSphere || '-'}</div>
-                                    </div>
-                                    <div class="prescription-item">
-                                        <div class="prescription-label">Cylindre</div>
-                                        <div class="prescription-value">${clientData.odCylinder || '-'}</div>
-                                    </div>
-                                    <div class="prescription-item">
-                                        <div class="prescription-label">Axe</div>
-                                        <div class="prescription-value">${clientData.odAxis || '-'}</div>
-                                    </div>
-                                    <div class="prescription-item">
-                                        <div class="prescription-label">ADD</div>
-                                        <div class="prescription-value">${clientData.odAdd || '-'}</div>
-                                    </div>
-                                    <div class="prescription-item">
-                                        <div class="prescription-label">DP</div>
-                                        <div class="prescription-value">${clientData.odDp || '-'}</div>
-                                    </div>
-                                    <div class="prescription-item">
-                                        <div class="prescription-label">Hauteur</div>
-                                        <div class="prescription-value">${clientData.odHeight || '-'}</div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="eye-prescription">
-                                <div class="eye-title">ŒIL GAUCHE (OG)</div>
-                                <div class="prescription-grid">
-                                    <div class="prescription-item">
-                                        <div class="prescription-label">Sphere</div>
-                                        <div class="prescription-value">${clientData.ogSphere || '-'}</div>
-                                    </div>
-                                    <div class="prescription-item">
-                                        <div class="prescription-label">Cylindre</div>
-                                        <div class="prescription-value">${clientData.ogCylinder || '-'}</div>
-                                    </div>
-                                    <div class="prescription-item">
-                                        <div class="prescription-label">Axe</div>
-                                        <div class="prescription-value">${clientData.ogAxis || '-'}</div>
-                                    </div>
-                                    <div class="prescription-item">
-                                        <div class="prescription-label">ADD</div>
-                                        <div class="prescription-value">${clientData.ogAdd || '-'}</div>
-                                    </div>
-                                    <div class="prescription-item">
-                                        <div class="prescription-label">DP</div>
-                                        <div class="prescription-value">${clientData.ogDp || '-'}</div>
-                                    </div>
-                                    <div class="prescription-item">
-                                        <div class="prescription-label">Hauteur</div>
-                                        <div class="prescription-value">${clientData.ogHeight || '-'}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Section informations médicales -->
-                    <div class="section">
-                        <div class="section-header">
-                            <div class="section-icon">🏥</div>
-                            <div class="section-title">INFORMATIONS MÉDICALES</div>
-                        </div>
-                        <div class="grid-3col">
-                            <div class="info-card">
-                                <div class="card-header">
-                                    <div class="card-icon">🏥</div>
-                                    <div class="card-title">Clinique</div>
-                                </div>
-                                <div class="detail-value text-center">${clientData.clinic || '-'}</div>
-                            </div>
-                            <div class="info-card">
-                                <div class="card-header">
-                                    <div class="card-icon">👨‍⚕️</div>
-                                    <div class="card-title">Ophtalmologue</div>
-                                </div>
-                                <div class="detail-value text-center">${clientData.ophthalmologist || '-'}</div>
-                            </div>
-                            <div class="info-card">
-                                <div class="card-header">
-                                    <div class="card-icon">📅</div>
-                                    <div class="card-title">Date de Soin</div>
-                                </div>
-                                <div class="detail-value text-center">${clientData.careDate || '-'}</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="print-footer">
-                        VOIR PLUS OPTIC SARL - Société à Responsabilité limitée au Capital de 1,200,000 F CFA<br>
-                        RCCM: RB/COT/23 B 35451 - IFU: 3202368717681 - Ecobank Benin RIB: BJ66 BJ06 01006 111509475001 52
-                    </div>
-                </div>
-                
-                <!-- PAGE 2: DÉTAILS COMMANDE ET ASSURANCE -->
-                <div class="page">
-                    <div class="print-header">
-                        <div class="company-brand">
-                            <img src="logo.png" alt="VOIR PLUS OPTIC" class="company-logo">
-                            <div class="company-info">
-                                <div class="company-name">VOIR PLUS OPTIC SARL</div>
-                                <div class="company-details">Détails de la commande</div>
-                            </div>
-                        </div>
-                        <div class="document-meta">
-                            <div class="document-title">FICHE DE COMMANDE</div>
-                            <h1>${clientData.fullname}</h1>
-                            <div class="document-subtitle">Client: ${clientData.id}</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Section commande -->
-                    <div class="section">
-                        <div class="section-header">
-                            <div class="section-icon">🛒</div>
-                            <div class="section-title">DÉTAILS DE LA COMMANDE</div>
-                        </div>
-                        <div class="grid-2col">
-                            <div class="info-card">
-                                <div class="card-header">
-                                    <div class="card-icon">👓</div>
-                                    <div class="card-title">Verres</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">Type</div>
-                                    <div class="detail-value">${clientData.lensType || '-'}</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">Gamme</div>
-                                    <div class="detail-value">${clientData.lensRange || '-'}</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">Montant</div>
-                                    <div class="detail-value">${clientData.lensAmount || '-'}</div>
-                                </div>
-                            </div>
-                            
-                            <div class="info-card">
-                                <div class="card-header">
-                                    <div class="card-icon">📦</div>
-                                    <div class="card-title">Monture</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">Choix</div>
-                                    <div class="detail-value">${clientData.frameChoice || '-'}</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">Montant</div>
-                                    <div class="detail-value">${clientData.frameAmount || '-'}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Section vente -->
-                    <div class="section">
-                        <div class="section-header">
-                            <div class="section-icon">🏪</div>
-                            <div class="section-title">INFORMATION VENTE</div>
-                        </div>
-                        <div class="grid-3col">
-                            <div class="info-card">
-                                <div class="card-header">
-                                    <div class="card-icon">🏢</div>
-                                    <div class="card-title">Agence</div>
-                                </div>
-                                <div class="detail-value text-center">${clientData.agency || '-'}</div>
-                            </div>
-                            <div class="info-card">
-                                <div class="card-header">
-                                    <div class="card-icon">👨‍💼</div>
-                                    <div class="card-title">Commercial</div>
-                                </div>
-                                <div class="detail-value text-center">${clientData.salesperson || '-'}</div>
-                            </div>
-                            <div class="info-card">
-                                <div class="card-header">
-                                    <div class="card-icon">👤</div>
-                                    <div class="card-title">Créé par</div>
-                                </div>
-                                <div class="detail-value text-center">${clientData.userperson || '-'}</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Section assurance -->
-                    <div class="section">
-                        <div class="section-header">
-                            <div class="section-icon">🛡️</div>
-                            <div class="section-title">TIER PAYANT</div>
-                        </div>
-                        <div class="grid-2col">
-                            <div class="info-card">
-                                <div class="card-header">
-                                    <div class="card-icon">📋</div>
-                                    <div class="card-title">Assurance</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">Compagnie</div>
-                                    <div class="detail-value">${clientData.insuranceCompany || '-'}</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">N° Police</div>
-                                    <div class="detail-value">${clientData.policyNumber || '-'}</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">Taux</div>
-                                    <div class="detail-value">${clientData.coverageRate || '-'}</div>
-                                </div>
-                            </div>
-                            
-                            <div class="info-card">
-                                <div class="card-header">
-                                    <div class="card-icon">👤</div>
-                                    <div class="card-title">Assuré</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">Nom</div>
-                                    <div class="detail-value">${clientData.insuredName || '-'}</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">Part Assurance</div>
-                                    <div class="detail-value">${clientData.insurancePart || '-'}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- PAGE 3: DÉCHARGE DE RÉCEPTION -->
-                <div class="page">
-                    <div class="discharge-page">
-                        <div class="discharge-header">
-                            <div class="discharge-title">DÉCHARGE DE RÉCEPTION</div>
-                            <div class="discharge-subtitle">VOIR PLUS OPTIC SARL</div>
-                        </div>
-                        
-                        <div class="discharge-content">
-                            <div class="client-hero-card mb-3">
-                                <div class="client-main-info">
-                                    <div class="client-identity">
-                                        <h3>${clientData.fullname}</h3>
-                                        <div class="client-contact">
-                                            <span>📞 ${clientData.phone}</span>
-                                            ${clientData.policyNumber ? `<span>📋 N° Police: ${clientData.policyNumber}</span>` : ''}
-                                            ${clientData.insuranceCompany ? `<span>🏢 ${clientData.insuranceCompany}</span>` : ''}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <p>Je soussigné(e) <strong>${clientData.fullname}</strong>, reconnais avoir reçu en bon état de fonctionnement l'équipement optique commandé auprès de <strong>VOIR PLUS OPTIC SARL</strong>.</p>
-                            
-                            <div class="discharge-content mt-3">
-                                <strong>Équipement livré :</strong>
-                                <ul class="discharge-list">
-                                    <li>Une monture optique avec verres correcteurs montés</li>
-                                    <li>Un étui de protection rigide</li>
-                                    <li>Une chiffonnette microfibre de nettoyage</li>
-                                    <li>Un kit d'entretien complet</li>
-                                    <li>Documentation et garantie</li>
-                                </ul>
-                            </div>
-                            
-                            <div class="info-card mt-3">
-                                <div class="card-header">
-                                    <div class="card-icon">⚠️</div>
-                                    <div class="card-title">Conditions de réception</div>
-                                </div>
-                                <div class="discharge-content">
-                                    Je confirme que l'équipement reçu correspond parfaitement à ma commande et qu'aucun défaut apparent n'a été constaté au moment de la livraison. Toute réclamation pour défaut non apparent devra être signalée dans un délai de <strong>14 jours</strong> suivant la réception.
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="discharge-content text-center mt-3">
-                            <p>Fait à <strong>Cotonou</strong>, le <strong>${new Date().toLocaleDateString('fr-FR')}</strong></p>
-                        </div>
-                        
-                        <div class="signature-area">
-                            <div class="signature-box">
-                                <div class="signature-line"></div>
-                                <div class="signature-label">Signature du Client</div>
-                            </div>
-                            <div class="signature-box">
-                                <div class="signature-line"></div>
-                                <div class="signature-label">Signature de l'Opticien</div>
-                            </div>
-                        </div>
-                        
-                        <div class="print-footer">
-                            VOIR PLUS OPTIC SARL - Société à Responsabilité limitée au Capital de 1,200,000 F CFA<br>
-                            RCCM: RB/COT/23 B 35451 - IFU: 3202368717681 - Ecobank Benin RIB: BJ66 BJ06 01006 111509475001 52
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </body>
-        </html>
-    `);
-    
-    iframeDoc.close();
-    
-    // Lancer l'impression directement
-    setTimeout(() => {
-        iframe.contentWindow.print();
-        
-        // Nettoyer l'iframe après l'impression
-        setTimeout(() => {
-            document.body.removeChild(iframe);
-        }, 1000);
-    }, 500);
-}
-
-// Fonction pour générer et télécharger le PDF (version mobile)
-function generatePDF(clientData) {
-    // Créer le contenu HTML pour le PDF
-    const htmlContent = generateHTMLContent(clientData);
-
-    // Télécharger directement comme fichier HTML
-    downloadAsHTML(htmlContent, clientData);
-}
-
-// Fonction pour télécharger comme fichier HTML
-function downloadAsHTML(htmlContent, clientData) {
     try {
-        const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `fiche_client_${clientData.id}_${clientData.fullname.replace(/\s+/g, '_')}.html`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        // Afficher un indicateur de chargement
+        showLoadingIndicator('Génération du PDF en cours...');
+
+        // 1. D'abord, envoyer les données au serveur pour créer le reçu
+        const apiUrl = "https://script.google.com/macros/s/AKfycbzcgbKkkfBZgxlarLyLnsXy6sHpQBWox33RXi_W_DRwhM-fAqTvAWO5tkvBZnRcdxt4aQ/exec?action=addrecu";
         
-        // Afficher un message de confirmation
-        showMobileMessage('Fichier téléchargé avec succès!');
+        console.log("📤 Envoi des données au serveur...");
+        
+        // Préparer le payload avec l'ID du client
+        const payload = {
+            clientId: clientId
+        };
+
+        // Envoyer les données au serveur (no-cors comme demandé)
+        await fetch(apiUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        console.log("✅ Données envoyées au serveur");
+
+        // 2. Attendre un peu pour que le serveur traite les données
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        // 3. Récupérer le lien du PDF généré - URL FIXE
+        const pdfUrl = "https://script.google.com/macros/s/AKfycbzcgbKkkfBZgxlarLyLnsXy6sHpQBWox33RXi_W_DRwhM-fAqTvAWO5tkvBZnRcdxt4aQ/exec?action=getrecucaissepdf";
+        
+        console.log("📥 Récupération du PDF depuis:", pdfUrl);
+        
+        const response = await fetch(pdfUrl);
+        
+        if (!response.ok) {
+            throw new Error(`Erreur HTTP! statut: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        
+        console.log("📄 Réponse API:", result);
+        
+        // Vérifier les deux orthographes possibles (succès/success)
+        const isSuccess = result.succès || result.success;
+        const message = result.message || {};
+        const isMessageSuccess = message.succès || message.success;
+        
+        let finalPdfUrl = null;
+        
+        if (isSuccess && message && message.pdfUrl) {
+            finalPdfUrl = message.pdfUrl;
+            console.log("✅ PDF trouvé:", finalPdfUrl);
+        } else if (message && isMessageSuccess === false) {
+            console.warn("⚠️ Aucun PDF disponible:", message);
+            hideLoadingIndicator();
+            alert("Le PDF est en cours de génération. Veuillez patienter quelques secondes puis réessayer.");
+            return;
+        } else {
+            console.warn("⚠️ Structure de réponse inattendue:", result);
+            hideLoadingIndicator();
+            alert("Erreur inattendue lors de la génération du PDF.");
+            return;
+        }
+        
+        // 4. Ouvrir le PDF
+        if (finalPdfUrl) {
+            console.log("📄 Ouverture du PDF:", finalPdfUrl);
+            hideLoadingIndicator();
+            window.open(finalPdfUrl, '_blank');
+            
+            // Afficher un message de succès
+            showSuccessMessage("PDF généré avec succès! Ouverture dans un nouvel onglet.");
+        }
+        
     } catch (error) {
-        console.error('Erreur lors du téléchargement:', error);
-        // Fallback: ouvrir dans une nouvelle fenêtre
-        const printWindow = window.open('', '_blank');
-        printWindow.document.write(htmlContent);
-        printWindow.document.close();
+        console.error("❌ Erreur génération PDF:", error);
+        hideLoadingIndicator();
+        alert("Erreur lors de la génération du PDF: " + error.message);
     }
 }
 
-// Fonction pour afficher un message sur mobile
-function showMobileMessage(message) {
+// Fonction pour afficher un indicateur de chargement
+function showLoadingIndicator(message) {
+    hideLoadingIndicator();
+    
+    const loadingDiv = document.createElement('div');
+    loadingDiv.id = 'pdf-loading-indicator';
+    loadingDiv.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+        color: white;
+        font-family: Arial, sans-serif;
+    `;
+    
+    loadingDiv.innerHTML = `
+        <div style="background: white; padding: 30px; border-radius: 10px; text-align: center; color: #333;">
+            <div style="margin-bottom: 15px;">
+                <div class="spinner" style="border: 4px solid #f3f3f3; border-top: 4px solid #4361ee; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+            </div>
+            <div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">${message}</div>
+            <div style="font-size: 12px; color: #666;">Veuillez patienter...</div>
+        </div>
+        <style>
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        </style>
+    `;
+    
+    document.body.appendChild(loadingDiv);
+}
+
+// Fonction pour masquer l'indicateur de chargement
+function hideLoadingIndicator() {
+    const existingIndicator = document.getElementById('pdf-loading-indicator');
+    if (existingIndicator) {
+        document.body.removeChild(existingIndicator);
+    }
+}
+
+// Fonction pour afficher un message de succès
+function showSuccessMessage(message) {
     const messageDiv = document.createElement('div');
     messageDiv.style.cssText = `
         position: fixed;
         top: 20px;
         left: 50%;
         transform: translateX(-50%);
-        background: #4361ee;
+        background: #10b981;
         color: white;
         padding: 12px 20px;
         border-radius: 8px;
-        z-index: 10000;
+        z-index: 10001;
         font-family: Arial, sans-serif;
         font-size: 14px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.3);
@@ -3585,939 +2678,12 @@ function showMobileMessage(message) {
     document.body.appendChild(messageDiv);
     
     setTimeout(() => {
-        document.body.removeChild(messageDiv);
+        if (document.body.contains(messageDiv)) {
+            document.body.removeChild(messageDiv);
+        }
     }, 3000);
 }
 
-// Fonction pour générer le contenu HTML (identique à celui utilisé dans printDesktop)
-function generateHTMLContent(clientData) {
-    return `
-        <!DOCTYPE html>
-        <html lang="fr">
-        <head>
-            <meta charset="UTF-8">
-            <title>${clientData.name} | VOIR PLUS OPTIC</title>
-            <style>
-                /* === STYLES MODERNES POUR L'IMPRESSION === */
-                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-                
-                :root {
-                    --primary: #4361ee;
-                    --primary-light: #4895ef;
-                    --secondary: #3a0ca3;
-                    --accent: #7209b7;
-                    --success: #4cc9f0;
-                    --dark: #1e293b;
-                    --light: #f8fafc;
-                    --gray: #64748b;
-                    --border: #e2e8f0;
-                }
-                
-                * {
-                    margin: 0;
-                    padding: 0;
-                    box-sizing: border-box;
-                }
-                
-                body {
-                    font-family: 'Inter', sans-serif;
-                    line-height: 1.6;
-                    color: var(--dark);
-                    background: #ffffff;
-                    font-size: 10pt;
-                    width: 210mm;
-                    min-height: 297mm;
-                    margin: 0 auto;
-                    padding: 0;
-                }
-                
-                /* === LAYOUT PRINCIPAL === */
-                .print-container {
-                    max-width: 190mm;
-                    margin: 0 auto;
-                    padding: 15mm 0;
-                }
-                
-                .page {
-                    page-break-after: always;
-                    margin-bottom: 10mm;
-                }
-                
-                .page:last-child {
-                    page-break-after: auto;
-                }
-                
-                /* === EN-TÊTE PROFESSIONNELLE === */
-                .print-header {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: flex-start;
-                    margin-bottom: 6mm;
-                    padding-bottom: 4mm;
-                    border-bottom: 2px solid var(--primary);
-                    background: linear-gradient(135deg, var(--light) 0%, #ffffff 100%);
-                    padding: 4mm;
-                    border-radius: 12px;
-                    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-                }
-                
-                .company-brand {
-                    display: flex;
-                    align-items: center;
-                    gap: 3mm;
-                }
-                
-                .company-logo {
-                    width: 25mm;
-                    height: 25mm;
-                    border-radius: 8px;
-                    object-fit: contain;
-                    border: 1px solid var(--border);
-                    padding: 1mm;
-                    background: white;
-                }
-                
-                .company-info {
-                    flex: 1;
-                }
-                
-                .company-name {
-                    font-size: 14pt;
-                    font-weight: 700;
-                    color: var(--primary);
-                    margin-bottom: 1mm;
-                }
-                
-                .company-details {
-                    font-size: 8pt;
-                    color: var(--gray);
-                    line-height: 1.4;
-                }
-                
-                .document-meta {
-                    text-align: right;
-                    border-left: 1px solid var(--border);
-                    padding-left: 4mm;
-                }
-                
-                .document-title {
-                    font-size: 16pt;
-                    font-weight: 700;
-                    color: var(--dark);
-                    margin-bottom: 2mm;
-                }
-                
-                .document-subtitle {
-                    font-size: 9pt;
-                    color: var(--gray);
-                    font-weight: 500;
-                }
-                
-                /* === CARTE CLIENT PRINCIPALE === */
-                .client-hero-card {
-                    background: linear-gradient(135deg, #ffffff 0%, var(--light) 100%);
-                    border-radius: 16px;
-                    padding: 5mm;
-                    margin-bottom: 6mm;
-                    border: 1px solid var(--border);
-                    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-                    position: relative;
-                    overflow: hidden;
-                }
-                
-                .client-hero-card::before {
-                    content: '';
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 4px;
-                    height: 100%;
-                    background: linear-gradient(135deg, var(--primary), var(--accent));
-                }
-                
-                .client-main-info {
-                    display: grid;
-                    grid-template-columns: 2fr 1fr;
-                    gap: 4mm;
-                    margin-bottom: 3mm;
-                }
-                
-                .client-identity h1 {
-                    font-size: 18pt;
-                    font-weight: 700;
-                    color: var(--dark);
-                    margin-bottom: 1mm;
-                }
-                
-                .client-id {
-                    display: inline-block;
-                    background: var(--primary);
-                    color: white;
-                    padding: 1mm 3mm;
-                    border-radius: 20px;
-                    font-size: 8pt;
-                    font-weight: 600;
-                    margin-bottom: 2mm;
-                }
-                
-                .client-contact {
-                    display: flex;
-                    gap: 4mm;
-                    flex-wrap: wrap;
-                    font-size: 9pt;
-                    color: var(--gray);
-                }
-                
-                .client-status-badge {
-                    background: linear-gradient(135deg, var(--success), #4ade80);
-                    color: white;
-                    padding: 2mm 4mm;
-                    border-radius: 8px;
-                    font-weight: 600;
-                    font-size: 9pt;
-                    text-align: center;
-                    box-shadow: 0 2px 8px rgba(76, 201, 240, 0.3);
-                }
-                
-                /* === SECTIONS MODULAIRES === */
-                .section {
-                    margin-bottom: 6mm;
-                }
-                
-                .section-header {
-                    display: flex;
-                    align-items: center;
-                    gap: 3mm;
-                    margin-bottom: 3mm;
-                    padding-bottom: 2mm;
-                    border-bottom: 1px solid var(--border);
-                }
-                
-                .section-icon {
-                    width: 6mm;
-                    height: 6mm;
-                    background: linear-gradient(135deg, var(--primary), var(--accent));
-                    border-radius: 6px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    color: white;
-                    font-size: 7pt;
-                }
-                
-                .section-title {
-                    font-size: 12pt;
-                    font-weight: 700;
-                    color: var(--dark);
-                    flex: 1;
-                }
-                
-                /* === GRILLES MODERNES === */
-                .grid-2col {
-                    display: grid;
-                    grid-template-columns: 1fr 1fr;
-                    gap: 3mm;
-                }
-                
-                .grid-3col {
-                    display: grid;
-                    grid-template-columns: 1fr 1fr 1fr;
-                    gap: 3mm;
-                }
-                
-                .info-card {
-                    background: white;
-                    border: 1px solid var(--border);
-                    border-radius: 12px;
-                    padding: 3mm;
-                }
-                
-                .card-header {
-                    display: flex;
-                    align-items: center;
-                    gap: 2mm;
-                    margin-bottom: 2mm;
-                    padding-bottom: 1mm;
-                    border-bottom: 1px solid var(--border);
-                }
-                
-                .card-icon {
-                    width: 4mm;
-                    height: 4mm;
-                    background: var(--primary-light);
-                    border-radius: 4px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    color: white;
-                    font-size: 6pt;
-                }
-                
-                .card-title {
-                    font-size: 9pt;
-                    font-weight: 600;
-                    color: var(--dark);
-                }
-                
-                .detail-item {
-                    display: flex;
-                    justify-content: space-between;
-                    margin-bottom: 1mm;
-                    padding: 1mm 0;
-                    border-bottom: 1px dashed var(--border);
-                }
-                
-                .detail-item:last-child {
-                    border-bottom: none;
-                }
-                
-                .detail-label {
-                    font-size: 8pt;
-                    color: var(--gray);
-                    font-weight: 500;
-                }
-                
-                .detail-value {
-                    font-size: 9pt;
-                    color: var(--dark);
-                    font-weight: 600;
-                    text-align: right;
-                }
-                
-                /* === SECTION MÉDICALE AVANCÉE === */
-                .medical-grid {
-                    display: grid;
-                    grid-template-columns: 1fr 1fr;
-                    gap: 3mm;
-                }
-                
-                .eye-prescription {
-                    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-                    border-radius: 12px;
-                    padding: 3mm;
-                    border: 1px solid #bae6fd;
-                }
-                
-                .eye-title {
-                    text-align: center;
-                    font-size: 10pt;
-                    font-weight: 700;
-                    color: var(--primary);
-                    margin-bottom: 2mm;
-                    padding-bottom: 1mm;
-                    border-bottom: 2px solid var(--primary-light);
-                }
-                
-                .prescription-grid {
-                    display: grid;
-                    grid-template-columns: 1fr 1fr;
-                    gap: 2mm;
-                }
-                
-                .prescription-item {
-                    text-align: center;
-                }
-                
-                .prescription-label {
-                    font-size: 7pt;
-                    color: var(--gray);
-                    font-weight: 500;
-                    margin-bottom: 0.5mm;
-                }
-                
-                .prescription-value {
-                    font-size: 9pt;
-                    font-weight: 700;
-                    color: var(--dark);
-                    background: white;
-                    padding: 1mm;
-                    border-radius: 6px;
-                    border: 1px solid var(--border);
-                }
-                
-                /* === TABLEAUX FINANCIERS === */
-                .financial-summary {
-                    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-                    border-radius: 12px;
-                    padding: 4mm;
-                    border: 1px solid #bbf7d0;
-                }
-                
-                .amount-grid {
-                    display: grid;
-                    grid-template-columns: repeat(auto-fit, minmax(40mm, 1fr));
-                    gap: 2mm;
-                }
-                
-                .amount-item {
-                    text-align: center;
-                    padding: 2mm;
-                    background: white;
-                    border-radius: 8px;
-                    border: 1px solid var(--border);
-                }
-                
-                .amount-label {
-                    font-size: 7pt;
-                    color: var(--gray);
-                    margin-bottom: 1mm;
-                }
-                
-                .amount-value {
-                    font-size: 11pt;
-                    font-weight: 700;
-                    color: var(--primary);
-                }
-                
-                .amount-date {
-                    font-size: 6pt;
-                    color: var(--gray);
-                    margin-top: 0.5mm;
-                }
-                
-                /* === DÉCHARGE DE RÉCEPTION === */
-                .discharge-page {
-                    background: white;
-                    min-height: 148mm;
-                    padding: 15mm;
-                    border: 2px solid var(--border);
-                    border-radius: 8px;
-                    position: relative;
-                }
-                
-                .discharge-header {
-                    text-align: center;
-                    margin-bottom: 6mm;
-                    padding-bottom: 3mm;
-                    border-bottom: 3px double var(--primary);
-                }
-                
-                .discharge-title {
-                    font-size: 16pt;
-                    font-weight: 700;
-                    color: var(--dark);
-                    margin-bottom: 2mm;
-                    text-transform: uppercase;
-                    letter-spacing: 1px;
-                }
-                
-                .discharge-subtitle {
-                    font-size: 10pt;
-                    color: var(--gray);
-                }
-                
-                .discharge-content {
-                    margin-bottom: 4mm;
-                    line-height: 1.8;
-                }
-                
-                .discharge-list {
-                    margin: 3mm 0 3mm 5mm;
-                }
-                
-                .discharge-list li {
-                    margin-bottom: 1mm;
-                    position: relative;
-                }
-                
-                .discharge-list li::before {
-                    content: "▸";
-                    color: var(--primary);
-                    font-weight: bold;
-                    position: absolute;
-                    left: -3mm;
-                }
-                
-                .signature-area {
-                    display: grid;
-                    grid-template-columns: 1fr 1fr;
-                    gap: 10mm;
-                    margin-top: 10mm;
-                    padding-top: 4mm;
-                    border-top: 2px dashed var(--border);
-                }
-                
-                .signature-box {
-                    text-align: center;
-                }
-                
-                .signature-line {
-                    width: 80%;
-                    height: 1px;
-                    background: var(--dark);
-                    margin: 8mm auto 2mm;
-                }
-                
-                .signature-label {
-                    font-size: 8pt;
-                    color: var(--gray);
-                    font-weight: 500;
-                }
-                
-                /* === PIED DE PAGE === */
-                .print-footer {
-                    text-align: center;
-                    margin-top: 8mm;
-                    padding-top: 3mm;
-                    border-top: 1px solid var(--border);
-                    font-size: 7pt;
-                    color: var(--gray);
-                    line-height: 1.4;
-                }
-                
-                /* === IMPRESSION OPTIMISÉE === */
-                @media print {
-                    body {
-                        width: 210mm;
-                        height: 297mm;
-                        margin: 0;
-                        padding: 0;
-                    }
-                    
-                    .print-container {
-                        max-width: 190mm;
-                        margin: 0 auto;
-                        padding: 15mm 0;
-                    }
-                    
-                    .page {
-                        page-break-after: always;
-                        margin-bottom: 0;
-                    }
-                    
-                    .page:last-child {
-                        page-break-after: auto;
-                    }
-                }
-                
-                /* === UTILITAIRES === */
-                .text-center { text-align: center; }
-                .text-right { text-align: right; }
-                .mb-2 { margin-bottom: 2mm; }
-                .mb-3 { margin-bottom: 3mm; }
-                .mt-2 { margin-top: 2mm; }
-                .mt-3 { margin-top: 3mm; }
-            </style>
-        </head>
-        <body>
-            <div class="print-container">
-                
-                <!-- PAGE 1: FICHE CLIENT COMPLÈTE -->
-                <div class="page">
-                    <!-- En-tête professionnel -->
-                    <div class="print-header">
-                        <div class="company-brand">
-                            <img src="logo.png" alt="VOIR PLUS OPTIC" class="company-logo">
-                            <div class="company-info">
-                                <div class="company-name">VOIR PLUS OPTIC SARL</div>
-                                <div class="company-details">
-                                    0142749495 | IFU: 3202368717681<br>
-                                    optivoirplus@gmail.com
-                                </div>
-                            </div>
-                        </div>
-                        <div class="document-meta">
-                            <div class="document-title"> Reçu de caisse</div>
-                            <div class="document-subtitle">
-                                Généré le ${new Date().toLocaleDateString('fr-FR', { 
-                                    year: 'numeric', 
-                                    month: 'long', 
-                                    day: 'numeric',
-                                    hour: '2-digit',
-                                    minute: '2-digit'
-                                })}
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Carte client principale -->
-                    <div class="client-hero-card">
-                        <div class="client-main-info">
-                            <div class="client-identity">
-                                <h1>${clientData.fullname}</h1>
-                                <span class="client-id">${clientData.id}</span>
-                                <div class="client-contact">
-                                    <span>📞 ${clientData.phone}</span>
-                                    <span>🏢 ${clientData.company}</span>
-                                    <span>🎂 ${clientData.birthdate}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Section financière -->
-                    <div class="section">
-                        <div class="section-header">
-                            <div class="section-icon">💰</div>
-                            <div class="section-title">INFORMATION FINANCIÈRE</div>
-                        </div>
-                        <div class="financial-summary">
-                            <div class="amount-grid">
-                                <div class="amount-item">
-                                    <div class="amount-label">Net à Payer</div>
-                                    <div class="amount-value">${clientData.netAmount}</div>
-                                </div>
-                                <div class="amount-item">
-                                    <div class="amount-label">Acompte</div>
-                                    <div class="amount-value">${clientData.depositAmount || '0 FCFA'}</div>
-                                    <div class="amount-date">${clientData.depositDate || ''}</div>
-                                </div>
-                                ${clientData.complement1Amount ? `
-                                <div class="amount-item">
-                                    <div class="amount-label">Complément 1</div>
-                                    <div class="amount-value">${clientData.complement1Amount}</div>
-                                    <div class="amount-date">${clientData.complement1Date || ''}</div>
-                                </div>` : ''}
-                                ${clientData.complement2Amount ? `
-                                <div class="amount-item">
-                                    <div class="amount-label">Complément 2</div>
-                                    <div class="amount-value">${clientData.complement2Amount}</div>
-                                    <div class="amount-date">${clientData.complement2Date || ''}</div>
-                                </div>` : ''}
-                                <div class="amount-item">
-                                    <div class="amount-label">Reste à Payer</div>
-                                    <div class="amount-value">${clientData.remainingAmount}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Section prescription médicale -->
-                    <div class="section">
-                        <div class="section-header">
-                            <div class="section-icon">👁️</div>
-                            <div class="section-title">PRESCRIPTION MÉDICALE</div>
-                        </div>
-                        <div class="medical-grid">
-                            <div class="eye-prescription">
-                                <div class="eye-title">ŒIL DROIT (OD)</div>
-                                <div class="prescription-grid">
-                                    <div class="prescription-item">
-                                        <div class="prescription-label">Sphere</div>
-                                        <div class="prescription-value">${clientData.odSphere || '-'}</div>
-                                    </div>
-                                    <div class="prescription-item">
-                                        <div class="prescription-label">Cylindre</div>
-                                        <div class="prescription-value">${clientData.odCylinder || '-'}</div>
-                                    </div>
-                                    <div class="prescription-item">
-                                        <div class="prescription-label">Axe</div>
-                                        <div class="prescription-value">${clientData.odAxis || '-'}</div>
-                                    </div>
-                                    <div class="prescription-item">
-                                        <div class="prescription-label">ADD</div>
-                                        <div class="prescription-value">${clientData.odAdd || '-'}</div>
-                                    </div>
-                                    <div class="prescription-item">
-                                        <div class="prescription-label">DP</div>
-                                        <div class="prescription-value">${clientData.odDp || '-'}</div>
-                                    </div>
-                                    <div class="prescription-item">
-                                        <div class="prescription-label">Hauteur</div>
-                                        <div class="prescription-value">${clientData.odHeight || '-'}</div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="eye-prescription">
-                                <div class="eye-title">ŒIL GAUCHE (OG)</div>
-                                <div class="prescription-grid">
-                                    <div class="prescription-item">
-                                        <div class="prescription-label">Sphere</div>
-                                        <div class="prescription-value">${clientData.ogSphere || '-'}</div>
-                                    </div>
-                                    <div class="prescription-item">
-                                        <div class="prescription-label">Cylindre</div>
-                                        <div class="prescription-value">${clientData.ogCylinder || '-'}</div>
-                                    </div>
-                                    <div class="prescription-item">
-                                        <div class="prescription-label">Axe</div>
-                                        <div class="prescription-value">${clientData.ogAxis || '-'}</div>
-                                    </div>
-                                    <div class="prescription-item">
-                                        <div class="prescription-label">ADD</div>
-                                        <div class="prescription-value">${clientData.ogAdd || '-'}</div>
-                                    </div>
-                                    <div class="prescription-item">
-                                        <div class="prescription-label">DP</div>
-                                        <div class="prescription-value">${clientData.ogDp || '-'}</div>
-                                    </div>
-                                    <div class="prescription-item">
-                                        <div class="prescription-label">Hauteur</div>
-                                        <div class="prescription-value">${clientData.ogHeight || '-'}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Section informations médicales -->
-                    <div class="section">
-                        <div class="section-header">
-                            <div class="section-icon">🏥</div>
-                            <div class="section-title">INFORMATIONS MÉDICALES</div>
-                        </div>
-                        <div class="grid-3col">
-                            <div class="info-card">
-                                <div class="card-header">
-                                    <div class="card-icon">🏥</div>
-                                    <div class="card-title">Clinique</div>
-                                </div>
-                                <div class="detail-value text-center">${clientData.clinic || '-'}</div>
-                            </div>
-                            <div class="info-card">
-                                <div class="card-header">
-                                    <div class="card-icon">👨‍⚕️</div>
-                                    <div class="card-title">Ophtalmologue</div>
-                                </div>
-                                <div class="detail-value text-center">${clientData.ophthalmologist || '-'}</div>
-                            </div>
-                            <div class="info-card">
-                                <div class="card-header">
-                                    <div class="card-icon">📅</div>
-                                    <div class="card-title">Date de Soin</div>
-                                </div>
-                                <div class="detail-value text-center">${clientData.careDate || '-'}</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="print-footer">
-                        VOIR PLUS OPTIC SARL - Société à Responsabilité limitée au Capital de 1,200,000 F CFA<br>
-                        RCCM: RB/COT/23 B 35451 - IFU: 3202368717681 - Ecobank Benin RIB: BJ66 BJ06 01006 111509475001 52
-                    </div>
-                </div>
-                
-                <!-- PAGE 2: DÉTAILS COMMANDE ET ASSURANCE -->
-                <div class="page">
-                    <div class="print-header">
-                        <div class="company-brand">
-                            <img src="logo.png" alt="VOIR PLUS OPTIC" class="company-logo">
-                            <div class="company-info">
-                                <div class="company-name">VOIR PLUS OPTIC SARL</div>
-                                <div class="company-details">Détails de la commande</div>
-                            </div>
-                        </div>
-                        <div class="document-meta">
-                            <div class="document-title">FICHE DE COMMANDE</div>
-                            <h1>${clientData.fullname}</h1>
-                            <div class="document-subtitle">Client: ${clientData.id}</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Section commande -->
-                    <div class="section">
-                        <div class="section-header">
-                            <div class="section-icon">🛒</div>
-                            <div class="section-title">DÉTAILS DE LA COMMANDE</div>
-                        </div>
-                        <div class="grid-2col">
-                            <div class="info-card">
-                                <div class="card-header">
-                                    <div class="card-icon">👓</div>
-                                    <div class="card-title">Verres</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">Type</div>
-                                    <div class="detail-value">${clientData.lensType || '-'}</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">Gamme</div>
-                                    <div class="detail-value">${clientData.lensRange || '-'}</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">Montant</div>
-                                    <div class="detail-value">${clientData.lensAmount || '-'}</div>
-                                </div>
-                            </div>
-                            
-                            <div class="info-card">
-                                <div class="card-header">
-                                    <div class="card-icon">📦</div>
-                                    <div class="card-title">Monture</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">Choix</div>
-                                    <div class="detail-value">${clientData.frameChoice || '-'}</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">Montant</div>
-                                    <div class="detail-value">${clientData.frameAmount || '-'}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Section vente -->
-                    <div class="section">
-                        <div class="section-header">
-                            <div class="section-icon">🏪</div>
-                            <div class="section-title">INFORMATION VENTE</div>
-                        </div>
-                        <div class="grid-3col">
-                            <div class="info-card">
-                                <div class="card-header">
-                                    <div class="card-icon">🏢</div>
-                                    <div class="card-title">Agence</div>
-                                </div>
-                                <div class="detail-value text-center">${clientData.agency || '-'}</div>
-                            </div>
-                            <div class="info-card">
-                                <div class="card-header">
-                                    <div class="card-icon">👨‍💼</div>
-                                    <div class="card-title">Commercial</div>
-                                </div>
-                                <div class="detail-value text-center">${clientData.salesperson || '-'}</div>
-                            </div>
-                            <div class="info-card">
-                                <div class="card-header">
-                                    <div class="card-icon">👤</div>
-                                    <div class="card-title">Créé par</div>
-                                </div>
-                                <div class="detail-value text-center">${clientData.userperson || '-'}</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Section assurance -->
-                    <div class="section">
-                        <div class="section-header">
-                            <div class="section-icon">🛡️</div>
-                            <div class="section-title">TIER PAYANT</div>
-                        </div>
-                        <div class="grid-2col">
-                            <div class="info-card">
-                                <div class="card-header">
-                                    <div class="card-icon">📋</div>
-                                    <div class="card-title">Assurance</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">Compagnie</div>
-                                    <div class="detail-value">${clientData.insuranceCompany || '-'}</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">N° Police</div>
-                                    <div class="detail-value">${clientData.policyNumber || '-'}</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">Taux</div>
-                                    <div class="detail-value">${clientData.coverageRate || '-'}</div>
-                                </div>
-                            </div>
-                            
-                            <div class="info-card">
-                                <div class="card-header">
-                                    <div class="card-icon">👤</div>
-                                    <div class="card-title">Assuré</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">Nom</div>
-                                    <div class="detail-value">${clientData.insuredName || '-'}</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">Part Assurance</div>
-                                    <div class="detail-value">${clientData.insurancePart || '-'}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- PAGE 3: DÉCHARGE DE RÉCEPTION -->
-                <div class="page">
-                    <div class="discharge-page">
-                        <div class="discharge-header">
-                            <div class="discharge-title">DÉCHARGE DE RÉCEPTION</div>
-                            <div class="discharge-subtitle">VOIR PLUS OPTIC SARL</div>
-                        </div>
-                        
-                        <div class="discharge-content">
-                            <div class="client-hero-card mb-3">
-                                <div class="client-main-info">
-                                    <div class="client-identity">
-                                        <h3>${clientData.fullname}</h3>
-                                        <div class="client-contact">
-                                            <span>📞 ${clientData.phone}</span>
-                                            ${clientData.policyNumber ? `<span>📋 N° Police: ${clientData.policyNumber}</span>` : ''}
-                                            ${clientData.insuranceCompany ? `<span>🏢 ${clientData.insuranceCompany}</span>` : ''}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <p>Je soussigné(e) <strong>${clientData.fullname}</strong>, reconnais avoir reçu en bon état de fonctionnement l'équipement optique commandé auprès de <strong>VOIR PLUS OPTIC SARL</strong>.</p>
-                            
-                            <div class="discharge-content mt-3">
-                                <strong>Équipement livré :</strong>
-                                <ul class="discharge-list">
-                                    <li>Une monture optique avec verres correcteurs montés</li>
-                                    <li>Un étui de protection rigide</li>
-                                    <li>Une chiffonnette microfibre de nettoyage</li>
-                                    <li>Un kit d'entretien complet</li>
-                                    <li>Documentation et garantie</li>
-                                </ul>
-                            </div>
-                            
-                            <div class="info-card mt-3">
-                                <div class="card-header">
-                                    <div class="card-icon">⚠️</div>
-                                    <div class="card-title">Conditions de réception</div>
-                                </div>
-                                <div class="discharge-content">
-                                    Je confirme que l'équipement reçu correspond parfaitement à ma commande et qu'aucun défaut apparent n'a été constaté au moment de la livraison. Toute réclamation pour défaut non apparent devra être signalée dans un délai de <strong>14 jours</strong> suivant la réception.
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="discharge-content text-center mt-3">
-                            <p>Fait à <strong>Cotonou</strong>, le <strong>${new Date().toLocaleDateString('fr-FR')}</strong></p>
-                        </div>
-                        
-                        <div class="signature-area">
-                            <div class="signature-box">
-                                <div class="signature-line"></div>
-                                <div class="signature-label">Signature du Client</div>
-                            </div>
-                            <div class="signature-box">
-                                <div class="signature-line"></div>
-                                <div class="signature-label">Signature de l'Opticien</div>
-                            </div>
-                        </div>
-                        
-                        <div class="print-footer">
-                            VOIR PLUS OPTIC SARL - Société à Responsabilité limitée au Capital de 1,200,000 F CFA<br>
-                            RCCM: RB/COT/23 B 35451 - IFU: 3202368717681 - Ecobank Benin RIB: BJ66 BJ06 01006 111509475001 52
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </body>
-        </html>
-    `;
-}
-
-// Version alternative avec html2pdf.js (optionnelle)
-function generatePDFWithLibrary(clientData) {
-    if (typeof html2pdf !== 'undefined') {
-        const element = document.createElement('div');
-        element.innerHTML = generateHTMLContent(clientData);
-        document.body.appendChild(element);
-        
-        const opt = {
-            margin: 10,
-            filename: `fiche_client_${clientData.id}_${clientData.fullname.replace(/\s+/g, '_')}.pdf`,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-        
-        html2pdf().set(opt).from(element).save().then(() => {
-            document.body.removeChild(element);
-        });
-    } else {
-        // Fallback si la bibliothèque n'est pas disponible
-        generatePDF(clientData);
-    }
-}
 // ==================== GESTION DES COMPLÉMENTS ====================
 function showComplementDialog() {
     const modalContainer = document.getElementById('modal-container');
@@ -4679,6 +2845,7 @@ function showComplementDialog() {
         }
     }, 10);
 }
+
 // Gestion du clavier virtuel sur mobile
 function setupMobileKeyboardHandling() {
     const modal = document.getElementById('complement-dialog');
@@ -4721,6 +2888,7 @@ function adjustModalForKeyboard() {
         modalCard.style.maxHeight = '90vh';
     }
 }
+
 // Validation du montant du complément
 function validateComplementAmount(input) {
     const amount = parseFloat(input.value) || 0;
@@ -4792,7 +2960,7 @@ async function submitComplementForm() {
     submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Enregistrement...';
 
     try {
-        const apiUrl = "https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=addComplement";
+        const apiUrl = "https://script.google.com/macros/s/AKfycbzcgbKkkfBZgxlarLyLnsXy6sHpQBWox33RXi_W_DRwhM-fAqTvAWO5tkvBZnRcdxt4aQ/exec?action=addComplement";
 
         const response = await fetch(apiUrl, {
             method: 'POST',
@@ -4949,7 +3117,7 @@ function updateStatusBadge(status) {
 async function loadEtuiReferences() {
     try {
         console.log('[loadEtuiReferences] Début du chargement des références');
-        const apiUrl = 'https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=catalogue';
+        const apiUrl = 'https://script.google.com/macros/s/AKfycbzcgbKkkfBZgxlarLyLnsXy6sHpQBWox33RXi_W_DRwhM-fAqTvAWO5tkvBZnRcdxt4aQ/exec?action=catalogue';
         
         console.log('[loadEtuiReferences] URL appelée:', apiUrl);
         const response = await fetch(apiUrl);
@@ -5212,7 +3380,7 @@ async function updateDealStatus(newStatus, deliveryInfo = null) {
     }
 
     try {
-        const apiUrl = "https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=updateDealStatus";
+        const apiUrl = "https://script.google.com/macros/s/AKfycbzcgbKkkfBZgxlarLyLnsXy6sHpQBWox33RXi_W_DRwhM-fAqTvAWO5tkvBZnRcdxt4aQ/exec?action=updateDealStatus";
         
         console.log('[updateDealStatus] Envoi des données:', statusData);
         
@@ -5539,7 +3707,7 @@ async function saveCallLog() {
     saveButton.disabled = true;
 
     try {
-        const apiUrl = "https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=logCall";
+        const apiUrl = "https://script.google.com/macros/s/AKfycbzcgbKkkfBZgxlarLyLnsXy6sHpQBWox33RXi_W_DRwhM-fAqTvAWO5tkvBZnRcdxt4aQ/exec?action=logCall";
         
         const response = await fetch(apiUrl, {
             method: 'POST',
@@ -5598,7 +3766,7 @@ function initializeCallSystem() {
     }
     
     // Vérifier les appels en attente au chargement de la page
-    setTimeout(openAutoCallLog, 1000);
+    //setTimeout(openAutoCallLog, 1000);
     
     // Configurer la fermeture des modales en cliquant à l'extérieur
     setupModalCloseHandlers();
@@ -5876,6 +4044,7 @@ style.textContent = `
 document.head.appendChild(style);
 </script>
 <!-- Modal de confirmation d'appel -->
+<!-- Modal de confirmation d'appel -->
 <div class="call-modal" id="callConfirmationModal">
     <div class="modal-dialog">
         <div class="modal-header">
@@ -5938,5 +4107,10 @@ document.head.appendChild(style);
         </div>
     </div>
 </div>
+
+<!-- Bouton d'appel mobile -->
+<button class="mobile-call-btn" id="mobileCallBtn" style="display: none;">
+    <i class="fas fa-phone"></i>
+</button>
 </body>
 </html>
