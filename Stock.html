@@ -1447,7 +1447,7 @@ async function loadProduitData() {
     try {
         showLoadingState();
         
-        const apiUrl = 'https://script.google.com/macros/s/AKfycbzcgbKkkfBZgxlarLyLnsXy6sHpQBWox33RXi_W_DRwhM-fAqTvAWO5tkvBZnRcdxt4aQ/exec?action=importproduits';
+        const apiUrl = 'https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=importproduits';
         
         const response = await fetch(apiUrl);
         
@@ -2514,7 +2514,7 @@ async function regenererCode() {
         }
         
         // Appeler l'API pour générer un nouveau code
-        const response = await fetch('https://script.google.com/macros/s/AKfycbzcgbKkkfBZgxlarLyLnsXy6sHpQBWox33RXi_W_DRwhM-fAqTvAWO5tkvBZnRcdxt4aQ/exec?action=accesinventaire', {
+        const response = await fetch('https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=accesinventaire', {
             method: 'GET',
             mode: 'no-cors'
         });
@@ -2568,7 +2568,7 @@ async function verifierCodeAcces() {
         }
         
         // Appeler l'API pour vérifier le code
-        const response = await fetch(`https://script.google.com/macros/s/AKfycbzcgbKkkfBZgxlarLyLnsXy6sHpQBWox33RXi_W_DRwhM-fAqTvAWO5tkvBZnRcdxt4aQ/exec?action=codeaccess&code=${code}`, {
+        const response = await fetch(`https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=codeaccess&code=${code}`, {
             method: 'GET',
             mode: 'no-cors'
         });
@@ -2831,7 +2831,7 @@ async function validerMiseAJourInventaire() {
 
     try {
         // Configuration identique au premier code
-        const apiUrl = "https://script.google.com/macros/s/AKfycbzcgbKkkfBZgxlarLyLnsXy6sHpQBWox33RXi_W_DRwhM-fAqTvAWO5tkvBZnRcdxt4aQ/exec?action=inventaire";
+        const apiUrl = "https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=inventaire";
 
         const inventaireData = {
             action: 'inventaire',
