@@ -2049,7 +2049,7 @@ async function loadClientsData() {
     try {
         showLoadingState();
         
-        const apiUrl = 'https://script.google.com/macros/s/AKfycbzcgbKkkfBZgxlarLyLnsXy6sHpQBWox33RXi_W_DRwhM-fAqTvAWO5tkvBZnRcdxt4aQ/exec?action=dataclient';
+        const apiUrl = 'https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=dataclient';
         
         const response = await fetch(apiUrl);
         
@@ -2732,7 +2732,7 @@ async function prepareCommandesData(selectedClientsData) {
 
 // Fonction pour récupérer les détails d'un client depuis l'API
 async function fetchClientDetails(clientId) {
-    const apiUrl = `https://script.google.com/macros/s/AKfycbzcgbKkkfBZgxlarLyLnsXy6sHpQBWox33RXi_W_DRwhM-fAqTvAWO5tkvBZnRcdxt4aQ/exec?action=dataclient`;
+    const apiUrl = `https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=dataclient`;
     
     const response = await fetch(apiUrl);
     if (!response.ok) {
@@ -3133,7 +3133,7 @@ async function updateClientStatuses() {
 
 // Fonction pour envoyer les mises à jour de statut à l'API
 async function sendStatusUpdates(statusUpdates) {
-    const apiUrl = "https://script.google.com/macros/s/AKfycbzcgbKkkfBZgxlarLyLnsXy6sHpQBWox33RXi_W_DRwhM-fAqTvAWO5tkvBZnRcdxt4aQ/exec?action=addpo";
+    const apiUrl = "https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=addpo";
     
     try {
         // Préparer les données pour l'API
