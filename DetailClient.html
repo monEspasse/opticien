@@ -2927,9 +2927,9 @@ async function submitComplementForm() {
         return;
     }
     
-    // Validation supplémentaire du montant
     const amount = parseFloat(document.getElementById('complementAmount').value);
     const maxAmount = parseFloat(document.getElementById('complementAmount').max);
+    const paymentType = document.getElementById('paymentType').value;
     
     if (amount > maxAmount) {
         formMessage.textContent = `Le montant ne peut pas dépasser ${maxAmount.toLocaleString('fr-FR')} FCFA`;
@@ -2940,18 +2940,30 @@ async function submitComplementForm() {
     const username = sessionStorage.getItem("utilisateur") || localStorage.getItem("utilisateur");
     const clientName = document.getElementById('client-name').textContent;
     const agency = document.getElementById('agency').textContent;
-    const paymentType = document.getElementById('paymentType').value;
+    
+    // CALCUL FINAL DU MONTANT COTÉ CLIENT
+    let finalAmount = amount;
+    
+    if (paymentType === 'Complement 2 (Addition)') {
+        // Récupérer le complement2 actuel depuis l'interface
+        const currentComplement2 = parseFloat(document.getElementById('complement2-amount').textContent.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+        // Calculer le nouveau total
+        finalAmount = currentComplement2 + amount;
+        
+        console.log(`Complement Addition: ${currentComplement2} + ${amount} = ${finalAmount}`);
+    }
     
     const complementData = {
         action: 'addComplement',
         clientId: document.getElementById('clientId').value,
-        amount: amount,
+        amount: finalAmount, // ENVOYER LE MONTANT FINAL CALCULÉ
         date: document.getElementById('complementDate').value,
         notes: document.getElementById('complementNotes').value.trim(),
         utilisateur: username,
         clientName: clientName,
         agence: agency,
         paymentType: paymentType,
+        originalAmount: amount, // Garder le montant original pour référence
         maxAmount: maxAmount
     };
 
@@ -2974,10 +2986,8 @@ async function submitComplementForm() {
         formMessage.textContent = `✅ ${paymentType} enregistré avec succès !`;
         formMessage.classList.add('success');
         
-        // Fermer la modale après un délai
         setTimeout(() => {
             closeModal();
-            // Recharger les données du client pour mettre à jour l'affichage
             const clientId = complementData.clientId;
             if (typeof loadClientData === 'function') {
                 loadClientData(clientId);
@@ -2992,7 +3002,6 @@ async function submitComplementForm() {
         submitButton.innerHTML = '<i class="fas fa-check"></i> Enregistrer';
     }
 }
-
 function closeModal() {
     const modal = document.getElementById('complement-dialog');
     if (modal) {
