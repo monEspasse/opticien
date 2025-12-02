@@ -9045,7 +9045,8 @@ window.openCaisse = function(action, title) {
                                     <span>à</span>
                                     <input type="date" id="${endId}" class="form-control">
                                 </div>
-                              <div class="filter-item">
+                            </div>
+                            <div class="filter-item">
                                 <label><i class="fas fa-user"></i> Utilisateur</label>
                                 <select id="${userFilterId}" class="form-control select-control">
                                     <option value="">Tous les utilisateurs</option>
@@ -9060,7 +9061,7 @@ window.openCaisse = function(action, title) {
                                     <option value="Sortie">Sortie</option>
                                 </select>
                             </div>
-                            </div>
+                            
                             <div class="filter-item">
                                 <button class="btn btn-outline-secondary" onclick="resetCaisse('${action}')">
                                     <i class="fas fa-undo"></i> Réinitialiser
@@ -9173,19 +9174,16 @@ async function loadCaisse(action) {
             };
         });
 
-        // Trier les données par date en ordre décroissant pour obtenir la dernière valeur "En Caisse"
-        caisseDataStore[action].sort((a, b) => b.Date - a.Date);
-
         // Mettre à jour les filtres utilisateur
         updateUserFilter(action);
 
         setupFilters(action);
         displayCaisse(action, caisseDataStore[action]);
 
-        // Trouver et afficher la dernière valeur "En Caisse"
-        const latestCaisseEntry = caisseDataStore[action][0];
-        if (latestCaisseEntry && currentCaisseDiv) {
-            currentCaisseDiv.textContent = `${latestCaisseEntry.EnCaisse.toFixed(2)} `;
+        // Calculer la valeur "En Caisse" comme somme des mouvements (Entrée - Sortie)
+        const totalCaisse = calculateCurrentCaisse(caisseDataStore[action]);
+        if (currentCaisseDiv) {
+            currentCaisseDiv.textContent = `${totalCaisse.toFixed(2)} `;
         }
 
     } catch (error) {
@@ -9196,6 +9194,22 @@ async function loadCaisse(action) {
             currentCaisseDiv.textContent = 'Erreur';
         }
     }
+}
+
+// =========================
+// 🔹 Fonction pour calculer "En Caisse"
+// =========================
+function calculateCurrentCaisse(data) {
+    if (!data || !Array.isArray(data)) return 0;
+    
+    return data.reduce((total, item) => {
+        if (item.Mouvement === 'Entrée') {
+            return total + item.Montant;
+        } else if (item.Mouvement === 'Sortie') {
+            return total - item.Montant;
+        }
+        return total;
+    }, 0);
 }
 
 // =========================
@@ -9238,6 +9252,8 @@ function applyCaisseFilter(action) {
     const endDate = document.getElementById(`end-${action}`).value;
     const selectedUser = document.getElementById(`userFilter-${action}`).value;
     const selectedMouvement = document.getElementById(`mouvementFilter-${action}`).value;
+    const currentCaisseId = `currentCaisse-${action}`;
+    const currentCaisseDiv = document.getElementById(currentCaisseId);
     
     const allData = caisseDataStore[action] || [];
 
@@ -9261,7 +9277,14 @@ function applyCaisseFilter(action) {
 
     displayCaisse(action, filteredData);
     
+    // Calculer et mettre à jour la valeur "En Caisse" pour les données filtrées
+    const totalCaisse = calculateCurrentCaisse(filteredData);
+    if (currentCaisseDiv) {
+        currentCaisseDiv.textContent = `${totalCaisse.toFixed(2)} `;
+    }
+    
     // Afficher le message avec les détails des filtres
+    let message = `📊 Affichage de ${filteredData.length} enregistrement(s)`;
     if (selectedUser || selectedMouvement || startDate || endDate) {
         message += ' (filtres appliqués)';
     }
@@ -9269,12 +9292,22 @@ function applyCaisseFilter(action) {
 }
 
 function resetCaisse(action) {
+    const currentCaisseId = `currentCaisse-${action}`;
+    const currentCaisseDiv = document.getElementById(currentCaisseId);
+    
     document.getElementById(`start-${action}`).value = '';
     document.getElementById(`end-${action}`).value = '';
     document.getElementById(`userFilter-${action}`).value = '';
     document.getElementById(`mouvementFilter-${action}`).value = '';
     
     displayCaisse(action, caisseDataStore[action]);
+    
+    // Recalculer la valeur "En Caisse" pour toutes les données
+    const totalCaisse = calculateCurrentCaisse(caisseDataStore[action]);
+    if (currentCaisseDiv) {
+        currentCaisseDiv.textContent = `${totalCaisse.toFixed(2)} `;
+    }
+    
     showCaisseMessage(action, `↻ Affichage de tous les ${caisseDataStore[action].length} enregistrements`, 'info');
 }
 
@@ -9295,38 +9328,49 @@ function displayCaisse(action, data) {
 
     const formatCurrency = val => val.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-    const rows = data.map(item => `
-        <tr>
-            <td>${item.Date?.toLocaleDateString('fr-FR')}</td>
-            <td>${item.Designation}</td>
-            <td class="text-right">${formatCurrency(item.Montant)}</td>
-            <td>
-                <span class="badge ${item.Mouvement === 'Entrée' ? 'badge-success' : 'badge-danger'}">
-                    ${item.Mouvement}
-                </span>
-            </td>
-            <td>${item.User}</td>
-            <td class="text-right"><strong>${formatCurrency(item.EnCaisse)}</strong></td>
-            <td>${item.Categorie}</td>
-            <td>${item.Note}</td>
-        </tr>
-    `).join('');
+    // Calculer les totaux de mouvement
+    let cumulatedCaisse = 0;
+    
+    const rows = data.map(item => {
+        // Mettre à jour le cumul pour chaque ligne
+        if (item.Mouvement === 'Entrée') {
+            cumulatedCaisse += item.Montant;
+        } else if (item.Mouvement === 'Sortie') {
+            cumulatedCaisse -= item.Montant;
+        }
+        
+        return `
+            <tr>
+                <td>${item.Date?.toLocaleDateString('fr-FR')}</td>
+                <td>${item.Designation}</td>
+                <td class="text-right">${formatCurrency(item.Montant)}</td>
+                <td>
+                    <span class="badge ${item.Mouvement === 'Entrée' ? 'badge-success' : 'badge-danger'}">
+                        ${item.Mouvement}
+                    </span>
+                </td>
+                <td>${item.User}</td>
+                <td class="text-right"><strong>${formatCurrency(cumulatedCaisse)}</strong></td>
+                <td>${item.Categorie}</td>
+                <td>${item.Note}</td>
+            </tr>
+        `;
+    }).join('');
 
     tableBody.innerHTML = rows;
 
-    // Calcul des totaux
-    const totals = data.reduce((acc, i) => {
-        acc.Montant += i.Montant;
-        acc.EnCaisse += i.EnCaisse;
-        return acc;
-    }, { Montant: 0, EnCaisse: 0 });
+    // Calcul des totaux des montants
+    const totalMontant = data.reduce((sum, item) => sum + item.Montant, 0);
+    
+    // Calcul final du cumul (même que calculateCurrentCaisse)
+    const finalCumulatedCaisse = calculateCurrentCaisse(data);
 
     tableTotals.innerHTML = `
         <tr class="total-row">
             <td colspan="2"><strong>Total</strong></td>
-            <td class="text-right"><strong>${formatCurrency(totals.Montant)}</strong></td>
+            <td class="text-right"><strong>${formatCurrency(totalMontant)}</strong></td>
             <td colspan="3"></td>
-            <td class="text-right"><strong>${formatCurrency(totals.EnCaisse)}</strong></td>
+            <td class="text-right"><strong>${formatCurrency(finalCumulatedCaisse)}</strong></td>
             <td></td>
         </tr>
     `;
@@ -9369,6 +9413,7 @@ function printCaisse(action, title) {
         const dateEnd = document.getElementById(`end-${action}`).value;
         const selectedUser = document.getElementById(`userFilter-${action}`).value;
         const selectedMouvement = document.getElementById(`mouvementFilter-${action}`).value;
+        const currentCaisseValue = document.getElementById(`currentCaisse-${action}`).textContent;
         
         let filters = [];
         if (dateStart || dateEnd) {
@@ -9388,6 +9433,7 @@ function printCaisse(action, title) {
                 <body>
                     <h1>Caisse ${title}</h1>
                     ${filters.length ? `<p>${filters.join(' | ')}</p>` : ''}
+                    <p><strong>En Caisse : ${currentCaisseValue}</strong></p>
                     <p>Imprimé le ${new Date().toLocaleDateString('fr-FR')}</p>
                     ${table.outerHTML}
                 </body>
