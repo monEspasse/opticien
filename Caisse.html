@@ -1105,49 +1105,55 @@ async function loadAllCaisses() {
             container.innerHTML = html;
         }
 
-        function calculateCaisseStatsThisWeek(caisse) {
-            if (!caisse.data || !Array.isArray(caisse.data)) {
-                return { solde: 0, totalEntrees: 0, totalSorties: 0, totalOperations: 0 };
-            }
-            
-            let solde = 0;
-            let totalEntrees = 0;
-            let totalSorties = 0;
-            let totalOperations = 0;
-            
-            // Calculer les dates de début et fin de la semaine
-            const today = new Date();
-            const startOfWeek = getStartOfWeek(today);
-            const endOfWeek = getEndOfWeek(today);
-            
-            // Trouver la dernière valeur "En caisse" non vide (toutes données)
-            const lastCaisseValue = caisse.data.find(row => row[5] !== "");
-            if (lastCaisseValue && lastCaisseValue[5]) {
-                solde = parseFloat(lastCaisseValue[5]) || 0;
-            }
-            
-            // Calculer les totaux pour la semaine en cours uniquement
-            caisse.data.forEach(row => {
-                const rowDate = new Date(row[0]);
-                
-                // Vérifier si la date est dans la semaine en cours
-                if (rowDate >= startOfWeek && rowDate <= endOfWeek) {
-                    const montant = parseFloat(row[2]) || 0;
-                    const mouvement = row[3];
-                    
-                    if (mouvement === 'Entrée') {
-                        totalEntrees += montant;
-                    } else if (mouvement === 'Sortie') {
-                        totalSorties += montant;
-                    }
-                    
-                    totalOperations++;
-                }
-            });
-            
-            return { solde, totalEntrees, totalSorties, totalOperations };
+       function calculateCaisseStatsThisWeek(caisse) {
+    if (!caisse.data || !Array.isArray(caisse.data)) {
+        return { solde: 0, totalEntrees: 0, totalSorties: 0, totalOperations: 0 };
+    }
+    
+    let solde = 0;
+    let totalEntrees = 0;
+    let totalSorties = 0;
+    let totalOperations = 0;
+    
+    // Calculer les dates de début et fin de la semaine
+    const today = new Date();
+    const startOfWeek = getStartOfWeek(today);
+    const endOfWeek = getEndOfWeek(today);
+    
+    // CORRECTION : TROUVER LA DERNIÈRE VALEUR "EN CAISSE" (MÊME SI ELLE EST VIDE)
+    // Parcourir les données à l'envers pour trouver la dernière ligne
+    for (let i = caisse.data.length - 1; i >= 0; i--) {
+        const row = caisse.data[i];
+        // Prendre la valeur de la colonne 5 même si elle est vide
+        const valeurCaisse = row[5];
+        if (valeurCaisse !== undefined) {
+            // Convertir en nombre, même si c'est une chaîne vide
+            solde = parseFloat(valeurCaisse) || 0;
+            break; // On s'arrête dès qu'on trouve la dernière valeur
         }
-
+    }
+    
+    // 2. CALCULER LES TOTAUX POUR LA SEMAINE EN COURS UNIQUEMENT
+    caisse.data.forEach(row => {
+        const rowDate = new Date(row[0]);
+        
+        // Vérifier si la date est dans la semaine en cours
+        if (rowDate >= startOfWeek && rowDate <= endOfWeek) {
+            const montant = parseFloat(row[2]) || 0;
+            const mouvement = row[3];
+            
+            if (mouvement === 'Entrée') {
+                totalEntrees += montant;
+            } else if (mouvement === 'Sortie') {
+                totalSorties += montant;
+            }
+            
+            totalOperations++;
+        }
+    });
+    
+    return { solde, totalEntrees, totalSorties, totalOperations };
+}
         function getStartOfWeek(date) {
             const d = new Date(date);
             const day = d.getDay();
