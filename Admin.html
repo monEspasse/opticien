@@ -1,0 +1,3423 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Analytics - VisionPro</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js pour les graphiques -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --danger-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --warning-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            
+            --primary-50: #f0f4ff;
+            --primary-100: #d9e4ff;
+            --primary-200: #b3c9ff;
+            --primary-300: #8daef8;
+            --primary-400: #6793f1;
+            --primary-500: #4f46e5;
+            --primary-600: #4338ca;
+            --primary-700: #3730a3;
+            --primary-800: #312e81;
+            --primary-900: #1e1b4b;
+            
+            --gray-50: #fafafa;
+            --gray-100: #f5f5f5;
+            --gray-200: #e5e5e5;
+            --gray-300: #d4d4d4;
+            --gray-400: #a3a3a3;
+            --gray-500: #737373;
+            --gray-600: #525252;
+            --gray-700: #404040;
+            --gray-800: #262626;
+            --gray-900: #171717;
+            
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            
+            --border-radius-sm: 8px;
+            --border-radius-md: 16px;
+            --border-radius-lg: 24px;
+            --border-radius-xl: 32px;
+            --border-radius-full: 9999px;
+            
+            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+            font-smooth: always;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            color: #2d3748;
+            position: relative;
+        }
+
+        .admin-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius-lg);
+            padding: 1.5rem 2rem;
+            box-shadow: var(--glass-shadow);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left h1 {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 2rem;
+            margin: 0;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .profile-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-300);
+        }
+
+        .admin-sections {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .admin-nav {
+            flex: 0 0 250px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius-lg);
+            padding: 1.5rem;
+        }
+
+        .nav-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--primary-700);
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.25rem;
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius-md);
+            color: var(--gray-700);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s var(--transition-smooth);
+            width: 100%;
+            text-align: left;
+            margin-bottom: 0.75rem;
+        }
+
+        .nav-btn:hover {
+            background: rgba(79, 70, 229, 0.1);
+            color: var(--primary-600);
+            transform: translateX(5px);
+        }
+
+        .nav-btn.active {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+        }
+
+        .nav-btn i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .content-area {
+            flex: 1;
+        }
+
+        .section-content {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s var(--transition-smooth);
+        }
+
+        .section-content.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-header {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            margin: 0;
+            font-size: 1.5rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .btn {
+            position: relative;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--border-radius-md);
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s var(--transition-smooth);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+        }
+
+        .btn-success {
+            background: var(--success-gradient);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger-gradient);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--gray-700);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .table-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius-lg);
+            padding: 1.5rem;
+            overflow: auto;
+            max-height: 500px;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .admin-table th {
+            text-align: left;
+            padding: 1rem;
+            background: rgba(79, 70, 229, 0.95);
+            color: white;
+            font-weight: 600;
+            border-bottom: 2px solid var(--primary-300);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+        }
+
+        .admin-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .admin-table tbody tr:hover {
+            background: rgba(79, 70, 229, 0.05);
+        }
+
+        /* Style pour les sections d'analyse */
+        .analysis-section {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .analysis-card {
+            background: white;
+            border-radius: var(--border-radius-lg);
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--gray-200);
+        }
+
+        .analysis-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .analysis-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-700);
+        }
+
+        .filters-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 200px;
+        }
+
+        .filter-label {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .filter-select {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--border-radius-md);
+            font-family: inherit;
+            font-size: 0.875rem;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary-400);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .date-range {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .date-input {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--border-radius-md);
+            font-family: inherit;
+            font-size: 0.875rem;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin-top: 1.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius-md);
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-600);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+
+        .top-performers {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .top-performers {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .performer-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .performer-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: var(--gray-50);
+            border-radius: var(--border-radius-md);
+            border-left: 4px solid var(--primary-500);
+        }
+
+        .performer-name {
+            font-weight: 500;
+        }
+
+        .performer-value {
+            font-weight: 600;
+            color: var(--primary-600);
+        }
+
+        /* Styles existants restants */
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--border-radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+
+        .status-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        .status-warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+
+        .status-info {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--border-radius-sm);
+            border: none;
+            background: var(--glass-bg);
+            color: var(--gray-600);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s var(--transition-smooth);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-edit:hover {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: var(--danger-gradient);
+            color: white;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--border-radius-xl);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            margin: 0;
+            font-size: 1.25rem;
+            color: var(--primary-700);
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            font-size: 1.25rem;
+            color: var(--gray-500);
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--border-radius-md);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s var(--transition-smooth);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-400);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+
+        .alert-message {
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius-md);
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            border-left: 4px solid #10b981;
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border-left: 4px solid #ef4444;
+        }
+
+        .alert-info {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .loading-indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            gap: 1rem;
+        }
+
+        .spinner-border {
+            width: 2rem;
+            height: 2rem;
+            border: 3px solid var(--primary-400);
+            border-right-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray-500);
+        }
+
+        .back-btn {
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .admin-container {
+                padding: 1rem;
+            }
+            
+            .admin-sections {
+                flex-direction: column;
+            }
+            
+            .admin-nav {
+                flex: none;
+                width: 100%;
+            }
+            
+            .table-container {
+                padding: 1rem;
+            }
+            
+            .admin-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .action-btns {
+                flex-direction: column;
+            }
+            
+            .filters-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .filter-group {
+                min-width: 100%;
+            }
+            
+            .dashboard-buttons {
+                flex-direction: column;
+                gap: 0.5rem;
+                margin-top: 1rem;
+            }
+        }
+
+        .password-display {
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--border-radius-sm);
+            background: rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
+            position: relative;
+            display: inline-block;
+        }
+
+        .password-display:hover {
+            background: rgba(79, 70, 229, 0.1);
+        }
+
+        .password-tooltip {
+            position: fixed;
+            background: var(--gray-900);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius-sm);
+            font-size: 0.875rem;
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.2s ease;
+            max-width: 300px;
+            word-wrap: break-word;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .password-tooltip.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .logout-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--danger-gradient);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius-md);
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            gap: 0.75rem;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 1024px) {
+            .summary-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .summary-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .text-danger {
+            color: #ef4444 !important;
+        }
+
+        .text-success {
+            color: #10b981 !important;
+        }
+
+        .text-warning {
+            color: #f59e0b !important;
+        }
+
+        .text-info {
+            color: #3b82f6 !important;
+        }
+
+        .text-center {
+            text-align: center !important;
+        }
+
+        .text-end {
+            text-align: right !important;
+        }
+
+        /* Styles pour les nouvelles sections d'analyse */
+        #section-analyse-ventes,
+        #section-analyse-commerciaux,
+        #section-analyse-ophtalmo,
+        #section-analyse-financiere,
+        #section-banque,
+        #section-grand-caisse,
+        #section-users {
+            display: none;
+        }
+
+        #section-analyse-ventes.active,
+        #section-analyse-commerciaux.active,
+        #section-analyse-ophtalmo.active,
+        #section-analyse-financiere.active,
+        #section-banque.active,
+        #section-grand-caisse.active,
+        #section-users.active {
+            display: block;
+        }
+
+        .analysis-results {
+            margin-top: 1.5rem;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: var(--border-radius-lg);
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--gray-200);
+        }
+
+        .result-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--primary-700);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary-100);
+        }
+
+        .result-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-600);
+            margin-bottom: 0.5rem;
+        }
+
+        .result-change {
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .change-positive {
+            color: #10b981;
+        }
+
+        .change-negative {
+            color: #ef4444;
+        }
+
+        .dashboard-buttons {
+            display: flex;
+            gap: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <header class="header">
+            <div class="header-left">
+                <h1>VisionPro Dashboard</h1>
+            </div>
+            <div class="user-info">
+                <span id="username-display"></span>
+                <img src="https://ui-avatars.com/api/?name=Admin&background=6366f1&color=fff" alt="Photo de profil" class="profile-img">
+            </div>
+        </header>
+
+        <div class="back-btn">
+            <button class="btn btn-primary" onclick="openVueGlobale()">
+                <i class="fas fa-arrow-left"></i> Retour
+            </button>
+        </div>
+
+        <div class="admin-sections">
+            <nav class="admin-nav">
+                <h3 class="nav-title">Tableau de bord</h3>
+                <!-- Sections existantes -->
+                <button class="nav-btn" onclick="showAdminSection('banque')">
+                    <i class="fas fa-university"></i>
+                    <span>Gestion Banque</span>
+                </button>
+                <button class="nav-btn" onclick="showAdminSection('grand-caisse')">
+                    <i class="fas fa-vault"></i>
+                    <span>Gestion Grande Caisse</span>
+                </button>
+                <button class="nav-btn" onclick="showAdminSection('users')">
+                    <i class="fas fa-users"></i>
+                    <span>Gestion des Utilisateurs</span>
+                </button>
+                
+                <!-- Nouvelles sections d'analyse -->
+                <button class="nav-btn active" onclick="showAdminSection('analyse-ventes')">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Analyse des Ventes</span>
+                </button>
+                <button class="nav-btn" onclick="showAdminSection('analyse-commerciaux')">
+                    <i class="fas fa-user-tie"></i>
+                    <span>Performance Commerciaux</span>
+                </button>
+                <button class="nav-btn" onclick="showAdminSection('analyse-ophtalmo')">
+                    <i class="fas fa-user-md"></i>
+                    <span>Performance Ophtalmos</span>
+                </button>
+                <button class="nav-btn" onclick="showAdminSection('analyse-financiere')">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <span>Analyse Financière</span>
+                </button>
+            </nav>
+
+            <div class="content-area">
+                <!-- ==================== SECTION GESTION BANQUE ==================== -->
+                <div id="section-banque" class="section-content">
+                    <div class="section-header">
+                        <h2 class="section-title">Gestion Banque</h2>
+                        <div class="dashboard-buttons">
+                            <button class="btn btn-primary" onclick="exporterReleveBancaire()">
+                                <i class="fas fa-file-export"></i> Exporter Relevé
+                            </button>
+                            <button class="btn btn-secondary" onclick="chargerOperationsBancaires()">
+                                <i class="fas fa-sync-alt"></i> Actualiser
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="filters-row">
+                        <div class="filter-group">
+                            <label class="filter-label">Banque</label>
+                            <select id="filterBanque" class="filter-select" onchange="filtrerOperationsBancaires()">
+                                <option value="">Toutes les banques</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Type</label>
+                            <select id="filterTypeOperation" class="filter-select" onchange="filtrerOperationsBancaires()">
+                                <option value="">Tous les types</option>
+                                <option value="CREDITED">Crédit</option>
+                                <option value="DEBITED">Débit</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Période</label>
+                            <div class="date-range">
+                                <input type="date" id="banqueDateStart" class="date-input" onchange="filtrerOperationsBancaires()">
+                                <span>à</span>
+                                <input type="date" id="banqueDateEnd" class="date-input" onchange="filtrerOperationsBancaires()">
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="filtrerOperationsBancaires()">
+                            <i class="fas fa-filter"></i> Filtrer
+                        </button>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="soldeTotal">0 FCFA</div>
+                            <div class="stat-label">Solde Total</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="depotsMois">0 FCFA</div>
+                            <div class="stat-label">Dépôts ce mois</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="retraitsMois">0 FCFA</div>
+                            <div class="stat-label">Retraits ce mois</div>
+                        </div>
+                    </div>
+
+                    <div class="analysis-card">
+                        <h3 class="analysis-title">Opérations Bancaires</h3>
+                        <div class="table-container">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Désignation</th>
+                                        <th>Montant</th>
+                                        <th>Type</th>
+                                        <th>Solde</th>
+                                        <th>Catégorie</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="operationsBancaires">
+                                    <tr><td colspan="7" class="no-data">Chargement des données...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== SECTION GRANDE CAISSE ==================== -->
+                <div id="section-grand-caisse" class="section-content">
+                    <div class="section-header">
+                        <h2 class="section-title">Gestion Grande Caisse</h2>
+                        <div class="dashboard-buttons">
+                            <button class="btn btn-success" onclick="ajouterTransactionCaisse()">
+                                <i class="fas fa-plus"></i> Nouvelle Transaction
+                            </button>
+                            <button class="btn btn-primary" onclick="genererRapportCaisse()">
+                                <i class="fas fa-file-pdf"></i> Générer Rapport
+                            </button>
+                            <button class="btn btn-secondary" onclick="chargerTransactionsCaisse()">
+                                <i class="fas fa-sync-alt"></i> Actualiser
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="filters-row">
+                        <div class="filter-group">
+                            <label class="filter-label">Type Transaction</label>
+                            <select id="filterTypeCaisse" class="filter-select" onchange="filtrerTransactionsCaisse()">
+                                <option value="">Tous types</option>
+                                <option value="Entrée">Entrée</option>
+                                <option value="Sortie">Sortie</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Catégorie</label>
+                            <select id="filterCategorieCaisse" class="filter-select" onchange="filtrerTransactionsCaisse()">
+                                <option value="">Toutes catégories</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Période</label>
+                            <div class="date-range">
+                                <input type="date" id="caisseDateStart" class="date-input" onchange="filtrerTransactionsCaisse()">
+                                <span>à</span>
+                                <input type="date" id="caisseDateEnd" class="date-input" onchange="filtrerTransactionsCaisse()">
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="filtrerTransactionsCaisse()">
+                            <i class="fas fa-filter"></i> Filtrer
+                        </button>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="soldeCaisse">0 FCFA</div>
+                            <div class="stat-label">Solde Caisse</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="entreesJour">0 FCFA</div>
+                            <div class="stat-label">Entrées aujourd'hui</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="sortiesJour">0 FCFA</div>
+                            <div class="stat-label">Sorties aujourd'hui</div>
+                        </div>
+                    </div>
+
+                    <div class="analysis-card">
+                        <h3 class="analysis-title">Journal de Caisse</h3>
+                        <div class="table-container">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Type</th>
+                                        <th>Catégorie</th>
+                                        <th>Libellé</th>
+                                        <th>Montant</th>
+                                        <th>Mode Paiement</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="transactionsCaisse">
+                                    <tr><td colspan="7" class="no-data">Chargement des données...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== SECTION GESTION UTILISATEURS ==================== -->
+                <div id="section-users" class="section-content">
+                    <div class="section-header">
+                        <h2 class="section-title">Gestion des Utilisateurs</h2>
+                        <div class="dashboard-buttons">
+                            <button class="btn btn-success" onclick="ajouterUtilisateur()">
+                                <i class="fas fa-user-plus"></i> Ajouter Utilisateur
+                            </button>
+                            <button class="btn btn-primary" onclick="exporterListeUtilisateurs()">
+                                <i class="fas fa-file-excel"></i> Exporter
+                            </button>
+                            <button class="btn btn-secondary" onclick="chargerUtilisateurs()">
+                                <i class="fas fa-sync-alt"></i> Actualiser
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="filters-row">
+                        <div class="filter-group">
+                            <label class="filter-label">Rôle</label>
+                            <select id="filterRole" class="filter-select" onchange="filtrerUtilisateurs()">
+                                <option value="">Tous les rôles</option>
+                                <option value="ADMIN">Administrateur</option>
+                                <option value="USER">Utilisateur</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Statut</label>
+                            <select id="filterStatutUser" class="filter-select" onchange="filtrerUtilisateurs()">
+                                <option value="">Tous statuts</option>
+                                <option value="ACTIF">Actif</option>
+                                <option value="INACTIF">Inactif</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Agence</label>
+                            <select id="filterAgenceUser" class="filter-select" onchange="filtrerUtilisateurs()">
+                                <option value="">Toutes agences</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="filtrerUtilisateurs()">
+                            <i class="fas fa-filter"></i> Filtrer
+                        </button>
+                    </div>
+
+                    <div class="analysis-card">
+                        <h3 class="analysis-title">Liste des Utilisateurs</h3>
+                        <div class="table-container">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Utilisateur</th>
+                                        <th>Mot de passe</th>
+                                        <th>Date de création</th>
+                                        <th>Accès Admin</th>
+                                        <th>Accès Caisse</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="listeUtilisateurs">
+                                    <tr><td colspan="6" class="no-data">Chargement des données...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== NOUVELLES SECTIONS D'ANALYSE ==================== -->
+                
+                <!-- Section 4: Analyse des Ventes -->
+                <div id="section-analyse-ventes" class="section-content active">
+                    <div class="section-header">
+                        <h2 class="section-title">Analyse des Ventes par Agence</h2>
+                        <div class="dashboard-buttons">
+                            <button class="btn btn-primary" onclick="refreshSalesAnalysis()">
+                                <i class="fas fa-sync-alt"></i> Actualiser
+                            </button>
+                            <button class="btn btn-success" onclick="exporterRapportVentes()">
+                                <i class="fas fa-file-excel"></i> Exporter
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="filters-row">
+                        <div class="filter-group">
+                            <label class="filter-label">Agence</label>
+                            <select id="filterAgence" class="filter-select" onchange="updateSalesAnalysis()">
+                                <option value="">Toutes les agences</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Période</label>
+                            <div class="date-range">
+                                <input type="date" id="salesDateStart" class="date-input" onchange="updateSalesAnalysis()">
+                                <span>à</span>
+                                <input type="date" id="salesDateEnd" class="date-input" onchange="updateSalesAnalysis()">
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Statut</label>
+                            <select id="filterStatutVente" class="filter-select" onchange="updateSalesAnalysis()">
+                                <option value="">Tous les statuts</option>
+                                <option value="Livré">Livré</option>
+                                <option value="Nouvelle vente">Nouvelle vente</option>
+                                <option value="Fr traitement">En traitement</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="totalVentes">0</div>
+                            <div class="stat-label">Total Ventes</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="chiffreAffaires">0 FCFA</div>
+                            <div class="stat-label">Chiffre d'Affaires</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="ventesMoyennes">0 FCFA</div>
+                            <div class="stat-label">Vente Moyenne</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="tauxLivraison">0%</div>
+                            <div class="stat-label">Taux de Livraison</div>
+                        </div>
+                    </div>
+                    
+                    <div class="analysis-card">
+                        <div class="analysis-header">
+                            <h3 class="analysis-title">Évolution des Ventes sur 12 Mois</h3>
+                            <select id="chartType" class="filter-select" style="width: auto;" onchange="updateEvolutionChart()">
+                                <option value="smooth">Courbe lissée</option>
+                                <option value="line">Courbe simple</option>
+                            </select>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="evolutionChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="analysis-card">
+                        <h3 class="analysis-title">Détail des Ventes par Agence</h3>
+                        <div class="table-container">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Agence</th>
+                                        <th>Nombre de Ventes</th>
+                                        <th>Chiffre d'Affaires</th>
+                                        <th>Vente Moyenne</th>
+                                        <th>Taux Livraison</th>
+                                        <th>Reste à Payer</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="salesDetails">
+                                    <tr><td colspan="6" class="no-data">Chargement des données...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 5: Performance des Commerciaux -->
+                <div id="section-analyse-commerciaux" class="section-content">
+                    <div class="section-header">
+                        <h2 class="section-title">Performance des Commerciaux</h2>
+                        <div class="dashboard-buttons">
+                            <button class="btn btn-primary" onclick="refreshCommercialAnalysis()">
+                                <i class="fas fa-sync-alt"></i> Actualiser
+                            </button>
+                            <button class="btn btn-success" onclick="exporterPerformanceCommercial()">
+                                <i class="fas fa-chart-bar"></i> Exporter Performance
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="filters-row">
+                        <div class="filter-group">
+                            <label class="filter-label">Commercial</label>
+                            <select id="filterCommercial" class="filter-select" onchange="updateCommercialAnalysis()">
+                                <option value="">Tous les commerciaux</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Période</label>
+                            <div class="date-range">
+                                <input type="date" id="commercialDateStart" class="date-input" onchange="updateCommercialAnalysis()">
+                                <span>à</span>
+                                <input type="date" id="commercialDateEnd" class="date-input" onchange="updateCommercialAnalysis()">
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Agence</label>
+                            <select id="filterCommercialAgence" class="filter-select" onchange="updateCommercialAnalysis()">
+                                <option value="">Toutes les agences</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="totalVentesCommercial">0</div>
+                            <div class="stat-label">Total Ventes</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="caCommercial">0 FCFA</div>
+                            <div class="stat-label">Chiffre d'Affaires</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="venteMoyCommercial">0 FCFA</div>
+                            <div class="stat-label">Vente Moyenne</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="clientFidele">0</div>
+                            <div class="stat-label">Clients Fidèles</div>
+                        </div>
+                    </div>
+                    
+                    <div class="analysis-card">
+                        <div class="analysis-header">
+                            <h3 class="analysis-title">Évolution des Performances</h3>
+                            <select id="commercialChartType" class="filter-select" style="width: auto;" onchange="updateCommercialChart()">
+                                <option value="smooth">Courbe lissée</option>
+                                <option value="bar">Graphique à barres</option>
+                            </select>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="commercialChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="analysis-card">
+                        <h3 class="analysis-title">Top 10 Commerciaux</h3>
+                        <div class="performer-list" id="topCommerciauxList">
+                            <div class="no-data">Chargement des données...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 6: Performance des Ophtalmos -->
+                <div id="section-analyse-ophtalmo" class="section-content">
+                    <div class="section-header">
+                        <h2 class="section-title">Performance des Ophtalmologistes</h2>
+                        <div class="dashboard-buttons">
+                            <button class="btn btn-primary" onclick="refreshOphtalmoAnalysis()">
+                                <i class="fas fa-sync-alt"></i> Actualiser
+                            </button>
+                            <button class="btn btn-success" onclick="exporterPerformanceOphtalmo()">
+                                <i class="fas fa-user-md"></i> Exporter Rapport
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="filters-row">
+                        <div class="filter-group">
+                            <label class="filter-label">Ophtalmologiste</label>
+                            <select id="filterOphtalmo" class="filter-select" onchange="updateOphtalmoAnalysis()">
+                                <option value="">Tous les ophtalmos</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Période</label>
+                            <div class="date-range">
+                                <input type="date" id="ophtalmoDateStart" class="date-input" onchange="updateOphtalmoAnalysis()">
+                                <span>à</span>
+                                <input type="date" id="ophtalmoDateEnd" class="date-input" onchange="updateOphtalmoAnalysis()">
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Clinique</label>
+                            <select id="filterClinique" class="filter-select" onchange="updateOphtalmoAnalysis()">
+                                <option value="">Toutes les cliniques</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="totalPatients">0</div>
+                            <div class="stat-label">Total Patients</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="caOphtalmo">0 FCFA</div>
+                            <div class="stat-label">Chiffre d'Affaires</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="prescriptionsMoy">0 FCFA</div>
+                            <div class="stat-label">Prescriptions Moy.</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="tauxConversion">0%</div>
+                            <div class="stat-label">Taux de Conversion</div>
+                        </div>
+                    </div>
+                    
+                    <div class="analysis-card">
+                        <div class="analysis-header">
+                            <h3 class="analysis-title">Évolution des Prescriptions</h3>
+                            <select id="ophtalmoChartType" class="filter-select" style="width: auto;" onchange="updateOphtalmoChart()">
+                                <option value="smooth">Courbe lissée</option>
+                                <option value="bar">Graphique à barres</option>
+                            </select>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="ophtalmoChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="analysis-card">
+                        <h3 class="analysis-title">Top 10 Ophtalmologistes</h3>
+                        <div class="performer-list" id="topOphtalmoList">
+                            <div class="no-data">Chargement des données...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 7: Analyse Financière -->
+                <div id="section-analyse-financiere" class="section-content">
+                    <div class="section-header">
+                        <h2 class="section-title">Analyse Financière</h2>
+                        <div class="dashboard-buttons">
+                            <button class="btn btn-primary" onclick="refreshFinancialAnalysis()">
+                                <i class="fas fa-sync-alt"></i> Actualiser
+                            </button>
+                            <button class="btn btn-success" onclick="genererRapportFinancier()">
+                                <i class="fas fa-file-pdf"></i> Générer Rapport
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="filters-row">
+                        <div class="filter-group">
+                            <label class="filter-label">Période</label>
+                            <div class="date-range">
+                                <input type="date" id="financialDateStart" class="date-input" onchange="updateFinancialAnalysis()">
+                                <span>à</span>
+                                <input type="date" id="financialDateEnd" class="date-input" onchange="updateFinancialAnalysis()">
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Agence</label>
+                            <select id="filterFinancialAgence" class="filter-select" onchange="updateFinancialAnalysis()">
+                                <option value="">Toutes les agences</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Type d'Analyse</label>
+                            <select id="analysisType" class="filter-select" onchange="updateFinancialAnalysis()">
+                                <option value="reste">Reste à Payer</option>
+                                <option value="encaissement">Taux d'Encaissement</option>
+                                <option value="assurance">Part Assurance</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="totalCreances">0 FCFA</div>
+                            <div class="stat-label">Total Créances</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="tauxEncaissement">0%</div>
+                            <div class="stat-label">Taux d'Encaissement</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="moyenneCreance">0 FCFA</div>
+                            <div class="stat-label">Créance Moyenne</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="delaiMoyen">0j</div>
+                            <div class="stat-label">Délai Moyen</div>
+                        </div>
+                    </div>
+                    
+                    <div class="analysis-card">
+                        <div class="analysis-header">
+                            <h3 class="analysis-title">Évolution des Créances Clients</h3>
+                            <select id="financialChartType" class="filter-select" style="width: auto;" onchange="updateFinancialChart()">
+                                <option value="smooth">Courbe lissée</option>
+                                <option value="line">Courbe simple</option>
+                            </select>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="financialChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="analysis-card">
+                        <h3 class="analysis-title">Top 10 Clients avec Reste à Payer</h3>
+                        <div class="table-container">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Client</th>
+                                        <th>Agence</th>
+                                        <th>Commercial</th>
+                                        <th>Total Dû</th>
+                                        <th>Délai</th>
+                                        <th>Dernier Paiement</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="topClientsReste">
+                                    <tr><td colspan="6" class="no-data">Chargement des données...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="analysis-card">
+                        <h3 class="analysis-title">Analyse par Assurance</h3>
+                        <div class="results-grid">
+                            <div class="result-card">
+                                <div class="result-title">Part Assurance dans le CA</div>
+                                <div class="result-value" id="partAssurance">0%</div>
+                                <div class="result-change">
+                                    <i class="fas fa-arrow-up change-positive"></i>
+                                    <span>vs mois précédent</span>
+                                </div>
+                            </div>
+                            <div class="result-card">
+                                <div class="result-title">Délai Paiement Assurance</div>
+                                <div class="result-value" id="delaiAssurance">0j</div>
+                                <div class="result-change">
+                                    <i class="fas fa-arrow-down change-positive"></i>
+                                    <span>vs mois précédent</span>
+                                </div>
+                            </div>
+                            <div class="result-card">
+                                <div class="result-title">Taux de Remboursement</div>
+                                <div class="result-value" id="tauxRemboursement">0%</div>
+                                <div class="result-change">
+                                    <i class="fas fa-arrow-up change-positive"></i>
+                                    <span>vs mois précédent</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conteneur pour les modales -->
+    <div id="modal-container"></div>
+
+    <!-- Notification de déconnexion -->
+    <div id="logout-notification" class="logout-notification">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span>Vous allez être déconnecté dans <span id="logout-countdown">30</span> secondes</span>
+    </div>
+
+    <script>
+        // Variables globales pour les données
+        const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec';
+        
+        let salesData = [];
+        let filteredSalesData = [];
+        let agences = [];
+        let commerciaux = [];
+        let ophtalmos = [];
+        let cliniques = [];
+        let assurances = [];
+        
+        // Données pour les nouvelles sections
+        let operationsBancaires = [];
+        let transactionsCaisse = [];
+        let utilisateurs = [];
+        
+        // Variables pour les graphiques
+        let evolutionChart = null;
+        let commercialChart = null;
+        let ophtalmoChart = null;
+        let financialChart = null;
+
+        // Variables pour la gestion de l'inactivité
+        let inactivityTimer;
+        let logoutWarningTimer;
+        let logoutTimeout = 5 * 60 * 1000;
+        let warningTimeout = 30 * 1000;
+        let isLogoutWarningActive = false;
+
+        // ==================== INITIALISATION ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            initUser();
+            initDefaultDates();
+            loadAllData();
+            setupActivityListeners();
+            resetInactivityTimer();
+        });
+
+        // ==================== GESTION UTILISATEUR ====================
+        function initUser() {
+            const currentUser = sessionStorage.getItem("utilisateur") || localStorage.getItem("utilisateur") || "Admin";
+            document.getElementById('username-display').textContent = currentUser;
+            document.querySelector('.profile-img').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser)}&background=6366f1&color=fff`;
+        }
+
+        // ==================== GESTION DES DATES ====================
+        function initDefaultDates() {
+            const now = new Date();
+            const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+            const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+            
+            const formatDate = (date) => date.toISOString().split('T')[0];
+            
+            // Dates pour analyse vente
+            document.getElementById('salesDateStart').value = formatDate(firstDay);
+            document.getElementById('salesDateEnd').value = formatDate(lastDay);
+            
+            // Dates pour analyse commercial
+            document.getElementById('commercialDateStart').value = formatDate(firstDay);
+            document.getElementById('commercialDateEnd').value = formatDate(lastDay);
+            
+            // Dates pour analyse ophtalmo
+            document.getElementById('ophtalmoDateStart').value = formatDate(firstDay);
+            document.getElementById('ophtalmoDateEnd').value = formatDate(lastDay);
+            
+            // Dates pour analyse financière
+            document.getElementById('financialDateStart').value = formatDate(firstDay);
+            document.getElementById('financialDateEnd').value = formatDate(lastDay);
+            
+            // Dates pour banque et caisse
+            document.getElementById('banqueDateStart').value = formatDate(firstDay);
+            document.getElementById('banqueDateEnd').value = formatDate(lastDay);
+            document.getElementById('caisseDateStart').value = formatDate(firstDay);
+            document.getElementById('caisseDateEnd').value = formatDate(lastDay);
+        }
+
+        // ==================== NAVIGATION ====================
+        function showAdminSection(sectionId) {
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.section-content').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            const btn = document.querySelector(`.nav-btn[onclick*="${sectionId}"]`);
+            if (btn) btn.classList.add('active');
+            
+            const section = document.getElementById(`section-${sectionId}`);
+            if (section) section.classList.add('active');
+            
+            // Charger les données de la section si nécessaire
+            if (sectionId === 'banque' && operationsBancaires.length === 0) {
+                loadOperationsBancaires();
+            } else if (sectionId === 'grand-caisse' && transactionsCaisse.length === 0) {
+                loadTransactionsCaisse();
+            } else if (sectionId === 'users' && utilisateurs.length === 0) {
+                loadUtilisateurs();
+            }
+        }
+
+        function openVueGlobale() {
+            window.location.href = 'Accueil.html';
+        }
+
+        // ==================== FONCTIONS UTILITAIRES ====================
+        function showLoading(elementId, message = 'Chargement...') {
+            const element = document.getElementById(elementId);
+            if (element) {
+                if (element.tagName === 'TBODY' || element.tagName === 'TABLE') {
+                    element.innerHTML = `<tr><td colspan="10" class="no-data">${message}</td></tr>`;
+                } else {
+                    element.innerHTML = `<div class="no-data">${message}</div>`;
+                }
+            }
+        }
+
+        function showError(elementId, message = 'Erreur de chargement') {
+            const element = document.getElementById(elementId);
+            if (element) {
+                if (element.tagName === 'TBODY' || element.tagName === 'TABLE') {
+                    element.innerHTML = `<tr><td colspan="10" class="no-data text-danger">${message}</td></tr>`;
+                } else {
+                    element.innerHTML = `<div class="no-data text-danger">${message}</div>`;
+                }
+            }
+        }
+
+        function showMessage(message, type = 'info', duration = 3000) {
+            const alert = document.createElement('div');
+            alert.className = `alert-message alert-${type}`;
+            alert.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, duration);
+        }
+
+        function formatCurrency(amount) {
+            if (typeof amount !== 'number') amount = parseFloat(amount) || 0;
+            return new Intl.NumberFormat('fr-FR', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(amount) + ' FCFA';
+        }
+
+        function formatShortCurrency(amount) {
+            if (typeof amount !== 'number') amount = parseFloat(amount) || 0;
+            if (amount >= 1000000) {
+                return (amount / 1000000).toFixed(1) + 'M';
+            } else if (amount >= 1000) {
+                return (amount / 1000).toFixed(1) + 'K';
+            }
+            return amount.toFixed(0);
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            try {
+                const date = new Date(dateString);
+                return isNaN(date.getTime()) ? dateString : date.toLocaleDateString('fr-FR');
+            } catch (e) {
+                return dateString;
+            }
+        }
+
+        function formatDateTime(dateTimeString) {
+            if (!dateTimeString) return 'Jamais';
+            try {
+                const date = new Date(dateTimeString);
+                return isNaN(date.getTime()) ? dateTimeString : 
+                    date.toLocaleDateString('fr-FR') + ' ' + date.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'});
+            } catch (e) {
+                return dateTimeString;
+            }
+        }
+
+        function populateSelect(selectId, values, placeholder) {
+            const select = document.getElementById(selectId);
+            if (!select) return;
+            
+            select.innerHTML = `<option value="">${placeholder}</option>`;
+            
+            if (!values || !values.length) return;
+            
+            values.sort().forEach(value => {
+                if (value) {
+                    const option = document.createElement('option');
+                    option.value = value;
+                    option.textContent = value;
+                    select.appendChild(option);
+                }
+            });
+        }
+
+        // ==================== CHARGEMENT DE TOUTES LES DONNÉES ====================
+        async function loadAllData() {
+            try {
+                showLoading('salesDetails', 'Chargement des données...');
+                showLoading('operationsBancaires', 'Chargement des données...');
+                showLoading('transactionsCaisse', 'Chargement des données...');
+                showLoading('listeUtilisateurs', 'Chargement des données...');
+                
+                // Charger les ventes
+                await loadSalesData();
+                
+                // Charger les autres données
+                await Promise.all([
+                    loadOperationsBancaires(),
+                    loadTransactionsCaisse(),
+                    loadUtilisateurs()
+                ]);
+                
+                showMessage('Données chargées avec succès', 'success');
+                
+            } catch (error) {
+                console.error('Erreur lors du chargement des données:', error);
+                showMessage('Erreur lors du chargement des données', 'error');
+            }
+        }
+
+        // ==================== GESTION BANQUE ====================
+        async function loadOperationsBancaires() {
+            try {
+                const response = await fetch(`${API_BASE_URL}?action=banque`);
+                const data = await response.json();
+                
+                if (data.success && data.data?.rows) {
+                    operationsBancaires = data.data.rows.map((row, index) => {
+                        return {
+                            id: index + 1,
+                            date: row[0] || '',
+                            designation: row[1] || '',
+                            montant: parseFloat(row[2]) || 0,
+                            type: row[3] || '',
+                            solde: parseFloat(row[4]) || 0,
+                            categorie: row[5] || '',
+                            idunique: row[6] || ''
+                        };
+                    });
+                    
+                    updateBanqueStats();
+                    displayOperationsBancaires(operationsBancaires);
+                    populateBanqueFilters();
+                    
+                } else {
+                    throw new Error('Structure de données invalide');
+                }
+                
+            } catch (error) {
+                console.error('Erreur:', error);
+                showError('operationsBancaires', 'Erreur de chargement');
+            }
+        }
+
+        function updateBanqueStats() {
+            if (operationsBancaires.length === 0) {
+                document.getElementById('soldeTotal').textContent = '0 FCFA';
+                document.getElementById('depotsMois').textContent = '0 FCFA';
+                document.getElementById('retraitsMois').textContent = '0 FCFA';
+                return;
+            }
+            
+            const now = new Date();
+            const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+            
+            const operationsCeMois = operationsBancaires.filter(op => {
+                const opDate = new Date(op.date);
+                return opDate >= firstDay;
+            });
+            
+            const totalCredited = operationsCeMois
+                .filter(op => op.type === 'Credited' || op.type === 'Crédité')
+                .reduce((sum, op) => sum + op.montant, 0);
+            
+            const totalDebited = Math.abs(operationsCeMois
+                .filter(op => op.type === 'Debited' || op.type === 'Débité')
+                .reduce((sum, op) => sum + op.montant, 0));
+            
+            const soldeTotal = operationsBancaires.length > 0 ? 
+                operationsBancaires[operationsBancaires.length - 1].solde : 0;
+            
+            document.getElementById('soldeTotal').textContent = formatCurrency(soldeTotal);
+            document.getElementById('depotsMois').textContent = formatCurrency(totalCredited);
+            document.getElementById('retraitsMois').textContent = formatCurrency(totalDebited);
+        }
+
+        function displayOperationsBancaires(data) {
+            const tbody = document.getElementById('operationsBancaires');
+            if (!tbody) return;
+            
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="no-data">Aucune opération bancaire</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            data.forEach(op => {
+                const montantClass = op.type === 'Debited' || op.type === 'Débité' ? 'text-danger' : 'text-success';
+                const typeBadge = op.type === 'Credited' || op.type === 'Crédité' ? 
+                    '<span class="status-badge status-success">Crédit</span>' : 
+                    '<span class="status-badge status-danger">Débit</span>';
+                
+                html += `
+                    <tr>
+                        <td>${formatDate(op.date)}</td>
+                        <td>${op.designation || 'N/A'}</td>
+                        <td class="text-end ${montantClass}">${formatCurrency(op.montant)}</td>
+                        <td>${typeBadge}</td>
+                        <td class="text-end">${formatCurrency(op.solde)}</td>
+                        <td>${op.categorie || 'Non catégorisé'}</td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="action-btn btn-edit" onclick="editOperationBanque('${op.idunique}')" title="Modifier">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = html;
+        }
+
+        function populateBanqueFilters() {
+            const types = [...new Set(operationsBancaires.map(op => op.type).filter(Boolean))];
+            const categories = [...new Set(operationsBancaires.map(op => op.categorie).filter(Boolean))];
+            
+            populateSelect('filterBanque', categories, 'Toutes les banques');
+            
+            const typeSelect = document.getElementById('filterTypeOperation');
+            if (typeSelect) {
+                typeSelect.innerHTML = '<option value="">Tous les types</option>';
+                types.forEach(type => {
+                    const option = document.createElement('option');
+                    option.value = type;
+                    option.textContent = type === 'Credited' || type === 'Crédité' ? 'Crédit' : 'Débit';
+                    typeSelect.appendChild(option);
+                });
+            }
+        }
+
+        function filtrerOperationsBancaires() {
+            const categorie = document.getElementById('filterBanque').value;
+            const type = document.getElementById('filterTypeOperation').value;
+            const dateStart = document.getElementById('banqueDateStart').value;
+            const dateEnd = document.getElementById('banqueDateEnd').value;
+            
+            let filtered = operationsBancaires;
+            
+            if (categorie) {
+                filtered = filtered.filter(op => op.categorie === categorie);
+            }
+            
+            if (type) {
+                filtered = filtered.filter(op => op.type === type);
+            }
+            
+            if (dateStart || dateEnd) {
+                filtered = filtered.filter(op => {
+                    const opDate = new Date(op.date);
+                    
+                    if (dateStart) {
+                        const startDate = new Date(dateStart);
+                        startDate.setHours(0, 0, 0, 0);
+                        if (opDate < startDate) return false;
+                    }
+                    
+                    if (dateEnd) {
+                        const endDate = new Date(dateEnd);
+                        endDate.setHours(23, 59, 59, 999);
+                        if (opDate > endDate) return false;
+                    }
+                    
+                    return true;
+                });
+            }
+            
+            displayOperationsBancaires(filtered);
+        }
+
+        function exporterReleveBancaire() {
+            showMessage('Exportation du relevé bancaire...', 'info');
+        }
+
+        function chargerOperationsBancaires() {
+            loadOperationsBancaires();
+            showMessage('Données bancaires actualisées', 'success');
+        }
+
+        // ==================== GRANDE CAISSE ====================
+        async function loadTransactionsCaisse() {
+            try {
+                const response = await fetch(`${API_BASE_URL}?action=grandcaisse`);
+                const data = await response.json();
+                
+                if (data.success && data.data?.rows) {
+                    transactionsCaisse = data.data.rows.map((row, index) => {
+                        return {
+                            id: index + 1,
+                            date: row[0] || '',
+                            designation: row[1] || '',
+                            montant: parseFloat(row[2]) || 0,
+                            mouvement: row[3] || '',
+                            agence: row[4] || '',
+                            encaisse: parseFloat(row[5]) || 0,
+                            modepaiement: row[6] || '',
+                            categorie: row[7] || ''
+                        };
+                    });
+                    
+                    updateCaisseStats();
+                    displayTransactionsCaisse(transactionsCaisse);
+                    populateCaisseFilters();
+                    
+                } else {
+                    throw new Error('Structure de données invalide');
+                }
+                
+            } catch (error) {
+                console.error('Erreur:', error);
+                showError('transactionsCaisse', 'Erreur de chargement');
+            }
+        }
+
+        function updateCaisseStats() {
+            if (transactionsCaisse.length === 0) {
+                document.getElementById('soldeCaisse').textContent = '0 FCFA';
+                document.getElementById('entreesJour').textContent = '0 FCFA';
+                document.getElementById('sortiesJour').textContent = '0 FCFA';
+                return;
+            }
+            
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            
+            const transactionsAujourdhui = transactionsCaisse.filter(t => {
+                const tDate = new Date(t.date);
+                return tDate >= today;
+            });
+            
+            const entrees = transactionsCaisse
+                .filter(t => t.mouvement === 'Entrée')
+                .reduce((sum, t) => sum + t.montant, 0);
+            
+            const sorties = Math.abs(transactionsCaisse
+                .filter(t => t.mouvement === 'Sortie')
+                .reduce((sum, t) => sum + t.montant, 0));
+            
+            const entreesAujourdhui = transactionsAujourdhui
+                .filter(t => t.mouvement === 'Entrée')
+                .reduce((sum, t) => sum + t.montant, 0);
+            
+            const sortiesAujourdhui = Math.abs(transactionsAujourdhui
+                .filter(t => t.mouvement === 'Sortie')
+                .reduce((sum, t) => sum + t.montant, 0));
+            
+            const soldeCaisse = entrees - sorties;
+            
+            document.getElementById('soldeCaisse').textContent = formatCurrency(soldeCaisse);
+            document.getElementById('entreesJour').textContent = formatCurrency(entreesAujourdhui);
+            document.getElementById('sortiesJour').textContent = formatCurrency(sortiesAujourdhui);
+        }
+
+        function displayTransactionsCaisse(data) {
+            const tbody = document.getElementById('transactionsCaisse');
+            if (!tbody) return;
+            
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="no-data">Aucune transaction</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            data.forEach(t => {
+                const montantClass = t.mouvement === 'Sortie' ? 'text-danger' : 'text-success';
+                const typeBadge = t.mouvement === 'Entrée' ? 
+                    '<span class="status-badge status-success">Entrée</span>' : 
+                    '<span class="status-badge status-danger">Sortie</span>';
+                
+                html += `
+                    <tr>
+                        <td>${formatDate(t.date)}</td>
+                        <td>${typeBadge}</td>
+                        <td>${t.categorie || 'N/A'}</td>
+                        <td>${t.designation || 'N/A'}</td>
+                        <td class="text-end ${montantClass}">${formatCurrency(t.montant)}</td>
+                        <td>${t.modepaiement || 'N/A'}</td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="action-btn btn-edit" onclick="editTransactionCaisse(${t.id})" title="Modifier">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="action-btn btn-delete" onclick="deleteTransactionCaisse(${t.id})" title="Supprimer">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = html;
+        }
+
+        function populateCaisseFilters() {
+            const categories = [...new Set(transactionsCaisse.map(t => t.categorie).filter(Boolean))];
+            populateSelect('filterCategorieCaisse', categories, 'Toutes catégories');
+        }
+
+        function filtrerTransactionsCaisse() {
+            const type = document.getElementById('filterTypeCaisse').value;
+            const categorie = document.getElementById('filterCategorieCaisse').value;
+            const dateStart = document.getElementById('caisseDateStart').value;
+            const dateEnd = document.getElementById('caisseDateEnd').value;
+            
+            let filtered = transactionsCaisse;
+            
+            if (type) {
+                filtered = filtered.filter(t => t.mouvement === type);
+            }
+            
+            if (categorie) {
+                filtered = filtered.filter(t => t.categorie === categorie);
+            }
+            
+            if (dateStart || dateEnd) {
+                filtered = filtered.filter(t => {
+                    const tDate = new Date(t.date);
+                    
+                    if (dateStart) {
+                        const startDate = new Date(dateStart);
+                        startDate.setHours(0, 0, 0, 0);
+                        if (tDate < startDate) return false;
+                    }
+                    
+                    if (dateEnd) {
+                        const endDate = new Date(dateEnd);
+                        endDate.setHours(23, 59, 59, 999);
+                        if (tDate > endDate) return false;
+                    }
+                    
+                    return true;
+                });
+            }
+            
+            displayTransactionsCaisse(filtered);
+        }
+
+        function ajouterTransactionCaisse() {
+            showMessage('Fonctionnalité à implémenter', 'info');
+        }
+
+        function genererRapportCaisse() {
+            showMessage('Génération du rapport PDF...', 'info');
+        }
+
+        function chargerTransactionsCaisse() {
+            loadTransactionsCaisse();
+            showMessage('Données de caisse actualisées', 'success');
+        }
+
+        // ==================== GESTION UTILISATEURS ====================
+        async function loadUtilisateurs() {
+            try {
+                const response = await fetch(`${API_BASE_URL}?action=listedesutilisateur`);
+                const data = await response.json();
+                
+                if (data.success && data.data?.rows) {
+                    utilisateurs = data.data.rows.map((row, index) => {
+                        return {
+                            id: index + 1,
+                            utilisateur: row[0] || '',
+                            password: row[1] || '',
+                            dateCreation: row[2] || '',
+                            acces: row[3] || '',
+                            caisse: row[4] || ''
+                        };
+                    });
+                    
+                    displayUtilisateurs(utilisateurs);
+                    
+                } else {
+                    throw new Error('Structure de données invalide');
+                }
+                
+            } catch (error) {
+                console.error('Erreur:', error);
+                showError('listeUtilisateurs', 'Erreur de chargement');
+            }
+        }
+
+        function displayUtilisateurs(data) {
+            const tbody = document.getElementById('listeUtilisateurs');
+            if (!tbody) return;
+            
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="no-data">Aucun utilisateur</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            data.forEach(user => {
+                const accesBadge = user.acces === 'OUI' ? 
+                    '<span class="status-badge status-success">OUI</span>' : 
+                    '<span class="status-badge status-danger">NON</span>';
+                
+                const caisseBadge = user.caisse === 'OUI' ? 
+                    '<span class="status-badge status-success">OUI</span>' : 
+                    '<span class="status-badge status-danger">NON</span>';
+                
+                html += `
+                    <tr>
+                        <td><strong>${user.utilisateur}</strong></td>
+                        <td>
+                            <span class="password-display" onclick="showPassword('${user.password}')" title="Cliquer pour afficher">
+                                ${user.password ? '********' : 'N/A'}
+                            </span>
+                        </td>
+                        <td>${formatDate(user.dateCreation)}</td>
+                        <td>${accesBadge}</td>
+                        <td>${caisseBadge}</td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="action-btn btn-edit" onclick="editUtilisateur('${user.utilisateur}')" title="Modifier">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="action-btn btn-delete" onclick="deleteUtilisateur('${user.utilisateur}')" title="Supprimer">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = html;
+        }
+
+        function showPassword(password) {
+            alert(`Mot de passe: ${password}`);
+        }
+
+        function filtrerUtilisateurs() {
+            showMessage('Filtrage appliqué', 'info');
+        }
+
+        function ajouterUtilisateur() {
+            showMessage('Fonctionnalité à implémenter', 'info');
+        }
+
+        function exporterListeUtilisateurs() {
+            showMessage('Exportation en cours...', 'info');
+        }
+
+        function chargerUtilisateurs() {
+            loadUtilisateurs();
+            showMessage('Données utilisateurs actualisées', 'success');
+        }
+
+        // ==================== ANALYSE DES VENTES ====================
+        async function loadSalesData() {
+            try {
+                const response = await fetch(`${API_BASE_URL}?action=dataclient`);
+                const data = await response.json();
+                
+                if (data.success && data.data?.rows) {
+                    salesData = data.data.rows.map((row, index) => {
+                        return {
+                            id: row[0] || `VENTE${index + 1}`,
+                            client: row[1] || '',
+                            contact: row[2] || '',
+                            dateNaissance: row[3] || '',
+                            entreprise: row[4] || '',
+                            civilite: row[5] || '',
+                            agence: row[6] || 'Non spécifié',
+                            commercial: row[7] || 'Non spécifié',
+                            typeVerre: row[8] || '',
+                            gammeVerres: row[9] || '',
+                            choixMonture: row[10] || '',
+                            dateEnregistrement: row[46] || new Date().toISOString(),
+                            statutVente: row[47] || 'Nouvelle vente',
+                            utilisateur: row[48] || '',
+                            montantMonture: parseFloat(row[32]) || 0,
+                            montantVerres: parseFloat(row[33]) || 0,
+                            fraisLivraison: parseFloat(row[34]) || 0,
+                            totalBrut: parseFloat(row[35]) || 0,
+                            remise: parseFloat(row[36]) || 0,
+                            typeRemise: row[37] || '',
+                            partAssurance: parseFloat(row[38]) || 0,
+                            netAPayer: parseFloat(row[39]) || 0,
+                            acompte: parseFloat(row[40]) || 0,
+                            resteClient: parseFloat(row[41]) || 0,
+                            dateLivraisonPrevue: row[42] || '',
+                            contactLivraison: row[43] || '',
+                            telephoneContact: row[44] || '',
+                            adresseLivraison: row[45] || '',
+                            ophtalmo: row[25] || '',
+                            clinique: row[24] || '',
+                            assurance: row[26] || '',
+                            compagnieAssurance: row[27] || '',
+                            numeroPolice: row[28] || '',
+                            tva: parseFloat(row[29]) || 0,
+                            resteAPayer: parseFloat(row[53]) || 0,
+                            montantTTC: parseFloat(row[54]) || 0,
+                            dateLivraison: row[55] || ''
+                        };
+                    });
+                    
+                    extractUniqueValues();
+                    initFilters();
+                    updateSalesAnalysis();
+                    updateCommercialAnalysis();
+                    updateOphtalmoAnalysis();
+                    updateFinancialAnalysis();
+                    
+                } else {
+                    throw new Error('Structure de données invalide');
+                }
+            } catch (error) {
+                console.error('Erreur lors du chargement des données:', error);
+                showError('salesDetails', 'Erreur de chargement des données');
+                showError('topCommerciauxList', 'Erreur de chargement des données');
+                showError('topOphtalmoList', 'Erreur de chargement des données');
+                showError('topClientsReste', 'Erreur de chargement des données');
+            }
+        }
+
+        function extractUniqueValues() {
+            agences = [...new Set(salesData.map(item => item.agence).filter(Boolean))];
+            commerciaux = [...new Set(salesData.map(item => item.commercial).filter(Boolean))];
+            ophtalmos = [...new Set(salesData.map(item => item.ophtalmo).filter(Boolean))];
+            cliniques = [...new Set(salesData.map(item => item.clinique).filter(Boolean))];
+            assurances = [...new Set(salesData.map(item => item.compagnieAssurance).filter(Boolean))];
+        }
+
+        function initFilters() {
+            populateSelect('filterAgence', agences, 'Toutes les agences');
+            populateSelect('filterCommercial', commerciaux, 'Tous les commerciaux');
+            populateSelect('filterOphtalmo', ophtalmos, 'Tous les ophtalmos');
+            populateSelect('filterClinique', cliniques, 'Toutes les cliniques');
+            populateSelect('filterCommercialAgence', agences, 'Toutes les agences');
+            populateSelect('filterFinancialAgence', agences, 'Toutes les agences');
+            populateSelect('filterAgenceUser', agences, 'Toutes agences');
+        }
+
+        function getFilteredData(section) {
+            let filtered = [...salesData];
+            
+            switch(section) {
+                case 'ventes':
+                    const agence = document.getElementById('filterAgence').value;
+                    const dateStart = document.getElementById('salesDateStart').value;
+                    const dateEnd = document.getElementById('salesDateEnd').value;
+                    const statut = document.getElementById('filterStatutVente').value;
+                    
+                    filtered = filtered.filter(item => {
+                        let match = true;
+                        
+                        if (agence && item.agence !== agence) match = false;
+                        if (statut && item.statutVente !== statut) match = false;
+                        
+                        if (dateStart || dateEnd) {
+                            const itemDate = new Date(item.dateEnregistrement);
+                            
+                            if (dateStart) {
+                                const startDate = new Date(dateStart);
+                                startDate.setHours(0, 0, 0, 0);
+                                if (itemDate < startDate) match = false;
+                            }
+                            
+                            if (dateEnd) {
+                                const endDate = new Date(dateEnd);
+                                endDate.setHours(23, 59, 59, 999);
+                                if (itemDate > endDate) match = false;
+                            }
+                        }
+                        
+                        return match;
+                    });
+                    break;
+                    
+                case 'commerciaux':
+                    const commercial = document.getElementById('filterCommercial').value;
+                    const commercialDateStart = document.getElementById('commercialDateStart').value;
+                    const commercialDateEnd = document.getElementById('commercialDateEnd').value;
+                    const commercialAgence = document.getElementById('filterCommercialAgence').value;
+                    
+                    filtered = filtered.filter(item => {
+                        let match = true;
+                        
+                        if (commercial && item.commercial !== commercial) match = false;
+                        if (commercialAgence && item.agence !== commercialAgence) match = false;
+                        
+                        if (commercialDateStart || commercialDateEnd) {
+                            const itemDate = new Date(item.dateEnregistrement);
+                            
+                            if (commercialDateStart) {
+                                const startDate = new Date(commercialDateStart);
+                                startDate.setHours(0, 0, 0, 0);
+                                if (itemDate < startDate) match = false;
+                            }
+                            
+                            if (commercialDateEnd) {
+                                const endDate = new Date(commercialDateEnd);
+                                endDate.setHours(23, 59, 59, 999);
+                                if (itemDate > endDate) match = false;
+                            }
+                        }
+                        
+                        return match;
+                    });
+                    break;
+                    
+                case 'ophtalmo':
+                    const ophtalmo = document.getElementById('filterOphtalmo').value;
+                    const ophtalmoDateStart = document.getElementById('ophtalmoDateStart').value;
+                    const ophtalmoDateEnd = document.getElementById('ophtalmoDateEnd').value;
+                    const clinique = document.getElementById('filterClinique').value;
+                    
+                    filtered = filtered.filter(item => {
+                        let match = true;
+                        
+                        if (ophtalmo && item.ophtalmo !== ophtalmo) match = false;
+                        if (clinique && item.clinique !== clinique) match = false;
+                        
+                        if (ophtalmoDateStart || ophtalmoDateEnd) {
+                            const itemDate = new Date(item.dateEnregistrement);
+                            
+                            if (ophtalmoDateStart) {
+                                const startDate = new Date(ophtalmoDateStart);
+                                startDate.setHours(0, 0, 0, 0);
+                                if (itemDate < startDate) match = false;
+                            }
+                            
+                            if (ophtalmoDateEnd) {
+                                const endDate = new Date(ophtalmoDateEnd);
+                                endDate.setHours(23, 59, 59, 999);
+                                if (itemDate > endDate) match = false;
+                            }
+                        }
+                        
+                        return match;
+                    });
+                    break;
+                    
+                case 'financiere':
+                    const financialAgence = document.getElementById('filterFinancialAgence').value;
+                    const financialDateStart = document.getElementById('financialDateStart').value;
+                    const financialDateEnd = document.getElementById('financialDateEnd').value;
+                    
+                    filtered = filtered.filter(item => {
+                        let match = true;
+                        
+                        if (financialAgence && item.agence !== financialAgence) match = false;
+                        
+                        if (financialDateStart || financialDateEnd) {
+                            const itemDate = new Date(item.dateEnregistrement);
+                            
+                            if (financialDateStart) {
+                                const startDate = new Date(financialDateStart);
+                                startDate.setHours(0, 0, 0, 0);
+                                if (itemDate < startDate) match = false;
+                            }
+                            
+                            if (financialDateEnd) {
+                                const endDate = new Date(financialDateEnd);
+                                endDate.setHours(23, 59, 59, 999);
+                                if (itemDate > endDate) match = false;
+                            }
+                        }
+                        
+                        return match;
+                    });
+                    break;
+            }
+            
+            return filtered;
+        }
+
+        function updateSalesAnalysis() {
+            const data = getFilteredData('ventes');
+            filteredSalesData = data;
+            
+            const totalVentes = data.length;
+            const chiffreAffaires = data.reduce((sum, item) => sum + (item.netAPayer || 0), 0);
+            const ventesMoyennes = totalVentes > 0 ? chiffreAffaires / totalVentes : 0;
+            const ventesLivrees = data.filter(item => item.statutVente === 'Livré').length;
+            const tauxLivraison = totalVentes > 0 ? (ventesLivrees / totalVentes * 100).toFixed(1) : 0;
+            
+            document.getElementById('totalVentes').textContent = totalVentes;
+            document.getElementById('chiffreAffaires').textContent = formatCurrency(chiffreAffaires);
+            document.getElementById('ventesMoyennes').textContent = formatCurrency(ventesMoyennes);
+            document.getElementById('tauxLivraison').textContent = `${tauxLivraison}%`;
+            
+            updateEvolutionChart();
+            updateSalesDetails();
+        }
+
+        function updateEvolutionChart() {
+            const ctx = document.getElementById('evolutionChart');
+            if (!ctx) return;
+            
+            const chartType = document.getElementById('chartType').value;
+            const tension = chartType === 'smooth' ? 0.3 : 0;
+            
+            // Générer les 12 derniers mois
+            const now = new Date();
+            const months = [];
+            const monthLabels = [];
+            
+            for (let i = 11; i >= 0; i--) {
+                const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                const monthKey = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+                const monthLabel = date.toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' });
+                
+                months.push(monthKey);
+                monthLabels.push(monthLabel);
+            }
+            
+            // Calculer les données par agence
+            const dataByAgence = {};
+            const totalByMonth = new Array(12).fill(0);
+            
+            salesData.forEach(item => {
+                if (item.dateEnregistrement) {
+                    const date = new Date(item.dateEnregistrement);
+                    const monthKey = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+                    const monthIndex = months.indexOf(monthKey);
+                    
+                    if (monthIndex !== -1) {
+                        const agence = item.agence || 'Non spécifié';
+                        const ca = item.netAPayer || 0;
+                        
+                        if (!dataByAgence[agence]) {
+                            dataByAgence[agence] = new Array(12).fill(0);
+                        }
+                        
+                        dataByAgence[agence][monthIndex] += ca;
+                        totalByMonth[monthIndex] += ca;
+                    }
+                }
+            });
+            
+            // Préparer les datasets
+            const datasets = [];
+            
+            // Dataset pour le total (en rouge)
+            datasets.push({
+                label: 'Total toutes agences',
+                data: totalByMonth,
+                borderColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                borderWidth: 3,
+                fill: false,
+                tension: tension
+            });
+            
+            // Datasets pour chaque agence (couleurs arc-en-ciel)
+            const agencesArray = Object.keys(dataByAgence);
+            agencesArray.forEach((agence, index) => {
+                // Couleurs arc-en-ciel à partir de la droite (après le rouge)
+                const hue = (index * 360 / Math.max(agencesArray.length, 1)) % 360;
+                datasets.push({
+                    label: agence,
+                    data: dataByAgence[agence],
+                    borderColor: `hsl(${hue}, 70%, 50%)`,
+                    backgroundColor: `hsla(${hue}, 70%, 50%, 0.1)`,
+                    borderWidth: 2,
+                    fill: false,
+                    tension: tension
+                });
+            });
+            
+            if (evolutionChart) {
+                evolutionChart.destroy();
+            }
+            
+            evolutionChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: monthLabels,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${formatCurrency(context.raw)}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return formatShortCurrency(value) + ' FCFA';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateSalesDetails() {
+            const tbody = document.getElementById('salesDetails');
+            if (!tbody) return;
+            
+            const salesByAgence = {};
+            filteredSalesData.forEach(item => {
+                const agence = item.agence || 'Non spécifié';
+                if (!salesByAgence[agence]) {
+                    salesByAgence[agence] = {
+                        count: 0,
+                        ca: 0,
+                        reste: 0,
+                        livrees: 0
+                    };
+                }
+                salesByAgence[agence].count++;
+                salesByAgence[agence].ca += item.netAPayer || 0;
+                salesByAgence[agence].reste += item.resteAPayer || 0;
+                if (item.statutVente === 'Livré') {
+                    salesByAgence[agence].livrees++;
+                }
+            });
+            
+            let html = '';
+            Object.entries(salesByAgence).forEach(([agence, stats]) => {
+                const venteMoyenne = stats.count > 0 ? stats.ca / stats.count : 0;
+                const tauxLivraison = stats.count > 0 ? (stats.livrees / stats.count * 100).toFixed(1) : 0;
+                
+                html += `
+                    <tr>
+                        <td><strong>${agence}</strong></td>
+                        <td>${stats.count}</td>
+                        <td>${formatCurrency(stats.ca)}</td>
+                        <td>${formatCurrency(venteMoyenne)}</td>
+                        <td>${tauxLivraison}%</td>
+                        <td class="${stats.reste > 0 ? 'text-danger' : 'text-success'}">
+                            ${formatCurrency(stats.reste)}
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = html || '<tr><td colspan="6" class="no-data">Aucune donnée pour cette période</td></tr>';
+        }
+
+        // ==================== ANALYSE COMMERCIAUX ====================
+        function updateCommercialAnalysis() {
+            const data = getFilteredData('commerciaux');
+            
+            const totalVentes = data.length;
+            const chiffreAffaires = data.reduce((sum, item) => sum + (item.netAPayer || 0), 0);
+            const venteMoyenne = totalVentes > 0 ? chiffreAffaires / totalVentes : 0;
+            
+            const clientAchats = {};
+            data.forEach(item => {
+                const client = item.client;
+                if (client) {
+                    clientAchats[client] = (clientAchats[client] || 0) + 1;
+                }
+            });
+            const clientsFideles = Object.values(clientAchats).filter(count => count > 1).length;
+            
+            document.getElementById('totalVentesCommercial').textContent = totalVentes;
+            document.getElementById('caCommercial').textContent = formatCurrency(chiffreAffaires);
+            document.getElementById('venteMoyCommercial').textContent = formatCurrency(venteMoyenne);
+            document.getElementById('clientFidele').textContent = clientsFideles;
+            
+            updateCommercialChart();
+            updateCommercialRanking();
+        }
+
+        function updateCommercialChart() {
+            const ctx = document.getElementById('commercialChart');
+            if (!ctx) return;
+            
+            const data = getFilteredData('commerciaux');
+            
+            // Générer les 12 derniers mois
+            const now = new Date();
+            const months = [];
+            const monthLabels = [];
+            
+            for (let i = 11; i >= 0; i--) {
+                const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                const monthKey = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+                const monthLabel = date.toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' });
+                
+                months.push(monthKey);
+                monthLabels.push(monthLabel);
+            }
+            
+            // Calculer les données par commercial (top 5)
+            const dataByCommercial = {};
+            const commercialTotals = {};
+            
+            data.forEach(item => {
+                if (item.dateEnregistrement) {
+                    const date = new Date(item.dateEnregistrement);
+                    const monthKey = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+                    const monthIndex = months.indexOf(monthKey);
+                    
+                    if (monthIndex !== -1) {
+                        const commercial = item.commercial || 'Non spécifié';
+                        const ca = item.netAPayer || 0;
+                        
+                        if (!dataByCommercial[commercial]) {
+                            dataByCommercial[commercial] = new Array(12).fill(0);
+                            commercialTotals[commercial] = 0;
+                        }
+                        
+                        dataByCommercial[commercial][monthIndex] += ca;
+                        commercialTotals[commercial] += ca;
+                    }
+                }
+            });
+            
+            // Trier les commerciaux par CA total et prendre les 5 premiers
+            const topCommerciaux = Object.entries(commercialTotals)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 5)
+                .map(([commercial]) => commercial);
+            
+            const chartType = document.getElementById('commercialChartType').value;
+            const tension = chartType === 'smooth' ? 0.3 : 0;
+            const isBarChart = chartType === 'bar';
+            
+            if (commercialChart) {
+                commercialChart.destroy();
+            }
+            
+            if (isBarChart) {
+                // Graphique à barres pour les totaux
+                const caData = topCommerciaux.map(commercial => commercialTotals[commercial]);
+                
+                commercialChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: topCommerciaux,
+                        datasets: [{
+                            label: 'Chiffre d\'Affaires Total (FCFA)',
+                            data: caData,
+                            backgroundColor: topCommerciaux.map((_, i) => 
+                                `hsl(${(i * 360) / Math.max(topCommerciaux.length, 1)}, 70%, 60%)`
+                            ),
+                            borderColor: topCommerciaux.map((_, i) => 
+                                `hsl(${(i * 360) / Math.max(topCommerciaux.length, 1)}, 70%, 40%)`
+                            ),
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return formatShortCurrency(value) + ' FCFA';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            } else {
+                // Graphique en courbe pour l'évolution
+                const datasets = topCommerciaux.map((commercial, index) => {
+                    const hue = (index * 360 / Math.max(topCommerciaux.length, 1)) % 360;
+                    return {
+                        label: commercial,
+                        data: dataByCommercial[commercial],
+                        borderColor: `hsl(${hue}, 70%, 50%)`,
+                        backgroundColor: `hsla(${hue}, 70%, 50%, 0.1)`,
+                        borderWidth: 2,
+                        fill: false,
+                        tension: tension
+                    };
+                });
+                
+                commercialChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: monthLabels,
+                        datasets: datasets
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false,
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.dataset.label}: ${formatCurrency(context.raw)}`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return formatShortCurrency(value) + ' FCFA';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function updateCommercialRanking() {
+            const data = getFilteredData('commerciaux');
+            const container = document.getElementById('topCommerciauxList');
+            if (!container) return;
+            
+            const performanceByCommercial = {};
+            data.forEach(item => {
+                const commercial = item.commercial || 'Non spécifié';
+                if (!performanceByCommercial[commercial]) {
+                    performanceByCommercial[commercial] = {
+                        ca: 0,
+                        count: 0
+                    };
+                }
+                performanceByCommercial[commercial].ca += item.netAPayer || 0;
+                performanceByCommercial[commercial].count++;
+            });
+            
+            const sortedCommerciaux = Object.entries(performanceByCommercial)
+                .sort(([,a], [,b]) => b.ca - a.ca)
+                .slice(0, 10);
+            
+            let html = '';
+            sortedCommerciaux.forEach(([commercial, stats], index) => {
+                const venteMoyenne = stats.count > 0 ? stats.ca / stats.count : 0;
+                
+                html += `
+                    <div class="performer-item">
+                        <div>
+                            <div class="performer-name">${index + 1}. ${commercial}</div>
+                            <div style="font-size: 0.75rem; color: var(--gray-500);">
+                                ${stats.count} ventes • Moy: ${formatCurrency(venteMoyenne)}
+                            </div>
+                        </div>
+                        <div class="performer-value">${formatCurrency(stats.ca)}</div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html || '<div class="no-data">Aucune donnée pour cette période</div>';
+        }
+
+        // ==================== ANALYSE OPHTALMO ====================
+        function updateOphtalmoAnalysis() {
+            const data = getFilteredData('ophtalmo');
+            
+            const totalPatients = new Set(data.map(item => item.client)).size;
+            const chiffreAffaires = data.reduce((sum, item) => sum + (item.netAPayer || 0), 0);
+            const prescriptionsMoy = totalPatients > 0 ? chiffreAffaires / totalPatients : 0;
+            
+            const patientsAvecVente = new Set(data.filter(item => item.netAPayer > 0).map(item => item.client)).size;
+            const tauxConversion = totalPatients > 0 ? (patientsAvecVente / totalPatients * 100).toFixed(1) : 0;
+            
+            document.getElementById('totalPatients').textContent = totalPatients;
+            document.getElementById('caOphtalmo').textContent = formatCurrency(chiffreAffaires);
+            document.getElementById('prescriptionsMoy').textContent = formatCurrency(prescriptionsMoy);
+            document.getElementById('tauxConversion').textContent = `${tauxConversion}%`;
+            
+            updateOphtalmoChart();
+            updateOphtalmoRanking();
+        }
+
+        function updateOphtalmoChart() {
+            const ctx = document.getElementById('ophtalmoChart');
+            if (!ctx) return;
+            
+            const data = getFilteredData('ophtalmo');
+            
+            // Générer les 12 derniers mois
+            const now = new Date();
+            const months = [];
+            const monthLabels = [];
+            
+            for (let i = 11; i >= 0; i--) {
+                const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                const monthKey = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+                const monthLabel = date.toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' });
+                
+                months.push(monthKey);
+                monthLabels.push(monthLabel);
+            }
+            
+            // Calculer les données par ophtalmo (top 5)
+            const dataByOphtalmo = {};
+            const ophtalmoTotals = {};
+            
+            data.forEach(item => {
+                if (item.dateEnregistrement) {
+                    const date = new Date(item.dateEnregistrement);
+                    const monthKey = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+                    const monthIndex = months.indexOf(monthKey);
+                    
+                    if (monthIndex !== -1) {
+                        const ophtalmo = item.ophtalmo || 'Non spécifié';
+                        const ca = item.netAPayer || 0;
+                        
+                        if (!dataByOphtalmo[ophtalmo]) {
+                            dataByOphtalmo[ophtalmo] = new Array(12).fill(0);
+                            ophtalmoTotals[ophtalmo] = 0;
+                        }
+                        
+                        dataByOphtalmo[ophtalmo][monthIndex] += ca;
+                        ophtalmoTotals[ophtalmo] += ca;
+                    }
+                }
+            });
+            
+            // Trier les ophtalmos par CA total et prendre les 5 premiers
+            const topOphtalmos = Object.entries(ophtalmoTotals)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 5)
+                .map(([ophtalmo]) => ophtalmo);
+            
+            const chartType = document.getElementById('ophtalmoChartType').value;
+            const tension = chartType === 'smooth' ? 0.3 : 0;
+            const isBarChart = chartType === 'bar';
+            
+            if (ophtalmoChart) {
+                ophtalmoChart.destroy();
+            }
+            
+            if (isBarChart) {
+                // Graphique à barres pour les totaux
+                const caData = topOphtalmos.map(ophtalmo => ophtalmoTotals[ophtalmo]);
+                
+                ophtalmoChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: topOphtalmos,
+                        datasets: [{
+                            label: 'Chiffre d\'Affaires Total (FCFA)',
+                            data: caData,
+                            backgroundColor: topOphtalmos.map((_, i) => 
+                                `hsl(${(i * 360) / Math.max(topOphtalmos.length, 1)}, 70%, 60%)`
+                            ),
+                            borderColor: topOphtalmos.map((_, i) => 
+                                `hsl(${(i * 360) / Math.max(topOphtalmos.length, 1)}, 70%, 40%)`
+                            ),
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return formatShortCurrency(value) + ' FCFA';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            } else {
+                // Graphique en courbe pour l'évolution
+                const datasets = topOphtalmos.map((ophtalmo, index) => {
+                    const hue = (index * 360 / Math.max(topOphtalmos.length, 1)) % 360;
+                    return {
+                        label: ophtalmo,
+                        data: dataByOphtalmo[ophtalmo],
+                        borderColor: `hsl(${hue}, 70%, 50%)`,
+                        backgroundColor: `hsla(${hue}, 70%, 50%, 0.1)`,
+                        borderWidth: 2,
+                        fill: false,
+                        tension: tension
+                    };
+                });
+                
+                ophtalmoChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: monthLabels,
+                        datasets: datasets
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false,
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.dataset.label}: ${formatCurrency(context.raw)}`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return formatShortCurrency(value) + ' FCFA';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function updateOphtalmoRanking() {
+            const data = getFilteredData('ophtalmo');
+            const container = document.getElementById('topOphtalmoList');
+            if (!container) return;
+            
+            const performanceByOphtalmo = {};
+            data.forEach(item => {
+                const ophtalmo = item.ophtalmo || 'Non spécifié';
+                if (!performanceByOphtalmo[ophtalmo]) {
+                    performanceByOphtalmo[ophtalmo] = {
+                        ca: 0,
+                        patients: new Set(),
+                        cliniques: new Set()
+                    };
+                }
+                performanceByOphtalmo[ophtalmo].ca += item.netAPayer || 0;
+                if (item.client) {
+                    performanceByOphtalmo[ophtalmo].patients.add(item.client);
+                }
+                if (item.clinique) {
+                    performanceByOphtalmo[ophtalmo].cliniques.add(item.clinique);
+                }
+            });
+            
+            const sortedOphtalmos = Object.entries(performanceByOphtalmo)
+                .sort(([,a], [,b]) => b.ca - a.ca)
+                .slice(0, 10);
+            
+            let html = '';
+            sortedOphtalmos.forEach(([ophtalmo, stats], index) => {
+                const patients = stats.patients.size;
+                const caMoyen = patients > 0 ? stats.ca / patients : 0;
+                
+                html += `
+                    <div class="performer-item">
+                        <div>
+                            <div class="performer-name">${index + 1}. ${ophtalmo}</div>
+                            <div style="font-size: 0.75rem; color: var(--gray-500);">
+                                ${patients} patients • Moy: ${formatCurrency(caMoyen)}
+                                ${stats.cliniques.size > 0 ? `• ${stats.cliniques.size} clinique(s)` : ''}
+                            </div>
+                        </div>
+                        <div class="performer-value">${formatCurrency(stats.ca)}</div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html || '<div class="no-data">Aucune donnée pour cette période</div>';
+        }
+
+        // ==================== ANALYSE FINANCIÈRE ====================
+        function updateFinancialAnalysis() {
+            const data = getFilteredData('financiere');
+            
+            const totalCreances = data.reduce((sum, item) => sum + (item.resteAPayer || 0), 0);
+            const totalNetAPayer = data.reduce((sum, item) => sum + (item.netAPayer || 0), 0);
+            const tauxEncaissement = totalNetAPayer > 0 ? 
+                ((totalNetAPayer - totalCreances) / totalNetAPayer * 100).toFixed(1) : 0;
+            
+            const creances = data.filter(item => item.resteAPayer > 0);
+            const moyenneCreance = creances.length > 0 ? 
+                creances.reduce((sum, item) => sum + item.resteAPayer, 0) / creances.length : 0;
+            
+            const maintenant = new Date();
+            let totalDelai = 0;
+            let countDelai = 0;
+            
+            creances.forEach(item => {
+                if (item.dateEnregistrement) {
+                    const dateVente = new Date(item.dateEnregistrement);
+                    const delai = Math.floor((maintenant - dateVente) / (1000 * 60 * 60 * 24));
+                    totalDelai += delai;
+                    countDelai++;
+                }
+            });
+            
+            const delaiMoyen = countDelai > 0 ? Math.floor(totalDelai / countDelai) : 0;
+            
+            document.getElementById('totalCreances').textContent = formatCurrency(totalCreances);
+            document.getElementById('tauxEncaissement').textContent = `${tauxEncaissement}%`;
+            document.getElementById('moyenneCreance').textContent = formatCurrency(moyenneCreance);
+            document.getElementById('delaiMoyen').textContent = `${delaiMoyen}j`;
+            
+            updateFinancialChart();
+            updateTopClientsReste();
+            updateAssuranceAnalysis();
+        }
+
+        function updateFinancialChart() {
+            const ctx = document.getElementById('financialChart');
+            if (!ctx) return;
+            
+            const data = getFilteredData('financiere');
+            
+            // Générer les 12 derniers mois
+            const now = new Date();
+            const months = [];
+            const monthLabels = [];
+            
+            for (let i = 11; i >= 0; i--) {
+                const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                const monthKey = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+                const monthLabel = date.toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' });
+                
+                months.push(monthKey);
+                monthLabels.push(monthLabel);
+            }
+            
+            // Calculer les créances et CA par mois
+            const creancesParMois = new Array(12).fill(0);
+            const caParMois = new Array(12).fill(0);
+            
+            data.forEach(item => {
+                if (item.dateEnregistrement) {
+                    const date = new Date(item.dateEnregistrement);
+                    const monthKey = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+                    const monthIndex = months.indexOf(monthKey);
+                    
+                    if (monthIndex !== -1) {
+                        creancesParMois[monthIndex] += item.resteAPayer || 0;
+                        caParMois[monthIndex] += item.netAPayer || 0;
+                    }
+                }
+            });
+            
+            const chartType = document.getElementById('financialChartType').value;
+            const tension = chartType === 'smooth' ? 0.3 : 0;
+            
+            if (financialChart) {
+                financialChart.destroy();
+            }
+            
+            financialChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: monthLabels,
+                    datasets: [
+                        {
+                            label: 'Créances Clients (FCFA)',
+                            data: creancesParMois,
+                            borderColor: 'rgba(239, 68, 68, 1)',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: tension
+                        },
+                        {
+                            label: 'Chiffre d\'Affaires Total (FCFA)',
+                            data: caParMois,
+                            borderColor: 'rgba(79, 70, 229, 1)',
+                            backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                            borderWidth: 2,
+                            fill: false,
+                            tension: tension
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${formatCurrency(context.raw)}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return formatShortCurrency(value) + ' FCFA';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateTopClientsReste() {
+            const data = getFilteredData('financiere');
+            const tbody = document.getElementById('topClientsReste');
+            if (!tbody) return;
+            
+            const clientsAvecReste = data.filter(item => item.resteAPayer > 0);
+            
+            const creancesParClient = {};
+            clientsAvecReste.forEach(item => {
+                const client = item.client || 'Client inconnu';
+                if (!creancesParClient[client]) {
+                    creancesParClient[client] = {
+                        total: 0,
+                        agence: item.agence || '',
+                        commercial: item.commercial || '',
+                        dernierPaiement: item.dateEnregistrement || '',
+                        dernierDate: item.dateEnregistrement ? new Date(item.dateEnregistrement) : null
+                    };
+                }
+                creancesParClient[client].total += item.resteAPayer;
+                
+                if (item.dateEnregistrement) {
+                    const itemDate = new Date(item.dateEnregistrement);
+                    if (!creancesParClient[client].dernierDate || itemDate > creancesParClient[client].dernierDate) {
+                        creancesParClient[client].dernierDate = itemDate;
+                        creancesParClient[client].dernierPaiement = item.dateEnregistrement;
+                    }
+                }
+            });
+            
+            const sortedClients = Object.entries(creancesParClient)
+                .sort(([,a], [,b]) => b.total - a.total)
+                .slice(0, 10);
+            
+            let html = '';
+            const maintenant = new Date();
+            
+            sortedClients.forEach(([client, info]) => {
+                const delai = info.dernierDate ? 
+                    Math.floor((maintenant - info.dernierDate) / (1000 * 60 * 60 * 24)) : 'N/A';
+                
+                html += `
+                    <tr>
+                        <td><strong>${client}</strong></td>
+                        <td>${info.agence}</td>
+                        <td>${info.commercial}</td>
+                        <td class="text-danger">${formatCurrency(info.total)}</td>
+                        <td>${delai} jours</td>
+                        <td>${info.dernierPaiement ? formatDate(info.dernierPaiement) : 'N/A'}</td>
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = html || '<tr><td colspan="6" class="no-data">Aucune créance en cours</td></tr>';
+        }
+
+        function updateAssuranceAnalysis() {
+            const data = getFilteredData('financiere');
+            
+            const totalCA = data.reduce((sum, item) => sum + (item.netAPayer || 0), 0);
+            const totalAssurance = data.reduce((sum, item) => sum + (item.partAssurance || 0), 0);
+            const partAssurance = totalCA > 0 ? (totalAssurance / totalCA * 100).toFixed(1) : 0;
+            
+            const assurances = data.filter(item => item.partAssurance > 0);
+            let totalDelaiAssurance = 0;
+            let countDelaiAssurance = 0;
+            
+            assurances.forEach(item => {
+                if (item.dateEnregistrement) {
+                    const dateVente = new Date(item.dateEnregistrement);
+                    const delai = Math.floor((new Date() - dateVente) / (1000 * 60 * 60 * 24));
+                    totalDelaiAssurance += delai;
+                    countDelaiAssurance++;
+                }
+            });
+            
+            const delaiAssurance = countDelaiAssurance > 0 ? Math.floor(totalDelaiAssurance / countDelaiAssurance) : 0;
+            
+            const totalRemboursable = assurances.reduce((sum, item) => sum + (item.netAPayer || 0), 0);
+            const tauxRemboursement = totalRemboursable > 0 ? (totalAssurance / totalRemboursable * 100).toFixed(1) : 0;
+            
+            document.getElementById('partAssurance').textContent = `${partAssurance}%`;
+            document.getElementById('delaiAssurance').textContent = `${delaiAssurance}j`;
+            document.getElementById('tauxRemboursement').textContent = `${tauxRemboursement}%`;
+        }
+
+        // ==================== FONCTIONS DE RAFRAÎCHISSEMENT ====================
+        function refreshSalesAnalysis() {
+            loadSalesData();
+            showMessage('Analyse des ventes actualisée', 'success');
+        }
+
+        function refreshCommercialAnalysis() {
+            loadSalesData();
+            showMessage('Analyse des commerciaux actualisée', 'success');
+        }
+
+        function refreshOphtalmoAnalysis() {
+            loadSalesData();
+            showMessage('Analyse des ophtalmos actualisée', 'success');
+        }
+
+        function refreshFinancialAnalysis() {
+            loadSalesData();
+            showMessage('Analyse financière actualisée', 'success');
+        }
+
+        function exporterRapportVentes() {
+            showMessage('Exportation du rapport ventes...', 'info');
+        }
+
+        function exporterPerformanceCommercial() {
+            showMessage('Exportation de la performance commerciale...', 'info');
+        }
+
+        function exporterPerformanceOphtalmo() {
+            showMessage('Exportation du rapport ophtalmos...', 'info');
+        }
+
+        function genererRapportFinancier() {
+            showMessage('Génération du rapport financier...', 'info');
+        }
+
+        // ==================== GESTION DE L'INACTIVITÉ ====================
+        function setupActivityListeners() {
+            const events = ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'];
+            events.forEach(event => {
+                document.addEventListener(event, resetInactivityTimer);
+            });
+        }
+
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            clearTimeout(logoutWarningTimer);
+            
+            if (isLogoutWarningActive) {
+                hideLogoutWarning();
+            }
+            
+            inactivityTimer = setTimeout(showLogoutWarning, logoutTimeout - warningTimeout);
+        }
+
+        function showLogoutWarning() {
+            isLogoutWarningActive = true;
+            const notification = document.getElementById('logout-notification');
+            const countdownElement = document.getElementById('logout-countdown');
+            
+            if (notification && countdownElement) {
+                notification.style.display = 'flex';
+                
+                let countdown = 30;
+                countdownElement.textContent = countdown;
+                
+                logoutWarningTimer = setInterval(() => {
+                    countdown--;
+                    countdownElement.textContent = countdown;
+                    
+                    if (countdown <= 0) {
+                        logoutUser();
+                    }
+                }, 1000);
+            }
+        }
+
+        function hideLogoutWarning() {
+            isLogoutWarningActive = false;
+            const notification = document.getElementById('logout-notification');
+            if (notification) {
+                notification.style.display = 'none';
+            }
+            clearInterval(logoutWarningTimer);
+        }
+
+        function logoutUser() {
+            clearTimeout(inactivityTimer);
+            clearTimeout(logoutWarningTimer);
+            
+            sessionStorage.removeItem("utilisateur");
+            localStorage.removeItem("utilisateur");
+            
+            window.location.href = 'Accueil.html';
+        }
+
+        // ==================== FONCTIONS MODALES ====================
+        function closeModal() {
+            const modal = document.querySelector('.modal-overlay.active');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        // Fonctions d'édition/suppression (à implémenter selon vos besoins)
+        function editOperationBanque(idUnique) {
+            showMessage(`Édition de l'opération ${idUnique} - À implémenter`, 'info');
+        }
+
+        function editTransactionCaisse(id) {
+            showMessage(`Édition de la transaction ${id} - À implémenter`, 'info');
+        }
+
+        function deleteTransactionCaisse(id) {
+            if (confirm('Voulez-vous vraiment supprimer cette transaction ?')) {
+                showMessage(`Transaction ${id} supprimée - À implémenter`, 'success');
+            }
+        }
+
+        function editUtilisateur(username) {
+            showMessage(`Édition de l'utilisateur ${username} - À implémenter`, 'info');
+        }
+
+        function deleteUtilisateur(username) {
+            if (confirm(`Voulez-vous vraiment supprimer l'utilisateur ${username} ?`)) {
+                showMessage(`Utilisateur ${username} supprimé - À implémenter`, 'success');
+            }
+        }
+
+    </script>
+</body>
+</html>
