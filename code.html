@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion - VisioPro</title>
+    <title>Connexion - VisionPro</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -678,9 +678,11 @@
                 .then(data => {
                     console.log('📨 Données brutes reçues:', data);
                     
-                    // CORRECTION ICI : Utiliser data.data.isAdmin au lieu de data.isAdmin
                     const isAdmin = data.data && data.data.isAdmin;
-                    console.log('🔍 Détail data.data.isAdmin:', data.data?.isAdmin, 'Type:', typeof data.data?.isAdmin);
+                    const hasCaisseAccess = data.data && data.data.hasCaisseAccess; // NOUVEAU
+                    
+                    console.log('🔍 Détail data.data.isAdmin:', data.data?.isAdmin);
+                    console.log('💰 Détail data.data.hasCaisseAccess:', data.data?.hasCaisseAccess);
                     
                     if (data.success) {
                         console.log('✅ Connexion réussie côté frontend');
@@ -691,25 +693,29 @@
                         // Save username in session storage
                         sessionStorage.setItem("utilisateur", username);
                         
-                        // CORRECTION ICI : Utiliser la variable isAdmin qu'on a extraite
-                        console.log('🐛 DEBUG isAdmin valeur:', isAdmin);
-                        console.log('🐛 DEBUG isAdmin type:', typeof isAdmin);
-                        
                         // Save admin status if user is admin
                         if (isAdmin) {
                             sessionStorage.setItem("isAdmin", "true");
                             console.log(`✅ ${username} a un accès ADMINISTRATEUR`);
-                            console.log('🔐 Droits administrateur activés');
                         } else {
                             sessionStorage.setItem("isAdmin", "false");
                             console.log(`👤 ${username} a un accès UTILISATEUR standard`);
-                            console.log('🔓 Droits utilisateur standard');
+                        }
+
+                        // NOUVEAU : Sauvegarder l'accès caisse
+                        if (hasCaisseAccess) {
+                            sessionStorage.setItem("hasCaisseAccess", "true");
+                            console.log(`💰 ${username} a l'accès CAISSE AUTORISÉ`);
+                        } else {
+                            sessionStorage.setItem("hasCaisseAccess", "false");
+                            console.log(`🚫 ${username} a l'accès CAISSE REFUSÉ`);
                         }
 
                         // Afficher toutes les informations de session
                         console.log('📋 Informations de session:');
                         console.log('- Utilisateur:', sessionStorage.getItem("utilisateur"));
                         console.log('- Admin:', sessionStorage.getItem("isAdmin"));
+                        console.log('- Accès Caisse:', sessionStorage.getItem("hasCaisseAccess"));
                         console.log('- Timestamp:', new Date().toLocaleString());
 
                         // Redirect after 1.5 seconds
@@ -744,7 +750,6 @@
                     submitBtn.classList.remove('pulse');
                 });
         });
-
 
         // Initialiser la détection du clavier
         setupKeyboardDetection();
