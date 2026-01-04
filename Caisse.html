@@ -1052,8 +1052,8 @@ async function loadAllCaisses() {
             
             let html = '';
             caisses.forEach(caisse => {
-                // Calculer les statistiques
-                const stats = calculateCaisseStats(caisse);
+                // Calculer les statistiques pour la semaine en cours
+                const stats = calculateCaisseStatsThisWeek(caisse);
                 
                 html += `
                     <div class="caisse-card" onclick="openCaisseModal('${caisse.id}', '${caisse.name}')">
@@ -1082,16 +1082,16 @@ async function loadAllCaisses() {
                                 </span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label">Total entrées</span>
+                                <span class="stat-label">Total entrées (semaine)</span>
                                 <span class="stat-value positive">${formatCurrency(stats.totalEntrees)}</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label">Total sorties</span>
+                                <span class="stat-label">Total sorties (semaine)</span>
                                 <span class="stat-value negative">${formatCurrency(stats.totalSorties)}</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label">Opérations</span>
-                                <span class="stat-value">${caisse.totalOperations || 0}</span>
+                                <span class="stat-label">Opérations (semaine)</span>
+                                <span class="stat-value">${stats.totalOperations || 0}</span>
                             </div>
                         </div>
                         
@@ -1105,34 +1105,65 @@ async function loadAllCaisses() {
             container.innerHTML = html;
         }
 
-        function calculateCaisseStats(caisse) {
+        function calculateCaisseStatsThisWeek(caisse) {
             if (!caisse.data || !Array.isArray(caisse.data)) {
-                return { solde: 0, totalEntrees: 0, totalSorties: 0 };
+                return { solde: 0, totalEntrees: 0, totalSorties: 0, totalOperations: 0 };
             }
             
             let solde = 0;
             let totalEntrees = 0;
             let totalSorties = 0;
+            let totalOperations = 0;
             
-            // Trouver la dernière valeur "En caisse" non vide
+            // Calculer les dates de début et fin de la semaine
+            const today = new Date();
+            const startOfWeek = getStartOfWeek(today);
+            const endOfWeek = getEndOfWeek(today);
+            
+            // Trouver la dernière valeur "En caisse" non vide (toutes données)
             const lastCaisseValue = caisse.data.find(row => row[5] !== "");
             if (lastCaisseValue && lastCaisseValue[5]) {
                 solde = parseFloat(lastCaisseValue[5]) || 0;
             }
             
-            // Calculer les totaux
+            // Calculer les totaux pour la semaine en cours uniquement
             caisse.data.forEach(row => {
-                const montant = parseFloat(row[2]) || 0;
-                const mouvement = row[3];
+                const rowDate = new Date(row[0]);
                 
-                if (mouvement === 'Entrée') {
-                    totalEntrees += montant;
-                } else if (mouvement === 'Sortie') {
-                    totalSorties += montant;
+                // Vérifier si la date est dans la semaine en cours
+                if (rowDate >= startOfWeek && rowDate <= endOfWeek) {
+                    const montant = parseFloat(row[2]) || 0;
+                    const mouvement = row[3];
+                    
+                    if (mouvement === 'Entrée') {
+                        totalEntrees += montant;
+                    } else if (mouvement === 'Sortie') {
+                        totalSorties += montant;
+                    }
+                    
+                    totalOperations++;
                 }
             });
             
-            return { solde, totalEntrees, totalSorties };
+            return { solde, totalEntrees, totalSorties, totalOperations };
+        }
+
+        function getStartOfWeek(date) {
+            const d = new Date(date);
+            const day = d.getDay();
+            const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Ajuster pour que le lundi soit le premier jour
+            d.setDate(diff);
+            d.setHours(0, 0, 0, 0);
+            return d;
+        }
+
+        function getEndOfWeek(date) {
+            const d = new Date(date);
+            const day = d.getDay();
+            const diff = d.getDate() + (7 - day) + (day === 0 ? -7 : 0); // Ajuster pour que le dimanche soit le dernier jour
+            d.setDate(diff);
+            d.setHours(23, 59, 59, 999);
+            return d;
         }
 
         // ==================== TABLEAU CUMULATIF ====================
@@ -1668,7 +1699,7 @@ function exportToCSV(dataArray, filenamePrefix) {
                     maximumFractionDigits: 0 
                 });
             }
-            // Encadrer les valeurs avec des guillemets pour éviter les problèmes de séparateurs[citation:1]
+            // Encadrer les valeurs avec des guillemets pour éviter les problèmes de séparateurs
             return `"${value.toString().replace(/"/g, '""')}"`;
         });
         csvRows.push(row.join(';'));
