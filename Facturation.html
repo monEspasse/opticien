@@ -4094,20 +4094,26 @@ async function confirmerGenerationDepotSelectionne() {
         const aujourdhui = new Date();
         const dateDuJour = `${String(aujourdhui.getDate()).padStart(2, '0')}/${String(aujourdhui.getMonth() + 1).padStart(2, '0')}/${aujourdhui.getFullYear()}`;
         
-        // Prendre la première facture comme référence pour le dépôt
-        const premiereFacture = window.facturesPrevisualisation[0];
+      const dateDebut = document.getElementById('filterFactureDateStart')?.value;
+        const dateFin = document.getElementById('filterFactureDateEnd')?.value;
+        const assurance = document.getElementById('filterFactureAssurance')?.value;
+        const compagnie = document.getElementById('filterFactureCompagnie')?.value;
+        
+        // Vérifier que les dates de début et fin sont définies
+        if (!dateDebut || !dateFin) {
+            throw new Error("Les dates de début et de fin doivent être définies dans les filtres");
+        }
         
         const data = {
-            dateDebut: Utils.formatDateForInput(premiereFacture['Date']),
-            dateFin: Utils.formatDateForInput(premiereFacture['Date']),
-            assurance: premiereFacture['Assurance'],
-            compagnie: premiereFacture['Compagnie'],
+            dateDebut: dateDebut, // Format AAAA-MM-JJ du input date
+            dateFin: dateFin,     // Format AAAA-MM-JJ du input date
+            assurance: assurance || window.facturesPrevisualisation[0]['Assurance'],
+            compagnie: compagnie || window.facturesPrevisualisation[0]['Compagnie'],
             dateDuJour: dateDuJour,
             nbFactures: window.facturesPrevisualisation.length,
             montantTotal: calculerTotaux(window.facturesPrevisualisation).montantTotal,
             factures: window.facturesPrevisualisation.map(f => f['Id Client'])
-        };
-        
+        };  
         const scriptUrl = 'https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=adddepotData';
         
         await fetch(scriptUrl, {
