@@ -1704,7 +1704,7 @@
                         <td class="${amountClass}">${formatCurrency(transaction.Montant)}</td>
                         <td><span class="status-badge ${typeText === 'Credited' || typeText === 'Crédité' ? 'status-success' : 'status-danger'}">${typeText}</span></td>
                         <td>${formatCurrency(transaction.Solde)}</td>
-                        <td>${transaction.Categorie || 'Non catégorisé'}</td>
+                        <td>${transaction.Categorie || ''}</td>
                         <td><small>${transaction.Idunique || 'N/A'}</small></td>
                         <td>
                             <div class="action-btns">
