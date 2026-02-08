@@ -1827,32 +1827,32 @@
                 
                 let finalPdfUrl = null;
                 
-                if (isSuccess && message && message.pdfUrl) {
-                    finalPdfUrl = message.pdfUrl;
-                } else if (message && isMessageSuccess === false) {
-                    hideLoadingIndicator();
-                    alert("Le PDF est en cours de génération. Veuillez patienter quelques secondes puis réessayer.");
-                    return;
-                } else {
-                    hideLoadingIndicator();
-                    alert("Erreur inattendue lors de la génération du PDF.");
-                    return;
-                }
-                
-                // 4. Ouvrir le PDF
-                if (finalPdfUrl) {
-                    hideLoadingIndicator();
-                    window.open(finalPdfUrl, '_blank');
-                    
-                    showSuccessMessage("PDF généré avec succès! Ouverture dans un nouvel onglet.");
-                }
-                
-            } catch (error) {
-                console.error("❌ Erreur génération PDF:", error);
-                hideLoadingIndicator();
-                alert("Erreur lors de la génération du PDF: " + error.message);
-            }
+        if (isSuccess && result.data && result.data.pdfUrl) {
+            finalPdfUrl = result.data.pdfUrl;
+        } else if (result.message === "Le PDF est en cours de génération. Veuillez patienter quelques secondes.") {
+            hideLoadingIndicator();
+            alert("Le PDF est en cours de génération. Veuillez patienter quelques secondes puis réessayer.");
+            return;
+        } else {
+            hideLoadingIndicator();
+            alert("Erreur inattendue lors de la génération du PDF.");
+            return;
         }
+        
+        // 4. Ouvrir le PDF
+        if (finalPdfUrl) {
+            hideLoadingIndicator();
+            window.open(finalPdfUrl, '_blank');
+            
+            showSuccessMessage("PDF généré avec succès! Ouverture dans un nouvel onglet.");
+        }
+        
+    } catch (error) {
+        console.error("❌ Erreur génération PDF:", error);
+        hideLoadingIndicator();
+        alert("Erreur lors de la génération du PDF: " + error.message);
+    }
+}
 
         function showLoadingIndicator(message) {
             hideLoadingIndicator();
