@@ -5999,7 +5999,7 @@ async function generatePDF() {
     const formData = {
         nom_complet: document.getElementById('nom_complet').value,
         contact: document.querySelector('input[name="indicatif"]').value + ' ' + 
-        document.querySelector('input[name="numero"]').value,
+                 document.querySelector('input[name="numero"]').value,
         date_naissance: document.getElementById('date_naissance').value,
         civilite: document.getElementById('civilite').value,
         type_verre: document.getElementById('type_verre').value,
@@ -6021,17 +6021,13 @@ async function generatePDF() {
         remise_type: document.getElementById('remise_type').value,
         net_a_payer: document.getElementById('net_a_payer').value,
         // Ajouter les détails des coûts
-        cout_verre: document.getElementById('coutVerre')?.value || 0,
-        cout_photochromique: document.getElementById('coutPhotochromique')?.value || 0,
-        cout_antireflet: document.getElementById('coutAntireflet')?.value || 0,
-        cout_anti_lumiere_bleu: document.getElementById('coutAntiLumiereBleu')?.value || 0
+        coutVerre: document.getElementById('coutVerre')?.value || 0,
+        coutPhotochromique: document.getElementById('coutPhotochromique')?.value || 0,
+        coutAntireflet: document.getElementById('coutAntireflet')?.value || 0,
+        coutAntiLumiereBleu: document.getElementById('coutAntiLumiereBleu')?.value || 0
     };
-console.log("Valeurs envoyées :", {
-    coutVerre: document.getElementById('coutVerre')?.value,
-    coutPhotochromique: document.getElementById('coutPhotochromique')?.value,
-    coutAntireflet: document.getElementById('coutAntireflet')?.value,
-    coutAntiLumiereBleu: document.getElementById('coutAntiLumiereBleu')?.value
-});
+
+    console.log("Valeurs envoyées :", formData);
 
     // Afficher un indicateur de chargement
     const submitBtn = document.querySelector('button[type="submit"]');
@@ -6042,16 +6038,14 @@ console.log("Valeurs envoyées :", {
     try {
         const url = `https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=addproforma`;
         
-        // Envoyer les données en no-cors
-        await fetch(url, {
+        // Utiliser une approche différente pour contourner CORS
+        const response = await fetch(url, {
             method: 'POST',
             mode: 'no-cors',
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: JSON.stringify({
-                formData: formData
-            })
+            body: `data=${encodeURIComponent(JSON.stringify({formData: formData}))}`
         });
 
         // Attendre 3 secondes pour la génération du PDF
@@ -6061,18 +6055,19 @@ console.log("Valeurs envoyées :", {
         }, 3000);
 
     } catch (error) {
-        // Même en cas d'erreur, fermer et ouvrir le PDF
+        console.error("Erreur lors de l'envoi:", error);
+        // Même en cas d'erreur, essayer d'ouvrir le PDF
         setTimeout(() => {
             checkAndOpenPDF();
-            closeModal();
         }, 3000);
     } finally {
         // Restaurer le bouton (au cas où)
-        submitBtn.innerHTML = originalBtnText;
-        submitBtn.disabled = false;
+        setTimeout(() => {
+            submitBtn.innerHTML = originalBtnText;
+            submitBtn.disabled = false;
+        }, 4000);
     }
 }
-
 // Fonction unique pour récupérer et ouvrir le PDF (version robuste)
 async function checkAndOpenPDF() {
     try {
