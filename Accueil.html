@@ -5020,7 +5020,7 @@ body {
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="date_naissance" class="required-field">Né le</label>
-                                <input type="date" name="date_naissance" id="date_naissance"  />
+                                <input type="date" name="date_naissance" id="date_naissance" />
                             </div>
                         
 
@@ -5051,7 +5051,7 @@ body {
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="type_verre" class="required-field">Type de Verre</label>
-                                <select name="type_verre" id="type_verre" required>
+                                <select name="type_verre" id="type_verre" >
                                     <option value="">-- Sélectionnez --</option>
 <option value="ACHAT MONTURE">ACHAT MONTURE</option>
 <option value="ORGANIQUE1.56 UNIFOCAL BLANC/ ANTIREFLET">ORGANIQUE1.56 UNIFOCAL BLANC/ ANTIREFLET</option>
@@ -5144,9 +5144,9 @@ body {
                             <div class="form-group">
                                 <label for="gamme_verre" class="required-field">Gamme des Verres</label>
                                 <select name="gamme_verre" id="gamme_verre" >
-                                    <option value="">-- Sélectionnez --</option>
+                                  <option value="MOYEN DE GAMME">MOYEN DE GAMME</option>
                                     <option value="ENTREE DE GAMME">ENTREE DE GAMME</option>
-                                    <option value="MOYEN DE GAMME">MOYEN DE GAMME</option>
+                              
                                     <option value="HAUT DE GAMME">HAUT DE GAMME</option>
                                     
                                 </select>
@@ -5156,7 +5156,7 @@ body {
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="choix_monture" class="required-field">Choix de Monture</label>
-                              <input type="text"  name="choixmonture" id="choixmonture" />
+                              <input type="text"  name="choixmonture" id="choixmonture"  />
                                 
                             </div>
                         </div>
@@ -5728,7 +5728,7 @@ body {
                         </div>
                     </div>
                     
-<!-- Step 4: Payment -->
+<!-- Step 3: Payment -->
 <div class="form-section" id="section4">
     <h2 class="section-title">DÉTAILS DE PAIEMENT</h2>
     
@@ -5783,23 +5783,23 @@ body {
         <h3 class="detail-couts-title">DÉTAIL DES PRODUITS</h3>
         <div class="detail-couts-grid">
             <div class="detail-cout-item">
-                <label for="coutVerre">Coût du verre (FCFA)</label>
-                <input type="number" name="cout_verre" id="coutVerre" value="0" min="0" placeholder="0">
+                <label for="coutverre">Coût du verre (FCFA)</label>
+                <input type="number" name="coutverre" id="coutverre" value="0" min="0" placeholder="0">
             </div>
             
             <div class="detail-cout-item">
-                <label for="coutPhotochromique">Photochromique/Transition (FCFA)</label>
-                <input type="number" name="cout_photochromique" id="coutPhotochromique" value="0" min="0" placeholder="0">
+                <label for="coutphotochromique">Photochromique/Transition (FCFA)</label>
+                <input type="number" name="coutphotochromique" id="coutphotochromique" value="0" min="0" placeholder="0">
             </div>
             
             <div class="detail-cout-item">
-                <label for="coutAntireflet">Antireflet (FCFA)</label>
-                <input type="number" name="cout_antireflet" id="coutAntireflet" value="0" min="0" placeholder="0">
+                <label for="coutantireflet">Antireflet (FCFA)</label>
+                <input type="number" name="coutantireflet" id="coutantireflet" value="0" min="0" placeholder="0">
             </div>
             
             <div class="detail-cout-item">
-                <label for="coutAntiLumiereBleu">Anti-lumière bleue (FCFA)</label>
-                <input type="number" name="cout_anti_lumiere_bleu" id="coutAntiLumiereBleu" value="0" min="0" placeholder="0">
+                <label for="<coutantiLumiereBleu>">Anti-lumière bleue (FCFA)</label>
+                <input type="number" name="coutantiLumiereBleu" id="coutantiLumiereBleu" value="0" min="0" placeholder="0">
             </div>
         </div>
     </div>
@@ -5999,7 +5999,7 @@ async function generatePDF() {
     const formData = {
         nom_complet: document.getElementById('nom_complet').value,
         contact: document.querySelector('input[name="indicatif"]').value + ' ' + 
-                 document.querySelector('input[name="numero"]').value,
+        document.querySelector('input[name="numero"]').value,
         date_naissance: document.getElementById('date_naissance').value,
         civilite: document.getElementById('civilite').value,
         type_verre: document.getElementById('type_verre').value,
@@ -6021,13 +6021,11 @@ async function generatePDF() {
         remise_type: document.getElementById('remise_type').value,
         net_a_payer: document.getElementById('net_a_payer').value,
         // Ajouter les détails des coûts
-        coutVerre: document.getElementById('coutVerre')?.value || 0,
-        coutPhotochromique: document.getElementById('coutPhotochromique')?.value || 0,
-        coutAntireflet: document.getElementById('coutAntireflet')?.value || 0,
-        coutAntiLumiereBleu: document.getElementById('coutAntiLumiereBleu')?.value || 0
+        coutverre: document.getElementById('coutverre')?.value || 0,
+        coutphotochromique: document.getElementById('coutphotochromique')?.value || 0,
+        coutantireflet: document.getElementById('coutantireflet')?.value || 0,
+        coutantiLumiereBleu: document.getElementById('coutantiLumiereBleu')?.value || 0
     };
-
-    console.log("Valeurs envoyées :", formData);
 
     // Afficher un indicateur de chargement
     const submitBtn = document.querySelector('button[type="submit"]');
@@ -6038,14 +6036,16 @@ async function generatePDF() {
     try {
         const url = `https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=addproforma`;
         
-        // Utiliser une approche différente pour contourner CORS
-        const response = await fetch(url, {
+        // Envoyer les données en no-cors
+        await fetch(url, {
             method: 'POST',
             mode: 'no-cors',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Type': 'application/json',
             },
-            body: `data=${encodeURIComponent(JSON.stringify({formData: formData}))}`
+            body: JSON.stringify({
+                formData: formData
+            })
         });
 
         // Attendre 3 secondes pour la génération du PDF
@@ -6055,25 +6055,24 @@ async function generatePDF() {
         }, 3000);
 
     } catch (error) {
-        console.error("Erreur lors de l'envoi:", error);
-        // Même en cas d'erreur, essayer d'ouvrir le PDF
+        // Même en cas d'erreur, fermer et ouvrir le PDF
         setTimeout(() => {
             checkAndOpenPDF();
+            closeModal();
         }, 3000);
     } finally {
         // Restaurer le bouton (au cas où)
-        setTimeout(() => {
-            submitBtn.innerHTML = originalBtnText;
-            submitBtn.disabled = false;
-        }, 4000);
+        submitBtn.innerHTML = originalBtnText;
+        submitBtn.disabled = false;
     }
 }
+
 // Fonction unique pour récupérer et ouvrir le PDF (version robuste)
 async function checkAndOpenPDF() {
     try {
         const url = `https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=getlastpdf`;
         
-       const response = await fetch(url);
+        const response = await fetch(url);
         
         if (!response.ok) {
             throw new Error(`Erreur HTTP! statut: ${response.status}`);
@@ -6129,36 +6128,6 @@ function closeModal() {
     
     // Rediriger vers Accueil.html
     window.location.href = 'Accueil.html';
-}
-
-    function hasAdminRights() {
-    // Vérifie si l'utilisateur est connecté
-    const currentUser = sessionStorage.getItem("utilisateur");
-    if (!currentUser) {
-       
-        return false;
-    }
-    
-    // Vérifie directement le statut admin
-    const isAdmin = sessionStorage.getItem("isAdmin") === "true";
-    
-
-    return isAdmin;
-}
-        function hasCaisseRights() {
-    // Vérifie si l'utilisateur est connecté
-    const currentUser = sessionStorage.getItem("utilisateur");
-    if (!currentUser) {
-        console.log("❌ Utilisateur non connecté - Accès caisse refusé");
-        return false;
-    }
-    
-    // Vérifie directement le statut d'accès à la caisse
-    const hasCaisseAccess = sessionStorage.getItem("hasCaisseAccess") === "true";
-    
-    console.log(`🔍 Vérification accès caisse pour ${currentUser}: ${hasCaisseAccess ? "AUTORISÉ" : "REFUSÉ"}`);
-    
-    return hasCaisseAccess;
 }
 
         window.openProforma = function() {
@@ -6709,6 +6678,20 @@ async function submitProductForm() {
     }
 }
 // Fonction pour vérifier les droits d'administration
+function hasAdminRights() {
+    // Vérifie si l'utilisateur est connecté
+    const currentUser = sessionStorage.getItem("utilisateur");
+    if (!currentUser) {
+       
+        return false;
+    }
+    
+    // Vérifie directement le statut admin
+    const isAdmin = sessionStorage.getItem("isAdmin") === "true";
+    
+
+    return isAdmin;
+}
 
 
 // Variables globales pour les factures
