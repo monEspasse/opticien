@@ -1,0 +1,3239 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>VisioPro</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+:root {
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --success-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    --danger-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    --warning-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+    
+    --primary-50: #f0f4ff;
+    --primary-100: #d9e4ff;
+    --primary-200: #b3c9ff;
+    --primary-300: #8daef8;
+    --primary-400: #6793f1;
+    --primary-500: #4f46e5;
+    --primary-600: #4338ca;
+    --primary-700: #3730a3;
+    --primary-800: #312e81;
+    --primary-900: #1e1b4b;
+    
+    --gray-50: #fafafa;
+    --gray-100: #f5f5f5;
+    --gray-200: #e5e5e5;
+    --gray-300: #d4d4d4;
+    --gray-400: #a3a3a3;
+    --gray-500: #737373;
+    --gray-600: #525252;
+    --gray-700: #404040;
+    --gray-800: #262626;
+    --gray-900: #171717;
+    
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    
+    --border-radius-sm: 6px;
+    --border-radius-md: 10px;
+    --border-radius-lg: 14px;
+    --border-radius-xl: 18px;
+    --border-radius-full: 9999px;
+    
+    --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 15px;
+    scroll-behavior: smooth;
+    font-smooth: always;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    height: 100%;
+}
+
+body {
+    background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    color: #2d3748;
+    position: relative;
+    padding-bottom: 0;
+    height: 100%;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+@keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+}
+
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite linear;
+    border-radius: var(--border-radius-sm);
+    min-height: 1em;
+}
+
+.skeleton-text {
+    height: 1em;
+    margin-bottom: 0.3rem;
+    width: 100%;
+}
+
+.skeleton-text.short {
+    width: 60%;
+}
+
+.skeleton-text.medium {
+    width: 80%;
+}
+
+.dashboard-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 1rem;
+    animation: fadeIn 0.5s ease;
+    min-height: calc(100vh - 40px);
+    display: flex;
+    flex-direction: column;
+}
+
+/* ==================== HEADER ==================== */
+.header {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius-lg);
+    padding: 1rem 1.5rem;
+    box-shadow: var(--glass-shadow);
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: fadeIn 0.6s ease 0.1s both;
+}
+
+.header-left h1 {
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-size: 1.75rem;
+    margin: 0;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.theme-toggle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: var(--gray-600);
+}
+
+.theme-toggle:hover {
+    background: var(--primary-gradient);
+    color: white;
+    transform: scale(1.1);
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.profile-img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid var(--primary-300);
+    transition: transform 0.3s ease;
+}
+
+.profile-img:hover {
+    transform: scale(1.05);
+}
+
+.btn {
+    position: relative;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: var(--border-radius-md);
+    font-weight: 600;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s var(--transition-smooth);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    overflow: hidden;
+}
+
+.btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%);
+    transform-origin: 50% 50%;
+}
+
+.btn:focus:not(:active)::after {
+    animation: ripple 1s ease-out;
+}
+
+@keyframes ripple {
+    0% {
+        transform: scale(0, 0);
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(40, 40);
+        opacity: 0;
+    }
+}
+
+.btn-primary {
+    background: var(--primary-gradient);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(79, 70, 229, 0.3);
+}
+
+.btn-success {
+    background: var(--success-gradient);
+    color: white;
+}
+
+.btn-secondary {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    color: var(--primary-600);
+}
+
+.btn-secondary:hover {
+    background: var(--primary-gradient);
+    color: white;
+}
+
+.btn-danger {
+    background: var(--danger-gradient);
+    color: white;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.back-btn {
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    z-index: 1001;
+    margin: 0;
+}
+
+.back-btn .btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 25px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+    border: none;
+    background: var(--primary-gradient);
+}
+
+.back-btn .btn span {
+    display: none;
+}
+
+.back-btn .btn i {
+    margin: 0;
+    font-size: 1.3rem;
+    color: white;
+}
+
+.back-btn .btn:active {
+    transform: scale(0.9);
+}
+
+.fab {
+    position: fixed;
+    bottom: 5rem;
+    right: 1.5rem;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--primary-gradient);
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+    z-index: 100;
+    transition: all 0.3s ease;
+}
+
+.fab:hover {
+    transform: scale(1.1) rotate(90deg);
+    box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4);
+}
+
+/* ==================== SECTION HEADER ==================== */
+.section-header {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius-lg);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: fadeIn 0.5s ease;
+}
+
+.section-title {
+    margin: 0;
+    font-size: 1.3rem;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* ==================== FILTRES ==================== */
+.controls-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius-lg);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+    animation: fadeIn 0.5s ease;
+}
+
+.search-box {
+    flex: 1;
+    min-width: 200px;
+    position: relative;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 0.6rem 0.8rem 0.6rem 2.5rem;
+    border: 1px solid var(--gray-300);
+    border-radius: var(--border-radius-md);
+    font-family: inherit;
+    font-size: 0.9rem;
+    transition: all 0.3s var(--transition-smooth);
+    background: white;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: var(--primary-400);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.search-box i {
+    position: absolute;
+    left: 0.8rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray-400);
+    font-size: 0.9rem;
+}
+
+.filters-group {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.filter-select {
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--gray-300);
+    border-radius: var(--border-radius-md);
+    font-family: inherit;
+    font-size: 0.9rem;
+    background: white;
+    color: var(--gray-700);
+    cursor: pointer;
+    transition: all 0.3s var(--transition-smooth);
+    min-width: 150px;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--primary-400);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+/* ==================== TABLEAU ==================== */
+.table-container {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius-lg);
+    padding: 0;
+    overflow: hidden;
+    max-height: none;
+    animation: fadeIn 0.5s ease 0.2s both;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.table-wrapper {
+    overflow-y: auto;
+    overflow-x: auto;
+    flex: 1;
+    max-height: none;
+}
+
+.prospects-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+    min-width: 1000px;
+}
+
+.prospects-table th {
+    text-align: left;
+    padding: 0.8rem;
+    background: rgba(79, 70, 229, 0.95);
+    color: white;
+    font-weight: 600;
+    border-bottom: 2px solid var(--primary-300);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: blur(10px);
+    font-size: 0.85rem;
+}
+
+.prospects-table td {
+    padding: 0.8rem;
+    border-bottom: 1px solid var(--glass-border);
+    transition: background-color 0.2s ease;
+    font-size: 0.85rem;
+}
+
+.prospects-table tbody tr {
+    animation: fadeIn 0.3s ease;
+    animation-fill-mode: both;
+    cursor: pointer;
+}
+
+.prospects-table tbody tr:hover {
+    background: rgba(79, 70, 229, 0.05);
+    transform: translateX(3px);
+    transition: transform 0.2s ease;
+}
+
+.text-end {
+    text-align: right;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* ==================== BADGES ==================== */
+.badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.badge-success {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.badge-warning {
+    background: #fed7aa;
+    color: #92400e;
+}
+
+.badge-danger {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.badge-info {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.badge-purple {
+    background: #ede9fe;
+    color: #5b21b6;
+}
+
+.client-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.client-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--primary-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+/* ==================== PAGINATION ==================== */
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 1rem;
+    padding: 0.8rem;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius-lg);
+    flex-wrap: wrap;
+}
+
+.pagination-btn {
+    padding: 0.4rem 0.8rem;
+    border: 1px solid var(--gray-300);
+    border-radius: var(--border-radius-md);
+    background: white;
+    color: var(--gray-700);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    min-width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background: var(--primary-50);
+    border-color: var(--primary-300);
+    color: var(--primary-600);
+    transform: translateY(-1px);
+}
+
+.pagination-btn.active {
+    background: var(--primary-gradient);
+    color: white;
+    border-color: transparent;
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pagination-info {
+    margin: 0 0.8rem;
+    color: var(--gray-600);
+    font-size: 0.85rem;
+}
+
+.items-per-page {
+    min-width: 80px;
+}
+
+/* ==================== ALERTES ==================== */
+.alert-message {
+    padding: 0.8rem 1rem;
+    border-radius: var(--border-radius-md);
+    margin: 0.8rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    animation: slideIn 0.3s ease;
+    font-size: 0.85rem;
+}
+
+.alert-success {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+    border-left: 3px solid #10b981;
+}
+
+.alert-error {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border-left: 3px solid #ef4444;
+}
+
+.alert-warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+    border-left: 3px solid #f59e0b;
+}
+
+.alert-info {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+    border-left: 3px solid #3b82f6;
+}
+
+.loading-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    gap: 0.8rem;
+}
+
+.spinner-border {
+    width: 1.8rem;
+    height: 1.8rem;
+    border: 3px solid var(--primary-400);
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.no-data {
+    text-align: center;
+    padding: 1.5rem;
+    color: var(--gray-500);
+    font-style: italic;
+    font-size: 0.9rem;
+}
+
+/* ==================== MODALS ==================== */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.1); 
+    backdrop-filter: blur(2px) brightness(0.9);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    border-radius: var(--border-radius-xl);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+    width: 45%;
+    max-width: none;
+    height: 100vh;
+    max-height: 100vh;
+    position: fixed;
+    top: 0;
+    right: 0; 
+    left: auto; 
+    margin: 0;
+    border-radius: 0; 
+    overflow: hidden;
+    animation: slideInFromRight 0.4s ease;
+}
+
+.xlarge-modal {
+    max-width: 1200px;
+    width: 95%;
+    max-height: 90vh;
+}
+
+.modal-content.xlarge-modal .modal-body {
+    max-height: calc(90vh - 120px);
+    overflow-y: auto;
+    padding: 1rem;
+}
+
+.modal-header {
+    padding: 1.2rem;
+    border-bottom: 1px solid var(--gray-200);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--primary-gradient);
+    color: white;
+}
+
+.modal-title {
+    margin: 0;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.modal-close {
+    background: transparent;
+    border: none;
+    font-size: 1.1rem;
+    color: white;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.modal-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.modal-body {
+    padding: 1.2rem;
+    height: calc(100vh - 120px); 
+    overflow-y: auto;
+}
+
+.modal-footer {
+    padding: 1rem;
+    border-top: 1px solid var(--gray-200);
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    position: sticky;
+    bottom: 0;
+    background: white;
+}
+
+/* Animation d'entrée depuis la droite */
+@keyframes slideInFromRight {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+/* ==================== FORMULAIRES ==================== */
+.form-group {
+    margin-bottom: 1rem;
+    animation: fadeIn 0.3s ease;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: 500;
+    color: var(--gray-700);
+    font-size: 0.85rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--gray-300);
+    border-radius: var(--border-radius-md);
+    font-family: inherit;
+    font-size: 0.9rem;
+    transition: all 0.3s var(--transition-smooth);
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary-400);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    transform: translateY(-1px);
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 60px;
+}
+
+.prospect-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.prospect-form-group.full-width {
+    grid-column: span 2;
+}
+
+.prospect-section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--primary-700);
+    margin: 1rem 0 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--primary-200);
+}
+
+.prospect-section-title i {
+    color: var(--primary-500);
+}
+
+.prospect-notes-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.required {
+    color: #ef4444;
+    font-size: 0.75rem;
+    margin-left: 0.25rem;
+}
+
+/* ==================== DÉTAIL PROSPECT ==================== */
+.detail-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.detail-header-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.detail-avatar-large {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: var(--primary-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.detail-header-info h2 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--gray-800);
+}
+
+.detail-header-meta {
+    display: flex;
+    gap: 1.5rem;
+    color: var(--gray-600);
+    font-size: 0.85rem;
+    margin-top: 0.3rem;
+}
+
+.detail-header-meta i {
+    color: var(--primary-500);
+    width: 16px;
+    margin-right: 0.25rem;
+}
+
+.action-bar-modern {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    padding: 1rem;
+    border-radius: var(--border-radius-lg);
+}
+
+.action-btn-modern {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: var(--border-radius-md);
+    font-weight: 600;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s var(--transition-smooth);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: white;
+    color: var(--gray-700);
+    border: 1px solid var(--gray-300);
+}
+
+.action-btn-modern:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.action-btn-modern.call {
+    background: var(--success-gradient);
+    color: white;
+    border-color: transparent;
+}
+
+.action-btn-modern.delete {
+    background: var(--danger-gradient);
+    color: white;
+    border-color: transparent;
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.detail-card {
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--border-radius-lg);
+    padding: 1rem;
+    box-shadow: var(--glass-shadow);
+}
+
+.detail-card-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--primary-700);
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 2px solid var(--primary-200);
+}
+
+.detail-item {
+    display: flex;
+    margin-bottom: 0.5rem;
+    padding: 0.3rem;
+    background: var(--gray-50);
+    border-radius: var(--border-radius-sm);
+}
+
+.detail-item-label {
+    width: 90px;
+    font-weight: 600;
+    color: var(--gray-600);
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.detail-item-label i {
+    color: var(--primary-400);
+    font-size: 0.7rem;
+}
+
+.detail-item-value {
+    flex: 1;
+    color: var(--gray-900);
+    font-weight: 500;
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 0.2rem 0.4rem;
+    border-radius: var(--border-radius-sm);
+}
+
+.detail-item-value:hover {
+    background: rgba(79, 70, 229, 0.1);
+}
+
+.notes-section {
+    grid-column: span 2;
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--border-radius-lg);
+    padding: 1rem;
+}
+
+.notes-container {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.note-item-modern {
+    background: var(--gray-50);
+    padding: 0.5rem;
+    border-radius: var(--border-radius-md);
+    border-left: 3px solid var(--primary-400);
+    font-size: 0.8rem;
+    min-height: 60px;
+    max-height: 80px;
+    overflow-y: auto;
+    word-wrap: break-word;
+    cursor: pointer;
+}
+
+.note-item-modern:hover {
+    background: var(--primary-50);
+}
+
+.comments-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.comment-item-modern {
+    background: var(--gray-50);
+    padding: 0.5rem 0.5rem 0.5rem 1.5rem;
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--gray-200);
+    position: relative;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.comment-item-modern::before {
+    content: '"';
+    position: absolute;
+    left: 0.3rem;
+    top: 0.2rem;
+    font-size: 1.2rem;
+    color: var(--primary-400);
+    opacity: 0.5;
+}
+
+.comment-item-modern:hover {
+    background: var(--primary-50);
+}
+
+.status-badge-large {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* ==================== OVERLAYS ==================== */
+.loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+}
+
+.loading-overlay.active {
+    display: flex;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--gray-200);
+    border-top-color: var(--primary-500);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.alert-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 4000;
+}
+
+.alert {
+    background: white;
+    border-radius: var(--border-radius-md);
+    padding: 0.8rem 1.2rem;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    animation: slideIn 0.3s ease;
+    border-left: 4px solid;
+}
+
+.alert-success {
+    border-left-color: #10b981;
+}
+
+.alert-success i {
+    color: #10b981;
+}
+
+.alert-error {
+    border-left-color: #ef4444;
+}
+
+.alert-error i {
+    color: #ef4444;
+}
+
+.alert-info {
+    border-left-color: #3b82f6;
+}
+
+.alert-info i {
+    color: #3b82f6;
+}
+
+.alert-warning {
+    border-left-color: #f59e0b;
+}
+
+.alert-warning i {
+    color: #f59e0b;
+}
+
+/* ==================== MEDIA QUERIES ==================== */
+@media (max-width: 1024px) {
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+    .notes-section {
+        grid-column: span 1;
+    }
+    .notes-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding-bottom: 0;
+    }
+
+    .dashboard-container {
+        min-height: calc(100vh - 30px);
+        padding: 0.8rem;
+    }
+
+    .header {
+        flex-direction: column;
+        gap: 0.8rem;
+        text-align: center;
+    }
+
+    .header-left h1 {
+        font-size: 1.5rem;
+    }
+
+    .user-info {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .section-header {
+        flex-direction: column;
+        gap: 0.8rem;
+        align-items: stretch;
+    }
+
+    .section-header .btn {
+        flex: 1;
+        justify-content: center;
+    }
+
+    .controls-panel {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+    }
+
+    .search-box {
+        min-width: 100%;
+        margin-bottom: 0;
+    }
+
+    .filters-group {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+        width: 100%;
+        flex-wrap: nowrap;
+    }
+
+    .filter-select {
+        width: 100%;
+        min-width: 0;
+        font-size: 0.85rem;
+        padding: 0.5rem;
+    }
+
+    .filters-group select:last-child {
+        grid-column: span 2;
+    }
+
+    .table-container {
+        margin: 0 -0.8rem;
+        width: calc(100% + 1.6rem);
+        border-radius: 0;
+        max-height: none;
+    }
+
+    .table-wrapper {
+        max-height: none;
+    }
+
+    .prospects-table {
+        min-width: 900px;
+    }
+
+    .pagination-controls {
+        flex-wrap: wrap;
+        padding: 0.5rem;
+    }
+
+    .pagination-info {
+        width: 100%;
+        text-align: center;
+        margin: 0.3rem 0;
+    }
+
+    .fab {
+        bottom: 1.5rem;
+    }
+
+    .back-btn {
+        bottom: 1.5rem;
+    }
+
+    .modal-content {
+        width: 95%;
+    }
+
+    .xlarge-modal {
+        width: 100%;
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+    }
+
+    .modal-footer {
+        flex-direction: column-reverse;
+    }
+
+    .modal-footer .btn {
+        width: 100%;
+    }
+
+    .detail-header-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+    }
+
+    .detail-header-meta {
+        flex-direction: column;
+        gap: 0.3rem;
+    }
+
+    .action-bar-modern {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .action-btn-modern {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .prospect-form-grid,
+    .prospect-notes-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .prospect-form-group.full-width {
+        grid-column: span 1;
+    }
+
+    .notes-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 769px) {
+    .filters-group {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    
+    .filter-select {
+        min-width: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard-container {
+        min-height: calc(100vh - 20px);
+    }
+
+    .header-left h1 {
+        font-size: 1.2rem;
+    }
+
+    .profile-img {
+        width: 28px;
+        height: 28px;
+    }
+
+    .notes-container {
+        grid-template-columns: 1fr;
+    }
+
+    .action-bar-modern {
+        grid-template-columns: 1fr;
+    }
+
+    .detail-item {
+        flex-direction: column;
+        gap: 0.2rem;
+    }
+
+    .detail-item-label {
+        width: 100%;
+    }
+}
+
+/* ==================== MODAL DE CONFIRMATION SUPPRESSION ==================== */
+#deleteModal.modal-overlay {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+#deleteModal .modal-content {
+    max-width: 400px;
+    width: 90%;
+    height: auto;
+    position: relative;
+    top: auto;
+    right: auto;
+    border-radius: var(--border-radius-lg);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    animation: modalPopIn 0.3s ease;
+}
+
+#deleteModal .modal-header {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    padding: 1.2rem 1.5rem;
+}
+
+#deleteModal .modal-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+#deleteModal .modal-title i {
+    font-size: 1.3rem;
+}
+
+#deleteModal .modal-body {
+    padding: 2rem 1.5rem;
+    max-height: none;
+    height: auto;
+}
+
+#deleteModal .modal-body p {
+    font-size: 1.1rem;
+    text-align: center;
+    margin: 0;
+    color: #333;
+    line-height: 1.5;
+}
+
+#deleteModal .modal-footer {
+    padding: 1.2rem 1.5rem;
+    gap: 1rem;
+    justify-content: center;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+#deleteModal .btn {
+    padding: 0.6rem 1.5rem;
+    font-size: 0.95rem;
+    border-radius: 50px;
+    transition: all 0.2s ease;
+    min-width: 120px;
+}
+
+#deleteModal .btn-secondary {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    color: #495057;
+}
+
+#deleteModal .btn-secondary:hover {
+    background: #e9ecef;
+    border-color: #ced4da;
+}
+
+#deleteModal .btn-danger {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    border: none;
+    color: white;
+}
+
+#deleteModal .btn-danger:hover {
+    background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+}
+
+#deleteModal .btn i {
+    margin-right: 0.5rem;
+}
+
+@keyframes modalPopIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+#deleteModal.modal-overlay.active .modal-content {
+    animation: modalPopIn 0.3s ease;
+}
+
+/* ==================== MODAL DE CONSIGNATION D'APPEL ==================== */
+#logCallModal .modal-content {
+    max-width: 500px;
+    width: 90%;
+    height: auto;
+    position: relative;
+    top: auto;
+    right: auto;
+    border-radius: var(--border-radius-lg);
+    animation: modalPopIn 0.3s ease;
+}
+
+#logCallModal .modal-header {
+    background: var(--primary-gradient);
+}
+
+#logCallModal .modal-body {
+    height: auto;
+    max-height: 70vh;
+    padding: 1.5rem;
+}
+
+#logCallModal .form-group {
+    margin-bottom: 1.2rem;
+}
+
+#logCallModal .form-control[readonly] {
+    background-color: var(--gray-100);
+    cursor: not-allowed;
+}
+
+#logCallModal .modal-footer {
+    display: flex;
+    gap: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    #deleteModal .modal-content,
+    #logCallModal .modal-content {
+        width: 95%;
+        margin: 1rem;
+    }
+    
+    #deleteModal .modal-footer,
+    #logCallModal .modal-footer {
+        flex-direction: column-reverse;
+        gap: 0.5rem;
+    }
+    
+    #deleteModal .btn,
+    #logCallModal .btn {
+        width: 100%;
+        min-width: auto;
+    }
+}
+
+.modal-close {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.close-square {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    background-color: #ff0000;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+
+.close-square:hover {
+    background-color: #cc0000;
+}
+    </style>
+</head>
+<body>
+    <div class="alert-container" id="alertContainer"></div>
+
+    <button class="fab" onclick="scrollToTop()" id="fab" style="display: none;">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <div class="dashboard-container">
+        <header class="header">
+            <div class="header-left">
+                <h1>Prospects</h1>
+            </div>
+            <div class="header-actions">
+                <button class="theme-toggle" id="themeToggle" aria-label="Basculer le mode sombre">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="user-info">
+                    <span id="usernameDisplay">Commercial</span>
+                    <img src="https://ui-avatars.com/api/?name=Commercial&background=6366f1&color=fff" alt="Photo de profil" class="profile-img">
+                </div>
+            </div>
+        </header>
+
+        <div class="back-btn">
+            <button class="btn btn-primary" onclick="ouvrirModalAjout()">
+                    <i class="fas fa-user-plus"></i>
+                <span>Nouveau prospect</span> 
+                </button>
+            <button class="btn btn-primary" onclick="openVueGlobale()">
+                <i class="fas fa-arrow-left"></i> 
+                <span>Retour</span> 
+            </button>
+        </div>
+<div class="controls-panel">
+    <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="Rechercher par nom, téléphone, ID...">
+    </div>
+    <div class="filters-group">
+        <select class="filter-select" id="agenceFilter">
+            <option value="">Toutes les agences</option>
+        </select>
+        <select class="filter-select" id="statusFilter">
+            <option value="">Tous les statuts</option>
+            <option value="Nouveau prospect">Nouveau prospect</option>
+            <option value="Intéressé">Intéressé</option>
+            <option value="Converti (Client)">Converti (Client)</option>
+            <option value="Perdu / Refusé">Perdu / Refusé</option>
+            <option value="Mauvais Numero">Mauvais Numero</option>
+            <option value="Ne decroche pas">Ne decroche pas</option>
+        </select>
+        <select class="filter-select" id="rdvStatusFilter">
+            <option value="">Tous les RDV</option>
+            <option value="Planifié">Planifié</option>
+            <option value="Confirmé">Confirmé</option>
+            <option value="Terminé">Terminé</option>
+            <option value="Reporté">Reporté</option>
+            <option value="Annulé">Annulé</option>
+            <option value="Manqué">Manqué</option>
+        </select>
+    </div>
+</div>
+
+        <div class="table-container">
+            <div class="table-wrapper">
+                <table class="prospects-table" id="prospectsTable">
+                    <thead>
+                        <tr>
+                            <th>ID Prospect</th>
+                            <th>Nom complet</th>
+                            <th>Téléphone</th>
+                            <th>Date création</th>
+                            <th>Agence</th>
+                            <th>Statut Prospect</th>
+                            <th>Date RDV</th>
+                            <th>Statut RDV</th>
+                        </tr>
+                    </thead>
+                    <tbody id="prospectsTableBody">
+                        <tr>
+                            <td colspan="8" class="text-center">
+                                <div class="loading-indicator">
+                                    <div class="spinner-border"></div>
+                                    <div>Chargement des prospects...</div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="pagination-controls" id="paginationControls">
+            <span class="pagination-info" id="paginationInfo"></span>
+            <div id="paginationButtons"></div>
+            <select class="filter-select items-per-page" id="rowsPerPage">
+                <option value="10">10 / page</option>
+                <option value="25">25 / page</option>
+                <option value="50">50 / page</option>
+                <option value="100">100 / page</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Modal de consignation d'appel -->
+    <div class="modal-overlay" id="logCallModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-clipboard-list"></i> Consigner l'appel</h3>
+                <button class="modal-close" onclick="telephone.fermerConsignation()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">ID Client</label>
+                    <input type="text" id="logClientId" class="form-control" readonly>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Utilisateur</label>
+                    <input type="text" id="logUser" class="form-control" readonly>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Numéro appelé</label>
+                    <input type="text" id="logPhoneNumber" class="form-control" readonly>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">
+                        Notes de l'appel <span style="color: #ef4444;">*</span>
+                    </label>
+                    <textarea id="logNote" class="form-control" rows="4" placeholder="Décrivez le contenu de l'appel, les décisions prises, les actions à suivre..."></textarea>
+                    <div style="font-size: 0.8rem; color: var(--gray-500); margin-top: 5px;">
+                        Minimum 5 caractères requis
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="telephone.fermerConsignation()">
+                    <i class="fas fa-times"></i> Ne Pas Consigner
+                </button>
+                <button class="btn btn-primary" id="saveLogBtn" onclick="telephone.sauvegarderConsignation()">
+                    <i class="fas fa-save"></i> Consigner
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de détail prospect -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal-content xlarge-modal">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-user-circle"></i>
+                    Fiche Prospect
+                </h3>
+                <button class="modal-close" onclick="fermerDetailModal()">
+    <span class="close-square">&times;</span>
+</button>
+            </div>
+            <div class="modal-body" id="detailModalBody">
+                <!-- Contenu dynamique -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal d'ajout/édition prospect -->
+    <div class="modal-overlay" id="prospectModal">
+        <div class="modal-content xlarge-modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">
+                    <i class="fas fa-user-plus"></i>
+                    Ajouter un prospect
+                </h3>
+                <button class="modal-close" onclick="fermerModal()">
+    <span class="close-square">&times;</span>
+</button>
+            </div>
+            <div class="modal-body">
+                <div class="prospect-section-title">
+                    <i class="fas fa-info-circle"></i> Informations principales
+                </div>
+                <div class="prospect-form-grid">
+                    <div class="form-group">
+                        <label class="form-label">ID Prospect <span class="required">*</span></label>
+                        <input type="text" class="form-control" id="editId" placeholder="PROP-001">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nom complet <span class="required">*</span></label>
+                        <input type="text" class="form-control" id="editNom" placeholder="Jean Dupont">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Téléphone <span class="required">*</span></label>
+                        <input type="tel" class="form-control" id="editTel" placeholder="0612345678">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Agence</label>
+                        <select class="form-control" id="editAgence">
+                            <option value="">Sélectionner une agence</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="prospect-section-title">
+                    <i class="fas fa-chart-line"></i> Statuts
+                </div>
+                <div class="prospect-form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Statut prospect</label>
+                        <select class="form-control" id="editStatutProspect">
+                            <option value="Nouveau prospect">Nouveau prospect</option>
+                            <option value="Intéressé">Intéressé</option>
+                            <option value="Converti (Client)">Converti (Client)</option>
+                            <option value="Perdu / Refusé">Perdu / Refusé</option>
+                            <option value="Mauvais Numero">Mauvais Numero</option>
+                            <option value="Ne decroche pas">Ne decroche pas</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Date RDV</label>
+                        <input type="date" class="form-control" id="editDateRdv">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Statut RDV</label>
+                        <select class="form-control" id="editStatutRdv">
+                            <option value="">Non défini</option>
+                            <option value="Planifié">Planifié</option>
+                            <option value="Confirmé">Confirmé</option>
+                            <option value="Terminé">Terminé</option>
+                            <option value="Reporté">Reporté</option>
+                            <option value="Annulé">Annulé</option>
+                            <option value="Manqué">Manqué</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="prospect-section-title">
+                    <i class="fas fa-sticky-note"></i> Notes (max 5)
+                </div>
+                <div class="prospect-notes-grid">
+                    <div class="form-group">
+                        <label class="form-label">Note 1</label>
+                        <textarea class="form-control" id="editNote1" rows="2" placeholder="Note..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Note 2</label>
+                        <textarea class="form-control" id="editNote2" rows="2" placeholder="Note..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Note 3</label>
+                        <textarea class="form-control" id="editNote3" rows="2" placeholder="Note..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Note 4</label>
+                        <textarea class="form-control" id="editNote4" rows="2" placeholder="Note..."></textarea>
+                    </div>
+                    <div class="form-group full-width">
+                        <label class="form-label">Note 5</label>
+                        <textarea class="form-control" id="editNote5" rows="2" placeholder="Note..."></textarea>
+                    </div>
+                </div>
+
+                <div class="prospect-section-title">
+                    <i class="fas fa-comments"></i> Commentaires
+                </div>
+                <div class="prospect-form-grid">
+                    <div class="form-group full-width">
+                        <label class="form-label">Commentaire 1</label>
+                        <textarea class="form-control" id="editComment1" rows="3" placeholder="Commentaire..."></textarea>
+                    </div>
+                    <div class="form-group full-width">
+                        <label class="form-label">Commentaire 2</label>
+                        <textarea class="form-control" id="editComment2" rows="3" placeholder="Commentaire..."></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="fermerModal()">
+                    <i class="fas fa-times"></i> Annuler
+                </button>
+                <button class="btn btn-primary" onclick="sauvegarderProspect()" id="btnSave">
+                    <i class="fas fa-save"></i> Enregistrer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmation suppression -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header" style="background: var(--danger-gradient);">
+                <h3 class="modal-title">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Confirmation
+                </h3>
+                <button class="modal-close" onclick="fermerDeleteModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="deleteMessage" style="font-size: 1rem; text-align: center; margin: 1rem 0;">Voulez-vous vraiment supprimer ce prospect ?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="fermerDeleteModal()">
+                    <i class="fas fa-times"></i> Annuler
+                </button>
+                <button class="btn btn-danger" id="confirmDeleteBtn">
+                    <i class="fas fa-trash"></i> Supprimer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay de chargement -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://script.google.com/macros/s/AKfycbwdzHJGAL16KV_OnyoCIs5I7im2yNxrbEaEIbykQ8hy6ewQjJFQ0G4TfqYWWCMc7vfW/exec';
+        
+        // ==================== OBJET TÉLÉPHONE POUR LA CONSIGNATION ====================
+        const telephone = {
+            currentCallData: null,
+            
+            ouvrirConsignation: function(clientId, phoneNumber) {
+                const username = document.getElementById('usernameDisplay').textContent || 'Commercial';
+                
+                this.currentCallData = {
+                    clientId: clientId,
+                    phoneNumber: phoneNumber,
+                    username: username,
+                    timestamp: Date.now()
+                };
+                
+                document.getElementById('logClientId').value = clientId;
+                document.getElementById('logUser').value = username;
+                document.getElementById('logPhoneNumber').value = phoneNumber;
+                document.getElementById('logNote').value = '';
+                
+                document.getElementById('logCallModal').classList.add('active');
+                document.body.style.overflow = 'hidden';
+                
+                setTimeout(() => document.getElementById('logNote')?.focus(), 100);
+            },
+            
+            fermerConsignation: function() {
+                document.getElementById('logCallModal').classList.remove('active');
+                document.body.style.overflow = '';
+                this.currentCallData = null;
+            },
+            
+            sauvegarderConsignation: async function() {
+                const note = document.getElementById('logNote').value.trim();
+                
+                if (!note || note.length < 5) {
+                    showAlert('La note doit contenir au moins 5 caractères', 'error');
+                    return;
+                }
+                
+                if (!this.currentCallData) {
+                    showAlert('Informations d\'appel manquantes', 'error');
+                    return;
+                }
+                
+                // Trouver le prospect
+                const prospect = prospectsData.find(p => p['Idprospect'] === this.currentCallData.clientId);
+                if (!prospect) {
+                    showAlert('Prospect non trouvé', 'error');
+                    return;
+                }
+                
+                // Chercher le premier emplacement vide pour Date Appel X et consigne appel X
+                let emplacementLibre = null;
+                for (let i = 1; i <= 5; i++) {
+                    const dateField = `Date Appel ${i}`;
+                    const consigneField = `consigne appel ${i}`;
+                    
+                    if (!prospect[dateField] && !prospect[consigneField]) {
+                        emplacementLibre = i;
+                        break;
+                    }
+                }
+                
+                // Si aucun emplacement libre, utiliser le 6ème (Date Appel 6 seulement)
+                if (!emplacementLibre) {
+                    emplacementLibre = 6;
+                }
+                
+                const dateActuelle = getDateDuJourJJMMAAAA();
+                
+                // Préparer les données pour la mise à jour
+                const updates = {};
+                
+                if (emplacementLibre <= 5) {
+                    updates[`Date Appel ${emplacementLibre}`] = dateActuelle;
+                    updates[`consigne appel ${emplacementLibre}`] = note;
+                } else {
+                    updates['Date Appel 6'] = dateActuelle;
+                    // Pour l'appel 6, on n'a pas de colonne consigne
+                }
+                
+                // Mettre à jour le prospect localement
+                Object.keys(updates).forEach(key => {
+                    prospect[key] = updates[key];
+                });
+                
+                // Envoyer à l'API
+                showLoading(true);
+                
+                try {
+                    const data = {
+                        Idprospect: this.currentCallData.clientId,
+                        ...updates
+                    };
+                    
+                    await fetch(`${API_BASE}?action=udprospect`, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data),
+                    });
+                    
+                    showAlert('Appel consigné avec succès', 'success');
+                    this.fermerConsignation();
+                    
+                    // Rafraîchir la vue si le détail est ouvert
+                    if (currentDetailId === this.currentCallData.clientId) {
+                        ouvrirDetailProspect(this.currentCallData.clientId);
+                    }
+                    
+                } catch (error) {
+                    console.error('Erreur consignation:', error);
+                    showAlert('Erreur lors de la consignation', 'error');
+                } finally {
+                    showLoading(false);
+                }
+            }
+        };
+        
+        // ==================== VARIABLES GLOBALES ====================
+        let prospectsData = [];
+        let filteredProspects = [];
+        let currentPage = 1;
+        let perPage = 10;
+        let currentEditId = null;
+        let deleteId = null;
+        let currentDetailId = null;
+        let listeAgences = new Set();
+        let pendingUpdates = new Map();
+        let updateTimeout = null;
+
+        // ==================== FONCTIONS D'INITIALISATION ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            
+            const user = sessionStorage.getItem('utilisateur') || localStorage.getItem('utilisateur') || 'Commercial';
+            document.getElementById('usernameDisplay').textContent = user;
+            
+            chargerProspects();
+            
+            document.getElementById('searchInput').addEventListener('input', appliquerFiltres);
+            document.getElementById('agenceFilter').addEventListener('change', appliquerFiltres);
+            document.getElementById('statusFilter').addEventListener('change', appliquerFiltres);
+            document.getElementById('rdvStatusFilter').addEventListener('change', appliquerFiltres);
+            document.getElementById('rowsPerPage').addEventListener('change', (e) => {
+                perPage = parseInt(e.target.value);
+                currentPage = 1;
+                appliquerFiltres();
+            });
+            
+            document.addEventListener('click', (e) => {
+                const row = e.target.closest('tr[data-id]');
+                if (row && !e.target.closest('button') && !e.target.closest('input')) {
+                    const id = row.dataset.id;
+                    ouvrirDetailProspect(id);
+                }
+            });
+            
+            window.addEventListener('scroll', handleScroll);
+        });
+
+        function initTheme() {
+            const themeToggle = document.getElementById('themeToggle');
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            }
+            
+            themeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                
+                if (document.body.classList.contains('dark-mode')) {
+                    localStorage.setItem('theme', 'dark');
+                    themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                } else {
+                    localStorage.setItem('theme', 'light');
+                    themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                }
+            });
+        }
+
+        function handleScroll() {
+            const fab = document.getElementById('fab');
+            if (window.scrollY > 300) {
+                fab.style.display = 'flex';
+            } else {
+                fab.style.display = 'none';
+            }
+        }
+
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // ==================== CHARGEMENT DES DONNÉES ====================
+        async function chargerProspects() {
+            showLoading(true);
+            try {
+                const response = await fetch(`${API_BASE}?action=dataprospect`);
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    const headers = result.data.headers;
+                    const rows = result.data.rows;
+                    
+                    prospectsData = rows.map(row => {
+                        let obj = {};
+                        headers.forEach((header, index) => {
+                            obj[header] = row[index] !== undefined ? row[index] : '';
+                        });
+                        return obj;
+                    });
+                    
+                    // TRI PAR DATE DE CRÉATION (LA PLUS RÉCENTE EN HAUT)
+                    prospectsData.sort((a, b) => {
+                        const dateA = a['date de creaction'] ? new Date(a['date de creaction']) : new Date(0);
+                        const dateB = b['date de creaction'] ? new Date(b['date de creaction']) : new Date(0);
+                        return dateB - dateA; // Décroissant : plus récent en premier
+                    });
+                    
+                    listeAgences.clear();
+                    prospectsData.forEach(p => {
+                        if (p['Agence'] && p['Agence'].trim() !== '') {
+                            listeAgences.add(p['Agence']);
+                        }
+                    });
+                    
+                    mettreAJourListesAgences();
+                }
+            } catch (error) {
+                console.error('Erreur chargement:', error);
+                showAlert('Erreur de chargement des prospects', 'error');
+            }
+            
+            showLoading(false);
+            appliquerFiltres();
+        }
+
+        function mettreAJourListesAgences() {
+            const agencesTriees = Array.from(listeAgences).sort();
+            
+            const filterSelect = document.getElementById('agenceFilter');
+            filterSelect.innerHTML = '<option value="">Toutes les agences</option>';
+            agencesTriees.forEach(agence => {
+                filterSelect.innerHTML += `<option value="${agence}">${agence}</option>`;
+            });
+            
+            const editSelect = document.getElementById('editAgence');
+            editSelect.innerHTML = '<option value="">Sélectionner une agence</option>';
+            agencesTriees.forEach(agence => {
+                editSelect.innerHTML += `<option value="${agence}">${agence}</option>`;
+            });
+        }
+
+        function appliquerFiltres() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const agenceF = document.getElementById('agenceFilter').value;
+            const statutF = document.getElementById('statusFilter').value;
+            const rdvF = document.getElementById('rdvStatusFilter').value;
+
+            filteredProspects = prospectsData.filter(p => {
+                const matchSearch = !search || 
+                    (p['Nom complet'] && p['Nom complet'].toLowerCase().includes(search)) ||
+                    (p['Numero de telephone'] && String(p['Numero de telephone']).includes(search)) ||
+                    (p['Idprospect'] && p['Idprospect'].toLowerCase().includes(search));
+                
+                const matchAgence = !agenceF || p['Agence'] === agenceF;
+                const matchStatut = !statutF || p['Statut du prospect'] === statutF;
+                const matchRdv = !rdvF || p['Statut du Rdv'] === rdvF;
+                
+                return matchSearch && matchAgence && matchStatut && matchRdv;
+            });
+
+            // TRIER LES PROSPECTS FILTRÉS PAR DATE (PLUS RÉCENT EN HAUT)
+            filteredProspects.sort((a, b) => {
+                const dateA = a['date de creaction'] ? new Date(a['date de creaction']) : new Date(0);
+                const dateB = b['date de creaction'] ? new Date(b['date de creaction']) : new Date(0);
+                return dateB - dateA;
+            });
+
+            currentPage = 1;
+            afficherTableau();
+        }
+
+        function formaterDateVersJJMMAAAA(dateStr) {
+            if (!dateStr) return '-';
+            
+            try {
+                const date = new Date(dateStr);
+                if (!isNaN(date.getTime())) {
+                    const jour = date.getDate().toString().padStart(2, '0');
+                    const mois = (date.getMonth() + 1).toString().padStart(2, '0');
+                    const annee = date.getFullYear();
+                    return `${jour}/${mois}/${annee}`;
+                }
+                
+                if (dateStr.includes('/')) {
+                    return dateStr;
+                }
+                
+                return '-';
+            } catch (e) {
+                return dateStr;
+            }
+        }
+
+        function formaterDateVersISO(dateStr) {
+            if (!dateStr) return '';
+            
+            try {
+                const match = dateStr.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+                if (match) {
+                    const [_, jour, mois, annee] = match;
+                    return `${annee}-${mois}-${jour}`;
+                }
+                
+                return dateStr;
+            } catch (e) {
+                return dateStr;
+            }
+        }
+
+        function getDateDuJourJJMMAAAA() {
+            const today = new Date();
+            const jour = today.getDate().toString().padStart(2, '0');
+            const mois = (today.getMonth() + 1).toString().padStart(2, '0');
+            const annee = today.getFullYear();
+            return `${jour}/${mois}/${annee}`;
+        }
+
+        function appliquerReglesRDV(prospect, champModifie, nouvelleValeur) {
+            let modifications = {};
+            
+            if (champModifie === 'Date de RDV' && nouvelleValeur && (!prospect['Statut du Rdv'] || prospect['Statut du Rdv'] === '')) {
+                modifications['Statut du Rdv'] = 'Planifié';
+            }
+            
+            if (champModifie === 'Statut du Rdv' && nouvelleValeur && nouvelleValeur !== '' && (!prospect['Date de RDV'] || prospect['Date de RDV'] === '' || prospect['Date de RDV'] === '-')) {
+                modifications['Date de RDV'] = getDateDuJourJJMMAAAA();
+            }
+            
+            return modifications;
+        }
+
+        function afficherTableau() {
+            const tbody = document.getElementById('prospectsTableBody');
+            const debut = (currentPage - 1) * perPage;
+            const fin = debut + perPage;
+            const pageData = filteredProspects.slice(debut, fin);
+
+            if (!pageData.length) {
+                tbody.innerHTML = `<tr><td colspan="8" class="no-data">Aucun prospect trouvé</td></tr>`;
+                mettreAJourPagination();
+                return;
+            }
+
+            let html = '';
+            pageData.forEach((p, index) => {
+                const id = p['Idprospect'] || '-';
+                
+                let tel = p['Numero de telephone'] || '-';
+                if (tel.length >= 10) {
+                    tel = tel.replace(/(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/, '$1 $2 $3 $4 $5');
+                }
+
+                const statutProspect = p['Statut du prospect'] || 'Nouveau prospect';
+                let badgeClass = 'badge-info';
+                if (statutProspect === 'Intéressé') badgeClass = 'badge-success';
+                else if (statutProspect === 'Converti (Client)') badgeClass = 'badge-purple';
+                else if (statutProspect === 'Perdu / Refusé') badgeClass = 'badge-danger';
+                else if (statutProspect === 'Mauvais Numero') badgeClass = 'badge-warning';
+                else if (statutProspect === 'Ne decroche pas') badgeClass = 'badge-warning';
+
+                const statutRdv = p['Statut du Rdv'] || '';
+                let rdvBadgeClass = '';
+                if (statutRdv === 'Confirmé') rdvBadgeClass = 'badge-success';
+                else if (statutRdv === 'Planifié') rdvBadgeClass = 'badge-info';
+                else if (statutRdv === 'Terminé') rdvBadgeClass = 'badge-purple';
+                else if (statutRdv === 'Reporté') rdvBadgeClass = 'badge-warning';
+                else if (statutRdv === 'Annulé' || statutRdv === 'Manqué') rdvBadgeClass = 'badge-danger';
+
+                html += `<tr data-id="${id}" style="animation-delay: ${index * 0.02}s">
+                    <td>${id}</td>
+                    <td>
+                        <div class="client-info">
+                            <div class="client-avatar">${(p['Nom complet'] || '?').charAt(0)}</div>
+                            <span>${p['Nom complet'] || '-'}</span>
+                        </div>
+                    </td>
+                    <td>${tel}</td>
+                    <td>${formaterDateVersJJMMAAAA(p['date de creaction'])}</td>
+                    <td>${p['Agence'] || '-'}</td>
+                    <td><span class="badge ${badgeClass}">${statutProspect}</span></td>
+                    <td>${formaterDateVersJJMMAAAA(p['Date de RDV'])}</td>
+                    <td>${statutRdv ? `<span class="badge ${rdvBadgeClass}">${statutRdv}</span>` : '-'}</td>
+                </tr>`;
+            });
+
+            tbody.innerHTML = html;
+            mettreAJourPagination();
+        }
+
+        function mettreAJourPagination() {
+            const totalItems = filteredProspects.length;
+            const totalPages = Math.ceil(totalItems / perPage);
+            
+            const paginationDiv = document.getElementById('paginationButtons');
+            const paginationInfo = document.getElementById('paginationInfo');
+            
+            if (totalPages <= 1) {
+                paginationDiv.innerHTML = '';
+                paginationInfo.textContent = `${totalItems} prospect(s)`;
+                return;
+            }
+            
+            let html = '';
+            
+            html += `<button class="pagination-btn" onclick="changerPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+                        <i class="fas fa-chevron-left"></i>
+                     </button>`;
+            
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+            
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+            
+            if (startPage > 1) {
+                html += `<button class="pagination-btn" onclick="changerPage(1)">1</button>`;
+                if (startPage > 2) {
+                    html += `<span style="margin: 0 0.3rem; color: var(--gray-500);">...</span>`;
+                }
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button class="pagination-btn ${i === currentPage ? 'active' : ''}" onclick="changerPage(${i})">${i}</button>`;
+            }
+            
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    html += `<span style="margin: 0 0.3rem; color: var(--gray-500);">...</span>`;
+                }
+                html += `<button class="pagination-btn" onclick="changerPage(${totalPages})">${totalPages}</button>`;
+            }
+            
+            html += `<button class="pagination-btn" onclick="changerPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+                        <i class="fas fa-chevron-right"></i>
+                     </button>`;
+            
+            paginationDiv.innerHTML = html;
+            
+            const debut = (currentPage - 1) * perPage + 1;
+            const fin = Math.min(currentPage * perPage, totalItems);
+            paginationInfo.textContent = `${debut}-${fin} sur ${totalItems} prospect(s)`;
+        }
+
+        function changerPage(page) {
+            const totalPages = Math.ceil(filteredProspects.length / perPage);
+            if (page < 1 || page > totalPages) return;
+            currentPage = page;
+            afficherTableau();
+            
+            const tableContainer = document.querySelector('.table-container');
+            if (tableContainer) {
+                tableContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        async function envoyerModifications(id) {
+            const modifications = pendingUpdates.get(id);
+            if (!modifications || Object.keys(modifications).length === 0) return;
+            
+            const data = {
+                Idprospect: id,
+                ...modifications
+            };
+            
+            showLoading(true);
+            
+            try {
+                await fetch(`${API_BASE}?action=udprospect`, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data),
+                });
+                
+                pendingUpdates.delete(id);
+                showAlert('Modification enregistrée', 'success');
+                
+            } catch (error) {
+                console.error('Erreur mise à jour:', error);
+                showAlert('Erreur lors de la mise à jour', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function planifierEnvoi(id) {
+            if (updateTimeout) {
+                clearTimeout(updateTimeout);
+            }
+            
+            updateTimeout = setTimeout(() => {
+                const ids = Array.from(pendingUpdates.keys());
+                ids.forEach(id => envoyerModifications(id));
+                updateTimeout = null;
+            }, 1000);
+        }
+
+        function ouvrirDetailProspect(id) {
+            const prospect = prospectsData.find(p => p['Idprospect'] === id);
+            if (!prospect) return;
+            
+            currentDetailId = id;
+            
+            const notes = [];
+            for (let i = 1; i <= 5; i++) {
+                const note = prospect[`Note ${i}`];
+                if (note !== null && note !== undefined && note !== '') {
+                    const noteStr = String(note).trim();
+                    if (noteStr !== '') {
+                        notes.push(`<div class="note-item-modern" title="Double-clic pour éditer">
+                            <i class="fas fa-sticky-note" style="color: var(--primary-500);"></i>
+                            <span ondblclick="activerEditionNote('${id}', ${i}, this)">${noteStr}</span>
+                        </div>`);
+                    } else {
+                        notes.push(`<div class="note-item-modern" style="opacity: 0.5;" title="Double-clic pour ajouter">
+                            <i class="fas fa-plus-circle" style="color: var(--gray-400);"></i>
+                            <span ondblclick="activerEditionNote('${id}', ${i}, this)"><em style="color: var(--gray-400);">Note ${i} vide</em></span>
+                        </div>`);
+                    }
+                } else {
+                    notes.push(`<div class="note-item-modern" style="opacity: 0.5;" title="Double-clic pour ajouter">
+                        <i class="fas fa-plus-circle" style="color: var(--gray-400);"></i>
+                        <span ondblclick="activerEditionNote('${id}', ${i}, this)"><em style="color: var(--gray-400);">Note ${i} vide</em></span>
+                    </div>`);
+                }
+            }
+            
+            const commentaires = [];
+            for (let i = 1; i <= 2; i++) {
+                const commentaire = prospect[`Commentaire ${i}`];
+                if (commentaire !== null && commentaire !== undefined && commentaire !== '') {
+                    const commentaireStr = String(commentaire).trim();
+                    if (commentaireStr !== '') {
+                        commentaires.push(`<div class="comment-item-modern">
+                            <span ondblclick="activerEditionCommentaire('${id}', ${i}, this)">${commentaireStr}</span>
+                        </div>`);
+                    }
+                }
+            }
+
+            const statutProspect = prospect['Statut du prospect'] || 'Nouveau prospect';
+            let statutClass = 'badge-info';
+            if (statutProspect === 'Intéressé') statutClass = 'badge-success';
+            else if (statutProspect === 'Converti (Client)') statutClass = 'badge-purple';
+            else if (statutProspect === 'Perdu / Refusé') statutClass = 'badge-danger';
+            else if (statutProspect === 'Mauvais Numero') statutClass = 'badge-warning';
+            else if (statutProspect === 'Ne decroche pas') statutClass = 'badge-warning';
+
+            const statutRdv = prospect['Statut du Rdv'] || '';
+            let rdvClass = '';
+            if (statutRdv === 'Confirmé') rdvClass = 'badge-success';
+            else if (statutRdv === 'Planifié') rdvClass = 'badge-info';
+            else if (statutRdv === 'Terminé') rdvClass = 'badge-purple';
+            else if (statutRdv === 'Reporté') rdvClass = 'badge-warning';
+            else if (statutRdv === 'Annulé' || statutRdv === 'Manqué') rdvClass = 'badge-danger';
+
+            const telephone = prospect['Numero de telephone'] ? String(prospect['Numero de telephone']).replace(/'/g, "\\'") : '';
+            const prospectId = prospect['Idprospect'] ? String(prospect['Idprospect']).replace(/'/g, "\\'") : '';
+
+            const agencesOptions = Array.from(listeAgences).sort().map(agence => 
+                `<option value="${agence}" ${prospect['Agence'] === agence ? 'selected' : ''}>${agence}</option>`
+            ).join('');
+
+            // Générer les affichages des appels
+            const appelsHtml = [];
+            for (let i = 1; i <= 5; i++) {
+                const dateField = `Date Appel ${i}`;
+                const consigneField = `consigne appel ${i}`;
+                const dateValue = prospect[dateField] || '';
+                const consigneValue = prospect[consigneField] || '';
+                
+                if (dateValue && consigneValue) {
+                    // Formater la date si c'est au format ISO
+                    let dateFormatee = dateValue;
+                    if (dateValue.includes('T') || dateValue.includes('-')) {
+                        try {
+                            const date = new Date(dateValue);
+                            if (!isNaN(date.getTime())) {
+                                const jour = date.getDate().toString().padStart(2, '0');
+                                const mois = (date.getMonth() + 1).toString().padStart(2, '0');
+                                const annee = date.getFullYear();
+                                dateFormatee = `${jour}/${mois}/${annee}`;
+                            }
+                        } catch (e) {
+                            // Garder la valeur originale si erreur
+                            dateFormatee = dateValue;
+                        }
+                    }
+                    
+                    appelsHtml.push(`
+                        <div class="detail-item" style="flex-direction: column; align-items: flex-start; gap: 0.3rem;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem; width: 100%;">
+                                <span class="detail-item-label" style="width: auto;"><i class="fas fa-phone"></i> Appel ${i}:</span>
+                                <span class="badge badge-info">${dateFormatee}</span>
+                            </div>
+                            <div style="margin-left: 1.5rem; font-size: 0.85rem; color: var(--gray-700); background: var(--gray-50); padding: 0.4rem; border-radius: var(--border-radius-sm); width: 100%;">
+                                <i class="fas fa-comment-dots" style="color: var(--primary-400); margin-right: 0.3rem;"></i>
+                                ${consigneValue}
+                            </div>
+                        </div>
+                    `);
+                }
+            }
+
+            // Appel 6 (sans consigne)
+            const dateAppel6 = prospect['Date Appel 6'] || '';
+            if (dateAppel6) {
+                // Formater la date si c'est au format ISO
+                let dateFormatee = dateAppel6;
+                if (dateAppel6.includes('T') || dateAppel6.includes('-')) {
+                    try {
+                        const date = new Date(dateAppel6);
+                        if (!isNaN(date.getTime())) {
+                            const jour = date.getDate().toString().padStart(2, '0');
+                            const mois = (date.getMonth() + 1).toString().padStart(2, '0');
+                            const annee = date.getFullYear();
+                            dateFormatee = `${jour}/${mois}/${annee}`;
+                        }
+                    } catch (e) {
+                        // Garder la valeur originale si erreur
+                        dateFormatee = dateAppel6;
+                    }
+                }
+                
+                appelsHtml.push(`
+                    <div class="detail-item">
+                        <span class="detail-item-label"><i class="fas fa-phone"></i> Appel 6:</span>
+                        <span class="badge badge-info">${dateFormatee}</span>
+                    </div>
+                `);
+            }
+            
+            const html = `
+                <div class="detail-container">
+                    <div class="detail-header-card">
+                        <div class="detail-avatar-large">
+                            ${(prospect['Nom complet'] || '?').charAt(0).toUpperCase()}
+                        </div>
+                        <div class="detail-header-info">
+                            <h2>${prospect['Nom complet'] || 'Nom non renseigné'}</h2>
+                            <div class="detail-header-meta">
+                                <span><i class="fas fa-id-card"></i> ${prospect['Idprospect'] || 'ID inconnu'}</span>
+                                <span><i class="fas fa-phone"></i> ${prospect['Numero de telephone'] || 'Tél. non renseigné'}</span>
+                                <span><i class="fas fa-calendar-plus"></i> ${formaterDateVersJJMMAAAA(prospect['date de creaction'])}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="action-bar-modern">
+                        <button class="action-btn-modern call" onclick="appelerProspect('${telephone}', '${prospectId}')">
+                            <i class="fas fa-phone-alt"></i> Appeler
+                        </button>
+                        <button class="action-btn-modern delete" onclick="confirmDelete('${prospectId}')">
+                            <i class="fas fa-trash-alt"></i> Supprimer
+                        </button>
+                    </div>
+
+                    <div class="detail-grid">
+                        <div class="detail-card">
+                            <div class="detail-card-title">
+                                <i class="fas fa-info-circle"></i> Informations générales
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-item-label"><i class="fas fa-building"></i> Agence:</span>
+                                <span class="detail-item-value" ondblclick="activerEditionSelectAgence('${id}', this, '${prospect['Agence'] || ''}')">
+                                    ${prospect['Agence'] || 'Non spécifiée'}
+                                </span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-item-label"><i class="fas fa-clock"></i> Création:</span>
+                                <span class="detail-item-value">${formaterDateVersJJMMAAAA(prospect['date de creaction'])}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-item-label"><i class="fas fa-phone-alt"></i> Téléphone:</span>
+                                <span class="detail-item-value" ondblclick="activerEditionTexte('${id}', 'Numero de telephone', this)">${prospect['Numero de telephone'] || '-'}</span>
+                            </div>
+                        </div>
+
+                        <div class="detail-card">
+                            <div class="detail-card-title">
+                                <i class="fas fa-chart-line"></i> Statuts
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-item-label"><i class="fas fa-user-tag"></i> Prospect:</span>
+                                <span class="detail-item-value" ondblclick="activerEditionSelect('${id}', 'Statut du prospect', this, ['Nouveau prospect','Intéressé','Converti (Client)','Perdu / Refusé','Mauvais Numero','Ne decroche pas'])">
+                                    <span class="status-badge-large" style="background: ${statutClass === 'badge-info' ? '#dbeafe' : statutClass === 'badge-success' ? '#d1fae5' : statutClass === 'badge-purple' ? '#ede9fe' : statutClass === 'badge-danger' ? '#fee2e2' : '#fed7aa'}; color: ${statutClass === 'badge-info' ? '#1e40af' : statutClass === 'badge-success' ? '#065f46' : statutClass === 'badge-purple' ? '#5b21b6' : statutClass === 'badge-danger' ? '#991b1b' : '#92400e'};">${statutProspect}</span>
+                                </span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-item-label"><i class="fas fa-calendar-check"></i> Date RDV:</span>
+                                <span class="detail-item-value" ondblclick="activerEditionDate('${id}', 'Date de RDV', this)">${formaterDateVersJJMMAAAA(prospect['Date de RDV']) || 'Non planifié'}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-item-label"><i class="fas fa-clock"></i> Statut RDV:</span>
+                                <span class="detail-item-value" ondblclick="activerEditionSelect('${id}', 'Statut du Rdv', this, ['','Planifié','Confirmé','Terminé','Reporté','Annulé','Manqué'])">
+                                    ${statutRdv ? `<span class="status-badge-large" style="background: ${rdvClass === 'badge-success' ? '#d1fae5' : rdvClass === 'badge-info' ? '#dbeafe' : rdvClass === 'badge-purple' ? '#ede9fe' : rdvClass === 'badge-danger' ? '#fee2e2' : '#fed7aa'}; color: ${rdvClass === 'badge-success' ? '#065f46' : rdvClass === 'badge-info' ? '#1e40af' : rdvClass === 'badge-purple' ? '#5b21b6' : rdvClass === 'badge-danger' ? '#991b1b' : '#92400e'};">${statutRdv}</span>` : 'Non défini'}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="notes-section">
+                            <div class="detail-card-title">
+                                <i class="fas fa-phone-volume"></i> Historique des appels
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                ${appelsHtml.length ? appelsHtml.join('') : '<p style="color: var(--gray-500); text-align: center; padding: 1rem;">Aucun appel consigné</p>'}
+                            </div>
+                        </div>
+
+                        <div class="notes-section">
+                            <div class="detail-card-title">
+                                <i class="fas fa-sticky-note"></i> Notes
+                            </div>
+                            <div class="notes-container">
+                                ${notes.join('')}
+                            </div>
+                        </div>
+
+                        <div class="notes-section">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                <div class="detail-card-title" style="margin-bottom: 0;">
+                                    <i class="fas fa-comments"></i> Commentaires 
+                                </div>
+                                <button class="action-btn-modern" onclick="ajouterCommentaire('${prospectId}')" style="padding: 0.3rem 0.8rem; font-size: 0.8rem;" ${commentaires.length >= 2 ? 'disabled' : ''}>
+                                    <i class="fas fa-plus"></i> Ajouter
+                                </button>
+                            </div>
+                            <div class="comments-container">
+                                ${commentaires.length ? commentaires.join('') : '<p style="color: var(--gray-500); text-align: center; padding: 1rem;">Aucun commentaire - Cliquez sur "Ajouter" pour en créer un</p>'}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('detailModalBody').innerHTML = html;
+            document.getElementById('detailModal').classList.add('active');
+        }
+
+        function activerEditionDate(id, champ, element) {
+            const ancienneValeur = element.innerText.trim();
+            const input = document.createElement('input');
+            input.type = 'date';
+            input.className = 'form-control';
+            input.style.width = '100%';
+            
+            if (ancienneValeur && ancienneValeur !== 'Non planifié' && ancienneValeur !== '-') {
+                if (ancienneValeur.match(/^\d{2}\/\d{2}\/\d{4}$/)) {
+                    const [jour, mois, annee] = ancienneValeur.split('/');
+                    input.value = `${annee}-${mois}-${jour}`;
+                }
+            }
+            
+            input.onblur = () => {
+                let nouvelleValeur = '';
+                if (input.value) {
+                    const [annee, mois, jour] = input.value.split('-');
+                    nouvelleValeur = `${jour}/${mois}/${annee}`;
+                }
+                
+                element.innerText = nouvelleValeur || 'Non planifié';
+                
+                const prospect = prospectsData.find(p => p['Idprospect'] === id);
+                if (prospect) {
+                    prospect[champ] = nouvelleValeur;
+                    
+                    if (!pendingUpdates.has(id)) {
+                        pendingUpdates.set(id, {});
+                    }
+                    pendingUpdates.get(id)[champ] = nouvelleValeur;
+                    
+                    const regles = appliquerReglesRDV(prospect, champ, nouvelleValeur);
+                    Object.keys(regles).forEach(regleChamp => {
+                        prospect[regleChamp] = regles[regleChamp];
+                        pendingUpdates.get(id)[regleChamp] = regles[regleChamp];
+                    });
+                    
+                    if (Object.keys(regles).length > 0) {
+                        ouvrirDetailProspect(id);
+                    }
+                    
+                    planifierEnvoi(id);
+                }
+            };
+            
+            input.onkeypress = (e) => {
+                if (e.key === 'Enter') {
+                    input.blur();
+                }
+            };
+            
+            element.innerHTML = '';
+            element.appendChild(input);
+            input.focus();
+            if (input.showPicker) input.showPicker();
+        }
+
+        function ajouterCommentaire(id) {
+            const prospect = prospectsData.find(p => p['Idprospect'] === id);
+            if (!prospect) return;
+            
+            let commentairesExistants = 0;
+            for (let i = 1; i <= 2; i++) {
+                if (prospect[`Commentaire ${i}`] && prospect[`Commentaire ${i}`].trim() !== '') {
+                    commentairesExistants++;
+                }
+            }
+            
+            if (commentairesExistants >= 2) {
+                showAlert('Maximum 2 commentaires atteint. Modifiez-en un existant.', 'warning');
+                return;
+            }
+            
+            let emplacementLibre = null;
+            for (let i = 1; i <= 2; i++) {
+                if (!prospect[`Commentaire ${i}`] || prospect[`Commentaire ${i}`].trim() === '') {
+                    emplacementLibre = i;
+                    break;
+                }
+            }
+            
+            const commentaireDiv = document.createElement('div');
+            commentaireDiv.className = 'comment-item-modern';
+            commentaireDiv.style.padding = '1rem';
+            
+            const textarea = document.createElement('textarea');
+            textarea.className = 'form-control';
+            textarea.placeholder = 'Saisissez votre commentaire...';
+            textarea.rows = 3;
+            textarea.style.width = '100%';
+            textarea.style.marginBottom = '0.5rem';
+            
+            const buttonDiv = document.createElement('div');
+            buttonDiv.style.display = 'flex';
+            buttonDiv.style.gap = '0.5rem';
+            buttonDiv.style.justifyContent = 'flex-end';
+            
+            const btnAnnuler = document.createElement('button');
+            btnAnnuler.className = 'btn btn-secondary';
+            btnAnnuler.innerHTML = '<i class="fas fa-times"></i> Annuler';
+            btnAnnuler.style.padding = '0.4rem 1rem';
+            btnAnnuler.style.fontSize = '0.8rem';
+            
+            const btnSauvegarder = document.createElement('button');
+            btnSauvegarder.className = 'btn btn-primary';
+            btnSauvegarder.innerHTML = '<i class="fas fa-save"></i> Sauvegarder';
+            btnSauvegarder.style.padding = '0.4rem 1rem';
+            btnSauvegarder.style.fontSize = '0.8rem';
+            
+            buttonDiv.appendChild(btnAnnuler);
+            buttonDiv.appendChild(btnSauvegarder);
+            
+            commentaireDiv.appendChild(textarea);
+            commentaireDiv.appendChild(buttonDiv);
+            
+            const commentsContainer = document.querySelector('.comments-container');
+            if (commentsContainer) {
+                if (commentsContainer.innerHTML.includes('Aucun commentaire')) {
+                    commentsContainer.innerHTML = '';
+                }
+                commentsContainer.insertBefore(commentaireDiv, commentsContainer.firstChild);
+            }
+            
+            textarea.focus();
+            
+            btnAnnuler.onclick = () => {
+                commentaireDiv.remove();
+                if (commentsContainer && commentsContainer.children.length === 0) {
+                    commentsContainer.innerHTML = '<p style="color: var(--gray-500); text-align: center; padding: 1rem;">Aucun commentaire - Cliquez sur "Ajouter" pour en créer un</p>';
+                }
+            };
+            
+            btnSauvegarder.onclick = async () => {
+                const nouveauCommentaire = textarea.value.trim();
+                if (!nouveauCommentaire) {
+                    showAlert('Le commentaire ne peut pas être vide', 'error');
+                    return;
+                }
+                
+                prospect[`Commentaire ${emplacementLibre}`] = nouveauCommentaire;
+                
+                if (!pendingUpdates.has(id)) {
+                    pendingUpdates.set(id, {});
+                }
+                pendingUpdates.get(id)[`Commentaire ${emplacementLibre}`] = nouveauCommentaire;
+                
+                ouvrirDetailProspect(id);
+                planifierEnvoi(id);
+                showAlert('Commentaire ajouté', 'success');
+            };
+            
+            textarea.onkeypress = (e) => {
+                if (e.key === 'Enter' && e.ctrlKey) {
+                    btnSauvegarder.click();
+                }
+            };
+        }
+
+        function activerEditionTexte(id, champ, element) {
+            const ancienneValeur = element.innerText.trim();
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = ancienneValeur === 'Non spécifiée' || ancienneValeur === '-' ? '' : ancienneValeur;
+            input.className = 'form-control';
+            input.style.width = '100%';
+            
+            input.onblur = () => {
+                const nouvelleValeur = input.value.trim();
+                element.innerText = nouvelleValeur || (champ === 'Agence' ? 'Non spécifiée' : '-');
+                
+                const prospect = prospectsData.find(p => p['Idprospect'] === id);
+                if (prospect) {
+                    prospect[champ] = nouvelleValeur;
+                    
+                    if (!pendingUpdates.has(id)) {
+                        pendingUpdates.set(id, {});
+                    }
+                    pendingUpdates.get(id)[champ] = nouvelleValeur;
+                    
+                    planifierEnvoi(id);
+                }
+            };
+            
+            input.onkeypress = (e) => {
+                if (e.key === 'Enter') {
+                    input.blur();
+                }
+            };
+            
+            element.innerHTML = '';
+            element.appendChild(input);
+            input.focus();
+        }
+
+        function activerEditionSelectAgence(id, element, valeurActuelle) {
+            const select = document.createElement('select');
+            select.className = 'form-control';
+            
+            const optionVide = document.createElement('option');
+            optionVide.value = '';
+            optionVide.textContent = 'Non spécifiée';
+            select.appendChild(optionVide);
+            
+            Array.from(listeAgences).sort().forEach(agence => {
+                const option = document.createElement('option');
+                option.value = agence;
+                option.textContent = agence;
+                if (agence === valeurActuelle) {
+                    option.selected = true;
+                }
+                select.appendChild(option);
+            });
+            
+            select.onblur = () => {
+                const nouvelleValeur = select.value;
+                element.innerText = nouvelleValeur || 'Non spécifiée';
+                
+                const prospect = prospectsData.find(p => p['Idprospect'] === id);
+                if (prospect) {
+                    prospect['Agence'] = nouvelleValeur;
+                    
+                    if (!pendingUpdates.has(id)) {
+                        pendingUpdates.set(id, {});
+                    }
+                    pendingUpdates.get(id)['Agence'] = nouvelleValeur;
+                    
+                    planifierEnvoi(id);
+                }
+            };
+            
+            element.innerHTML = '';
+            element.appendChild(select);
+            select.focus();
+        }
+
+        function activerEditionSelect(id, champ, element, options) {
+            const select = document.createElement('select');
+            select.className = 'form-control';
+            
+            options.forEach(opt => {
+                const option = document.createElement('option');
+                option.value = opt;
+                option.textContent = opt || 'Non défini';
+                if (opt === (prospectsData.find(p => p['Idprospect'] === id)[champ] || '')) {
+                    option.selected = true;
+                }
+                select.appendChild(option);
+            });
+            
+            select.onblur = () => {
+                const nouvelleValeur = select.value;
+                
+                const prospect = prospectsData.find(p => p['Idprospect'] === id);
+                if (prospect) {
+                    const ancienneValeur = prospect[champ];
+                    prospect[champ] = nouvelleValeur;
+                    
+                    if (!pendingUpdates.has(id)) {
+                        pendingUpdates.set(id, {});
+                    }
+                    pendingUpdates.get(id)[champ] = nouvelleValeur;
+                    
+                    const regles = appliquerReglesRDV(prospect, champ, nouvelleValeur);
+                    Object.keys(regles).forEach(regleChamp => {
+                        prospect[regleChamp] = regles[regleChamp];
+                        pendingUpdates.get(id)[regleChamp] = regles[regleChamp];
+                    });
+                    
+                    ouvrirDetailProspect(id);
+                    planifierEnvoi(id);
+                }
+            };
+            
+            element.innerHTML = '';
+            element.appendChild(select);
+            select.focus();
+        }
+
+        function activerEditionNote(id, index, element) {
+            const ancienneValeur = element.innerText.trim();
+            const valeurInitiale = ancienneValeur.includes('vide') ? '' : ancienneValeur;
+            
+            const input = document.createElement('textarea');
+            input.value = valeurInitiale;
+            input.className = 'form-control';
+            input.rows = 2;
+            input.style.width = '100%';
+            input.style.fontSize = '0.813rem';
+            
+            input.onblur = () => {
+                const nouvelleValeur = input.value.trim();
+                
+                const prospect = prospectsData.find(p => p['Idprospect'] === id);
+                if (prospect) {
+                    prospect[`Note ${index}`] = nouvelleValeur;
+                    
+                    if (!pendingUpdates.has(id)) {
+                        pendingUpdates.set(id, {});
+                    }
+                    pendingUpdates.get(id)[`Note ${index}`] = nouvelleValeur;
+                    
+                    ouvrirDetailProspect(id);
+                    planifierEnvoi(id);
+                }
+            };
+            
+            input.onkeypress = (e) => {
+                if (e.key === 'Enter' && e.ctrlKey) {
+                    input.blur();
+                }
+            };
+            
+            element.innerHTML = '';
+            element.appendChild(input);
+            input.focus();
+        }
+
+        function activerEditionCommentaire(id, index, element) {
+            const ancienneValeur = element.innerText.trim();
+            const input = document.createElement('textarea');
+            input.value = ancienneValeur;
+            input.className = 'form-control';
+            input.rows = 3;
+            input.style.width = '100%';
+            
+            input.onblur = () => {
+                const nouvelleValeur = input.value.trim();
+                
+                const prospect = prospectsData.find(p => p['Idprospect'] === id);
+                if (prospect) {
+                    prospect[`Commentaire ${index}`] = nouvelleValeur;
+                    
+                    if (!pendingUpdates.has(id)) {
+                        pendingUpdates.set(id, {});
+                    }
+                    pendingUpdates.get(id)[`Commentaire ${index}`] = nouvelleValeur;
+                    
+                    ouvrirDetailProspect(id);
+                    planifierEnvoi(id);
+                }
+            };
+            
+            input.onkeypress = (e) => {
+                if (e.key === 'Enter' && e.ctrlKey) {
+                    input.blur();
+                }
+            };
+            
+            element.innerHTML = '';
+            element.appendChild(input);
+            input.focus();
+        }
+
+        function fermerDetailModal() {
+            document.getElementById('detailModal').classList.remove('active');
+            afficherTableau();
+        }
+
+        // Fonction modifiée pour que le modal apparaisse après l'appel
+function appelerProspect(numero, prospectId) {
+    if (!numero) {
+        showAlert('Numéro de téléphone non disponible', 'error');
+        return;
+    }
+    
+    const tel = String(numero).replace(/\s+/g, '');
+    
+    if (confirm(`Appeler le ${tel} ?`)) {
+        window.location.href = `tel:${tel}`;
+        
+        // Ouvrir le modal de consignation après 6 secondes
+        setTimeout(() => {
+            telephone.ouvrirConsignation(prospectId, tel);
+        }, 6000);
+    }
+}
+
+        function ouvrirModalAjout() {
+            currentEditId = null;
+            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-user-plus"></i> Ajouter un prospect';
+            
+            document.getElementById('editId').value = '';
+            document.getElementById('editNom').value = '';
+            document.getElementById('editTel').value = '';
+            document.getElementById('editAgence').value = '';
+            document.getElementById('editStatutProspect').value = 'Nouveau prospect';
+            document.getElementById('editDateRdv').value = '';
+            document.getElementById('editStatutRdv').value = '';
+            document.getElementById('editNote1').value = '';
+            document.getElementById('editNote2').value = '';
+            document.getElementById('editNote3').value = '';
+            document.getElementById('editNote4').value = '';
+            document.getElementById('editNote5').value = '';
+            document.getElementById('editComment1').value = '';
+            document.getElementById('editComment2').value = '';
+            
+            document.getElementById('btnSave').innerHTML = '<i class="fas fa-save"></i> Créer';
+            document.getElementById('prospectModal').classList.add('active');
+        }
+
+        function fermerModal() {
+            document.getElementById('prospectModal').classList.remove('active');
+        }
+
+        async function sauvegarderProspect() {
+            const dateRdvValue = document.getElementById('editDateRdv').value;
+            let dateRdvFormatted = '';
+            if (dateRdvValue) {
+                const [annee, mois, jour] = dateRdvValue.split('-');
+                dateRdvFormatted = `${jour}/${mois}/${annee}`;
+            }
+
+            const data = {
+                'Idprospect': document.getElementById('editId').value,
+                'Nom complet': document.getElementById('editNom').value,
+                'Numero de telephone': document.getElementById('editTel').value,
+                'Agence': document.getElementById('editAgence').value,
+                'Statut du prospect': document.getElementById('editStatutProspect').value,
+                'Date de RDV': dateRdvFormatted,
+                'Statut du Rdv': document.getElementById('editStatutRdv').value,
+                'Note 1': document.getElementById('editNote1').value,
+                'Note 2': document.getElementById('editNote2').value,
+                'Note 3': document.getElementById('editNote3').value,
+                'Note 4': document.getElementById('editNote4').value,
+                'Note 5': document.getElementById('editNote5').value,
+                'Commentaire 1': document.getElementById('editComment1').value,
+                'Commentaire 2': document.getElementById('editComment2').value,
+                'date de creaction': new Date().toISOString()
+            };
+
+            if (!data['Idprospect'] || !data['Nom complet'] || !data['Numero de telephone']) {
+                showAlert('ID, Nom et Téléphone sont requis', 'error');
+                return;
+            }
+
+            showLoading(true);
+            
+            try {
+                await fetch(`${API_BASE}?action=addprospect`, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data),
+                });
+                
+                showAlert('Prospect créé avec succès', 'success');
+                
+                setTimeout(() => {
+                    fermerModal();
+                    chargerProspects();
+                }, 1000);
+                
+            } catch (error) {
+                console.error('Erreur:', error);
+                showAlert('Erreur lors de l\'enregistrement', 'error');
+                showLoading(false);
+            }
+        }
+
+        function confirmDelete(id) {
+            deleteId = id;
+            const prospect = prospectsData.find(p => p['Idprospect'] === id);
+            document.getElementById('deleteMessage').innerHTML = `
+                Voulez-vous vraiment supprimer le prospect<br>
+                <strong>${prospect ? prospect['Nom complet'] : id}</strong> ?
+            `;
+            document.getElementById('deleteModal').classList.add('active');
+            document.getElementById('confirmDeleteBtn').onclick = () => executerSuppression(deleteId);
+        }
+
+        async function executerSuppression(id) {
+            fermerDeleteModal();
+            fermerDetailModal();
+            showLoading(true);
+            
+            try {
+                await fetch(`${API_BASE}?action=delectprospect`, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ Idprospect: id }),
+                });
+                
+                showAlert('Suppression effectuée avec succès', 'success');
+                
+                setTimeout(() => {
+                    chargerProspects();
+                }, 1000);
+                
+            } catch (error) {
+                console.error('Erreur suppression:', error);
+                showAlert('Erreur lors de la suppression', 'error');
+                showLoading(false);
+            }
+        }
+
+        function fermerDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('active');
+        }
+
+        window.addEventListener('beforeunload', () => {
+            if (pendingUpdates.size > 0) {
+                const ids = Array.from(pendingUpdates.keys());
+                ids.forEach(id => {
+                    const modifications = pendingUpdates.get(id);
+                    if (Object.keys(modifications).length > 0) {
+                        const data = {
+                            Idprospect: id,
+                            ...modifications
+                        };
+                        
+                        navigator.sendBeacon(
+                            `${API_BASE}?action=udprospect`,
+                            new Blob([JSON.stringify(data)], { type: 'application/json' })
+                        );
+                    }
+                });
+            }
+        });
+
+        function showLoading(etat) {
+            const overlay = document.getElementById('loadingOverlay');
+            if (etat) {
+                overlay.classList.add('active');
+            } else {
+                overlay.classList.remove('active');
+            }
+        }
+
+        function showAlert(message, type = 'info', duration = 3000) {
+            const container = document.getElementById('alertContainer');
+            const id = `alert-${Date.now()}-${Math.random()}`;
+            
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.id = id;
+            
+            let icon = 'info-circle';
+            switch(type) {
+                case 'success': icon = 'check-circle'; break;
+                case 'error': icon = 'exclamation-circle'; break;
+                case 'warning': icon = 'exclamation-triangle'; break;
+                default: icon = 'info-circle';
+            }
+            
+            alert.innerHTML = `
+                <i class="fas fa-${icon}"></i>
+                <span>${message}</span>
+            `;
+            
+            container.appendChild(alert);
+            
+            setTimeout(() => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.style.animation = 'slideIn 0.3s ease reverse';
+                    setTimeout(() => element.remove(), 300);
+                }
+            }, duration);
+        }
+
+        function openVueGlobale() {
+            window.location.href = 'Accueil.html';
+        }
+
+        // Exposer les fonctions nécessaires
+        window.telephone = telephone;
+        window.ouvrirModalAjout = ouvrirModalAjout;
+        window.fermerModal = fermerModal;
+        window.sauvegarderProspect = sauvegarderProspect;
+        window.ouvrirDetailProspect = ouvrirDetailProspect;
+        window.fermerDetailModal = fermerDetailModal;
+        window.appelerProspect = appelerProspect;
+        window.confirmDelete = confirmDelete;
+        window.fermerDeleteModal = fermerDeleteModal;
+        window.activerEditionDate = activerEditionDate;
+        window.activerEditionTexte = activerEditionTexte;
+        window.activerEditionSelectAgence = activerEditionSelectAgence;
+        window.activerEditionSelect = activerEditionSelect;
+        window.activerEditionNote = activerEditionNote;
+        window.activerEditionCommentaire = activerEditionCommentaire;
+        window.ajouterCommentaire = ajouterCommentaire;
+        window.changerPage = changerPage;
+        window.chargerProspects = chargerProspects;
+        window.scrollToTop = scrollToTop;
+        window.openVueGlobale = openVueGlobale;
+    </script>
+</body>
+</html>
