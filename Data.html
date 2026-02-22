@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Base Client - VisionPro</title>
+    <title>VisioPro</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -1205,7 +1205,7 @@
     <div class="dashboard-container">
         <header class="header">
             <div class="header-left">
-                <h1>VisionPro - Base Client</h1>
+                <h1>Liste Clients</h1>
             </div>
             <div class="user-info">
                 <span id="username-display"></span>
@@ -1481,7 +1481,7 @@
             try {
                 showLoadingState();
                 
-                const apiUrl = 'https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=dataclient';
+                const apiUrl = 'https://script.google.com/macros/s/AKfycbwdzHJGAL16KV_OnyoCIs5I7im2yNxrbEaEIbykQ8hy6ewQjJFQ0G4TfqYWWCMc7vfW/exec?action=dataclient';
                 
                 const response = await fetch(apiUrl);
                 
@@ -2096,7 +2096,7 @@
         }
 
         async function fetchClientDetails(clientId) {
-            const apiUrl = 'https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=dataclient';
+            const apiUrl = 'https://script.google.com/macros/s/AKfycbwdzHJGAL16KV_OnyoCIs5I7im2yNxrbEaEIbykQ8hy6ewQjJFQ0G4TfqYWWCMc7vfW/exec?action=dataclient';
             
             const response = await fetch(apiUrl);
             if (!response.ok) {
@@ -2518,7 +2518,7 @@
         }
 
         async function sendStatusUpdates(statusUpdates) {
-            const apiUrl = "https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=addpo";
+            const apiUrl = "https://script.google.com/macros/s/AKfycbwdzHJGAL16KV_OnyoCIs5I7im2yNxrbEaEIbykQ8hy6ewQjJFQ0G4TfqYWWCMc7vfW/exec?action=addpo";
             
             try {
                 const statusData = {
