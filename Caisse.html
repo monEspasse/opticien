@@ -2,52 +2,50 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion des Caisses - VisionPro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>VisioPro - Gestion de Caisses</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* ===== VARIABLES & RESET ===== */
         :root {
+            --primary: #4f46e5;
+            --primary-light: #818cf8;
+            --primary-dark: #3730a3;
+            --secondary: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            
             --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --success-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-            --danger-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-            --warning-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            --success-gradient: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            --danger-gradient: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
             
-            --primary-50: #f0f4ff;
-            --primary-100: #d9e4ff;
-            --primary-200: #b3c9ff;
-            --primary-300: #8daef8;
-            --primary-400: #6793f1;
-            --primary-500: #4f46e5;
-            --primary-600: #4338ca;
-            --primary-700: #3730a3;
-            --primary-800: #312e81;
-            --primary-900: #1e1b4b;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
             
-            --gray-50: #fafafa;
-            --gray-100: #f5f5f5;
-            --gray-200: #e5e5e5;
-            --gray-300: #d4d4d4;
-            --gray-400: #a3a3a3;
-            --gray-500: #737373;
-            --gray-600: #525252;
-            --gray-700: #404040;
-            --gray-800: #262626;
-            --gray-900: #171717;
+            --radius-sm: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            --radius-full: 9999px;
             
-            --glass-bg: rgba(255, 255, 255, 0.1);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            
-            --border-radius-sm: 8px;
-            --border-radius-md: 12px;
-            --border-radius-lg: 16px;
-            --border-radius-xl: 20px;
-            --border-radius-full: 9999px;
-            
-            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
@@ -56,145 +54,143 @@
             box-sizing: border-box;
         }
 
-        html {
-            font-size: 16px;
-            scroll-behavior: smooth;
-            font-smooth: always;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
         body {
             background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
             min-height: 100vh;
             font-family: 'Inter', sans-serif;
             color: #2d3748;
             position: relative;
+            padding-bottom: 70px;
         }
 
-        .admin-container {
-            max-width: 1400px;
+        /* ===== LAYOUT PRINCIPAL ===== */
+        .app-container {
+            max-width: 1440px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 1rem;
         }
 
+        /* ===== HEADER ===== */
         .header {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--border-radius-lg);
-            padding: 1.5rem 2rem;
-            box-shadow: var(--glass-shadow);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-xl);
+            padding: 1rem 2rem;
             margin-bottom: 2rem;
-            position: sticky;
-            top: 2rem;
-            z-index: 1000;
-            animation: slideDown 0.6s var(--transition-bounce);
+            box-shadow: var(--shadow-lg);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .user-info {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 1rem;
         }
 
         .profile-img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 2px solid var(--primary-300);
+            width: 45px;
+            height: 45px;
+            border-radius: var(--radius-full);
+            border: 3px solid white;
+            box-shadow: var(--shadow-md);
         }
 
-        .back-btn {
-            margin-bottom: 1rem;
-        }
-
+        /* ===== BOUTONS ===== */
         .btn {
-            position: relative;
             padding: 0.75rem 1.5rem;
             border: none;
-            border-radius: var(--border-radius-md);
+            border-radius: var(--radius-md);
             font-weight: 600;
             font-size: 0.875rem;
             cursor: pointer;
-            transition: all 0.3s var(--transition-smooth);
+            transition: var(--transition);
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
+            background: white;
+            color: var(--gray-700);
+            border: 1px solid var(--gray-200);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn:active {
+            transform: translateY(0);
         }
 
         .btn-primary {
             background: var(--primary-gradient);
             color: white;
+            border: none;
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
         }
 
-        .btn-secondary {
-            background: var(--glass-bg);
-            color: var(--gray-700);
-            border: 1px solid var(--glass-border);
+        .btn-success {
+            background: var(--success-gradient);
+            color: white;
+            border: none;
         }
 
-        .btn-secondary:hover {
-            background: rgba(79, 70, 229, 0.1);
-            color: var(--primary-600);
+        .btn-danger {
+            background: var(--danger-gradient);
+            color: white;
+            border: none;
         }
 
-        /* Section des cartes de caisse */
-        .caisses-section {
-            margin-bottom: 3rem;
-        }
-
+        /* ===== SECTION TITRES ===== */
         .section-title {
             font-size: 1.5rem;
             font-weight: 600;
-            color: var(--primary-700);
+            color: var(--gray-800);
             margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
             gap: 0.75rem;
+            padding: 0 0.5rem;
         }
 
+        .section-title i {
+            color: var(--primary);
+            background: rgba(79, 70, 229, 0.1);
+            padding: 0.5rem;
+            border-radius: var(--radius-md);
+        }
+
+        /* ===== GRILLE DES CAISSES ===== */
         .caisses-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 1.5rem;
+            margin-bottom: 2rem;
         }
 
-        /* Cartes améliorées */
         .caisse-card {
             background: white;
-            border: 1px solid var(--glass-border);
-            border-radius: var(--border-radius-lg);
+            border-radius: var(--radius-lg);
             padding: 1.5rem;
-            transition: all 0.3s var(--transition-smooth);
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
             cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--gray-200);
             position: relative;
             overflow: hidden;
-        }
-
-        .caisse-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 32px rgba(79, 70, 229, 0.15);
-            border-color: var(--primary-300);
-        }
-
-        .caisse-card.active {
-            border-color: var(--primary-500);
-            background: rgba(79, 70, 229, 0.02);
         }
 
         .caisse-card::before {
@@ -205,25 +201,30 @@
             right: 0;
             height: 4px;
             background: var(--primary-gradient);
-            border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+        }
+
+        .caisse-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--primary-light);
         }
 
         .caisse-header {
             display: flex;
-            align-items: flex-start;
             gap: 1rem;
+            margin-bottom: 1rem;
         }
 
         .caisse-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: var(--border-radius-md);
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-md);
             background: var(--primary-gradient);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             flex-shrink: 0;
         }
 
@@ -233,14 +234,14 @@
 
         .caisse-title {
             font-size: 1.25rem;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--gray-800);
             margin-bottom: 0.25rem;
         }
 
         .caisse-location {
             font-size: 0.875rem;
-            color: var(--gray-600);
+            color: var(--gray-500);
             display: flex;
             align-items: center;
             gap: 0.5rem;
@@ -251,70 +252,66 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            padding: 0.25rem 0.75rem;
-            border-radius: var(--border-radius-full);
+            padding: 0.25rem 1rem;
+            border-radius: var(--radius-full);
             font-size: 0.75rem;
             font-weight: 600;
         }
 
         .status-online {
             background: rgba(16, 185, 129, 0.1);
-            color: #10b981;
+            color: var(--success);
         }
 
         .status-offline {
             background: rgba(239, 68, 68, 0.1);
-            color: #ef4444;
+            color: var(--danger);
         }
 
-        /* Statistiques améliorées */
         .caisse-stats {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 1rem;
-            margin-top: 0.5rem;
+            margin: 1rem 0;
         }
 
         .stat-item {
             background: var(--gray-50);
-            border-radius: var(--border-radius-md);
+            border-radius: var(--radius-md);
             padding: 0.75rem;
             text-align: center;
         }
 
         .stat-label {
-            font-size: 0.75rem;
-            color: var(--gray-600);
-            margin-bottom: 0.25rem;
+            font-size: 0.7rem;
+            color: var(--gray-500);
             display: block;
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .stat-value {
             font-size: 1.125rem;
             font-weight: 700;
-            color: var(--primary-700);
+            color: var(--gray-800);
         }
 
         .stat-value.positive {
-            color: #10b981;
+            color: var(--success);
         }
 
         .stat-value.negative {
-            color: #ef4444;
+            color: var(--danger);
         }
 
-        /* Tableau cumulatif */
-        .cumul-section {
-            margin-top: 3rem;
-        }
-
+        /* ===== PANEL DE FILTRES ===== */
         .filters-panel {
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--border-radius-lg);
+            background: white;
+            border-radius: var(--radius-lg);
             padding: 1.5rem;
             margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-md);
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1rem;
@@ -329,14 +326,8 @@
 
         .filter-group label {
             font-size: 0.875rem;
-            font-weight: 500;
+            font-weight: 600;
             color: var(--gray-700);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .date-range-container {
             display: flex;
             align-items: center;
             gap: 0.5rem;
@@ -345,34 +336,35 @@
         .form-control {
             width: 100%;
             padding: 0.75rem 1rem;
-            border: 1px solid var(--gray-300);
-            border-radius: var(--border-radius-md);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-md);
             font-family: inherit;
             font-size: 0.875rem;
-            transition: all 0.3s var(--transition-smooth);
+            transition: var(--transition);
+            background: white;
         }
 
         .form-control:focus {
             outline: none;
-            border-color: var(--primary-400);
+            border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
         }
 
         .select-control {
             appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23737373'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 0.75rem center;
             background-size: 1rem;
             padding-right: 2.5rem;
         }
 
+        /* ===== TABLEAU ===== */
         .table-container {
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--border-radius-lg);
+            background: white;
+            border-radius: var(--radius-lg);
             padding: 1.5rem;
+            box-shadow: var(--shadow-md);
             overflow-x: auto;
             margin-bottom: 1rem;
         }
@@ -386,116 +378,97 @@
         .cumul-table th {
             text-align: left;
             padding: 1rem;
-            background: rgba(79, 70, 229, 0.1);
-            color: var(--primary-700);
+            background: var(--gray-50);
+            color: var(--gray-700);
             font-weight: 600;
-            border-bottom: 2px solid var(--primary-300);
+            border-bottom: 2px solid var(--gray-200);
             white-space: nowrap;
         }
 
         .cumul-table td {
             padding: 0.75rem 1rem;
-            border-bottom: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--gray-200);
         }
 
         .cumul-table tbody tr:hover {
-            background: rgba(79, 70, 229, 0.05);
+            background: var(--gray-50);
         }
 
-        .text-right {
-            text-align: right;
-        }
-
-        .text-center {
-            text-align: center;
-        }
-
+        /* ===== BADGES ===== */
         .badge {
             display: inline-block;
             padding: 0.25rem 0.75rem;
-            border-radius: var(--border-radius-full);
+            border-radius: var(--radius-full);
             font-size: 0.75rem;
             font-weight: 600;
         }
 
         .badge-success {
             background: rgba(16, 185, 129, 0.1);
-            color: #10b981;
+            color: var(--success);
         }
 
         .badge-danger {
             background: rgba(239, 68, 68, 0.1);
-            color: #ef4444;
+            color: var(--danger);
         }
 
         .badge-warning {
             background: rgba(245, 158, 11, 0.1);
-            color: #f59e0b;
+            color: var(--warning);
         }
 
-        .total-row {
-            background: rgba(79, 70, 229, 0.05);
-            font-weight: 600;
+        .badge-info {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--info);
         }
 
-        .total-row td {
-            border-top: 2px solid var(--primary-300);
-            border-bottom: none;
-        }
-
-        /* Pagination Styles */
+        /* ===== PAGINATION ===== */
         .pagination-controls {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 1rem 1.5rem;
+            box-shadow: var(--shadow-md);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--border-radius-lg);
-            margin-top: 1rem;
             flex-wrap: wrap;
             gap: 1rem;
         }
 
         .pagination-info {
             font-size: 0.875rem;
-            color: var(--gray-700);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            color: var(--gray-600);
         }
 
         .pagination-navigation {
             display: flex;
-            align-items: center;
             gap: 0.5rem;
         }
 
         .pagination-btn {
             padding: 0.5rem 1rem;
-            border: 1px solid var(--glass-border);
+            border: 1px solid var(--gray-200);
             background: white;
-            color: var(--gray-700);
-            border-radius: var(--border-radius-md);
+            border-radius: var(--radius-md);
             font-size: 0.875rem;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s var(--transition-smooth);
+            transition: var(--transition);
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
 
         .pagination-btn:hover:not(:disabled) {
-            background: var(--primary-50);
-            color: var(--primary-600);
-            border-color: var(--primary-300);
+            background: var(--gray-50);
+            border-color: var(--primary);
+            color: var(--primary);
         }
 
         .pagination-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
-            background: var(--gray-100);
         }
 
         .items-per-page {
@@ -504,89 +477,17 @@
             gap: 0.5rem;
         }
 
-        .per-page-label {
-            font-size: 0.875rem;
-            color: var(--gray-700);
-        }
-
-        .select-wrapper {
-            position: relative;
-            display: inline-block;
-        }
-
         .modern-select {
             padding: 0.5rem 2rem 0.5rem 1rem;
-            border: 1px solid var(--gray-300);
-            border-radius: var(--border-radius-md);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-md);
             background: white;
             font-size: 0.875rem;
-            color: var(--gray-700);
             cursor: pointer;
             appearance: none;
-            min-width: 70px;
         }
 
-        .modern-select:focus {
-            outline: none;
-            border-color: var(--primary-400);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-        }
-
-        .select-arrow {
-            position: absolute;
-            right: 0.75rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--gray-500);
-            pointer-events: none;
-            font-size: 0.75rem;
-        }
-
-        /* Loading Spinner */
-        .spinner {
-            width: 24px;
-            height: 24px;
-            border: 3px solid var(--primary-400);
-            border-right-color: transparent;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Alert Messages */
-        .alert {
-            padding: 1rem 1.5rem;
-            border-radius: var(--border-radius-md);
-            margin: 1rem 0;
-            display: none;
-            align-items: center;
-            gap: 0.75rem;
-            border-left: 4px solid;
-        }
-
-        .alert-info {
-            background: rgba(59, 130, 246, 0.1);
-            color: #3b82f6;
-            border-left-color: #3b82f6;
-        }
-
-        .alert-danger {
-            background: rgba(239, 68, 68, 0.1);
-            color: #ef4444;
-            border-left-color: #ef4444;
-        }
-
-        .alert-success {
-            background: rgba(16, 185, 129, 0.1);
-            color: #10b981;
-            border-left-color: #10b981;
-        }
-
-        /* Modal Styles for Individual Caisse */
+        /* ===== MODALES ===== */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -594,245 +495,509 @@
             right: 0;
             bottom: 0;
             background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 1000;
-            padding: 20px;
+            padding: 1rem;
         }
 
         .modal-overlay.active {
             display: flex;
         }
 
-        .modal-content-large {
+        .modal-content {
             background: white;
-            border-radius: var(--border-radius-lg);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-            max-width: 1400px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            max-width: 600px;
             width: 100%;
             max-height: 90vh;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
+            overflow-y: auto;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        .modal-content-large {
+            max-width: 1200px;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .modal-header {
             padding: 1.5rem;
             border-bottom: 1px solid var(--gray-200);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: var(--primary-50);
         }
 
         .modal-title {
-            margin: 0;
-            font-size: 1.5rem;
-            color: var(--primary-700);
+            font-size: 1.25rem;
+            font-weight: 600;
             display: flex;
             align-items: center;
             gap: 0.75rem;
         }
 
         .modal-close {
-            background: transparent;
+            background: rgba(255, 255, 255, 0.2);
             border: none;
+            color: white;
             font-size: 1.5rem;
-            color: var(--gray-500);
             cursor: pointer;
             width: 40px;
             height: 40px;
-            border-radius: var(--border-radius-md);
+            border-radius: var(--radius-md);
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s var(--transition-smooth);
+            transition: var(--transition);
         }
 
         .modal-close:hover {
-            background: var(--gray-100);
-            color: var(--gray-700);
+            background: rgba(255, 255, 255, 0.3);
         }
 
         .modal-body {
             padding: 1.5rem;
-            overflow-y: auto;
-            flex: 1;
         }
 
-        .caisse-value-display {
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            background: var(--gray-50);
+        }
+
+        /* ===== FORMULAIRES ===== */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+
+        .form-group .required {
+            color: var(--danger);
+        }
+
+        .form-message {
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .form-message.error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            display: block;
+        }
+
+        .form-message.success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            display: block;
+        }
+
+        .input-error {
+            border-color: var(--danger) !important;
+        }
+
+        /* ===== LOADING ===== */
+        .loading-indicator {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ===== ALERTES ===== */
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius-md);
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-left: 4px solid;
+        }
+
+        .alert-info {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--info);
+            border-left-color: var(--info);
+        }
+
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border-left-color: var(--danger);
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border-left-color: var(--success);
+        }
+
+        /* ===== BOUTON FLOTTANT ===== */
+        .fab-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            z-index: 99;
+        }
+
+        .fab {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-600);
+            transition: var(--transition);
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .admin-container {
-                padding: 1rem;
+        .fab:hover {
+            transform: scale(1.1) translateY(-4px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .fab.secondary {
+            background: var(--success-gradient);
+        }
+
+        /* ===== MOBILE BOTTOM NAV ===== */
+        .mobile-bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+            padding: 0.5rem;
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            z-index: 100;
+        }
+
+        .nav-items {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.5rem;
+            color: var(--gray-500);
+            text-decoration: none;
+            transition: var(--transition);
+            flex: 1;
+            max-width: 80px;
+        }
+
+        .nav-item i {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-item span {
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+            background: rgba(79, 70, 229, 0.1);
+            border-radius: var(--radius-md);
+        }
+
+        /* ===== UTILITAIRES ===== */
+        .text-right {
+            text-align: right;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .mobile-only {
+            display: none !important;
+        }
+
+        /* ===== MEDIA QUERIES ===== */
+        @media (max-width: 1023px) {
+            .app-container {
+                padding: 0.75rem;
+                padding-bottom: 80px;
             }
-            
+
+            .header {
+                padding: 0.75rem 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .desktop-only {
+                display: none !important;
+            }
+
+            .mobile-bottom-nav {
+                display: block;
+            }
+
+            .mobile-only {
+                display: block !important;
+            }
+
             .caisses-grid {
                 grid-template-columns: 1fr;
             }
-            
+
+            .caisse-card {
+                padding: 1rem;
+            }
+
+            .caisse-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+
+            .caisse-stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.5rem;
+            }
+
+            .stat-item {
+                padding: 0.5rem;
+            }
+
             .filters-panel {
                 grid-template-columns: 1fr;
+                padding: 1rem;
             }
-            
-            .caisse-stats {
-                grid-template-columns: 1fr;
+
+            .table-container {
+                padding: 0.5rem;
             }
-            
-            .date-range-container {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
+
             .cumul-table {
-                display: block;
-                overflow-x: auto;
-                white-space: nowrap;
+                font-size: 0.7rem;
             }
-            
+
+            .cumul-table th,
+            .cumul-table td {
+                padding: 0.5rem;
+            }
+
             .pagination-controls {
                 flex-direction: column;
                 align-items: stretch;
-                gap: 1rem;
             }
-            
+
             .pagination-navigation {
                 justify-content: center;
             }
-            
-            .items-per-page {
-                justify-content: center;
+
+            .fab-container {
+                bottom: 5rem;
+                right: 1rem;
             }
-            
-            .modal-content-large {
-                max-height: 95vh;
-                margin: 10px;
+
+            .fab {
+                width: 48px;
+                height: 48px;
+                font-size: 1.25rem;
+            }
+
+            .modal-content {
+                margin: 1rem;
+                max-height: 80vh;
+            }
+
+            .modal-header {
+                padding: 1rem;
+            }
+
+            .modal-body {
+                padding: 1rem;
+            }
+
+            .modal-footer {
+                padding: 0.75rem 1rem;
+                flex-direction: column;
+            }
+
+            .modal-footer .btn {
+                width: 100%;
+                justify-content: center;
             }
         }
 
         @media (max-width: 480px) {
-            .header {
-                flex-direction: column;
-                gap: 1rem;
-                text-align: center;
+            .header h1 {
+                font-size: 1.25rem;
             }
-            
-            .header-left {
-                flex-direction: column;
-            }
-            
-            .btn {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .pagination-btn span {
+
+            .user-info span {
                 display: none;
             }
-            
-            .pagination-btn i {
-                margin: 0;
+
+            .profile-img {
+                width: 35px;
+                height: 35px;
+            }
+
+            .caisse-title {
+                font-size: 1rem;
+            }
+
+            .stat-value {
+                font-size: 1rem;
+            }
+
+            .section-title {
+                font-size: 1.25rem;
+            }
+
+            .btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.8rem;
+            }
+
+            .fab-container {
+                bottom: 4.5rem;
+                right: 0.75rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="admin-container">
+    <div class="app-container">
+        <!-- HEADER -->
         <header class="header">
-            <div class="header-left">
-                <h1>VisionPro</h1>
-            </div>
+            <h1>Gestion de Caisses</h1>
             <div class="user-info">
                 <span id="username-display"></span>
-                <img src="https://ui-avatars.com/api/?name=Caisse&background=6366f1&color=fff" alt="Photo de profil" class="profile-img">
+                <img src="https://ui-avatars.com/api/?name=Caisse&background=6366f1&color=fff" alt="Profile" class="profile-img">
             </div>
         </header>
 
-        <div class="back-btn">
-            <button class="btn btn-primary" onclick="openVueGlobale()">
-                <i class="fas fa-arrow-left"></i> Retour
-            </button>
-        </div>
-
-        <!-- Section des cartes de caisses -->
-        <div class="caisses-section">
+        <!-- SECTION CAISSES -->
+        <section class="caisses-section">
             <h2 class="section-title">
                 <i class="fas fa-cash-register"></i>
-                <span>Caisses Physiques</span>
+                Caisses Physiques
             </h2>
-            
             <div class="caisses-grid" id="caissesContainer">
-                <!-- Les cartes de caisse seront générées dynamiquement ici -->
-                <div class="loading-indicator" id="loadingIndicator">
+                <div class="loading-indicator">
                     <div class="spinner"></div>
                     <div>Chargement des caisses...</div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- Section tableau cumulatif -->
-        <div class="cumul-section">
+        <!-- SECTION DÉTAIL MOBILE -->
+        <div id="mobileCaisseDetail" class="mobile-only" style="margin-bottom: 1rem;"></div>
+
+        <!-- SECTION TABLEAU CUMULATIF -->
+        <section class="cumul-section desktop-only">
             <h2 class="section-title">
-                <i class="fas fa-table"></i>
-                <span>Vue Cumulée des Caisses</span>
+                <i class="fas fa-chart-bar"></i>
+                Vue Cumulée
             </h2>
             
-            <!-- Panel de filtres -->
+            <!-- FILTRES -->
             <div class="filters-panel">
                 <div class="filter-group">
-                    <label><i class="fas fa-calendar-alt"></i> Date début</label>
+                    <label><i class="fas fa-calendar"></i> Date début</label>
                     <input type="date" id="filterDateStart" class="form-control" onchange="applyCumulFilter()">
                 </div>
-                
                 <div class="filter-group">
-                    <label><i class="fas fa-calendar-alt"></i> Date fin</label>
+                    <label><i class="fas fa-calendar"></i> Date fin</label>
                     <input type="date" id="filterDateEnd" class="form-control" onchange="applyCumulFilter()">
                 </div>
-                
                 <div class="filter-group">
                     <label><i class="fas fa-building"></i> Agence</label>
                     <select id="filterAgence" class="form-control select-control" onchange="applyCumulFilter()">
-                        <option value="">Toutes les agences</option>
+                        <option value="">Toutes</option>
                     </select>
                 </div>
-                
                 <div class="filter-group">
                     <label><i class="fas fa-exchange-alt"></i> Mouvement</label>
                     <select id="filterMouvement" class="form-control select-control" onchange="applyCumulFilter()">
-                        <option value="">Tous les mouvements</option>
+                        <option value="">Tous</option>
                         <option value="Entrée">Entrée</option>
                         <option value="Sortie">Sortie</option>
                     </select>
                 </div>
-                
                 <div class="filter-group">
                     <label><i class="fas fa-tag"></i> Catégorie</label>
                     <select id="filterCategorie" class="form-control select-control" onchange="applyCumulFilter()">
-                        <option value="">Toutes les catégories</option>
+                        <option value="">Toutes</option>
                     </select>
                 </div>
-                
                 <div class="filter-group">
                     <label>&nbsp;</label>
                     <button class="btn btn-secondary" onclick="resetCumulFilter()">
                         <i class="fas fa-undo"></i> Réinitialiser
                     </button>
-                    <div class="filter-group">
-    <label>&nbsp;</label>
-    <button class="btn btn-primary" onclick="exportCumulData()" title="Exporter les données visibles">
-        <i class="fas fa-file-export"></i> Exporter CSV
-    </button>
-</div>
                 </div>
             </div>
-            
-            <!-- Tableau cumulatif -->
+
+            <!-- TABLEAU -->
             <div class="table-container">
                 <table class="cumul-table" id="cumulTable">
                     <thead>
@@ -850,351 +1015,476 @@
                     <tbody id="cumulData">
                         <tr><td colspan="8" class="text-center"><div class="spinner"></div></td></tr>
                     </tbody>
-                    <tfoot id="cumulTotals"></tfoot>
                 </table>
             </div>
-            
-            <!-- Pagination -->
+
+            <!-- PAGINATION -->
             <div class="pagination-controls">
-                <div class="pagination-info" id="page-info">
-                    <!-- Page info will be injected here -->
-                </div>
+                <div class="pagination-info" id="page-info"></div>
                 <div class="pagination-navigation">
-                    <button class="pagination-btn prev-btn" id="prevPage" disabled>
-                        <i class="fas fa-chevron-left"></i>
-                        <span>Précédent</span>
+                    <button class="pagination-btn" id="prevPage" disabled>
+                        <i class="fas fa-chevron-left"></i> Précédent
                     </button>
-                    <button class="pagination-btn next-btn" id="nextPage">
-                        <span>Suivant</span>
-                        <i class="fas fa-chevron-right"></i>
+                    <button class="pagination-btn" id="nextPage">
+                        Suivant <i class="fas fa-chevron-right"></i>
                     </button>
                 </div>
                 <div class="items-per-page">
-                    <span class="per-page-label">Ligne:</span>
-                    <div class="select-wrapper">
-                        <select id="itemsPerPageSelect" class="modern-select">
-                            <option value="20">20</option>
-                            <option value="50" selected>50</option>
-                            <option value="100">100</option>
-                        </select>
-                        <i class="fas fa-chevron-down select-arrow"></i>
-                    </div>
+                    <span>Lignes:</span>
+                    <select id="itemsPerPageSelect" class="modern-select">
+                        <option value="20">20</option>
+                        <option value="50" selected>50</option>
+                        <option value="100">100</option>
+                    </select>
                 </div>
             </div>
-            
-            <div id="cumul-message" class="alert alert-info" style="display:none; margin-top: 1rem;"></div>
-        </div>
+
+            <div id="cumul-message" class="alert alert-info" style="display:none;"></div>
+        </section>
     </div>
 
-    <!-- Conteneur pour les modales -->
+    <!-- BOUTONS FLOTTANTS -->
+    <div class="fab-container">
+        <button class="fab" onclick="openVueGlobale()" title="Retour">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <button class="fab secondary" onclick="openDepense()" title="Ajouter une dépense">
+            <i class="fas fa-plus"></i>
+        </button>
+    </div>
+
+    <!-- NAVIGATION MOBILE -->
+    <nav class="mobile-bottom-nav mobile-only">
+        <div class="nav-items" id="mobileBottomNav"></div>
+    </nav>
+
+    <!-- CONTENEUR MODALES -->
     <div id="modal-container"></div>
 
     <script>
-        // Variables globales
+        // ==================== CONFIGURATION ====================
+        const CONFIG = {
+            API_URL: 'https://script.google.com/macros/s/AKfycbwdzHJGAL16KV_OnyoCIs5I7im2yNxrbEaEIbykQ8hy6ewQjJFQ0G4TfqYWWCMc7vfW/exec',
+            REFRESH_INTERVAL: 5 * 60 * 1000, // 5 minutes
+            CAISSES: [
+                { id: 'caisse1', name: 'Cotonou', code: 'Maromilitaire', endpoint: 'caisse1', status: 'online', color: '#4f46e5', icon: 'fa-store' },
+                { id: 'caisse2', name: 'Calavi', code: 'Carrefour ITTA', endpoint: 'caisse2', status: 'online', color: '#ec4899', icon: 'fa-building' },
+                { id: 'caisse3', name: 'Natitingou', code: 'Hôpital départemental', endpoint: 'caisse3', status: 'online', color: '#f59e0b', icon: 'fa-hospital' }
+            ]
+        };
+
+        // ==================== ÉTAT GLOBAL ====================
         let currentUser = '';
+        let activeCaisseId = null;
         const caisseDataStore = {};
-        const allCumulData = [];
-        const caissesConfig = [
-            {
-                id: 'caisse1',
-                name: 'Cotonou',
-                code: 'Maromilitaire',
-                endpoint: 'caisse1',
-                status: 'online',
-                color: '#4f46e5'
-            },
-            {
-                id: 'caisse2',
-                name: 'Calavi',
-                code: 'Carrefour ITTA',
-                endpoint: 'caisse2',
-                status: 'online',
-                color: '#ec4899'
-            },
-            {
-                id: 'caisse3',
-                name: 'Natitinqou',
-                code: 'Hospital departemental',
-                endpoint: 'caisse3',
-                status: 'online',
-                color: '#f59e0b'
-            },
-        ];
-function exportCumulData() {
-    const dataToExport = filteredData.length > 0 ? filteredData : allCumulData;
-    const prefix = 'Vue_Cumulee_Caisses';
-    exportToCSV(dataToExport, prefix);
-}
-        // Variables de pagination
+        let allCumulData = [];
+        let filteredData = [];
         let currentPage = 1;
         let itemsPerPage = 50;
-        let filteredData = [];
 
-        // Initialisation
+        // ==================== INITIALISATION ====================
         document.addEventListener('DOMContentLoaded', async () => {
-            currentUser = sessionStorage.getItem("utilisateur") || localStorage.getItem("utilisateur");
-            
-            if (currentUser) {
-                document.getElementById('username-display').textContent = currentUser;
-                document.querySelector('.profile-img').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser)}&background=6366f1&color=fff`;
-            } else {
-                document.getElementById('username-display').textContent = 'Gestionnaire';
+            try {
+                await initializeApp();
+                setupEventListeners();
+                startAutoRefresh();
+            } catch (error) {
+                console.error('Erreur initialisation:', error);
+                showError('Erreur lors du chargement de l\'application');
             }
-            
-            // Configurer les événements
-            setupEventListeners();
-            
-            // Charger toutes les caisses
-            await loadAllCaisses();
-            
-            // Charger les données cumulatives
-            loadCumulData();
         });
 
-        // Configuration des événements
+        async function initializeApp() {
+            // Récupérer utilisateur
+            currentUser = sessionStorage.getItem("utilisateur") || 
+                         localStorage.getItem("utilisateur") || 
+                         'Gestionnaire';
+            
+            document.getElementById('username-display').textContent = currentUser;
+            document.querySelector('.profile-img').src = 
+                `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser)}&background=6366f1&color=fff&bold=true`;
+
+            // Charger données
+            await loadAllCaisses();
+            
+            if (window.innerWidth < 1024) {
+                setupMobileView();
+            } else {
+                await loadCumulData();
+            }
+        }
+
         function setupEventListeners() {
-            
             // Pagination
-            document.getElementById('prevPage').addEventListener('click', () => changePage(-1));
-            document.getElementById('nextPage').addEventListener('click', () => changePage(1));
+            document.getElementById('prevPage')?.addEventListener('click', () => changePage(-1));
+            document.getElementById('nextPage')?.addEventListener('click', () => changePage(1));
             
-            // Items par page
-            document.getElementById('itemsPerPageSelect').addEventListener('change', function() {
+            document.getElementById('itemsPerPageSelect')?.addEventListener('change', function() {
                 itemsPerPage = parseInt(this.value);
                 currentPage = 1;
                 updatePagination();
                 displayCurrentPage();
             });
+
+            // Redimensionnement
+            window.addEventListener('resize', debounce(handleResize, 250));
         }
 
-        function openVueGlobale() {
-            try {
-                const homePath = 'Accueil.html';
-                window.location.href = homePath;
-            } catch (error) {
-                console.error("Erreur d'ouverture:", error);
-                alert("Impossible d'ouvrir la page. Contactez l'administrateur.");
+        function handleResize() {
+            if (window.innerWidth >= 1024) {
+                if (allCumulData.length === 0) loadCumulData();
+            } else {
+                setupMobileView();
             }
         }
 
-
-        // ==================== CHARGEMENT DES CAISSES ====================
-async function loadAllCaisses() {
-    const container = document.getElementById('caissesContainer');
-    
-    if (!container) return;
-    
-    try {
-        // Stocker la référence à l'indicateur de chargement avant de le modifier
-        const loadingIndicator = document.getElementById('loadingIndicator');
-        
-        // Si l'indicateur existe, l'utiliser, sinon créer un nouvel indicateur
-        let loadingElement = loadingIndicator;
-        if (!loadingIndicator) {
-            loadingElement = document.createElement('div');
-            loadingElement.id = 'loadingIndicator';
-            loadingElement.className = 'loading-indicator';
-            loadingElement.innerHTML = '<div class="spinner"></div><div>Chargement des données...</div>';
-            container.innerHTML = '';
-            container.appendChild(loadingElement);
-        } else {
-            loadingIndicator.innerHTML = '<div class="spinner"></div><div>Chargement des données...</div>';
-        }
-        
-        // Charger les données de chaque caisse
-        const caissePromises = caissesConfig.map(async (caisse) => {
-            try {
-                const apiUrl = `https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=${caisse.endpoint}`;
-                const response = await fetch(apiUrl);
-                
-                if (!response.ok) throw new Error(`Erreur HTTP: ${response.status}`);
-                
-                const data = await response.json();
-                
-                if (data.success && data.data?.rows) {
-                    caisseDataStore[caisse.id] = {
-                        data: data.data.rows,
-                        headers: data.data.headers,
-                        timestamp: data.timestamp
-                    };
-                    
-                    return {
-                        ...caisse,
-                        data: data.data.rows,
-                        lastUpdate: new Date(data.timestamp || Date.now()).toLocaleDateString('fr-FR'),
-                        totalOperations: data.data.rows.length
-                    };
-                }
-            } catch (error) {
-                console.error(`Erreur chargement ${caisse.name}:`, error);
-                return {
-                    ...caisse,
-                    status: 'offline',
-                    lastUpdate: 'Erreur',
-                    totalOperations: '0'
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
                 };
-            }
-        });
-        
-        const caissesWithData = await Promise.all(caissePromises);
-        
-        // Afficher les cartes
-        displayCaissesCards(caissesWithData);
-        
-    } catch (error) {
-        console.error('Erreur général:', error);
-        container.innerHTML = '<div class="alert alert-danger">Erreur de chargement des caisses</div>';
-    }
-}
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
 
-        function displayCaissesCards(caisses) {
+        function startAutoRefresh() {
+            setInterval(async () => {
+                await loadAllCaisses();
+                if (window.innerWidth >= 1024) {
+                    await loadCumulData();
+                } else if (activeCaisseId) {
+                    await displayCaisseDetailMobile(activeCaisseId);
+                }
+            }, CONFIG.REFRESH_INTERVAL);
+        }
+
+        // ==================== GESTION DES CAISSES ====================
+        async function loadAllCaisses() {
+            const container = document.getElementById('caissesContainer');
+            if (!container) return;
+
+            try {
+                const promises = CONFIG.CAISSES.map(async (caisse) => {
+                    try {
+                        const response = await fetch(`${CONFIG.API_URL}?action=${caisse.endpoint}`);
+                        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                        
+                        const data = await response.json();
+                        
+                        if (data.success && data.data?.rows) {
+                            caisseDataStore[caisse.id] = {
+                                data: data.data.rows,
+                                headers: data.data.headers,
+                                timestamp: data.timestamp
+                            };
+                            
+                            return {
+                                ...caisse,
+                                data: data.data.rows,
+                                lastUpdate: new Date(data.timestamp || Date.now()).toLocaleDateString('fr-FR'),
+                                totalOperations: data.data.rows.length
+                            };
+                        }
+                        return { ...caisse, data: [] };
+                    } catch (error) {
+                        console.error(`Erreur ${caisse.name}:`, error);
+                        return { ...caisse, status: 'offline', lastUpdate: 'Erreur', data: [] };
+                    }
+                });
+
+                const caissesWithData = await Promise.all(promises);
+                renderCaissesCards(caissesWithData);
+                
+            } catch (error) {
+                console.error('Erreur:', error);
+                container.innerHTML = '<div class="alert alert-danger">Erreur de chargement des caisses</div>';
+            }
+        }
+
+        function renderCaissesCards(caisses) {
             const container = document.getElementById('caissesContainer');
             
-            let html = '';
-            caisses.forEach(caisse => {
-                // Calculer les statistiques pour la semaine en cours
-                const stats = calculateCaisseStatsThisWeek(caisse);
-                
-                html += `
+            container.innerHTML = caisses.map(caisse => {
+                const stats = calculateWeeklyStats(caisse);
+                return `
                     <div class="caisse-card" onclick="openCaisseModal('${caisse.id}', '${caisse.name}')">
                         <div class="caisse-header">
                             <div class="caisse-icon" style="background: ${caisse.color}">
-                                <i class="fas fa-cash-register"></i>
+                                <i class="fas ${caisse.icon}"></i>
                             </div>
                             <div class="caisse-info">
                                 <div class="caisse-title">${caisse.name}</div>
                                 <div class="caisse-location">
                                     <i class="fas fa-map-marker-alt"></i>
-                                    <span>${caisse.code}</span>
+                                    ${caisse.code}
                                 </div>
-                                <div class="caisse-status status-${caisse.status}">
+                                <span class="caisse-status status-${caisse.status}">
                                     <i class="fas fa-circle"></i>
                                     ${caisse.status === 'online' ? 'En ligne' : 'Hors ligne'}
-                                </div>
+                                </span>
                             </div>
                         </div>
                         
                         <div class="caisse-stats">
                             <div class="stat-item">
-                                <span class="stat-label">Solde actuel</span>
+                                <span class="stat-label">Solde</span>
                                 <span class="stat-value ${stats.solde >= 0 ? 'positive' : 'negative'}">
                                     ${formatCurrency(stats.solde)}
                                 </span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label">Total entrées (semaine)</span>
-                                <span class="stat-value positive">${formatCurrency(stats.totalEntrees)}</span>
+                                <span class="stat-label">Entrées (semaine)</span>
+                                <span class="stat-value positive">${formatCurrency(stats.entrees)}</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label">Total sorties (semaine)</span>
-                                <span class="stat-value negative">${formatCurrency(stats.totalSorties)}</span>
+                                <span class="stat-label">Sorties (semaine)</span>
+                                <span class="stat-value negative">${formatCurrency(stats.sorties)}</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label">Opérations (semaine)</span>
-                                <span class="stat-value">${stats.totalOperations || 0}</span>
+                                <span class="stat-label">Opérations</span>
+                                <span class="stat-value">${stats.operations || 0}</span>
                             </div>
                         </div>
                         
-                        <div class="detail-row" style="font-size: 0.75rem; color: var(--gray-500); text-align: center;">
-                            <i class="fas fa-sync-alt"></i> Dernière mise à jour: ${caisse.lastUpdate || '--'}
+                        <div class="text-center" style="font-size: 0.75rem; color: var(--gray-500);">
+                            <i class="fas fa-sync-alt"></i> MAJ: ${caisse.lastUpdate || '--'}
                         </div>
                     </div>
                 `;
+            }).join('');
+        }
+
+        function calculateWeeklyStats(caisse) {
+            if (!caisse.data?.length) return { solde: 0, entrees: 0, sorties: 0, operations: 0 };
+            
+            let solde = 0;
+            let entrees = 0;
+            let sorties = 0;
+            let operations = 0;
+            
+            const now = new Date();
+            const weekStart = new Date(now);
+            weekStart.setDate(now.getDate() - now.getDay() + (now.getDay() === 0 ? -6 : 1));
+            weekStart.setHours(0, 0, 0, 0);
+            
+            const weekEnd = new Date(weekStart);
+            weekEnd.setDate(weekEnd.getDate() + 6);
+            weekEnd.setHours(23, 59, 59, 999);
+            
+            caisse.data.forEach(row => {
+                const montant = parseFloat(row[2]) || 0;
+                const mouvement = row[3];
+                
+                if (mouvement === 'Entrée') solde += montant;
+                else if (mouvement === 'Sortie') solde -= montant;
+                
+                const rowDate = new Date(row[0]);
+                if (rowDate >= weekStart && rowDate <= weekEnd) {
+                    if (mouvement === 'Entrée') entrees += montant;
+                    else if (mouvement === 'Sortie') sorties += montant;
+                    operations++;
+                }
             });
             
-            container.innerHTML = html;
+            return { solde, entrees, sorties, operations };
         }
-function calculateCaisseStatsThisWeek(caisse) {
-    if (!caisse.data || !Array.isArray(caisse.data)) {
-        return { solde: 0, totalEntrees: 0, totalSorties: 0, totalOperations: 0 };
-    }
-    
-    let solde = 0;
-    let totalEntrees = 0;
-    let totalSorties = 0;
-    let totalOperations = 0;
-    
-    // Calculer les dates de début et fin de la semaine
-    const today = new Date();
-    const startOfWeek = getStartOfWeek(today);
-    const endOfWeek = getEndOfWeek(today);
-    
-    // 1. CALCULER LE SOLDE ACTUEL (TOUTES LES DONNÉES)
-    //    Somme de tous les montants avec Entrée = +, Sortie = -
-    caisse.data.forEach(row => {
-        const montant = parseFloat(row[2]) || 0;
-        const mouvement = row[3];
-        
-        if (mouvement === 'Entrée') {
-            solde += montant;
-        } else if (mouvement === 'Sortie') {
-            solde -= montant;
-        }
-    });
-    
-    // 2. CALCULER LES TOTAUX POUR LA SEMAINE EN COURS UNIQUEMENT
-    caisse.data.forEach(row => {
-        const rowDate = new Date(row[0]);
-        
-        // Vérifier si la date est dans la semaine en cours
-        if (rowDate >= startOfWeek && rowDate <= endOfWeek) {
-            const montant = parseFloat(row[2]) || 0;
-            const mouvement = row[3];
-            
-            if (mouvement === 'Entrée') {
-                totalEntrees += montant;
-            } else if (mouvement === 'Sortie') {
-                totalSorties += montant;
+
+        // ==================== VUE MOBILE ====================
+        function setupMobileView() {
+            generateMobileNav();
+            if (CONFIG.CAISSES.length > 0 && !activeCaisseId) {
+                selectCaisseMobile(CONFIG.CAISSES[0].id);
             }
+        }
+
+        function generateMobileNav() {
+            const nav = document.getElementById('mobileBottomNav');
+            if (!nav) return;
             
-            totalOperations++;
-        }
-    });
-    
-    return { solde, totalEntrees, totalSorties, totalOperations };
-}
-
-        function getStartOfWeek(date) {
-            const d = new Date(date);
-            const day = d.getDay();
-            const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Ajuster pour que le lundi soit le premier jour
-            d.setDate(diff);
-            d.setHours(0, 0, 0, 0);
-            return d;
+            nav.innerHTML = CONFIG.CAISSES.map((caisse, index) => `
+                <a href="#" class="nav-item ${index === 0 ? 'active' : ''}" 
+                   onclick="selectCaisseMobile('${caisse.id}'); return false;">
+                    <i class="fas ${caisse.icon}"></i>
+                    <span>${caisse.name}</span>
+                </a>
+            `).join('');
         }
 
-        function getEndOfWeek(date) {
-            const d = new Date(date);
-            const day = d.getDay();
-            const diff = d.getDate() + (7 - day) + (day === 0 ? -7 : 0); // Ajuster pour que le dimanche soit le dernier jour
-            d.setDate(diff);
-            d.setHours(23, 59, 59, 999);
-            return d;
+        function selectCaisseMobile(caisseId) {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            
+            const activeNav = Array.from(document.querySelectorAll('.nav-item')).find(
+                item => item.querySelector('span')?.textContent === CONFIG.CAISSES.find(c => c.id === caisseId)?.name
+            );
+            if (activeNav) activeNav.classList.add('active');
+            
+            activeCaisseId = caisseId;
+            displayCaisseDetailMobile(caisseId);
         }
 
-        // ==================== TABLEAU CUMULATIF ====================
+        async function displayCaisseDetailMobile(caisseId) {
+            const detailSection = document.getElementById('mobileCaisseDetail');
+            const caisse = CONFIG.CAISSES.find(c => c.id === caisseId);
+            
+            if (!detailSection || !caisse) return;
+            
+            detailSection.innerHTML = `
+                <div class="text-center" style="padding: 2rem;">
+                    <div class="spinner"></div>
+                    <p>Chargement de ${caisse.name}...</p>
+                </div>
+            `;
+
+            try {
+                const response = await fetch(`${CONFIG.API_URL}?action=${caisse.endpoint}`);
+                if (!response.ok) throw new Error('Erreur réseau');
+                
+                const data = await response.json();
+                
+                if (data.success && data.data?.rows) {
+                    renderMobileDetail(caisse, data.data.rows);
+                } else {
+                    throw new Error('Données invalides');
+                }
+                
+            } catch (error) {
+                console.error('Erreur:', error);
+                detailSection.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Erreur de chargement
+                        <button class="btn btn-primary" onclick="selectCaisseMobile('${caisseId}')">
+                            <i class="fas fa-redo"></i> Réessayer
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function renderMobileDetail(caisse, rows) {
+            const stats = calculateDetailStats(rows);
+            const recentRows = rows.slice(-10).reverse();
+            
+            document.getElementById('mobileCaisseDetail').innerHTML = `
+                <div class="caisse-card" style="margin-bottom: 1rem;">
+                    <div class="caisse-header">
+                        <div class="caisse-icon" style="background: ${caisse.color}">
+                            <i class="fas ${caisse.icon}"></i>
+                        </div>
+                        <div>
+                            <div class="caisse-title">${caisse.name}</div>
+                            <div class="caisse-location">${caisse.code}</div>
+                            <span class="caisse-status status-${caisse.status}">
+                                <i class="fas fa-circle"></i> ${caisse.status === 'online' ? 'En ligne' : 'Hors ligne'}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin: 1rem 0;">
+                        <div class="stat-item">
+                            <span class="stat-label">SOLDE</span>
+                            <div class="stat-value ${stats.solde >= 0 ? 'positive' : 'negative'}">
+                                ${formatCurrency(stats.solde)}
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">OPÉRATIONS</span>
+                            <div class="stat-value">${rows.length}</div>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem;">
+                        <div class="stat-item" style="flex: 1; background: rgba(16, 185, 129, 0.1);">
+                            <span class="stat-label">ENTRÉES</span>
+                            <div class="stat-value positive">${formatCurrency(stats.entrees)}</div>
+                        </div>
+                        <div class="stat-item" style="flex: 1; background: rgba(239, 68, 68, 0.1);">
+                            <span class="stat-label">SORTIES</span>
+                            <div class="stat-value negative">${formatCurrency(stats.sorties)}</div>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3 style="font-size: 1rem; font-weight: 600;">Dernières opérations</h3>
+                        <button class="btn btn-primary" onclick="openCaisseModal('${caisse.id}', '${caisse.name}')">
+                            Voir tout <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="table-container" style="padding: 0;">
+                        <table class="cumul-table" style="font-size: 0.7rem;">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Désignation</th>
+                                    <th class="text-right">Montant</th>
+                                    <th>Type</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${recentRows.map(row => `
+                                    <tr>
+                                        <td>${formatDate(row[0])}</td>
+                                        <td>${truncate(row[1] || '', 20)}</td>
+                                        <td class="text-right" style="color: ${row[3] === 'Entrée' ? 'var(--success)' : 'var(--danger)'}">
+                                            ${formatCurrency(row[2])}
+                                        </td>
+                                        <td>
+                                            <span class="badge ${row[3] === 'Entrée' ? 'badge-success' : 'badge-danger'}">
+                                                ${row[3] || ''}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function calculateDetailStats(rows) {
+            let solde = 0;
+            let entrees = 0;
+            let sorties = 0;
+            
+            rows.forEach(row => {
+                const montant = parseFloat(row[2]) || 0;
+                const mouvement = row[3];
+                
+                if (mouvement === 'Entrée') {
+                    solde += montant;
+                    entrees += montant;
+                } else if (mouvement === 'Sortie') {
+                    solde -= montant;
+                    sorties += montant;
+                }
+            });
+            
+            return { solde, entrees, sorties };
+        }
+
+        // ==================== DONNÉES CUMULATIVES ====================
         async function loadCumulData() {
             const cumulData = document.getElementById('cumulData');
-            const messageDiv = document.getElementById('cumul-message');
+            if (!cumulData) return;
             
             cumulData.innerHTML = '<tr><td colspan="8" class="text-center"><div class="spinner"></div></td></tr>';
-            messageDiv.style.display = 'none';
             
             try {
-                // Charger les données de toutes les caisses
-                allCumulData.length = 0; // Vider le tableau
+                allCumulData = [];
                 
-                for (const caisse of caissesConfig) {
-                    const apiUrl = `https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=${caisse.endpoint}`;
-                    const response = await fetch(apiUrl);
+                for (const caisse of CONFIG.CAISSES) {
+                    const response = await fetch(`${CONFIG.API_URL}?action=${caisse.endpoint}`);
                     
                     if (response.ok) {
                         const data = await response.json();
                         
                         if (data.success && data.data?.rows) {
-                            // Ajouter les données avec l'identifiant de l'agence
                             data.data.rows.forEach(row => {
-                                // S'assurer que les indices de colonne sont corrects
                                 allCumulData.push({
                                     agence: caisse.name,
                                     agenceCode: caisse.id,
@@ -1212,57 +1502,40 @@ function calculateCaisseStatsThisWeek(caisse) {
                     }
                 }
                 
-                // Trier par date (plus récent en premier)
-                allCumulData.sort((a, b) => new Date(b.rawDate) - new Date(a.rawDate));
-                
-                // Mettre à jour les filtres
-                updateCumulFilters();
-                
-                // Appliquer le filtre initial
-                applyCumulFilter();
-                
+                allCumulData.sort((a, b) => b.rawDate - a.rawDate);
+                updateFilterOptions();
+                resetCumulFilter();
                 
             } catch (error) {
-                console.error('Erreur chargement cumul:', error);
+                console.error('Erreur:', error);
                 cumulData.innerHTML = '<tr><td colspan="8" class="text-center">Erreur de chargement</td></tr>';
-                showMessage('cumul-message', '❌ Erreur lors du chargement des données', 'danger');
             }
         }
 
-        function updateCumulFilters() {
-            // Mettre à jour les filtres Agence
+        function updateFilterOptions() {
             const agenceFilter = document.getElementById('filterAgence');
-            agenceFilter.innerHTML = '<option value="">Toutes les agences</option>';
-            caissesConfig.forEach(caisse => {
-                agenceFilter.innerHTML += `<option value="${caisse.id}">${caisse.name}</option>`;
-            });
-            
-            // Mettre à jour les filtres Catégorie
             const categorieFilter = document.getElementById('filterCategorie');
-            const categories = [...new Set(allCumulData.map(item => item.categorie).filter(Boolean))];
-            categorieFilter.innerHTML = '<option value="">Toutes les catégories</option>';
-            categories.forEach(cat => {
-                categorieFilter.innerHTML += `<option value="${cat}">${cat}</option>`;
-            });
             
-            // Définir les dates par défaut (dernière mois)
-            const today = new Date();
-            const lastWeek = new Date();
-            lastWeek.setDate(lastWeek.getDate() - 30);
+            if (agenceFilter) {
+                agenceFilter.innerHTML = '<option value="">Toutes</option>' + 
+                    CONFIG.CAISSES.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+            }
             
-            document.getElementById('filterDateStart').value = lastWeek.toISOString().split('T')[0];
-            document.getElementById('filterDateEnd').value = today.toISOString().split('T')[0];
+            if (categorieFilter) {
+                const categories = [...new Set(allCumulData.map(i => i.categorie).filter(Boolean))];
+                categorieFilter.innerHTML = '<option value="">Toutes</option>' + 
+                    categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+            }
         }
 
         function applyCumulFilter() {
-            const dateStart = document.getElementById('filterDateStart').value;
-            const dateEnd = document.getElementById('filterDateEnd').value;
-            const agence = document.getElementById('filterAgence').value;
-            const mouvement = document.getElementById('filterMouvement').value;
-            const categorie = document.getElementById('filterCategorie').value;
+            const dateStart = document.getElementById('filterDateStart')?.value;
+            const dateEnd = document.getElementById('filterDateEnd')?.value;
+            const agence = document.getElementById('filterAgence')?.value;
+            const mouvement = document.getElementById('filterMouvement')?.value;
+            const categorie = document.getElementById('filterCategorie')?.value;
             
             filteredData = allCumulData.filter(item => {
-                // Vérification de la date
                 if (!item.date) return false;
                 
                 let dateMatch = true;
@@ -1280,31 +1553,27 @@ function calculateCaisseStatsThisWeek(caisse) {
                     }
                 }
                 
-                const agenceMatch = !agence || item.agenceCode === agence;
-                const mouvementMatch = !mouvement || item.mouvement === mouvement;
-                const categorieMatch = !categorie || item.categorie === categorie;
-                
-                return dateMatch && agenceMatch && mouvementMatch && categorieMatch;
+                return dateMatch &&
+                       (!agence || item.agenceCode === agence) &&
+                       (!mouvement || item.mouvement === mouvement) &&
+                       (!categorie || item.categorie === categorie);
             });
             
-            // Réinitialiser à la première page
             currentPage = 1;
-            
-            // Mettre à jour l'affichage
             updatePagination();
             displayCurrentPage();
             
-            let message = `📊 ${filteredData.length} enregistrements`;
-            if (filteredData.length !== allCumulData.length) {
-                message += ' (filtres appliqués)';
+            const message = document.getElementById('cumul-message');
+            if (message) {
+                message.textContent = `📊 ${filteredData.length} enregistrement(s) trouvé(s)`;
+                message.style.display = 'flex';
             }
-            showMessage('cumul-message', message, 'info');
         }
 
         function resetCumulFilter() {
-            const lastWeek = new Date();
-            lastWeek.setDate(lastWeek.getDate() - 7);
             const today = new Date();
+            const lastWeek = new Date(today);
+            lastWeek.setDate(lastWeek.getDate() - 7);
             
             document.getElementById('filterDateStart').value = lastWeek.toISOString().split('T')[0];
             document.getElementById('filterDateEnd').value = today.toISOString().split('T')[0];
@@ -1313,70 +1582,66 @@ function calculateCaisseStatsThisWeek(caisse) {
             document.getElementById('filterCategorie').value = '';
             
             applyCumulFilter();
-            showMessage('cumul-message', '↻ Filtres réinitialisés', 'info');
-        }
-
-        // ==================== PAGINATION ====================
-        function updatePagination() {
-            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-            const pageInfo = document.getElementById('page-info');
-            
-            if (filteredData.length === 0) {
-                pageInfo.innerHTML = 'Aucune donnée';
-                document.getElementById('prevPage').disabled = true;
-                document.getElementById('nextPage').disabled = true;
-                return;
-            }
-            
-            const startItem = (currentPage - 1) * itemsPerPage + 1;
-            const endItem = Math.min(currentPage * itemsPerPage, filteredData.length);
-            
-            // Activer/désactiver les boutons
-            document.getElementById('prevPage').disabled = currentPage === 1;
-            document.getElementById('nextPage').disabled = currentPage === totalPages;
         }
 
         function displayCurrentPage() {
             const cumulData = document.getElementById('cumulData');
-            const cumulTotals = document.getElementById('cumulTotals');
+            if (!cumulData) return;
             
-            if (!filteredData || filteredData.length === 0) {
-                cumulData.innerHTML = '<tr><td colspan="8" class="text-center">Aucune donnée disponible pour les filtres sélectionnés</td></tr>';
-                cumulTotals.innerHTML = '';
+            if (!filteredData.length) {
+                cumulData.innerHTML = '<tr><td colspan="8" class="text-center">Aucune donnée</td></tr>';
                 return;
             }
             
-            // Calculer les indices pour la page courante
-            const startIndex = (currentPage - 1) * itemsPerPage;
-            const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length);
-            const pageData = filteredData.slice(startIndex, endIndex);
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = Math.min(start + itemsPerPage, filteredData.length);
+            const pageData = filteredData.slice(start, end);
             
-            let html = '';
-            pageData.forEach(item => {
-                html += `
-                    <tr>
-                        <td>${formatDate(item.date)}</td>
-                        <td>
-                            <span class="badge" style="background: ${getCaisseColor(item.agenceCode)}20; color: ${getCaisseColor(item.agenceCode)};">
-                                ${item.agence}
-                            </span>
-                        </td>
-                        <td title="${item.designation || ''}">${(item.designation || '').substring(0, 50)}${(item.designation || '').length > 50 ? '...' : ''}</td>
-                        <td class="text-right">${formatCurrency(item.montant)}</td>
-                        <td>
-                            <span class="badge ${item.mouvement === 'Entrée' ? 'badge-success' : 'badge-danger'}">
-                                ${item.mouvement || ''}
-                            </span>
-                        </td>
-                        <td>${item.user || ''}</td>
-                        <td>${item.categorie || ''}</td>
-                        <td title="${item.note || ''}">${(item.note || '').substring(0, 30)}${(item.note || '').length > 30 ? '...' : ''}</td>
-                    </tr>
-                `;
-            });
-            
-            cumulData.innerHTML = html;
+            cumulData.innerHTML = pageData.map(item => `
+                <tr>
+                    <td>${formatDate(item.date)}</td>
+                    <td>
+                        <span class="badge" style="background: ${getCaisseColor(item.agenceCode)}20; color: ${getCaisseColor(item.agenceCode)};">
+                            ${item.agence}
+                        </span>
+                    </td>
+                    <td title="${item.designation}">${truncate(item.designation, 50)}</td>
+                    <td class="text-right">${formatCurrency(item.montant)}</td>
+                    <td>
+                        <span class="badge ${item.mouvement === 'Entrée' ? 'badge-success' : 'badge-danger'}">
+                            ${item.mouvement || ''}
+                        </span>
+                    </td>
+                    <td>${item.user || ''}</td>
+                    <td>${item.categorie || ''}</td>
+                    <td title="${item.note}">${truncate(item.note, 30)}</td>
+                </tr>
+            `).join('');
+        }
 
+        function updatePagination() {
+            const pageInfo = document.getElementById('page-info');
+            const prevBtn = document.getElementById('prevPage');
+            const nextBtn = document.getElementById('nextPage');
+            
+            if (!pageInfo) return;
+            
+            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+            
+            if (filteredData.length === 0) {
+                pageInfo.textContent = 'Aucune donnée';
+                if (prevBtn) prevBtn.disabled = true;
+                if (nextBtn) nextBtn.disabled = true;
+                return;
+            }
+            
+            const start = (currentPage - 1) * itemsPerPage + 1;
+            const end = Math.min(currentPage * itemsPerPage, filteredData.length);
+            
+            pageInfo.textContent = `${start}-${end} sur ${filteredData.length} enregistrements`;
+            
+            if (prevBtn) prevBtn.disabled = currentPage === 1;
+            if (nextBtn) nextBtn.disabled = currentPage === totalPages;
         }
 
         function changePage(direction) {
@@ -1390,177 +1655,102 @@ function calculateCaisseStatsThisWeek(caisse) {
             
             updatePagination();
             displayCurrentPage();
-            
-            // Faire défiler vers le haut du tableau
-            document.querySelector('.cumul-section').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // ==================== FONCTIONS UTILITAIRES ====================
-        function formatDate(dateString) {
-            if (!dateString) return '';
-            try {
-                const date = new Date(dateString);
-                return isNaN(date.getTime()) ? dateString : date.toLocaleDateString('fr-FR');
-            } catch (e) {
-                return dateString;
-            }
-        }
-
-        function formatCurrency(amount) {
-            if (typeof amount !== 'number') amount = parseFloat(amount) || 0;
-            return amount.toLocaleString('fr-FR', { 
-                minimumFractionDigits: 0, 
-                maximumFractionDigits: 0 
-            });
-        }
-
-        function showMessage(containerId, message, type) {
-            const messageDiv = document.getElementById(containerId);
-            if (messageDiv) {
-                messageDiv.textContent = message;
-                messageDiv.className = `alert alert-${type}`;
-                messageDiv.style.display = 'flex';
-            }
-        }
-
-        function getCaisseColor(caisseId) {
-            const caisse = caissesConfig.find(c => c.id === caisseId);
-            return caisse ? caisse.color : '#4f46e5';
-        }
-
-        // ==================== MODALES DE CAISSE INDIVIDUELLE ====================
-        function openCaisseModal(caisseId, caisseName) {
+        // ==================== MODALES ====================
+        window.openCaisseModal = function(caisseId, caisseName) {
             const modalContainer = document.getElementById('modal-container');
             
-            // HTML pour la modal de caisse individuelle
             modalContainer.innerHTML = `
                 <div class="modal-overlay active" id="modal-${caisseId}">
-                    <div class="modal-content-large">
+                    <div class="modal-content modal-content-large">
                         <div class="modal-header">
                             <h3 class="modal-title">
-                                <i class="fas fa-cash-register" style="color: ${getCaisseColor(caisseId)}"></i>
+                                <i class="fas fa-cash-register"></i>
                                 Caisse ${caisseName}
                             </h3>
                             <button class="modal-close" onclick="closeModal()">&times;</button>
                         </div>
                         <div class="modal-body">
-                            <div style="text-align: center; padding: 2rem;">
+                            <div class="text-center" style="padding: 2rem;">
                                 <div class="spinner"></div>
-                                <p>Chargement des données de la caisse...</p>
+                                <p>Chargement...</p>
                             </div>
                         </div>
                     </div>
                 </div>
             `;
             
-            // Charger les données de la caisse
             setTimeout(() => loadCaisseModalData(caisseId, caisseName), 100);
-        }
+        };
 
         async function loadCaisseModalData(caisseId, caisseName) {
-            const modal = document.querySelector(`#modal-${caisseId} .modal-body`);
+            const modalBody = document.querySelector(`#modal-${caisseId} .modal-body`);
             
             try {
-                const apiUrl = `https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=${caisseId}`;
-                const response = await fetch(apiUrl);
-                
-                if (!response.ok) throw new Error(`Erreur HTTP: ${response.status}`);
+                const response = await fetch(`${CONFIG.API_URL}?action=${caisseId}`);
+                if (!response.ok) throw new Error('Erreur réseau');
                 
                 const data = await response.json();
                 
-                if (data.success && data.data?.rows) {
-                    // Créer le HTML pour la modal avec les données
-                    let html = `
-                        <div class="filters-panel">
-                            <div class="filter-group">
-                                <label><i class="fas fa-calendar-alt"></i> Période</label>
-                                <div class="date-range-container">
-                                    <input type="date" id="modal-${caisseId}-start" class="form-control" value="${getDateLastWeek()}">
-                                    <span>à</span>
-                                    <input type="date" id="modal-${caisseId}-end" class="form-control" value="${getDateToday()}">
-                                </div>
-                            </div>
-                            <div class="filter-group">
-                                <label><i class="fas fa-exchange-alt"></i> Mouvement</label>
-                                <select id="modal-${caisseId}-mouvement" class="form-control select-control">
-                                    <option value="">Tous</option>
-                                    <option value="Entrée">Entrée</option>
-                                    <option value="Sortie">Sortie</option>
-                                </select>
-                            </div>
-                            <div class="filter-group">
-                                <label><i class="fas fa-user"></i> Utilisateur</label>
-                                <select id="modal-${caisseId}-user" class="form-control select-control">
-                                    <option value="">Tous</option>
-                                </select>
-                            </div>
-                            <div class="filter-group">
-                                <label>&nbsp;</label>
-                                <button class="btn btn-secondary" onclick="filterCaisseModal('${caisseId}')">
-                                    <i class="fas fa-filter"></i> Filtrer
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div class="table-container">
-                            <table class="cumul-table">
-                                <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Désignation</th>
-                                        <th class="text-right">Montant</th>
-                                        <th>Mouvement</th>
-                                        <th>Utilisateur</th>
-                                        <th class="text-right">En Caisse</th>
-                                        <th>Catégorie</th>
-                                        <th>Note</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="modal-${caisseId}-data">
-                    `;
-                    
-                    // Ajouter les données
-                    data.data.rows.forEach(row => {
-                        html += `
-                            <tr>
-                                <td>${formatDate(row[0])}</td>
-                                <td title="${row[1] || ''}">${(row[1] || '').substring(0, 50)}${(row[1] || '').length > 50 ? '...' : ''}</td>
-                                <td class="text-right">${formatCurrency(row[2])}</td>
-                                <td><span class="badge ${row[3] === 'Entrée' ? 'badge-success' : 'badge-danger'}">${row[3] || ''}</span></td>
-                                <td>${row[4] || ''}</td>
-                                <td class="text-right">${formatCurrency(row[5])}</td>
-                                <td>${row[6] || ''}</td>
-                                <td title="${row[7] || ''}">${(row[7] || '').substring(0, 30)}${(row[7] || '').length > 30 ? '...' : ''}</td>
-                            </tr>
-                        `;
-                    });
-                    
-                    html += `
-                                </tbody>
-                            </table>
-                        </div>
-                        
-                        <div style="text-align: center; margin-top: 1rem; padding: 1rem; background: var(--primary-50); border-radius: var(--border-radius-md);">
-                            <strong>${data.data.rows.length} opérations chargées</strong>
-                        </div>
-                    `;
-                    
-                    modal.innerHTML = html;
-                    
-                    // Remplir la liste des utilisateurs
-                    fillUserFilter(caisseId, data.data.rows);
-                    
-                } else {
-                    throw new Error('Structure de données invalide');
+                if (!data.success || !data.data?.rows) {
+                    throw new Error('Données invalides');
                 }
                 
+                const rows = data.data.rows.reverse();
+                
+                modalBody.innerHTML = `
+                    <div style="margin-bottom: 1rem;">
+                        <input type="text" class="form-control" 
+                               placeholder="Rechercher..." 
+                               onkeyup="filterModalTable('${caisseId}', this.value)">
+                    </div>
+                    <div class="table-container" style="padding: 0;">
+                        <table class="cumul-table" id="modal-table-${caisseId}">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Désignation</th>
+                                    <th class="text-right">Montant</th>
+                                    <th>Mouvement</th>
+                                    <th>Utilisateur</th>
+                                    ${window.innerWidth >= 1024 ? '<th>Catégorie</th><th>Note</th>' : ''}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${rows.map(row => `
+                                    <tr>
+                                        <td>${formatDate(row[0])}</td>
+                                        <td title="${row[1] || ''}">${truncate(row[1] || '', 50)}</td>
+                                        <td class="text-right" style="color: ${row[3] === 'Entrée' ? 'var(--success)' : 'var(--danger)'}">
+                                            ${formatCurrency(row[2])}
+                                        </td>
+                                        <td>
+                                            <span class="badge ${row[3] === 'Entrée' ? 'badge-success' : 'badge-danger'}">
+                                                ${row[3] || ''}
+                                            </span>
+                                        </td>
+                                        <td>${row[4] || ''}</td>
+                                        ${window.innerWidth >= 1024 ? `
+                                            <td>${row[6] || ''}</td>
+                                            <td title="${row[7] || ''}">${truncate(row[7] || '', 30)}</td>
+                                        ` : ''}
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center" style="margin-top: 1rem; padding: 1rem; background: var(--gray-50); border-radius: var(--radius-md);">
+                        <strong>${rows.length} opération(s)</strong>
+                    </div>
+                `;
+                
             } catch (error) {
-                console.error('Erreur chargement modal:', error);
-                modal.innerHTML = `
-                    <div style="text-align: center; padding: 3rem;">
-                        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #ef4444; margin-bottom: 1rem;"></i>
-                        <h3>Erreur de chargement</h3>
-                        <p>${error.message}</p>
+                console.error('Erreur:', error);
+                modalBody.innerHTML = `
+                    <div class="text-center" style="padding: 2rem;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 2rem; color: var(--danger);"></i>
+                        <p style="margin: 1rem 0;">Erreur de chargement</p>
                         <button class="btn btn-primary" onclick="loadCaisseModalData('${caisseId}', '${caisseName}')">
                             <i class="fas fa-redo"></i> Réessayer
                         </button>
@@ -1569,161 +1759,223 @@ function calculateCaisseStatsThisWeek(caisse) {
             }
         }
 
-        function fillUserFilter(caisseId, rows) {
-            const userSelect = document.getElementById(`modal-${caisseId}-user`);
-            const users = [...new Set(rows.map(row => row[4]).filter(user => user && user.trim() !== ''))];
+        window.filterModalTable = function(caisseId, searchTerm) {
+            const table = document.getElementById(`modal-table-${caisseId}`);
+            if (!table) return;
             
-            users.forEach(user => {
-                const option = document.createElement('option');
-                option.value = user;
-                option.textContent = user;
-                userSelect.appendChild(option);
+            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            searchTerm = searchTerm.toLowerCase();
+            
+            Array.from(rows).forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
             });
-        }
+        };
 
-        function filterCaisseModal(caisseId) {
-            const startDate = document.getElementById(`modal-${caisseId}-start`).value;
-            const endDate = document.getElementById(`modal-${caisseId}-end`).value;
-            const mouvement = document.getElementById(`modal-${caisseId}-mouvement`).value;
-            const user = document.getElementById(`modal-${caisseId}-user`).value;
-            
-            const rows = document.querySelectorAll(`#modal-${caisseId}-data tr`);
-            let visibleCount = 0;
-            
-            rows.forEach(row => {
-                const dateCell = row.cells[0].textContent;
-                const mouvementCell = row.cells[3].querySelector('.badge').textContent;
-                const userCell = row.cells[4].textContent;
-                
-                let visible = true;
-                
-                // Filtre par date
-                if (startDate || endDate) {
-                    const rowDate = new Date(dateCell);
-                    const start = startDate ? new Date(startDate) : null;
-                    const end = endDate ? new Date(endDate) : null;
-                    
-                    if (start && end) {
-                        visible = rowDate >= start && rowDate <= end;
-                    } else if (start) {
-                        visible = rowDate >= start;
-                    } else if (end) {
-                        visible = rowDate <= end;
-                    }
-                }
-                
-                // Filtre par mouvement
-                if (mouvement && mouvementCell !== mouvement) {
-                    visible = false;
-                }
-                
-                // Filtre par utilisateur
-                if (user && userCell !== user) {
-                    visible = false;
-                }
-                
-                row.style.display = visible ? '' : 'none';
-                if (visible) visibleCount++;
-            });
-            
-            // Mettre à jour le message de comptage
-            const countDiv = document.querySelector(`#modal-${caisseId} .modal-body`).lastElementChild;
-            countDiv.innerHTML = `<strong>${visibleCount} opérations filtrées</strong>`;
-        }
-
-        function getDateToday() {
-            return new Date().toISOString().split('T')[0];
-        }
-
-        function getDateLastWeek() {
-            const lastWeek = new Date();
-            lastWeek.setDate(lastWeek.getDate() - 7);
-            return lastWeek.toISOString().split('T')[0];
-        }
-
-        function closeModal() {
+        window.closeModal = function() {
             const modal = document.querySelector('.modal-overlay.active');
             if (modal) {
                 modal.classList.remove('active');
+                setTimeout(() => modal.remove(), 300);
+            }
+        };
+
+        // ==================== GESTION DES DÉPENSES ====================
+        window.openDepense = async function() {
+            const modalContainer = document.getElementById('modal-container');
+            
+            modalContainer.innerHTML = `
+                <div class="modal-overlay active" id="depenseModal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title">
+                                <i class="fas fa-plus-circle"></i>
+                                Ajouter une Dépense
+                            </h3>
+                        </div>
+                        <div class="modal-body">
+                            <div class="text-center">
+                                <div class="spinner"></div>
+                                <p>Chargement des données...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            try {
+                const response = await fetch(`${CONFIG.API_URL}?action=getconfigdata`);
+                const data = await response.json();
+                
+                if (!data.success || !data.data) {
+                    throw new Error('Impossible de charger les données');
+                }
+                
+                const { categories, agences } = data.data;
+                
+                document.querySelector('#depenseModal .modal-body').innerHTML = `
+                    <form id="depenseForm">
+                        <div class="form-group">
+                            <label>Date <span class="required">*</span></label>
+                            <input type="date" id="depenseDate" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Agence <span class="required">*</span></label>
+                            <select id="depenseAgence" class="form-control select-control" required>
+                                <option value="">Sélectionner</option>
+                                ${agences.map(a => `<option value="${a}">${a}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Désignation <span class="required">*</span></label>
+                            <input type="text" id="depenseDesignation" class="form-control" 
+                                   placeholder="Description de la dépense" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Catégorie <span class="required">*</span></label>
+                            <select id="depenseCategorie" class="form-control select-control" required>
+                                <option value="">Sélectionner</option>
+                                ${categories.map(c => `<option value="${c.value}">${c.label}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Montant (FCFA) <span class="required">*</span></label>
+                            <input type="number" id="depenseMontant" class="form-control" 
+                                   placeholder="0" min="0" step="1" required>
+                        </div>
+                        <div id="form-message" class="form-message"></div>
+                    </form>
+                    <div class="modal-footer" style="padding: 1rem 0 0 0;">
+                        <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
+                        <button class="btn btn-primary" onclick="submitDepense()">Enregistrer</button>
+                    </div>
+                `;
+                
+                document.getElementById('depenseDate').value = new Date().toISOString().split('T')[0];
+                
+            } catch (error) {
+                console.error('Erreur:', error);
+                document.querySelector('#depenseModal .modal-body').innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Erreur: ${error.message}
+                    </div>
+                    <div class="modal-footer" style="padding: 1rem 0 0 0;">
+                        <button class="btn btn-primary" onclick="closeModal()">Fermer</button>
+                    </div>
+                `;
+            }
+        };
+
+        window.submitDepense = async function() {
+            const form = document.getElementById('depenseForm');
+            const formMessage = document.getElementById('form-message');
+            
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                formMessage.textContent = 'Veuillez remplir tous les champs obligatoires.';
+                formMessage.classList.add('error');
+                return;
+            }
+            
+            const username = sessionStorage.getItem("utilisateur") || 
+                            localStorage.getItem("utilisateur") || 
+                            'Utilisateur';
+            
+            const depenseData = {
+                date: document.getElementById('depenseDate').value,
+                agence: document.getElementById('depenseAgence').value,
+                designation: document.getElementById('depenseDesignation').value.trim(),
+                categorie: document.getElementById('depenseCategorie').value,
+                utilisateur: username,
+                montant: parseFloat(document.getElementById('depenseMontant').value)
+            };
+            
+            if (isNaN(depenseData.montant) || depenseData.montant <= 0) {
+                formMessage.textContent = 'Veuillez entrer un montant valide.';
+                formMessage.classList.add('error');
+                return;
+            }
+            
+            const submitBtn = document.querySelector('#depenseModal .btn-primary');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement...';
+            
+            try {
+                await fetch(CONFIG.API_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ...depenseData, action: 'addDepense' })
+                });
+                
+                formMessage.textContent = '✅ Dépense enregistrée avec succès!';
+                formMessage.classList.add('success');
+                form.reset();
+                
                 setTimeout(() => {
-                    modal.remove();
-                }, 300);
+                    closeModal();
+                    loadAllCaisses();
+                    if (window.innerWidth >= 1024) loadCumulData();
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Erreur:', error);
+                formMessage.textContent = '❌ Erreur lors de l\'enregistrement';
+                formMessage.classList.add('error');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Enregistrer';
+            }
+        };
+
+        // ==================== UTILITAIRES ====================
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            try {
+                return new Date(dateString).toLocaleDateString('fr-FR');
+            } catch {
+                return dateString;
             }
         }
 
-        // Fermeture de la modale en cliquant à l'extérieur
-        document.addEventListener('click', function(event) {
-            const modal = document.querySelector('.modal-overlay.active');
-            if (modal && event.target === modal) {
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('fr-FR', { 
+                minimumFractionDigits: 0, 
+                maximumFractionDigits: 0 
+            }).format(amount || 0);
+        }
+
+        function truncate(text, length) {
+            if (!text) return '';
+            return text.length > length ? text.substring(0, length) + '...' : text;
+        }
+
+        function getCaisseColor(caisseId) {
+            return CONFIG.CAISSES.find(c => c.id === caisseId)?.color || '#4f46e5';
+        }
+
+        window.openVueGlobale = function() {
+            window.location.href = 'Accueil.html';
+        };
+
+        function showError(message) {
+            const container = document.querySelector('.app-container');
+            if (container) {
+                container.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i>
+                        ${message}
+                    </div>
+                `;
+            }
+        }
+
+        // Gestionnaire clic extérieur pour fermer les modales
+        document.addEventListener('click', (event) => {
+            if (event.target.classList.contains('modal-overlay')) {
                 closeModal();
             }
         });
-
-        // ==================== GESTION DES DONNÉES EN TEMPS RÉEL ====================
-        function refreshCaisseData() {
-            loadAllCaisses();
-            loadCumulData();
-            showMessage('cumul-message', '🔄 Données actualisées', 'info');
-        }
-
-        // Rafraîchissement automatique toutes les 5 minutes
-        setInterval(refreshCaisseData, 5 * 60 * 1000);
-
-function exportToCSV(dataArray, filenamePrefix) {
-    if (!dataArray || dataArray.length === 0) {
-        alert('Aucune donnée à exporter.');
-        return;
-    }
-
-    // Définition des en-têtes et mappage des clés
-    const headers = [
-        { key: 'date', label: 'Date' },
-        { key: 'agence', label: 'Agence' },
-        { key: 'designation', label: 'Désignation' },
-        { key: 'montant', label: 'Montant' },
-        { key: 'mouvement', label: 'Mouvement' },
-        { key: 'user', label: 'Utilisateur' },
-        { key: 'categorie', label: 'Catégorie' },
-        { key: 'note', label: 'Note' }
-    ];
-
-    // Construction des lignes CSV
-    const csvRows = [];
-    
-    // Ligne d'en-tête
-    const headerLabels = headers.map(h => `"${h.label}"`);
-    csvRows.push(headerLabels.join(';'));
-    
-    // Lignes de données
-    dataArray.forEach(item => {
-        const row = headers.map(header => {
-            let value = item[header.key] || '';
-            // Gestion des nombres et du format français
-            if (header.key === 'montant' && typeof value === 'number') {
-                value = value.toLocaleString('fr-FR', { 
-                    minimumFractionDigits: 0, 
-                    maximumFractionDigits: 0 
-                });
-            }
-            // Encadrer les valeurs avec des guillemets pour éviter les problèmes de séparateurs
-            return `"${value.toString().replace(/"/g, '""')}"`;
-        });
-        csvRows.push(row.join(';'));
-    });
-
-    // Création et téléchargement du fichier
-    const csvString = csvRows.join('\n');
-    const blob = new Blob(['\ufeff' + csvString], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    
-    link.href = url;
-    link.download = `${filenamePrefix}_${new Date().toISOString().split('T')[0]}.csv`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-}
     </script>
 </body>
 </html>
