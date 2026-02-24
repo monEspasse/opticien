@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion - VisionPro</title>
+    <title>VisioPro</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -553,7 +553,7 @@
     <header>
         <div class="logo-container">
             <img src="logoSF.png" alt="Logo">
-            <h1>VisionPro</h1>
+            <h1>VisioPro</h1>
         </div>
     </header>
 
@@ -666,7 +666,7 @@
             message.style.display = 'none';
 
             const timestamp = new Date().getTime();
-            const url = `https://script.google.com/macros/s/AKfycbysh1x1-9a-sf2fu3Dn83sa1EbG6CpjLlVmbW0Fhkhxfkc2GC1uD55YCf-34CK8QGIv/exec?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}&_=${timestamp}`;
+            const url = `https://script.google.com/macros/s/AKfycbwdzHJGAL16KV_OnyoCIs5I7im2yNxrbEaEIbykQ8hy6ewQjJFQ0G4TfqYWWCMc7vfW/exec?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}&_=${timestamp}`;
             
             console.log('🌐 URL appelée:', url);
 
@@ -679,10 +679,14 @@
                     console.log('📨 Données brutes reçues:', data);
                     
                     const isAdmin = data.data && data.data.isAdmin;
-                    const hasCaisseAccess = data.data && data.data.hasCaisseAccess; // NOUVEAU
+                    const hasCaisseAccess = data.data && data.data.hasCaisseAccess;
+                    const agence = data.data && data.data.agence; // Récupérer l'agence
+                    const analyse = data.data && data.data.analyse; // Récupérer l'analyse
                     
                     console.log('🔍 Détail data.data.isAdmin:', data.data?.isAdmin);
                     console.log('💰 Détail data.data.hasCaisseAccess:', data.data?.hasCaisseAccess);
+                    console.log('🏢 Détail data.data.agence:', data.data?.agence);
+                    console.log('📊 Détail data.data.analyse:', data.data?.analyse);
                     
                     if (data.success) {
                         console.log('✅ Connexion réussie côté frontend');
@@ -702,7 +706,7 @@
                             console.log(`👤 ${username} a un accès UTILISATEUR standard`);
                         }
 
-                        // NOUVEAU : Sauvegarder l'accès caisse
+                        // Sauvegarder l'accès caisse
                         if (hasCaisseAccess) {
                             sessionStorage.setItem("hasCaisseAccess", "true");
                             console.log(`💰 ${username} a l'accès CAISSE AUTORISÉ`);
@@ -711,11 +715,31 @@
                             console.log(`🚫 ${username} a l'accès CAISSE REFUSÉ`);
                         }
 
+                        // Sauvegarder l'agence
+                        if (agence) {
+                            sessionStorage.setItem("agence", agence);
+                            console.log(`🏢 ${username} appartient à l'agence: ${agence}`);
+                        } else {
+                            sessionStorage.setItem("agence", "");
+                            console.log(`🏢 ${username} n'a pas d'agence définie`);
+                        }
+
+                        // Sauvegarder l'analyse (commercial)
+                        if (analyse) {
+                            sessionStorage.setItem("analyse", analyse);
+                            console.log(`📊 ${username} a pour analyse: ${analyse}`);
+                        } else {
+                            sessionStorage.setItem("analyse", "");
+                            console.log(`📊 ${username} n'a pas d'analyse définie`);
+                        }
+
                         // Afficher toutes les informations de session
                         console.log('📋 Informations de session:');
                         console.log('- Utilisateur:', sessionStorage.getItem("utilisateur"));
                         console.log('- Admin:', sessionStorage.getItem("isAdmin"));
                         console.log('- Accès Caisse:', sessionStorage.getItem("hasCaisseAccess"));
+                        console.log('- Agence:', sessionStorage.getItem("agence"));
+                        console.log('- Analyse:', sessionStorage.getItem("analyse"));
                         console.log('- Timestamp:', new Date().toLocaleString());
 
                         // Redirect after 1.5 seconds
