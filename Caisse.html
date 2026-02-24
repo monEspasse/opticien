@@ -1773,11 +1773,8 @@
         };
 
         window.closeModal = function() {
-            const modal = document.querySelector('.modal-overlay.active');
-            if (modal) {
-                modal.classList.remove('active');
-                setTimeout(() => modal.remove(), 300);
-            }
+            // me permet de me rassurer que tous est a jour
+           window.location.href = 'Caisse.html';
         };
 
         // ==================== GESTION DES DÉPENSES ====================
@@ -1896,37 +1893,48 @@
                 formMessage.classList.add('error');
                 return;
             }
-            
-            const submitBtn = document.querySelector('#depenseModal .btn-primary');
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement...';
-            
-            try {
-                await fetch(CONFIG.API_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ ...depenseData, action: 'addDepense' })
-                });
-                
-                formMessage.textContent = '✅ Dépense enregistrée avec succès!';
-                formMessage.classList.add('success');
-                form.reset();
-                
-                setTimeout(() => {
-                    closeModal();
-                    loadAllCaisses();
-                    if (window.innerWidth >= 1024) loadCumulData();
-                }, 1500);
-                
-            } catch (error) {
-                console.error('Erreur:', error);
-                formMessage.textContent = '❌ Erreur lors de l\'enregistrement';
-                formMessage.classList.add('error');
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Enregistrer';
+            const submitButton = document.querySelector('#depenseModal .btn-primary');
+    submitButton.disabled = true;
+    submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Enregistrement...';
+
+    try {
+        const apiUrl = "https://script.google.com/macros/s/AKfycbwdzHJGAL16KV_OnyoCIs5I7im2yNxrbEaEIbykQ8hy6ewQjJFQ0G4TfqYWWCMc7vfW/exec?action=addDepense";
+
+            await fetch(apiUrl, {
+              method: 'POST',
+              mode: 'no-cors',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(depenseData)
+            });
+
+        // Succès
+        formMessage.textContent = '✅ Dépense enregistrée avec succès!';
+        formMessage.classList.add('success');
+        
+        // Réinitialiser le formulaire après succès
+        form.reset();
+        
+        // Fermer après 1.5s
+        setTimeout(() => {
+            closeModal();
+            // Rafraîchir les données si nécessaire
+            if (typeof refreshExpenses === 'function') {
+                refreshExpenses();
             }
-        };
+        }, 1500);
+
+    } catch (error) {
+        console.error("Erreur:", error);
+        formMessage.innerHTML = `❌ ${error.message || "Une erreur est survenue lors de l'enregistrement"}`;
+        logError(`Dépense: ${errorMsg}`);
+        formMessage.classList.add('error');
+    } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = 'Enregistrer';
+    }
+}
 
         // ==================== UTILITAIRES ====================
         function formatDate(dateString) {
