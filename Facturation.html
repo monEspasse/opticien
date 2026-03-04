@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>VisioPro</title>
+    <title>VisioPro - Facturation</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -196,6 +196,30 @@
         gap: 1rem;
     }
 
+    /* Styles pour le profil utilisateur */
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .profile-img {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 2px solid var(--primary-300);
+        transition: transform 0.3s ease;
+    }
+
+    .profile-img:hover {
+        transform: scale(1.05);
+    }
+
+    #username-display {
+        font-weight: 500;
+        color: var(--gray-700);
+    }
+
     /* ============================================
        BOUTONS
     =============================================== */
@@ -259,7 +283,89 @@
     }
 
     /* ============================================
-       CARTES
+       NAVIGATION DESKTOP
+    =============================================== */
+    
+    .main-sections {
+        display: flex;
+        gap: 1.5rem;
+    }
+
+    .desktop-nav {
+        flex: 0 0 220px;
+    }
+
+    .nav-container {
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--border-radius-lg);
+        padding: 1rem;
+        position: sticky;
+        top: 100px;
+        animation: fadeIn 0.6s ease 0.2s both;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .nav-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--primary-700);
+    }
+
+    .nav-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1rem;
+        background: transparent;
+        border: 1px solid var(--glass-border);
+        border-radius: var(--border-radius-md);
+        color: var(--gray-700);
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s var(--transition-smooth);
+        width: 100%;
+        text-align: left;
+        margin-bottom: 0.5rem;
+        position: relative;
+        overflow: hidden;
+        font-size: 0.9rem;
+    }
+
+    .nav-btn:hover {
+        color: var(--primary-600);
+        transform: translateX(3px);
+    }
+
+    .nav-btn.active {
+        background: var(--primary-gradient);
+        color: white;
+        border-color: transparent;
+        transform: translateX(3px);
+    }
+
+    .nav-btn i {
+        width: 18px;
+        text-align: center;
+        transition: transform 0.3s ease;
+    }
+
+    .nav-btn:hover i {
+        transform: scale(1.1);
+    }
+
+    .content-area {
+        flex: 1;
+    }
+
+    /* ============================================
+       SECTIONS
     =============================================== */
 
     .section-container {
@@ -346,15 +452,15 @@
     }
 
     .filter-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 0.5rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        align-items: flex-end;
     }
 
     .filter-group {
-        display: flex;
-        flex-direction: column;
-        gap: 0.2rem;
+        flex: 1 1 150px;
+        min-width: 150px;
     }
 
     .filter-group-label {
@@ -601,39 +707,6 @@
     .loading-text {
         color: var(--gray-600);
         font-size: 0.7rem;
-    }
-
-    /* ============================================
-       INFO UTILISATEUR
-    =============================================== */
-
-    .user-info {
-        position: relative;
-    }
-
-    .profile-dropdown {
-        display: flex;
-        align-items: center;
-        gap: 0.3rem;
-        cursor: pointer;
-        padding: 0.2rem 0.5rem;
-        border-radius: var(--border-radius-full);
-        background: var(--glass-bg);
-    }
-
-    .profile-name {
-        font-weight: 500;
-        color: var(--gray-700);
-        font-size: 0.8rem;
-        display: none;
-    }
-
-    .profile-img {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 2px solid var(--glass-border);
     }
 
     /* ============================================
@@ -1165,6 +1238,18 @@
             display: flex;
         }
 
+        .desktop-nav {
+            display: none;
+        }
+
+        .main-sections {
+            flex-direction: column !important;
+        }
+
+        .content-area {
+            width: 100%;
+        }
+
         .dashboard {
             padding: 0.5rem;
         }
@@ -1219,7 +1304,7 @@
         }
 
         .filter-grid {
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             gap: 0.3rem;
         }
 
@@ -1429,22 +1514,6 @@
     .total-row td {
         border-top: 2px solid var(--gray-300);
     }
-    .filters-panel .filter-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    align-items: flex-end;
-}
-
-.filters-panel .filter-group {
-    flex: 1 1 150px;
-    min-width: 150px;
-}
-
-.filters-panel .filter-group .form-control,
-.filters-panel .filter-group .form-select {
-    width: 100%;
-}
     </style>
 </head>
 <body>
@@ -1461,184 +1530,202 @@
                 </button>
                 
                 <div class="user-info">
-                    <div class="profile-dropdown">
-                        <span class="profile-name" id="username-display"></span>
-                        <img src="https://ui-avatars.com/api/?name=John+Doe&background=6366f1&color=fff" alt="Photo de profil" class="profile-img">
-                    </div>
+                    <span id="username-display"></span>
+                    <img src="https://ui-avatars.com/api/?name=John+Doe&background=6366f1&color=fff" alt="Photo de profil" class="profile-img">
                 </div>
             </div>
         </header>
 
-        <!-- SECTIONS PRINCIPALES -->
+        <!-- SECTIONS PRINCIPALES AVEC NAVIGATION LATÉRALE -->
         <div class="main-sections">
-            <!-- Section 1: Gestion des Facturations -->
-            <div id="gestion-facturations" class="section-container active">
-                <div class="section-header">
-                    <h2 class="section-title">Gestion des Facturations</h2>
-                    <div class="dashboard-buttons">
-                        <button type="button" class="btn btn-success" onclick="genererFacture()">
-                            <i class="fas fa-file-export"></i> Dépôt
-                        </button>
-                        <button type="button" class="btn btn-primary" onclick="openAddFactureModal()">
-                            <i class="fas fa-plus"></i> Ajouter
-                        </button>
-                        <button class="btn btn-secondary" onclick="refreshFacturationData()">
-                            <i class="fas fa-sync-alt"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- FILTRES COMPACTS (2 LIGNES MAX) -->
-                <div class="filters-panel">
-                    <div class="filter-grid">
-                        <div class="filter-group">
-                            <label for="filterFactureDateStart" class="filter-group-label">Début</label>
-                            <input type="date" id="filterFactureDateStart" class="form-control" onchange="applyFactureFilter()">
-                        </div>
-                        <div class="filter-group">
-                            <label for="filterFactureDateEnd" class="filter-group-label">Fin</label>
-                            <input type="date" id="filterFactureDateEnd" class="form-control" onchange="applyFactureFilter()">
-                        </div>
-                        <div class="filter-group">
-                            <label for="filterFactureSociete" class="filter-group-label">Société</label>
-                            <select id="filterFactureSociete" class="form-select" onchange="applyFactureFilter()">
-                                <option value="">Toutes</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label for="filterFactureAssurance" class="filter-group-label">Assurance</label>
-                            <select id="filterFactureAssurance" class="form-select" onchange="applyFactureFilter()">
-                                <option value="">Toutes</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label for="filterFactureCompagnie" class="filter-group-label">Compagnie</label>
-                            <select id="filterFactureCompagnie" class="form-select" onchange="applyFactureFilter()">
-                                <option value="">Toutes</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label for="filterFactureProprietaire" class="filter-group-label">Propriétaire</label>
-                            <select id="filterFactureProprietaire" class="form-select" onchange="applyFactureFilter()">
-                                <option value="">Tous</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Contrôles de sélection -->
-                <div class="selection-controls" id="selectionControls" style="display: none;">
-                    <div class="selection-info">
-                        <span id="selectedCount">0</span> facture(s)
-                    </div>
-                    <button type="button" class="btn btn-primary btn-sm" onclick="selectAllFilteredFactures()">
-                        <i class="fas fa-check-square"></i> Tout
+            <!-- Navigation latérale desktop -->
+            <nav class="desktop-nav">
+                <div class="nav-container">
+                    <h3 class="nav-title">Facturation</h3>
+                    
+                    <button class="nav-btn active" onclick="showSection('gestion-facturations')" data-section="gestion-facturations">
+                        <i class="fas fa-file-invoice"></i>
+                        <span>Gestion Factures</span>
                     </button>
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="deselectAllFactures()">
-                        <i class="fas fa-times-circle"></i> Aucun
+                    
+                    <button class="nav-btn" onclick="showSection('point-facturations')" data-section="point-facturations">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Point Facturations</span>
                     </button>
                 </div>
+            </nav>
 
-                <!-- Tableau -->
-                <div class="table-container">
-                    <table class="produit-table" id="factureTable">
-                        <thead id="factureTableHeader">
-                            <!-- En-têtes générés dynamiquement -->
-                        </thead>
-                        <tbody id="factureData">
-                            <tr>
-                                <td colspan="12" class="text-center py-4">
-                                    <div class="loading-indicator">
-                                        <div class="spinner-border"></div>
-                                        <div class="loading-text">Chargement des factures...</div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div id="facture-message" class="alert-message" style="display: none;"></div>
-            </div>
-
-            <!-- Section 2: Point des Facturations -->
-            <div id="point-facturations" class="section-container">
-                <div class="section-header">
-                    <h2 class="section-title">Point des Facturations</h2>
-                    <div class="dashboard-buttons">
-                        <button type="button" class="btn btn-primary" onclick="printFacturationList()">
-                            <i class="fas fa-print"></i> Imprimer
-                        </button>
-                        <button class="btn btn-secondary" onclick="refreshPointFacturationData()">
-                            <i class="fas fa-sync-alt"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- FILTRES COMPACTS -->
-                <div class="filters-panel">
-                    <div class="filter-grid">
-                        <div class="filter-group">
-                            <label for="filterDateStart" class="filter-group-label">Début</label>
-                            <input type="date" id="filterDateStart" class="form-control" onchange="applyFacturationFilter()">
-                        </div>
-                        <div class="filter-group">
-                            <label for="filterDateEnd" class="filter-group-label">Fin</label>
-                            <input type="date" id="filterDateEnd" class="form-control" onchange="applyFacturationFilter()">
-                        </div>
-                        <div class="filter-group">
-                            <label for="filterDateDepot" class="filter-group-label">Dépôt</label>
-                            <input type="date" id="filterDateDepot" class="form-control" onchange="applyFacturationFilter()">
-                        </div>
-                        <div class="filter-group">
-                            <label for="filterAssurance" class="filter-group-label">Assurance</label>
-                            <select id="filterAssurance" class="form-select" onchange="applyFacturationFilter()">
-                                <option value="">Toutes</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label for="filterCompagnie" class="filter-group-label">Compagnie</label>
-                            <select id="filterCompagnie" class="form-select" onchange="applyFacturationFilter()">
-                                <option value="">Toutes</option>
-                            </select>
+            <!-- Contenu principal -->
+            <div class="content-area">
+                <!-- Section 1: Gestion des Facturations -->
+                <div id="gestion-facturations" class="section-container active">
+                    <div class="section-header">
+                        <h2 class="section-title">Gestion des Facturations</h2>
+                        <div class="dashboard-buttons">
+                            <button type="button" class="btn btn-success" onclick="genererFacture()">
+                                <i class="fas fa-file-export"></i> Dépôt
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="openAddFactureModal()">
+                                <i class="fas fa-plus"></i> Ajouter
+                            </button>
+                            <button class="btn btn-secondary" onclick="refreshFacturationData()">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
                         </div>
                     </div>
+
+                    <!-- FILTRES COMPACTS -->
+                    <div class="filters-panel">
+                        <div class="filter-grid">
+                            <div class="filter-group">
+                                <label for="filterFactureDateStart" class="filter-group-label">Début</label>
+                                <input type="date" id="filterFactureDateStart" class="form-control" onchange="applyFactureFilter()">
+                            </div>
+                            <div class="filter-group">
+                                <label for="filterFactureDateEnd" class="filter-group-label">Fin</label>
+                                <input type="date" id="filterFactureDateEnd" class="form-control" onchange="applyFactureFilter()">
+                            </div>
+                            <div class="filter-group">
+                                <label for="filterFactureSociete" class="filter-group-label">Société</label>
+                                <select id="filterFactureSociete" class="form-select" onchange="applyFactureFilter()">
+                                    <option value="">Toutes</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label for="filterFactureAssurance" class="filter-group-label">Assurance</label>
+                                <select id="filterFactureAssurance" class="form-select" onchange="applyFactureFilter()">
+                                    <option value="">Toutes</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label for="filterFactureCompagnie" class="filter-group-label">Compagnie</label>
+                                <select id="filterFactureCompagnie" class="form-select" onchange="applyFactureFilter()">
+                                    <option value="">Toutes</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label for="filterFactureProprietaire" class="filter-group-label">Propriétaire</label>
+                                <select id="filterFactureProprietaire" class="form-select" onchange="applyFactureFilter()">
+                                    <option value="">Tous</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contrôles de sélection -->
+                    <div class="selection-controls" id="selectionControls" style="display: none;">
+                        <div class="selection-info">
+                            <span id="selectedCount">0</span> facture(s)
+                        </div>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="selectAllFilteredFactures()">
+                            <i class="fas fa-check-square"></i> Tout
+                        </button>
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="deselectAllFactures()">
+                            <i class="fas fa-times-circle"></i> Aucun
+                        </button>
+                    </div>
+
+                    <!-- Tableau -->
+                    <div class="table-container">
+                        <table class="produit-table" id="factureTable">
+                            <thead id="factureTableHeader">
+                                <!-- En-têtes générés dynamiquement -->
+                            </thead>
+                            <tbody id="factureData">
+                                <tr>
+                                    <td colspan="12" class="text-center py-4">
+                                        <div class="loading-indicator">
+                                            <div class="spinner-border"></div>
+                                            <div class="loading-text">Chargement des factures...</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="facture-message" class="alert-message" style="display: none;"></div>
                 </div>
 
-                <!-- Tableau -->
-                <div class="table-container">
-                    <table class="produit-table" id="facturationTable">
-                        <thead>
-                            <tr>
-                                <th>Date début</th>
-                                <th>Date fin</th>
-                                <th>Assurance</th>
-                                <th>Compagnie</th>
-                                <th>Date dépôt</th>
-                                <th class="text-end">Montant</th>
-                                <th class="text-end">Part Assuré</th>
-                                <th class="text-end">Part Assureur</th>
-                                <th class="text-end">TVA</th>
-                                <th>Nb</th>
-                                <th>PDF Récap</th>
-                                <th>PDF Détail</th>
-                                <th>ID Facturation</th>
-                            </tr>
-                        </thead>
-                        <tbody id="facturationData">
-                            <tr>
-                                <td colspan="13" class="text-center py-4">
-                                    <div class="loading-indicator">
-                                        <div class="spinner-border"></div>
-                                        <div class="loading-text">Chargement des données...</div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                <!-- Section 2: Point des Facturations -->
+                <div id="point-facturations" class="section-container">
+                    <div class="section-header">
+                        <h2 class="section-title">Point des Facturations</h2>
+                        <div class="dashboard-buttons">
+                            <button type="button" class="btn btn-primary" onclick="printFacturationList()">
+                                <i class="fas fa-print"></i> Imprimer
+                            </button>
+                            <button class="btn btn-secondary" onclick="refreshPointFacturationData()">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                    </div>
 
-                <div id="facturation-message" class="alert-message" style="display: none;"></div>
+                    <!-- FILTRES COMPACTS -->
+                    <div class="filters-panel">
+                        <div class="filter-grid">
+                            <div class="filter-group">
+                                <label for="filterDateStart" class="filter-group-label">Début</label>
+                                <input type="date" id="filterDateStart" class="form-control" onchange="applyFacturationFilter()">
+                            </div>
+                            <div class="filter-group">
+                                <label for="filterDateEnd" class="filter-group-label">Fin</label>
+                                <input type="date" id="filterDateEnd" class="form-control" onchange="applyFacturationFilter()">
+                            </div>
+                            <div class="filter-group">
+                                <label for="filterDateDepot" class="filter-group-label">Dépôt</label>
+                                <input type="date" id="filterDateDepot" class="form-control" onchange="applyFacturationFilter()">
+                            </div>
+                            <div class="filter-group">
+                                <label for="filterAssurance" class="filter-group-label">Assurance</label>
+                                <select id="filterAssurance" class="form-select" onchange="applyFacturationFilter()">
+                                    <option value="">Toutes</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label for="filterCompagnie" class="filter-group-label">Compagnie</label>
+                                <select id="filterCompagnie" class="form-select" onchange="applyFacturationFilter()">
+                                    <option value="">Toutes</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tableau -->
+                    <div class="table-container">
+                        <table class="produit-table" id="facturationTable">
+                            <thead>
+                                <tr>
+                                    <th>Date début</th>
+                                    <th>Date fin</th>
+                                    <th>Assurance</th>
+                                    <th>Compagnie</th>
+                                    <th>Date dépôt</th>
+                                    <th class="text-end">Montant</th>
+                                    <th class="text-end">Part Assuré</th>
+                                    <th class="text-end">Part Assureur</th>
+                                    <th class="text-end">TVA</th>
+                                    <th>Nb</th>
+                                    <th>PDF Récap</th>
+                                    <th>PDF Détail</th>
+                                    <th>ID Facturation</th>
+                                </tr>
+                            </thead>
+                            <tbody id="facturationData">
+                                <tr>
+                                    <td colspan="13" class="text-center py-4">
+                                        <div class="loading-indicator">
+                                            <div class="spinner-border"></div>
+                                            <div class="loading-text">Chargement des données...</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="facturation-message" class="alert-message" style="display: none;"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -1653,11 +1740,11 @@
 
 <!-- BARRE DE NAVIGATION MOBILE (FIXE EN BAS) -->
 <nav class="mobile-nav" id="mobile-nav">
-    <button class="mobile-nav-item active" onclick="showMobileSection('gestion-facturations')" data-section="gestion-facturations">
+    <button class="mobile-nav-item active" onclick="showSection('gestion-facturations')" data-section="gestion-facturations">
         <i class="fas fa-file-invoice"></i>
         <span>Factures</span>
     </button>
-    <button class="mobile-nav-item" onclick="showMobileSection('point-facturations')" data-section="point-facturations">
+    <button class="mobile-nav-item" onclick="showSection('point-facturations')" data-section="point-facturations">
         <i class="fas fa-chart-bar"></i>
         <span>Point</span>
     </button>
@@ -1923,6 +2010,7 @@ let allFacturationData = [];
 
 // ==================== FONCTIONS DE NAVIGATION ====================
 function showSection(sectionId) {
+    // Mise à jour des sections
     document.querySelectorAll('.section-container').forEach(section => {
         section.classList.remove('active');
     });
@@ -1930,27 +2018,33 @@ function showSection(sectionId) {
     const section = document.getElementById(sectionId);
     if (section) {
         section.classList.add('active');
-        
-        if (sectionId === 'gestion-facturations') {
-            loadFactureDataForSection();
-        } else if (sectionId === 'point-facturations') {
-            loadFacturationDataForSection();
-        }
     }
-}
-
-function showMobileSection(sectionId) {
-    // Mise à jour des sections
-    showSection(sectionId);
+    
+    // Mise à jour de la navigation desktop
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    const activeDesktopBtn = document.querySelector(`.nav-btn[onclick*="${sectionId}"]`);
+    if (activeDesktopBtn) {
+        activeDesktopBtn.classList.add('active');
+    }
     
     // Mise à jour de la navigation mobile
     document.querySelectorAll('.mobile-nav-item').forEach(item => {
         item.classList.remove('active');
     });
     
-    const activeItem = document.querySelector(`.mobile-nav-item[onclick*="${sectionId}"]`);
-    if (activeItem) {
-        activeItem.classList.add('active');
+    const activeMobileItem = document.querySelector(`.mobile-nav-item[onclick*="${sectionId}"]`);
+    if (activeMobileItem) {
+        activeMobileItem.classList.add('active');
+    }
+    
+    // Charger les données si nécessaire
+    if (sectionId === 'gestion-facturations') {
+        loadFactureDataForSection();
+    } else if (sectionId === 'point-facturations') {
+        loadFacturationDataForSection();
     }
 }
 
@@ -3097,7 +3191,6 @@ function logout() {
 
 // Exposer les fonctions globales
 window.showSection = showSection;
-window.showMobileSection = showMobileSection;
 window.openVueGlobale = openVueGlobale;
 window.genererFacture = genererFacture;
 window.openAddFactureModal = openAddFactureModal;
