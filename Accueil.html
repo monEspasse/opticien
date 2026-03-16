@@ -3747,6 +3747,46 @@
 }
 
 
+
+.notification-error,
+.notification-success {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    color: white;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transform: translateX(400px);
+    transition: transform 0.3s ease;
+    z-index: 99999999 !important;
+    max-width: 350px;
+}
+
+.notification-error {
+    background-color: #dc3545;
+    border-left: 4px solid #a71d2a;
+}
+
+.notification-success {
+    background-color: #28a745;
+    border-left: 4px solid #1e7e34;
+}
+
+.notification-error.show,
+.notification-success.show {
+    transform: translateX(0);
+}
+
+.notification-error i,
+.notification-success i {
+    font-size: 20px;
+}
+
     </style>
 </head>
 <body>
@@ -4089,15 +4129,7 @@
             }
         }
 
-        // ============================================
-        // SYSTÈME DE NOTIFICATIONS DYNAMIQUE
-        // ============================================
 
-        // ============================================
-// SYSTÈME DE NOTIFICATIONS DYNAMIQUE CORRIGÉ
-// ============================================
-
-// Charger les notifications depuis l'API
 async function loadNotifications() {
     try {
         const response = await fetch(`${CONFIG.API_BASE}${CONFIG.ENDPOINTS.notification}`);
@@ -4921,788 +4953,893 @@ function replayNotifications() {
                 formMessage.className = 'error-message';
             }
         };
+// MODALE NOUVELLE VENTE
+window.openNewSale = function() {
+    let modal = $('newSaleModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'newSaleModal';
+        modal.className = 'modal-overlay';
+        modal.innerHTML = generateSaleModalHTML();
+        document.body.appendChild(modal);
+    }
+    modal.classList.add('active');
+    initSaleModal();
+};
 
-        // MODALE NOUVELLE VENTE
-        window.openNewSale = function() {
-            let modal = $('newSaleModal');
-            if (!modal) {
-                modal = document.createElement('div');
-                modal.id = 'newSaleModal';
-                modal.className = 'modal-overlay';
-                modal.innerHTML = generateSaleModalHTML();
-                document.body.appendChild(modal);
-            }
-            modal.classList.add('active');
-            initSaleModal();
-        };
-
-        function generateSaleModalHTML() {
-            return `
-                <div class="modal-content">
-                    <div class="modal-header sale">
-                        <h3 class="modal-title">Nouvelle Vente</h3>
-                        <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+function generateSaleModalHTML() {
+    return `
+        <div class="modal-content">
+            <div class="modal-header sale">
+                <h3 class="modal-title">Nouvelle Vente</h3>
+                <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="client-form">
+                    <div class="step-indicator">
+                        <div class="step active" data-step="1">
+                            <div class="step-number">1</div>
+                            <div class="step-label">Client</div>
+                        </div>
+                        <div class="step" data-step="2">
+                            <div class="step-number">2</div>
+                            <div class="step-label">Prescription</div>
+                        </div>
+                        <div class="step" data-step="3">
+                            <div class="step-number">3</div>
+                            <div class="step-label">Paiement</div>
+                        </div>
+                        <div class="step" data-step="4">
+                            <div class="step-number">4</div>
+                            <div class="step-label">Tier Payant</div>
+                        </div>
                     </div>
-                    <div class="modal-body">
-                        <form id="client-form">
-                            <div class="step-indicator">
-                                <div class="step active" data-step="1">
-                                    <div class="step-number">1</div>
-                                    <div class="step-label">Client</div>
-                                </div>
-                                <div class="step" data-step="2">
-                                    <div class="step-number">2</div>
-                                    <div class="step-label">Prescription</div>
-                                </div>
-                                <div class="step" data-step="3">
-                                    <div class="step-number">3</div>
-                                    <div class="step-label">Paiement</div>
-                                </div>
-                                <div class="step" data-step="4">
-                                    <div class="step-number">4</div>
-                                    <div class="step-label">Tier Payant</div>
+
+                    <div id="step-1" class="form-step active">
+                        <h2 class="section-title sale">Informations Client</h2>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="required-field">Nom complet</label>
+                                <input type="text" name="nom_complet" id="nom_complet" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="required-field">Téléphone</label>
+                                <div style="display:flex; gap:5px;">
+                                    <input type="text" name="indicatif" id="indicatif" value="+229" style="width:80px;" class="form-control">
+                                    <input type="tel" name="numero" id="numero" class="form-control" required>
                                 </div>
                             </div>
-
-                            <div id="step-1" class="form-step active">
-                                <h2 class="section-title sale">Informations Client</h2>
-                                <div class="form-grid">
-                                    <div class="form-group">
-                                        <label class="required-field">Nom complet</label>
-                                        <input type="text" name="nom_complet" id="nom_complet" class="form-control" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="required-field">Téléphone</label>
-                                        <div style="display:flex; gap:5px;">
-                                            <input type="text" name="indicatif" id="indicatif" value="+229" style="width:80px;" class="form-control">
-                                            <input type="tel" name="numero" id="numero" class="form-control" required>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="required-field">Date naissance</label>
-                                        <input type="date" name="date_naissance" id="date_naissance" class="form-control" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="required-field">Civilité</label>
-                                        <select name="civilite" id="civilite" class="form-control" required>
-                                            <option value="M.">M.</option>
-                                            <option value="Mme">Mme</option>
-                                            <option value="Mlle">Mlle</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Entreprise</label>
-                                        <select name="entreprise" id="entreprise" class="form-control"></select>
-                                        <input type="text" id="entreprise_input" class="form-control" style="display: none; margin-top: 5px;" placeholder="Ajouter entreprise">
-                                        <button type="button" class="btn-small" onclick="toggleCustomInput('entreprise')" style="margin-top: 5px;">
-                                            <i class="fas fa-plus"></i> Ajouter nouveau
-                                        </button>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="required-field">Agence</label>
-                                        <select name="agence" id="agence" class="form-control" required></select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="required-field">Commercial</label>
-                                        <select name="commercial" id="commercial" class="form-control" required></select>
-                                        <input type="text" id="commercial_input" class="form-control" style="display: none; margin-top: 5px;" placeholder="Ajouter commercial">
-                                        <button type="button" class="btn-small" onclick="toggleCustomInput('commercial')" style="margin-top: 5px;">
-                                            <i class="fas fa-plus"></i> Ajouter nouveau
-                                        </button>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="required-field">Utilisateur</label>
-                                        <input type="text" name="current_user" id="current_user" class="form-control" readonly>
-                                    </div>
-                                </div>
+                            <div class="form-group">
+                                <label class="required-field">Date naissance</label>
+                                <input type="date" name="date_naissance" id="date_naissance" class="form-control" required>
                             </div>
-
-                            <div id="step-2" class="form-step">
-                                <h2 class="section-title sale">Prescription</h2>
-                                <div class="prescription-container">
-                                    <!-- Version desktop -->
-                                    <table class="prescription-table desktop-view">
-                                        <thead>
-                                            <tr><th>Œil</th><th>Sphere</th><th>Cylindre</th><th>Axe</th><th>ADD</th><th>DP</th><th>Hauteur</th></tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>OD</td>
-                                                <td><select name="od_sphere" id="od_sphere" class="prescription-select"></select></td>
-                                                <td><select name="od_cylindre" id="od_cylindre" class="prescription-select"></select></td>
-                                                <td><select name="od_axe" id="od_axe" class="prescription-select"></select></td>
-                                                <td><select name="od_add" id="od_add" class="prescription-select"></select></td>
-                                                <td><input type="number" name="od_dp" id="od_dp" value="0" class="small-input"></td>
-                                                <td><input type="number" name="od_hauteur" id="od_hauteur" value="0" class="small-input"></td>
-                                            </tr>
-                                            <tr>
-                                                <td>OG</td>
-                                                <td><select name="og_sphere" id="og_sphere" class="prescription-select"></select></td>
-                                                <td><select name="og_cylindre" id="og_cylindre" class="prescription-select"></select></td>
-                                                <td><select name="og_axe" id="og_axe" class="prescription-select"></select></td>
-                                                <td><select name="og_add" id="og_add" class="prescription-select"></select></td>
-                                                <td><input type="number" name="og_dp" id="og_dp" value="0" class="small-input"></td>
-                                                <td><input type="number" name="og_hauteur" id="og_hauteur" value="0" class="small-input"></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
-                                    <!-- Version mobile -->
-                                    <div class="prescription-mobile mobile-view">
-                                        <div class="prescription-card">
-                                            <div class="card-header">
-                                                <h4>Œil Droit (OD)</h4>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="mobile-form-group">
-                                                    <label>Sphere</label>
-                                                    <select name="od_sphere" class="prescription-select"></select>
-                                                </div>
-                                                <div class="mobile-form-group">
-                                                    <label>Cylindre</label>
-                                                    <select name="od_cylindre" class="prescription-select"></select>
-                                                </div>
-                                                <div class="mobile-form-group">
-                                                    <label>Axe</label>
-                                                    <select name="od_axe" class="prescription-select"></select>
-                                                </div>
-                                                <div class="mobile-form-group">
-                                                    <label>ADD</label>
-                                                    <select name="od_add" class="prescription-select"></select>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="prescription-card">
-                                            <div class="card-header">
-                                                <h4>Œil Gauche (OG)</h4>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="mobile-form-group">
-                                                    <label>Sphere</label>
-                                                    <select name="og_sphere" class="prescription-select"></select>
-                                                </div>
-                                                <div class="mobile-form-group">
-                                                    <label>Cylindre</label>
-                                                    <select name="og_cylindre" class="prescription-select"></select>
-                                                </div>
-                                                <div class="mobile-form-group">
-                                                    <label>Axe</label>
-                                                    <select name="og_axe" class="prescription-select"></select>
-                                                </div>
-                                                <div class="mobile-form-group">
-                                                    <label>ADD</label>
-                                                    <select name="og_add" class="prescription-select"></select>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="prescription-card measures-card">
-                                            <div class="card-header">
-                                                <h4>Mesures</h4>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="measures-grid">
-                                                    <div class="measure-group">
-                                                        <label>DP OD</label>
-                                                        <input type="number" name="od_dp" value="0" class="small-input">
-                                                    </div>
-                                                    <div class="measure-group">
-                                                        <label>DP OG</label>
-                                                        <input type="number" name="og_dp" value="0" class="small-input">
-                                                    </div>
-                                                    <div class="measure-group">
-                                                        <label>Hauteur OD</label>
-                                                        <input type="number" name="od_hauteur" value="0" class="small-input">
-                                                    </div>
-                                                    <div class="measure-group">
-                                                        <label>Hauteur OG</label>
-                                                        <input type="number" name="og_hauteur" value="0" class="small-input">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <h2 class="section-title sale" style="margin-top:2rem;">Commande</h2>
-                                <div class="form-grid">
-                                    <div class="form-group">
-                                        <label class="required-field">Type de Verre</label>
-                                        <select name="type_verre" id="type_verre" class="form-control" required></select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="required-field">Gamme Verre</label>
-                                        <select name="gamme_verre" id="gamme_verre" class="form-control" required></select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="required-field">Monture</label>
-                                        <select name="choix_monture" id="choix_monture" class="form-control" required disabled></select>
-                                    </div>
-                                </div>
+                            <div class="form-group">
+                                <label class="required-field">Civilité</label>
+                                <select name="civilite" id="civilite" class="form-control" required>
+                                    <option value="M.">M.</option>
+                                    <option value="Mme">Mme</option>
+                                    <option value="Mlle">Mlle</option>
+                                </select>
                             </div>
-
-                            <div id="step-3" class="form-step">
-                                <h2 class="section-title sale">Paiement</h2>
-                                <div class="payment-card">
-                                    <div class="payment-row">
-                                        <div class="payment-group">
-                                            <label class="payment-label required-field">Monture (FCFA)</label>
-                                            <input type="number" class="form-control" name="montant_monture" id="montant_monture" value="0" oninput="calculerTotal()">
-                                        </div>
-                                        <div class="payment-group">
-                                            <label class="payment-label required-field">Verres (FCFA)</label>
-                                            <input type="number" class="form-control" name="montant_verres" id="montant_verres" value="0" oninput="calculerTotal()">
-                                        </div>
-                                        <div class="payment-group">
-                                            <label class="payment-label">Livraison (FCFA)</label>
-                                            <input type="number" class="form-control" name="frais_livraison" id="frais_livraison" value="0" oninput="calculerTotal()">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="payment-card">
-                                    <div class="payment-row">
-                                        <div class="payment-group">
-                                            <label class="payment-label">Total Brut</label>
-                                            <div class="payment-value" id="total_brut_display">0</div>
-                                        </div>
-                                        <div class="payment-group">
-                                            <label class="payment-label">Remise</label>
-                                            <div class="discount-selector">
-                                                <input type="number" class="form-control discount-amount" name="remise" id="remise" value="0" oninput="calculerTotal()">
-                                                <select class="form-control discount-type" name="remise_type" id="remise_type" onchange="calculerTotal()">
-                                                    <option value="FCFA">FCFA</option>
-                                                    <option value="%">%</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="payment-group">
-                                            <label class="payment-label">Part Assurance</label>
-                                            <input type="number" class="form-control" name="part_assurance" id="part_assurance" value="0" oninput="calculerTotal()">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="payment-card">
-                                    <div class="payment-row">
-                                        <div class="payment-group">
-                                            <label class="payment-label">Net à payer</label>
-                                            <div class="payment-value" id="net_a_payer_display">0</div>
-                                        </div>
-                                        <div class="payment-group">
-                                            <label class="payment-label">Acompte</label>
-                                            <input type="number" class="form-control" name="acompte" id="acompte" value="0" oninput="calculerTotal()">
-                                        </div>
-                                        <div class="payment-group">
-                                            <label class="payment-label">Reste à payer</label>
-                                            <div class="payment-value" id="reste_a_payer_display">0</div>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="form-group">
+                                <label>Entreprise</label>
+                                <select name="entreprise" id="entreprise" class="form-control"></select>
+                                <input type="text" id="entreprise_input" class="form-control" style="display: none; margin-top: 5px;" placeholder="Ajouter entreprise">
+                                <button type="button" class="btn-small" onclick="toggleCustomInput('entreprise')" style="margin-top: 5px;">
+                                    <i class="fas fa-plus"></i> Ajouter nouveau
+                                </button>
                             </div>
-
-                            <div id="step-4" class="form-step">
-                                <h2 class="section-title sale">Tier Payant & Livraison</h2>
-                                <div class="form-grid">
-                                    <div class="form-group">
-                                        <label>Assurance</label>
-                                        <select name="assurance" id="assurance" class="form-control"></select>
-                                        <input type="text" id="assurance_input" class="form-control" style="display: none; margin-top: 5px;" placeholder="Ajouter assurance">
-                                        <button type="button" class="btn-small" onclick="toggleCustomInput('assurance')" style="margin-top: 5px;">
-                                            <i class="fas fa-plus"></i> Ajouter nouveau
-                                        </button>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Compagnie</label>
-                                        <select name="compagnie" id="compagnie" class="form-control"></select>
-                                        <input type="text" id="compagnie_input" class="form-control" style="display: none; margin-top: 5px;" placeholder="Ajouter compagnie">
-                                        <button type="button" class="btn-small" onclick="toggleCustomInput('compagnie')" style="margin-top: 5px;">
-                                            <i class="fas fa-plus"></i> Ajouter nouveau
-                                        </button>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>N° Police</label>
-                                        <input type="text" name="numero_police" id="numero_police" class="form-control">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>TVA (18%)</label>
-                                        <input type="number" name="tva" id="tva" class="form-control" readonly>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Assuré principal</label>
-                                        <select name="assure_principal" id="assure_principal" class="form-control">
-                                            <option value="">-- Choisir --</option>
-                                            <option value="oui">Oui</option>
-                                            <option value="non">Non</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group" id="assure_principal_nom_container" style="display:none;">
-                                        <label>Nom assuré principal</label>
-                                        <input type="text" name="assure_principal_nom" id="assure_principal_nom" class="form-control">
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="required-field">Date livraison</label>
-                                        <input type="date" name="date_livraison" id="date_livraison" class="form-control" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="required-field">Contact livraison</label>
-                                        <select name="contact_livraison_type" id="contact_livraison_type" class="form-control" required>
-                                            <option value="">-- Choisir --</option>
-                                            <option value="client">Lui-même</option>
-                                            <option value="tiers">Tier personne</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="required-field">Téléphone contact</label>
-                                        <input type="tel" name="telephone_contact" id="telephone_contact" class="form-control" required>
-                                    </div>
-                                    <div class="form-group" style="grid-column:span 2;">
-                                        <label class="required-field">Adresse livraison</label>
-                                        <textarea name="adresse_livraison" id="adresse_livraison" class="form-control" rows="3" required></textarea>
-                                    </div>
-                                </div>
+                            <div class="form-group">
+                                <label class="required-field">Agence</label>
+                                <select name="agence" id="agence" class="form-control" required></select>
                             </div>
-
-                            <div class="step-navigation">
-                                <div class="nav-group">
-                                    <button type="button" class="btn btn-secondary" id="prevStepBtn" style="display:none;">
-                                        <i class="fas fa-arrow-left"></i> Précédent
-                                    </button>
-                                </div>
-                                <div class="nav-group">
-                                    <button type="button" class="btn btn-outline" id="resetButton">
-                                        <i class="fas fa-undo"></i> Réinitialiser
-                                    </button>
-                                    <button type="button" class="btn btn-outline" onclick="closeModal()">
-                                        <i class="fas fa-times"></i> Annuler
-                                    </button>
-                                </div>
-                                <div class="nav-group">
-                                    <button type="button" class="btn btn-primary" id="nextStepBtn">
-                                        Suivant <i class="fas fa-arrow-right"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-success" id="submitBtn" style="display:none;">
-                                        <i class="fas fa-check"></i> Ajouter
-                                    </button>
-                                </div>
+                            <div class="form-group">
+                                <label class="required-field">Commercial</label>
+                                <select name="commercial" id="commercial" class="form-control" required></select>
+                                <input type="text" id="commercial_input" class="form-control" style="display: none; margin-top: 5px;" placeholder="Ajouter commercial">
+                                <button type="button" class="btn-small" onclick="toggleCustomInput('commercial')" style="margin-top: 5px;">
+                                    <i class="fas fa-plus"></i> Ajouter nouveau
+                                </button>
                             </div>
-                        </form>
+                            <div class="form-group">
+                                <label class="required-field">Utilisateur</label>
+                                <input type="text" name="current_user" id="current_user" class="form-control" readonly>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            `;
+
+                    <div id="step-2" class="form-step">
+                        <h2 class="section-title sale">Prescription</h2>
+                        <div class="prescription-container">
+                            <!-- Version desktop -->
+                            <table class="prescription-table desktop-view">
+                                <thead>
+                                    <tr><th>Œil</th><th>Sphere</th><th>Cylindre</th><th>Axe</th><th>ADD</th><th>DP</th><th>Hauteur</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>OD</td>
+                                        <td><select name="od_sphere" id="od_sphere" class="prescription-select"></select></td>
+                                        <td><select name="od_cylindre" id="od_cylindre" class="prescription-select"></select></td>
+                                        <td><select name="od_axe" id="od_axe" class="prescription-select"></select></td>
+                                        <td><select name="od_add" id="od_add" class="prescription-select"></select></td>
+                                        <td><input type="number" name="od_dp" id="od_dp" value="0" class="small-input"></td>
+                                        <td><input type="number" name="od_hauteur" id="od_hauteur" value="0" class="small-input"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>OG</td>
+                                        <td><select name="og_sphere" id="og_sphere" class="prescription-select"></select></td>
+                                        <td><select name="og_cylindre" id="og_cylindre" class="prescription-select"></select></td>
+                                        <td><select name="og_axe" id="og_axe" class="prescription-select"></select></td>
+                                        <td><select name="og_add" id="og_add" class="prescription-select"></select></td>
+                                        <td><input type="number" name="og_dp" id="og_dp" value="0" class="small-input"></td>
+                                        <td><input type="number" name="og_hauteur" id="og_hauteur" value="0" class="small-input"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <!-- Version mobile -->
+                            <div class="prescription-mobile mobile-view">
+                                <div class="prescription-card">
+                                    <div class="card-header">
+                                        <h4>Œil Droit (OD)</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mobile-form-group">
+                                            <label>Sphere</label>
+                                            <select name="od_sphere" class="prescription-select"></select>
+                                        </div>
+                                        <div class="mobile-form-group">
+                                            <label>Cylindre</label>
+                                            <select name="od_cylindre" class="prescription-select"></select>
+                                        </div>
+                                        <div class="mobile-form-group">
+                                            <label>Axe</label>
+                                            <select name="od_axe" class="prescription-select"></select>
+                                        </div>
+                                        <div class="mobile-form-group">
+                                            <label>ADD</label>
+                                            <select name="od_add" class="prescription-select"></select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="prescription-card">
+                                    <div class="card-header">
+                                        <h4>Œil Gauche (OG)</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mobile-form-group">
+                                            <label>Sphere</label>
+                                            <select name="og_sphere" class="prescription-select"></select>
+                                        </div>
+                                        <div class="mobile-form-group">
+                                            <label>Cylindre</label>
+                                            <select name="og_cylindre" class="prescription-select"></select>
+                                        </div>
+                                        <div class="mobile-form-group">
+                                            <label>Axe</label>
+                                            <select name="og_axe" class="prescription-select"></select>
+                                        </div>
+                                        <div class="mobile-form-group">
+                                            <label>ADD</label>
+                                            <select name="og_add" class="prescription-select"></select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="prescription-card measures-card">
+                                    <div class="card-header">
+                                        <h4>Mesures</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="measures-grid">
+                                            <div class="measure-group">
+                                                <label>DP OD</label>
+                                                <input type="number" name="od_dp" value="0" class="small-input">
+                                            </div>
+                                            <div class="measure-group">
+                                                <label>DP OG</label>
+                                                <input type="number" name="og_dp" value="0" class="small-input">
+                                            </div>
+                                            <div class="measure-group">
+                                                <label>Hauteur OD</label>
+                                                <input type="number" name="od_hauteur" value="0" class="small-input">
+                                            </div>
+                                            <div class="measure-group">
+                                                <label>Hauteur OG</label>
+                                                <input type="number" name="og_hauteur" value="0" class="small-input">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h2 class="section-title sale" style="margin-top:2rem;">Commande</h2>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="required-field">Type de Verre</label>
+                                <select name="type_verre" id="type_verre" class="form-control" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label class="required-field">Gamme Verre</label>
+                                <select name="gamme_verre" id="gamme_verre" class="form-control" ></select>
+                            </div>
+                            <div class="form-group">
+                                <label class="required-field">Monture</label>
+                                <select name="choix_monture" id="choix_monture" class="form-control" required disabled></select>
+                            </div>
+                        </div>
+                        
+                        <!-- NOUVEAU : Clinique, Ophtalmologue et Date de soin -->
+                        <h2 class="section-title sale" style="margin-top:2rem;">Informations médicales</h2>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="clinique">Clinique</label>
+                                <div class="select-with-input">
+                                    <select name="clinique" id="clinique" class="form-control">
+                                        <option value="">-- Choisir --</option>
+                                        <!-- Options existantes seront ajoutées dynamiquement -->
+                                    </select>
+                                    <input type="text" id="clinique_input" class="form-control" style="display: none; margin-top: 5px;" 
+                                           placeholder="Nouvelle clinique">
+                                </div>
+                                <button type="button" class="btn btn-small" onclick="toggleCustomInput('clinique')" 
+                                        style="margin-top: 5px; padding: 0.25rem 0.5rem;">
+                                    <i class="fas fa-plus"></i> Ajouter nouvelle
+                                </button>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="ophtalmo">Ophtalmologue</label>
+                                <div class="select-with-input">
+                                    <select name="ophtalmo" id="ophtalmo" class="form-control">
+                                        <option value="">-- Choisir --</option>
+                                        <!-- Options existantes seront ajoutées dynamiquement -->
+                                    </select>
+                                    <input type="text" id="ophtalmo_input" class="form-control" style="display: none; margin-top: 5px;" 
+                                           placeholder="Nouvel ophtalmologue">
+                                </div>
+                                <button type="button" class="btn btn-small" onclick="toggleCustomInput('ophtalmo')"
+                                        style="margin-top: 5px; padding: 0.25rem 0.5rem;">
+                                    <i class="fas fa-plus"></i> Ajouter nouveau
+                                </button>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="date_soin">Date de soin</label>
+                                <input type="date" name="date_soin" id="date_soin" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="step-3" class="form-step">
+                        <h2 class="section-title sale">Paiement</h2>
+                        <div class="payment-card">
+                            <div class="payment-row">
+                                <div class="payment-group">
+                                    <label class="payment-label required-field">Monture (FCFA)</label>
+                                    <input type="number" class="form-control" name="montant_monture" id="montant_monture" value="0" oninput="calculerTotal()">
+                                </div>
+                                <div class="payment-group">
+                                    <label class="payment-label required-field">Verres (FCFA)</label>
+                                    <input type="number" class="form-control" name="montant_verres" id="montant_verres" value="0" oninput="calculerTotal()">
+                                </div>
+                                <div class="payment-group">
+                                    <label class="payment-label">Livraison (FCFA)</label>
+                                    <input type="number" class="form-control" name="frais_livraison" id="frais_livraison" value="0" oninput="calculerTotal()">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="payment-card">
+                            <div class="payment-row">
+                                <div class="payment-group">
+                                    <label class="payment-label">Total Brut</label>
+                                    <div class="payment-value" id="total_brut_display">0</div>
+                                </div>
+                                <div class="payment-group">
+                                    <label class="payment-label">Remise</label>
+                                    <div class="discount-selector">
+                                        <input type="number" class="form-control discount-amount" name="remise" id="remise" value="0" oninput="calculerTotal()">
+                                        <select class="form-control discount-type" name="remise_type" id="remise_type" onchange="calculerTotal()">
+                                            <option value="FCFA">FCFA</option>
+                                            <option value="%">%</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="payment-group">
+                                    <label class="payment-label">Part Assurance</label>
+                                    <input type="number" class="form-control" name="part_assurance" id="part_assurance" value="0" oninput="calculerTotal()">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="payment-card">
+                            <div class="payment-row">
+                                <div class="payment-group">
+                                    <label class="payment-label">Net à payer</label>
+                                    <div class="payment-value" id="net_a_payer_display">0</div>
+                                </div>
+                                <div class="payment-group">
+                                    <label class="payment-label">Acompte</label>
+                                    <input type="number" class="form-control" name="acompte" id="acompte" value="0" oninput="calculerTotal()">
+                                </div>
+                                <div class="payment-group">
+                                    <label class="payment-label">Reste à payer</label>
+                                    <div class="payment-value" id="reste_a_payer_display">0</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="step-4" class="form-step">
+                        <h2 class="section-title sale">Tier Payant & Livraison</h2>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Assurance</label>
+                                <select name="assurance" id="assurance" class="form-control"></select>
+                                <input type="text" id="assurance_input" class="form-control" style="display: none; margin-top: 5px;" placeholder="Ajouter assurance">
+                                <button type="button" class="btn-small" onclick="toggleCustomInput('assurance')" style="margin-top: 5px;">
+                                    <i class="fas fa-plus"></i> Ajouter nouveau
+                                </button>
+                            </div>
+                            <div class="form-group">
+                                <label>Compagnie</label>
+                                <select name="compagnie" id="compagnie" class="form-control"></select>
+                                <input type="text" id="compagnie_input" class="form-control" style="display: none; margin-top: 5px;" placeholder="Ajouter compagnie">
+                                <button type="button" class="btn-small" onclick="toggleCustomInput('compagnie')" style="margin-top: 5px;">
+                                    <i class="fas fa-plus"></i> Ajouter nouveau
+                                </button>
+                            </div>
+                            <div class="form-group">
+                                <label>N° Police</label>
+                                <input type="text" name="numero_police" id="numero_police" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>TVA (18%)</label>
+                                <input type="number" name="tva" id="tva" class="form-control" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Assuré principal</label>
+                                <select name="assure_principal" id="assure_principal" class="form-control">
+                                    <option value="">-- Choisir --</option>
+                                    <option value="oui">Oui</option>
+                                    <option value="non">Non</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="assure_principal_nom_container" style="display:none;">
+                                <label>Nom assuré principal</label>
+                                <input type="text" name="assure_principal_nom" id="assure_principal_nom" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label class="required-field">Date livraison</label>
+                                <input type="date" name="date_livraison" id="date_livraison" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="required-field">Contact livraison</label>
+                                <select name="contact_livraison_type" id="contact_livraison_type" class="form-control" required>
+                                    <option value="">-- Choisir --</option>
+                                    <option value="client">Lui-même</option>
+                                    <option value="tiers">Tier personne</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="required-field">Téléphone contact</label>
+                                <input type="tel" name="telephone_contact" id="telephone_contact" class="form-control" required>
+                            </div>
+                            <div class="form-group" style="grid-column:span 2;">
+                                <label class="required-field">Adresse livraison</label>
+                                <textarea name="adresse_livraison" id="adresse_livraison" class="form-control" rows="3" required></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-navigation">
+                        <div class="nav-group">
+                            <button type="button" class="btn btn-secondary" id="prevStepBtn" style="display:none;">
+                                <i class="fas fa-arrow-left"></i> Précédent
+                            </button>
+                        </div>
+                        <div class="nav-group">
+                            <button type="button" class="btn btn-outline" id="resetButton">
+                                <i class="fas fa-undo"></i> Réinitialiser
+                            </button>
+                            <button type="button" class="btn btn-outline" onclick="closeModal()">
+                                <i class="fas fa-times"></i> Annuler
+                            </button>
+                        </div>
+                        <div class="nav-group">
+                            <button type="button" class="btn btn-primary" id="nextStepBtn">
+                                Suivant <i class="fas fa-arrow-right"></i>
+                            </button>
+                            <button type="button" class="btn btn-success" id="submitBtn" style="display:none;">
+                                <i class="fas fa-check"></i> Ajouter
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    `;
+}
+
+// Fonction pour basculer entre select et input personnalisé
+window.toggleCustomInput = function(fieldName) {
+    const select = $(fieldName);
+    const input = $(fieldName + '_input');
+    const button = event.currentTarget;
+    
+    if (input.style.display === 'none') {
+        select.style.display = 'none';
+        input.style.display = 'block';
+        input.value = '';
+        button.innerHTML = '<i class="fas fa-list"></i> Choisir existant';
+    } else {
+        select.style.display = 'block';
+        input.style.display = 'none';
+        button.innerHTML = '<i class="fas fa-plus"></i> Ajouter nouveau';
+        
+        if (input.value.trim()) {
+            addOptionIfNotExists(select, input.value.trim());
+            select.value = input.value.trim();
         }
+    }
+};
 
-        // Fonction pour basculer entre select et input personnalisé
-        window.toggleCustomInput = function(fieldName) {
-            const select = $(fieldName);
-            const input = $(fieldName + '_input');
-            const button = event.currentTarget;
-            
-            if (input.style.display === 'none') {
-                select.style.display = 'none';
-                input.style.display = 'block';
-                input.value = '';
-                button.innerHTML = '<i class="fas fa-list"></i> Choisir existant';
-            } else {
-                select.style.display = 'block';
-                input.style.display = 'none';
-                button.innerHTML = '<i class="fas fa-plus"></i> Ajouter nouveau';
-                
-                if (input.value.trim()) {
-                    addOptionIfNotExists(select, input.value.trim());
-                    select.value = input.value.trim();
-                }
-            }
-        };
-
-        function addOptionIfNotExists(select, value) {
-            for (let i = 0; i < select.options.length; i++) {
-                if (select.options[i].text === value) {
-                    select.value = value;
-                    return;
-                }
-            }
-            const option = document.createElement('option');
-            option.value = value;
-            option.text = value;
-            select.add(option);
+function addOptionIfNotExists(select, value) {
+    for (let i = 0; i < select.options.length; i++) {
+        if (select.options[i].text === value) {
             select.value = value;
+            return;
         }
+    }
+    const option = document.createElement('option');
+    option.value = value;
+    option.text = value;
+    select.add(option);
+    select.value = value;
+}
 
-        function initSaleModal() {
-            AppState.modals.sale.currentStep = 1;
-            updateSaleStepDisplay();
-            calculerTotal();
+function initSaleModal() {
+    AppState.modals.sale.currentStep = 1;
+    updateSaleStepDisplay();
+    calculerTotal();
 
-            const today = new Date();
-            const delivery = new Date(today);
-            delivery.setDate(today.getDate() + 15);
+    const today = new Date();
+    const delivery = new Date(today);
+    delivery.setDate(today.getDate() + 15);
 
-            $('date_livraison').value = delivery.toISOString().split('T')[0];
-            $('current_user').value = AppState.user.nom;
+    $('date_livraison').value = delivery.toISOString().split('T')[0];
+    $('current_user').value = AppState.user.nom;
 
-            loadCatalogueData();
+    loadCatalogueData();
 
-            $('prevStepBtn').onclick = prevSaleStep;
-            $('nextStepBtn').onclick = nextSaleStep;
-            $('resetButton').onclick = resetSaleForm;
-            $('submitBtn').onclick = submitSaleForm;
+    $('prevStepBtn').onclick = prevSaleStep;
+    $('nextStepBtn').onclick = nextSaleStep;
+    $('resetButton').onclick = resetSaleForm;
+    $('submitBtn').onclick = submitSaleForm;
 
-            ['montant_monture', 'montant_verres', 'frais_livraison', 'remise', 'part_assurance', 'acompte'].forEach(id => {
-                $(id)?.addEventListener('input', calculerTotal);
-            });
-            $('remise_type')?.addEventListener('change', calculerTotal);
+    ['montant_monture', 'montant_verres', 'frais_livraison', 'remise', 'part_assurance', 'acompte'].forEach(id => {
+        $(id)?.addEventListener('input', calculerTotal);
+    });
+    $('remise_type')?.addEventListener('change', calculerTotal);
 
-            $('assure_principal')?.addEventListener('change', toggleAssurePrincipal);
-            $('contact_livraison_type')?.addEventListener('change', updateContactFields);
-            $('agence')?.addEventListener('change', loadMonturesForAgence);
+    $('assure_principal')?.addEventListener('change', toggleAssurePrincipal);
+    $('contact_livraison_type')?.addEventListener('change', updateContactFields);
+    $('agence')?.addEventListener('change', loadMonturesForAgence);
 
-            // Synchronisation des champs prescription
-            setupPrescriptionSync();
+    // Synchronisation des champs prescription
+    setupPrescriptionSync();
 
-            setTimeout(() => loadMonturesForAgence(), 500);
-        }
+    setTimeout(() => loadMonturesForAgence(), 500);
+}
 
-        function setupPrescriptionSync() {
-            const fields = ['od_sphere', 'od_cylindre', 'od_axe', 'od_add', 'og_sphere', 'og_cylindre', 'og_axe', 'og_add'];
-            fields.forEach(name => {
-                const selects = document.querySelectorAll(`[name="${name}"]`);
-                selects.forEach(select => {
-                    select.addEventListener('change', function() {
-                        selects.forEach(s => {
-                            if (s !== this) s.value = this.value;
-                        });
-                    });
+function setupPrescriptionSync() {
+    const fields = ['od_sphere', 'od_cylindre', 'od_axe', 'od_add', 'og_sphere', 'og_cylindre', 'og_axe', 'og_add'];
+    fields.forEach(name => {
+        const selects = document.querySelectorAll(`[name="${name}"]`);
+        selects.forEach(select => {
+            select.addEventListener('change', function() {
+                selects.forEach(s => {
+                    if (s !== this) s.value = this.value;
                 });
             });
+        });
+    });
 
-            ['od_dp', 'od_hauteur', 'og_dp', 'og_hauteur'].forEach(name => {
-                const inputs = document.querySelectorAll(`[name="${name}"]`);
-                inputs.forEach(input => {
-                    input.addEventListener('input', function() {
-                        inputs.forEach(inp => {
-                            if (inp !== this) inp.value = this.value;
-                        });
-                    });
+    ['od_dp', 'od_hauteur', 'og_dp', 'og_hauteur'].forEach(name => {
+        const inputs = document.querySelectorAll(`[name="${name}"]`);
+        inputs.forEach(input => {
+            input.addEventListener('input', function() {
+                inputs.forEach(inp => {
+                    if (inp !== this) inp.value = this.value;
                 });
             });
-        }
+        });
+    });
+}
 
-        function updateSaleStepDisplay() {
-            const step = AppState.modals.sale.currentStep;
-            for (let i = 1; i <= 4; i++) {
-                const el = $(`step-${i}`);
-                if (el) el.classList.toggle('active', i === step);
+function updateSaleStepDisplay() {
+    const step = AppState.modals.sale.currentStep;
+    for (let i = 1; i <= 4; i++) {
+        const el = $(`step-${i}`);
+        if (el) el.classList.toggle('active', i === step);
+    }
+
+    document.querySelectorAll('#newSaleModal .step').forEach((s, i) => {
+        s.classList.toggle('active', i + 1 === step);
+    });
+
+    $('prevStepBtn').style.display = step > 1 ? 'block' : 'none';
+    $('nextStepBtn').style.display = step < 4 ? 'block' : 'none';
+    $('submitBtn').style.display = step === 4 ? 'block' : 'none';
+}
+
+function prevSaleStep() {
+    if (AppState.modals.sale.currentStep > 1) {
+        AppState.modals.sale.currentStep--;
+        updateSaleStepDisplay();
+    }
+}
+
+function nextSaleStep() {
+    if (validateSaleStep(AppState.modals.sale.currentStep) && AppState.modals.sale.currentStep < 4) {
+        AppState.modals.sale.currentStep++;
+        updateSaleStepDisplay();
+    }
+}
+
+function validateSaleStep(step) {
+    if (step === 1) {
+        const required = ['nom_complet', 'numero', 'agence', 'commercial'];
+        for (const id of required) {
+            if (!$(id)?.value && !$(id + '_input')?.value) {
+                $(id).style.borderColor = '#dc3545';
+                $(id).style.borderWidth = '2px';
+                setTimeout(() => {
+                    $(id).style.borderColor = '';
+                    $(id).style.borderWidth = '';
+                }, 2000);
+                showError(`❌ Champ obligatoire: ${id.replace('_', ' ')}`);
+                return false;
             }
-
-            document.querySelectorAll('#newSaleModal .step').forEach((s, i) => {
-                s.classList.toggle('active', i + 1 === step);
-            });
-
-            $('prevStepBtn').style.display = step > 1 ? 'block' : 'none';
-            $('nextStepBtn').style.display = step < 4 ? 'block' : 'none';
-            $('submitBtn').style.display = step === 4 ? 'block' : 'none';
         }
-
-        function prevSaleStep() {
-            if (AppState.modals.sale.currentStep > 1) {
-                AppState.modals.sale.currentStep--;
-                updateSaleStepDisplay();
+    }
+    if (step === 2) {
+        const required = ['type_verre', 'choix_monture'];
+        for (const id of required) {
+            if (!$(id)?.value && !$(id + '_input')?.value) {
+                $(id).style.borderColor = '#dc3545';
+                $(id).style.borderWidth = '2px';
+                setTimeout(() => {
+                    $(id).style.borderColor = '';
+                    $(id).style.borderWidth = '';
+                }, 2000);
+                showError(`❌ Veuillez sélectionner ${id === 'type_verre' ? 'un type de verre' : 'une monture'}`);
+                return false;
             }
         }
-
-        function nextSaleStep() {
-            if (validateSaleStep(AppState.modals.sale.currentStep) && AppState.modals.sale.currentStep < 4) {
-                AppState.modals.sale.currentStep++;
-                updateSaleStepDisplay();
+    }
+    if (step === 4) {
+        const partAssurance = parseFloat($('part_assurance')?.value) || 0;
+        
+        if (partAssurance > 0) {
+            const errors = [];
+            
+            // Vérifier chaque champ
+            const assurance = $('assurance')?.value || $('assurance_input')?.value;
+            if (!assurance) {
+                errors.push('❌ Assurance obligatoire');
+                highlightField('assurance');
             }
-        }
-
-        function validateSaleStep(step) {
-            if (step === 1) {
-                const required = ['nom_complet', 'numero', 'agence', 'commercial'];
-                for (const id of required) {
-                    if (!$(id)?.value && !$(id + '_input')?.value) {
-                        $(id).style.borderColor = '#dc3545';
-                        setTimeout(() => $(id).style.borderColor = '', 2000);
-                        showError('Remplissez tous les champs obligatoires');
-                        return false;
-                    }
-                }
+            
+            const compagnie = $('compagnie')?.value || $('compagnie_input')?.value;
+            if (!compagnie) {
+                errors.push('❌ Compagnie obligatoire');
+                highlightField('compagnie');
             }
-            if (step === 4) {
-                const assurance = $('assurance')?.value || $('assurance_input')?.value;
-                const compagnie = $('compagnie')?.value || $('compagnie_input')?.value;
-                const numeroPolice = $('numero_police')?.value;
-                const partAssurance = parseFloat($('part_assurance')?.value) || 0;
+            
+            const numeroPolice = $('numero_police')?.value;
+            if (!numeroPolice) {
+                errors.push('❌ N° Police obligatoire');
+                highlightField('numero_police');
+            }
+            
+            const assurePrincipal = $('assure_principal')?.value;
+            if (!assurePrincipal) {
+                errors.push('❌ Assuré principal obligatoire');
+                highlightField('assure_principal');
+            }
+            
+            const nomAssure = $('assure_principal_nom')?.value;
+            if (assurePrincipal === 'non' && !nomAssure) {
+                errors.push('❌ Nom assuré principal obligatoire');
+                highlightField('assure_principal_nom');
+            }
+            
+            if (errors.length > 0) {
+                // Afficher le premier message d'erreur
+                showError(errors[0]);
                 
-                if (partAssurance > 0) {
-                    if (!assurance) {
-                        showError('L\'assurance est obligatoire quand la part assurance > 0');
-                        return false;
-                    }
-                    if (!compagnie) {
-                        showError('La compagnie est obligatoire quand la part assurance > 0');
-                        return false;
-                    }
-                    if (!numeroPolice) {
-                        showError('Le N° Police est obligatoire quand la part assurance > 0');
-                        return false;
-                    }
-                    
-                    const assurePrincipal = $('assure_principal')?.value;
-                    if (!assurePrincipal) {
-                        showError('L\'assuré principal est obligatoire quand la part assurance > 0');
-                        return false;
-                    }
-                    
-                    const nomAssure = $('assure_principal_nom')?.value;
-                    if (assurePrincipal === 'non' && !nomAssure) {
-                        showError('Le nom de l\'assuré principal est obligatoire');
-                        return false;
-                    }
+                // Aller à l'étape 4 si on n'y est pas
+                if (AppState.modals.sale.currentStep !== 4) {
+                    AppState.modals.sale.currentStep = 4;
+                    updateSaleStepDisplay();
                 }
-            }
-            return true;
-        }
-
-        function calculerTotal() {
-            const getVal = (id) => parseFloat($(id)?.value) || 0;
-            
-            const monture = getVal('montant_monture');
-            const verres = getVal('montant_verres');
-            const livraison = getVal('frais_livraison');
-            const brut = monture + verres + livraison;
-
-            const remise = getVal('remise');
-            const remiseType = $('remise_type')?.value || 'FCFA';
-            const remiseVal = remiseType === '%' ? brut * remise / 100 : remise;
-            
-            const partAssurance = getVal('part_assurance');
-            const net = Math.max(0, brut - remiseVal - partAssurance);
-            const acompte = getVal('acompte');
-            const reste = Math.max(0, net - acompte);
-
-            $('total_brut_display').textContent = formatCurrency(brut);
-            $('net_a_payer_display').textContent = formatCurrency(net);
-            $('reste_a_payer_display').textContent = formatCurrency(reste);
-            
-            $('tva').value = Math.round(monture * 18 / 118);
-
-            // Rendre les champs assurance obligatoires si part_assurance > 0
-            const assuranceFields = ['assurance', 'compagnie', 'numero_police', 'assure_principal'];
-            if (partAssurance > 0) {
-                assuranceFields.forEach(id => {
-                    const field = $(id);
-                    if (field) {
-                        field.required = true;
-                        field.style.borderColor = '';
-                    }
-                });
-            } else {
-                assuranceFields.forEach(id => {
-                    const field = $(id);
-                    if (field) {
-                        field.required = false;
-                        field.style.borderColor = '';
-                    }
-                });
+                
+                return false;
             }
         }
+    }
+    return true;
+}
 
-        function toggleAssurePrincipal() {
-            const val = $('assure_principal')?.value;
-            const container = $('assure_principal_nom_container');
-            const input = $('assure_principal_nom');
-            
-            if (val === 'oui' || val === 'non') {
-                container.style.display = 'block';
-                if (val === 'oui') {
-                    input.value = $('nom_complet')?.value || '';
-                    input.readOnly = true;
-                    input.style.backgroundColor = '#f0f0f0';
-                    input.required = true;
+// Fonction helper pour mettre en évidence les champs
+function highlightField(id) {
+    const field = $(id) || $(id + '_input');
+    if (field) {
+        field.style.borderColor = '#dc3545';
+        field.style.borderWidth = '2px';
+        field.style.transition = 'border-color 0.3s ease';
+        
+        // Faire défiler jusqu'au champ
+        field.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        setTimeout(() => {
+            field.style.borderColor = '';
+            field.style.borderWidth = '';
+        }, 3000);
+    }
+}
+
+function calculerTotal() {
+    const getVal = (id) => parseFloat($(id)?.value) || 0;
+    
+    const monture = getVal('montant_monture');
+    const verres = getVal('montant_verres');
+    const livraison = getVal('frais_livraison');
+    const brut = monture + verres + livraison;
+
+    const remise = getVal('remise');
+    const remiseType = $('remise_type')?.value || 'FCFA';
+    const remiseVal = remiseType === '%' ? brut * remise / 100 : remise;
+    
+    const partAssurance = getVal('part_assurance');
+    const net = Math.max(0, brut - remiseVal - partAssurance);
+    const acompte = getVal('acompte');
+    const reste = Math.max(0, net - acompte);
+
+    $('total_brut_display').textContent = formatCurrency(brut);
+    $('net_a_payer_display').textContent = formatCurrency(net);
+    $('reste_a_payer_display').textContent = formatCurrency(reste);
+    
+    $('tva').value = Math.round(monture * 18 / 118);
+
+    // Rendre les champs assurance obligatoires si part_assurance > 0
+    const assuranceFields = ['assurance', 'compagnie', 'numero_police', 'assure_principal'];
+    if (partAssurance > 0) {
+        assuranceFields.forEach(id => {
+            const field = $(id);
+            if (field) {
+                field.required = true;
+                field.style.borderColor = '';
+            }
+        });
+    } else {
+        assuranceFields.forEach(id => {
+            const field = $(id);
+            if (field) {
+                field.required = false;
+                field.style.borderColor = '';
+            }
+        });
+    }
+}
+
+function toggleAssurePrincipal() {
+    const val = $('assure_principal')?.value;
+    const container = $('assure_principal_nom_container');
+    const input = $('assure_principal_nom');
+    
+    if (val === 'oui' || val === 'non') {
+        container.style.display = 'block';
+        if (val === 'oui') {
+            input.value = $('nom_complet')?.value || '';
+            input.readOnly = true;
+            input.style.backgroundColor = '#f0f0f0';
+            input.required = true;
+        } else {
+            input.value = '';
+            input.readOnly = false;
+            input.style.backgroundColor = '';
+            input.required = true;
+        }
+    } else {
+        container.style.display = 'none';
+        input.required = false;
+    }
+}
+
+function updateContactFields() {
+    const type = $('contact_livraison_type')?.value;
+    const tel = $('telephone_contact');
+    const addr = $('adresse_livraison');
+    
+    if (type === 'client') {
+        tel.value = $('indicatif').value + ' ' + $('numero').value;
+        tel.readOnly = true;
+        tel.style.backgroundColor = '#f0f0f0';
+        addr.value = $('agence').selectedOptions[0]?.text || '';
+        addr.readOnly = true;
+        addr.style.backgroundColor = '#f0f0f0';
+    } else {
+        tel.readOnly = false;
+        tel.style.backgroundColor = '';
+        addr.readOnly = false;
+        addr.style.backgroundColor = '';
+    }
+}
+
+async function loadCatalogueData() {
+    try {
+        const response = await fetch(`${CONFIG.API_BASE}${CONFIG.ENDPOINTS.catalogue}`);
+        const data = await response.json();
+        if (!data.success) return;
+
+        const fields = {
+            entreprise: data.data.entreprises,
+            agence: data.data.agences,
+            commercial: data.data.commerciaux,
+            type_verre: data.data.typesVerre,
+            gamme_verre: data.data.gammesVerre,
+            assurance: data.data.assurances,
+            compagnie: data.data.compagnies,
+            clinique: data.data.cliniques,        
+            ophtalmo: data.data.ophtalmos    
+        };
+
+        Object.entries(fields).forEach(([id, values]) => {
+            const select = $(id);
+            if (select && values) {
+                select.innerHTML = '<option value="">-- Choisir --</option>';
+                values.forEach(v => select.add(new Option(v, v)));
+            }
+        });
+
+        ['od_sphere', 'od_cylindre', 'og_sphere', 'og_cylindre'].forEach(name => {
+            const selects = document.querySelectorAll(`[name="${name}"]`);
+            selects.forEach(s => {
+                (data.data.sphere || []).forEach(v => s.add(new Option(v, v)));
+            });
+        });
+
+        ['od_axe', 'og_axe'].forEach(name => {
+            const selects = document.querySelectorAll(`[name="${name}"]`);
+            selects.forEach(s => {
+                (data.data.axe || []).forEach(v => s.add(new Option(v, v)));
+            });
+        });
+
+        ['od_add', 'og_add'].forEach(name => {
+            const selects = document.querySelectorAll(`[name="${name}"]`);
+            selects.forEach(s => {
+                (data.data.add || []).forEach(v => s.add(new Option(v, v)));
+            });
+        });
+
+    } catch (error) {
+        console.error("Erreur chargement catalogue:", error);
+    }
+}
+
+async function loadMonturesForAgence() {
+    const agence = $('agence')?.value;
+    const select = $('choix_monture');
+    if (!agence || !select) return;
+
+    select.disabled = true;
+    select.innerHTML = '<option value="">-- Chargement --</option>';
+
+    try {
+        const response = await fetch(`${CONFIG.API_BASE}${CONFIG.ENDPOINTS.stockmonture}`);
+        const data = await response.json();
+        
+        if (data.success && data.data.rows) {
+            select.innerHTML = '<option value="">-- Sélectionner --</option>';
+            data.data.rows
+                .filter(row => row[1]?.toLowerCase() === agence.toLowerCase())
+                .forEach(row => select.add(new Option(row[0] || '', row[0] || '')));
+        }
+        select.disabled = false;
+    } catch (error) {
+        console.error("Erreur montures:", error);
+        select.innerHTML = '<option value="">-- Erreur --</option>';
+    }
+}
+
+function resetSaleForm() {
+    if (!confirm('Réinitialiser le formulaire ?')) return;
+    $('client-form').reset();
+    const today = new Date();
+    const delivery = new Date(today.setDate(today.getDate() + 15));
+    $('date_livraison').value = delivery.toISOString().split('T')[0];
+    $('current_user').value = AppState.user.nom;
+    calculerTotal();
+    AppState.modals.sale.currentStep = 1;
+    updateSaleStepDisplay();
+}
+
+function collectSaleData() {
+    const data = {};
+    document.querySelectorAll('#client-form input, #client-form select, #client-form textarea').forEach(el => {
+        if (el.name && !el.disabled) {
+            if (el.type === 'select-one' && el.style.display === 'none') {
+                const input = $(el.id + '_input');
+                if (input && input.value) {
+                    data[el.name] = input.value;
                 } else {
-                    input.value = '';
-                    input.readOnly = false;
-                    input.style.backgroundColor = '';
-                    input.required = true;
+                    data[el.name] = el.value;
                 }
             } else {
-                container.style.display = 'none';
-                input.required = false;
+                data[el.name] = el.value;
             }
         }
-
-        function updateContactFields() {
-            const type = $('contact_livraison_type')?.value;
-            const tel = $('telephone_contact');
-            const addr = $('adresse_livraison');
-            
-            if (type === 'client') {
-                tel.value = $('indicatif').value + ' ' + $('numero').value;
-                tel.readOnly = true;
-                tel.style.backgroundColor = '#f0f0f0';
-                addr.value = $('agence').selectedOptions[0]?.text || '';
-                addr.readOnly = true;
-                addr.style.backgroundColor = '#f0f0f0';
-            } else {
-                tel.readOnly = false;
-                tel.style.backgroundColor = '';
-                addr.readOnly = false;
-                addr.style.backgroundColor = '';
-            }
+    });
+    
+    ['entreprise', 'commercial', 'assurance', 'compagnie', 'clinique', 'ophtalmo'].forEach(field => {
+        const input = $(field + '_input');
+        if (input && input.style.display === 'block' && input.value) {
+            data[field] = input.value;
         }
+    });
+    
+    const totalBrutText = $('total_brut_display')?.textContent || '0';
+    const netAPayerText = $('net_a_payer_display')?.textContent || '0';
+    const resteAPayerText = $('reste_a_payer_display')?.textContent || '0';
+    
+    data.total_brut = parseFloat(totalBrutText.replace(/[^0-9.-]/g, '')) || 0;
+    data.net_a_payer = parseFloat(netAPayerText.replace(/[^0-9.-]/g, '')) || 0;
+    data.reste_a_payer = parseFloat(resteAPayerText.replace(/[^0-9.-]/g, '')) || 0;
+    
+    return data;
+}
 
-        async function loadCatalogueData() {
-            try {
-                const response = await fetch(`${CONFIG.API_BASE}${CONFIG.ENDPOINTS.catalogue}`);
-                const data = await response.json();
-                if (!data.success) return;
+function submitSaleForm() {
+    console.log('=== DÉBUT submitSaleForm ===');
+    
+    if (!validateSaleStep(4)) {
+        console.log('❌ Validation échouée');
+        return;
+    }
+    console.log('✅ Validation réussie');
+    
+    showSuccess('Traitement en cours...');
+    
+    const submitBtn = $('submitBtn');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi...';
+    
+    const data = collectSaleData();
+    data.utilisateur = AppState.user.nom;
+    console.log('Données à envoyer:', data);
 
-                const fields = {
-                    entreprise: data.data.entreprises,
-                    agence: data.data.agences,
-                    commercial: data.data.commerciaux,
-                    type_verre: data.data.typesVerre,
-                    gamme_verre: data.data.gammesVerre,
-                    assurance: data.data.assurances,
-                    compagnie: data.data.compagnies
-                };
-
-                Object.entries(fields).forEach(([id, values]) => {
-                    const select = $(id);
-                    if (select && values) {
-                        select.innerHTML = '<option value="">-- Choisir --</option>';
-                        values.forEach(v => select.add(new Option(v, v)));
-                    }
-                });
-
-                ['od_sphere', 'od_cylindre', 'og_sphere', 'og_cylindre'].forEach(name => {
-                    const selects = document.querySelectorAll(`[name="${name}"]`);
-                    selects.forEach(s => {
-                        (data.data.sphere || []).forEach(v => s.add(new Option(v, v)));
-                    });
-                });
-
-                ['od_axe', 'og_axe'].forEach(name => {
-                    const selects = document.querySelectorAll(`[name="${name}"]`);
-                    selects.forEach(s => {
-                        (data.data.axe || []).forEach(v => s.add(new Option(v, v)));
-                    });
-                });
-
-                ['od_add', 'og_add'].forEach(name => {
-                    const selects = document.querySelectorAll(`[name="${name}"]`);
-                    selects.forEach(s => {
-                        (data.data.add || []).forEach(v => s.add(new Option(v, v)));
-                    });
-                });
-
-            } catch (error) {
-                console.error("Erreur chargement catalogue:", error);
-            }
-        }
-
-        async function loadMonturesForAgence() {
-            const agence = $('agence')?.value;
-            const select = $('choix_monture');
-            if (!agence || !select) return;
-
-            select.disabled = true;
-            select.innerHTML = '<option value="">-- Chargement --</option>';
-
-            try {
-                const response = await fetch(`${CONFIG.API_BASE}${CONFIG.ENDPOINTS.stockmonture}`);
-                const data = await response.json();
-                
-                if (data.success && data.data.rows) {
-                    select.innerHTML = '<option value="">-- Sélectionner --</option>';
-                    data.data.rows
-                        .filter(row => row[1]?.toLowerCase() === agence.toLowerCase())
-                        .forEach(row => select.add(new Option(row[0] || '', row[0] || '')));
-                }
-                select.disabled = false;
-            } catch (error) {
-                console.error("Erreur montures:", error);
-                select.innerHTML = '<option value="">-- Erreur --</option>';
-            }
-        }
-
-        function resetSaleForm() {
-            if (!confirm('Réinitialiser le formulaire ?')) return;
-            $('client-form').reset();
-            const today = new Date();
-            const delivery = new Date(today.setDate(today.getDate() + 15));
-            $('date_livraison').value = delivery.toISOString().split('T')[0];
-            $('current_user').value = AppState.user.nom;
-            calculerTotal();
-            AppState.modals.sale.currentStep = 1;
-            updateSaleStepDisplay();
-        }
-
-        function collectSaleData() {
-            const data = {};
-            document.querySelectorAll('#client-form input, #client-form select, #client-form textarea').forEach(el => {
-                if (el.name && !el.disabled) {
-                    if (el.type === 'select-one' && el.style.display === 'none') {
-                        const input = $(el.id + '_input');
-                        if (input && input.value) {
-                            data[el.name] = input.value;
-                        } else {
-                            data[el.name] = el.value;
-                        }
-                    } else {
-                        data[el.name] = el.value;
-                    }
-                }
-            });
-            
-            ['entreprise', 'commercial', 'assurance', 'compagnie'].forEach(field => {
-                const input = $(field + '_input');
-                if (input && input.style.display === 'block' && input.value) {
-                    data[field] = input.value;
-                }
-            });
-            
-            return data;
-        }
-
-        function submitSaleForm() {
-            console.log('=== DÉBUT submitSaleForm ===');
-            
-            if (!validateSaleStep(4)) {
-                console.log('❌ Validation échouée');
-                return;
-            }
-            console.log('✅ Validation réussie');
-            
-            showSuccess('Traitement en cours...');
-            
-            const submitBtn = $('submitBtn');
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi...';
-            
-            const data = collectSaleData();
-            data.utilisateur = AppState.user.nom;
-            console.log('Données à envoyer:', data);
-
-            fetch(`${CONFIG.API_BASE}${CONFIG.ENDPOINTS.addCommande}`, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            })
-            .then(() => {
-                showSuccess('Vente enregistrée !');
-                setTimeout(() => closeModal(), 1500);
-            })
-            .catch(error => {
-                console.error('Erreur:', error);
-                showError('Erreur lors de l\'envoi');
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="fas fa-check"></i> Ajouter';
-            });
-        }
+    fetch(`${CONFIG.API_BASE}${CONFIG.ENDPOINTS.addCommande}`, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(() => {
+        showSuccess('Vente enregistrée !');
+        setTimeout(() => closeModal(), 1500);
+    })
+    .catch(error => {
+        console.error('Erreur:', error);
+        showError('Erreur lors de l\'envoi');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-check"></i> Ajouter';
+    });
+}
 
         // MODALE NOUVELLE PROFORMA
 window.openNewProforma = function() {
@@ -6304,10 +6441,10 @@ async function checkAndOpenProformaPDF() {
     }
 }
     function closeModal() {
-        // Fermer tous les modaux
-        document.querySelectorAll('.modal-overlay').forEach(modal => {
-            modal.classList.remove('active');
-        });
+        // actualiser la page , pour etre sur que les donnée identique
+        // donc ne pas changer
+        window.location.href = 'Accueil.html';
+
     }
 
         // STATUS MESSAGES
@@ -6446,6 +6583,148 @@ async function checkAndOpenProformaPDF() {
         window.addEventListener('beforeunload', () => {
             stopNotificationCarousel();
         });
+
+// ============================================
+// SYSTÈME DE NOTIFICATIONS VISIBLES (TOAST)
+// ============================================
+
+// Afficher une erreur (visible au-dessus de tout)
+window.showError = function(message) {
+    // Supprimer les anciennes notifications
+    const oldNotifications = document.querySelectorAll('.notification-error');
+    oldNotifications.forEach(n => n.remove());
+    
+    // Créer la notification
+    const notification = document.createElement('div');
+    notification.className = 'notification-error';
+    notification.innerHTML = `
+        <i class="fas fa-exclamation-circle"></i>
+        <span>${message}</span>
+        <i class="fas fa-times" style="margin-left: auto; cursor: pointer;" onclick="this.parentElement.remove()"></i>
+    `;
+    
+    // S'assurer que la notification est au-dessus de tout
+    notification.style.zIndex = '999999999';
+    notification.style.position = 'fixed';
+    notification.style.top = '20px';
+    notification.style.right = '20px';
+    notification.style.padding = '15px 20px';
+    notification.style.borderRadius = '8px';
+    notification.style.backgroundColor = '#dc3545';
+    notification.style.color = 'white';
+    notification.style.fontWeight = '500';
+    notification.style.display = 'flex';
+    notification.style.alignItems = 'center';
+    notification.style.gap = '10px';
+    notification.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+    notification.style.transform = 'translateX(400px)';
+    notification.style.transition = 'transform 0.3s ease';
+    notification.style.maxWidth = '350px';
+    
+    document.body.appendChild(notification);
+    
+    // Animation d'entrée
+    setTimeout(() => notification.style.transform = 'translateX(0)', 10);
+    
+    // Disparition automatique après 4 secondes
+    setTimeout(() => {
+        notification.style.transform = 'translateX(400px)';
+        setTimeout(() => notification.remove(), 300);
+    }, 4000);
+};
+
+// Afficher un succès
+window.showSuccess = function(message) {
+    const oldNotifications = document.querySelectorAll('.notification-success');
+    oldNotifications.forEach(n => n.remove());
+    
+    const notification = document.createElement('div');
+    notification.className = 'notification-success';
+    notification.innerHTML = `
+        <i class="fas fa-check-circle"></i>
+        <span>${message}</span>
+        <i class="fas fa-times" style="margin-left: auto; cursor: pointer;" onclick="this.parentElement.remove()"></i>
+    `;
+    
+    notification.style.zIndex = '999999999';
+    notification.style.position = 'fixed';
+    notification.style.top = '20px';
+    notification.style.right = '20px';
+    notification.style.padding = '15px 20px';
+    notification.style.borderRadius = '8px';
+    notification.style.backgroundColor = '#28a745';
+    notification.style.color = 'white';
+    notification.style.fontWeight = '500';
+    notification.style.display = 'flex';
+    notification.style.alignItems = 'center';
+    notification.style.gap = '10px';
+    notification.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+    notification.style.transform = 'translateX(400px)';
+    notification.style.transition = 'transform 0.3s ease';
+    notification.style.maxWidth = '350px';
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => notification.style.transform = 'translateX(0)', 10);
+    
+    setTimeout(() => {
+        notification.style.transform = 'translateX(400px)';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+};
+
+// Version alternative : Afficher l'erreur DANS le modal (optionnel)
+window.showErrorInModal = function(message) {
+    // Chercher ou créer un conteneur d'erreur dans le modal
+    const modal = document.querySelector('#newSaleModal .modal-body');
+    if (!modal) return;
+    
+    let errorContainer = document.getElementById('modal-error-container');
+    
+    if (!errorContainer) {
+        errorContainer = document.createElement('div');
+        errorContainer.id = 'modal-error-container';
+        errorContainer.style.cssText = `
+            position: sticky;
+            top: 0;
+            z-index: 10000;
+            margin: 0 0 20px 0;
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+            border-left: 4px solid #fff;
+            animation: slideDown 0.3s ease;
+        `;
+        
+        // Insérer en haut du modal
+        modal.insertBefore(errorContainer, modal.firstChild);
+    }
+    
+    errorContainer.innerHTML = `
+        <i class="fas fa-exclamation-circle" style="font-size: 1.2rem;"></i>
+        <span style="flex: 1;">${message}</span>
+        <i class="fas fa-times" style="cursor: pointer; opacity: 0.8;" onclick="this.parentElement.remove()"></i>
+    `;
+    
+    // Faire défiler jusqu'à l'erreur
+    errorContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    
+    // Disparition automatique après 5 secondes
+    setTimeout(() => {
+        if (errorContainer && errorContainer.parentNode) {
+            errorContainer.style.opacity = '0';
+            errorContainer.style.transform = 'translateY(-20px)';
+            errorContainer.style.transition = 'all 0.3s ease';
+            setTimeout(() => errorContainer.remove(), 300);
+        }
+    }, 5000);
+};
     </script>
 </body>
 </html>
