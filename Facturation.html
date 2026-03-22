@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion des Facturations - VisionPro</title>
+    <title>VisionPro</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -2663,6 +2663,9 @@ function openEditFactureModal(index, factureData = null) {
     const modalContainer = document.getElementById('modal-container');
     if (!modalContainer) return;
     
+    // Vérifiez le nom exact du champ dans vos données
+    console.log('Champ Part Client dans les données:', facture['Part Client']); // Pour déboguer
+    
     const modalHTML = `
         <div class="edit-modal active" id="editFactureModal">
             <div class="edit-modal-content">
@@ -2721,16 +2724,16 @@ function openEditFactureModal(index, factureData = null) {
                                     <label class="edit-form-label">Montant Total</label>
                                     <input type="number" step="0.01" class="edit-form-control" id="editMontant" value="${facture['MONTANT TOTAL'] || ''}" aria-label="Montant total">
                                 </div>
+                                
                                 <div class="edit-form-group">
-                                    <label class="edit-form-label">Part Cleint</label>
-                                    <input type="number" step="0.01" class="edit-form-control" id="editPartAssure" value="${facture['TOTAL PART ASSURE'] || ''}" aria-label="Part client">
+                                    <label class="edit-form-label">Part Client</label> 
+                                    <input type="number" step="0.01" class="edit-form-control" id="editPartclient" value="${facture['Part Client'] || ''}" aria-label="Part client">
                                 </div>
                                 
                                 <div class="edit-form-group">
                                     <label class="edit-form-label">Part Assurance</label>
                                     <input type="number" step="0.01" class="edit-form-control" id="editPartAssureur" value="${facture['PART ASSUREUR'] || ''}" aria-label="Part assurance">
                                 </div>
-                                
                                 
                                 <div class="edit-form-group">
                                     <label class="edit-form-label">TVA sur Monture</label>
@@ -2779,12 +2782,15 @@ function submitFactureUpdate(index) {
         'Bénéficiaire': document.getElementById('editBeneficiaire')?.value || '',
         'Actes': document.getElementById('editActes')?.value || '',
         'MONTANT TOTAL': document.getElementById('editMontant')?.value || 0,
-        'TOTAL PART ASSURE': document.getElementById('editPartAssure')?.value || 0,
+        'PART Client': parseFloat(document.getElementById('editPartclient')?.value) || 0,
         'PART ASSUREUR': document.getElementById('editPartAssureur')?.value || 0,
         'TVA sur Monture': document.getElementById('editTVA')?.value || 0,
         'Assurance': document.getElementById('editAssurance')?.value || '',
         'Compagnie': document.getElementById('editCompagnie')?.value || ''
     };
+
+    // Déboguer - vérifier les données avant envoi
+    console.log('Données à mettre à jour:', updatedData);
 
     const submitBtn = document.querySelector('.edit-btn-primary');
     const originalBtnText = submitBtn.innerHTML;
