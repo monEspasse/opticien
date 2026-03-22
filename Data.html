@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VisioPro</title>
+    <title>VisioPro - Base Client</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -155,6 +155,167 @@
         .btn-success {
             background: var(--success-gradient);
             color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger-gradient);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning-gradient);
+            color: white;
+        }
+
+        .btn-info {
+            background: var(--info-gradient);
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Modal de confirmation personnalisée */
+        .custom-confirm-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .custom-confirm-overlay.active {
+            display: flex;
+        }
+
+        .custom-confirm-modal {
+            background: white;
+            border-radius: var(--border-radius-xl);
+            max-width: 450px;
+            width: 90%;
+            overflow: hidden;
+            animation: slideUp 0.3s ease;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .custom-confirm-header {
+            padding: 1.5rem 1.5rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .custom-confirm-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .custom-confirm-icon.warning {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            color: #d97706;
+        }
+
+        .custom-confirm-icon.danger {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            color: #dc2626;
+        }
+
+        .custom-confirm-icon.info {
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            color: #3b82f6;
+        }
+
+        .custom-confirm-icon.success {
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            color: #10b981;
+        }
+
+        .custom-confirm-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .custom-confirm-message {
+            padding: 0 1.5rem 1.5rem;
+            color: var(--gray-600);
+            line-height: 1.5;
+            white-space: pre-line;
+        }
+
+        .custom-confirm-footer {
+            padding: 1rem 1.5rem 1.5rem;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            border-top: 1px solid var(--gray-200);
+            background: var(--gray-50);
+        }
+
+        .custom-confirm-btn {
+            padding: 0.625rem 1.25rem;
+            border-radius: var(--border-radius-md);
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .custom-confirm-btn-cancel {
+            background: white;
+            color: var(--gray-700);
+            border: 1px solid var(--gray-300);
+        }
+
+        .custom-confirm-btn-cancel:hover {
+            background: var(--gray-100);
+        }
+
+        .custom-confirm-btn-confirm {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .custom-confirm-btn-confirm.danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .custom-confirm-btn-confirm.warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .custom-confirm-btn-confirm:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.05);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         /* Grille des statuts */
@@ -382,6 +543,21 @@
             font-weight: 600;
         }
 
+        .status-badge.receptionne {
+            background: var(--success-gradient);
+            color: white;
+        }
+
+        .status-badge.en-cours {
+            background: var(--warning-gradient);
+            color: white;
+        }
+
+        .status-badge.livre {
+            background: var(--info-gradient);
+            color: white;
+        }
+
         .action-btns {
             display: flex;
             gap: 0.5rem;
@@ -412,6 +588,16 @@
 
         .btn-call:hover {
             background: var(--success-gradient);
+            color: white;
+        }
+
+        .btn-receive:hover {
+            background: var(--info-gradient);
+            color: white;
+        }
+        
+        .btn-delete:hover {
+            background: var(--danger-gradient);
             color: white;
         }
 
@@ -644,7 +830,7 @@
             background: var(--gray-50);
         }
 
-        /* Interface visuelle pour commande fournisseur */
+        /* Interface de commande */
         .commande-visual-container {
             display: flex;
             height: 70vh;
@@ -787,6 +973,9 @@
             margin-bottom: 1rem;
             padding-bottom: 0.5rem;
             border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .commande-details-row {
@@ -819,6 +1008,139 @@
         .commande-details-value.highlight {
             color: var(--primary-600);
             font-weight: 600;
+        }
+
+        .commande-details-value.editable {
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--border-radius-sm);
+            background: var(--gray-100);
+        }
+
+        .commande-details-value.editable:hover {
+            background: var(--primary-100);
+        }
+
+        /* Formulaire d'édition */
+        .edit-form {
+            background: white;
+            border: 1px solid var(--primary-300);
+            border-radius: var(--border-radius-md);
+            padding: 1rem;
+            margin-top: 0.5rem;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .edit-form-row {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .edit-form-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--gray-700);
+        }
+
+        .edit-form-input {
+            padding: 0.5rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--border-radius-sm);
+            font-size: 0.875rem;
+        }
+
+        .edit-form-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .edit-form-btn {
+            flex: 1;
+            padding: 0.5rem;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Sélection fournisseur */
+        .fournisseur-selection-section {
+            padding: 2rem;
+            background: var(--gray-50);
+        }
+
+        .fournisseur-form-group {
+            margin-bottom: 2rem;
+        }
+
+        .fournisseur-select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--gray-300);
+            border-radius: var(--border-radius-md);
+            font-size: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .fournisseur-select:focus {
+            border-color: var(--primary-500);
+            outline: none;
+        }
+
+        .fournisseur-add-form {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            align-items: center;
+        }
+
+        .fournisseur-add-input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--border-radius-md);
+        }
+
+        .date-livraison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .date-livraison-item {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--border-radius-md);
+            padding: 1rem;
+        }
+
+        .date-livraison-client {
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .date-livraison-input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--border-radius-sm);
         }
 
         /* Alertes */
@@ -861,6 +1183,11 @@
 
         .alert-info {
             background: var(--info-gradient);
+            color: white;
+        }
+
+        .alert-warning {
+            background: var(--warning-gradient);
             color: white;
         }
 
@@ -937,7 +1264,7 @@
             margin: 0 auto;
         }
 
-        .company-header {
+        .bc-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
@@ -946,76 +1273,160 @@
             border-bottom: 2px solid #333;
         }
 
-        .company-info {
+        .bc-company-info {
             flex: 1;
         }
 
-        .company-name {
+        .bc-company-name {
             font-size: 35px;
             font-weight: bold;
             margin: 0 0 0.5rem 0;
             color: #000;
         }
 
-        .company-details {
+        .bc-company-details {
             font-size: 12px;
             line-height: 1.4;
             color: #333;
         }
 
-        .company-logo {
+        .bc-logo {
             text-align: right;
         }
 
-        .logo-img {
+        .bc-logo-img {
             width: 120px;
             height: auto;
             max-width: 100%;
         }
 
-        .print-title-section {
+        .bc-title-section {
             text-align: center;
             margin: 2rem 0;
         }
 
-        .print-title-section h2 {
+        .bc-title-section h2 {
             font-size: 24px;
             margin: 0 0 1rem 0;
             color: #000;
             text-transform: uppercase;
         }
 
-        .print-details {
+        .bc-info {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 1rem;
-            margin-top: 1.5rem;
+            margin: 1.5rem 0;
             padding: 1.5rem;
             background: #f8f9fa;
             border-radius: var(--border-radius-md);
             font-size: 14px;
         }
 
-        .print-details p {
-            margin: 0;
+        .bc-info-item {
+            text-align: left;
         }
 
-        .signature-section {
+        .bc-info-label {
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-right: 0.5rem;
+        }
+
+        .bc-info-value {
+            font-weight: 500;
+        }
+
+        .bc-client-section {
+            margin-bottom: 2rem;
+            page-break-inside: avoid;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius-md);
+            padding: 1.5rem;
+        }
+
+        .bc-client-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary-500);
+        }
+
+        .bc-client-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-700);
+        }
+
+        .bc-client-id {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+
+        .bc-client-details {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .bc-detail-item {
+            font-size: 0.875rem;
+        }
+
+        .bc-detail-label {
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-right: 0.5rem;
+        }
+
+        .bc-prescription-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .bc-prescription-table th {
+            background: var(--gray-100);
+            padding: 0.75rem;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        .bc-prescription-table td {
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+        }
+
+        .bc-footer {
             margin-top: 3rem;
             padding-top: 2rem;
             border-top: 1px solid #333;
         }
 
-        .signature-section div {
+        .bc-signature {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-top: 2rem;
+        }
+
+        .bc-signature-item {
             text-align: center;
         }
 
-        .signature-section p {
+        .bc-signature-line {
             margin: 0.5rem 0;
             font-size: 14px;
+        }
+
+        .bc-signature-placeholder {
+            margin-top: 2rem;
+            border-top: 1px solid #333;
+            padding-top: 0.5rem;
         }
 
         @media print {
@@ -1036,78 +1447,6 @@
             .no-print {
                 display: none !important;
             }
-        }
-
-        .fournisseur-selection {
-            padding: 1.5rem;
-            background: var(--gray-50);
-            border-radius: var(--border-radius-lg);
-        }
-
-        .fournisseur-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-
-        .fournisseur-card {
-            background: white;
-            border: 2px solid var(--gray-300);
-            border-radius: var(--border-radius-lg);
-            padding: 1.5rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s var(--transition-smooth);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .fournisseur-card:hover {
-            border-color: var(--primary-500);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.1);
-        }
-
-        .fournisseur-card.selected {
-            border-color: var(--primary-500);
-            background: linear-gradient(135deg, rgba(79, 70, 229, 0.05), rgba(79, 70, 229, 0.1));
-            transform: translateY(-2px);
-        }
-
-        .fournisseur-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(79, 70, 229, 0.2));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            color: var(--primary-600);
-            transition: all 0.3s var(--transition-smooth);
-        }
-
-        .fournisseur-card.selected .fournisseur-icon {
-            background: var(--primary-gradient);
-            color: white;
-        }
-
-        .fournisseur-name {
-            font-weight: 600;
-            color: var(--gray-900);
-        }
-
-        .print-section {
-            display: none;
-            background: white;
-            color: black;
-            padding: 2rem;
-            font-family: 'Inter', sans-serif;
-            max-width: 1200px;
-            margin: 0 auto;
         }
 
         @media (max-width: 1024px) {
@@ -1139,6 +1478,10 @@
                 max-height: 300px;
                 border-right: none;
                 border-bottom: 1px solid var(--gray-200);
+            }
+
+            .bc-client-details {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -1176,6 +1519,10 @@
             .commande-details-grid {
                 grid-template-columns: 1fr;
             }
+
+            .bc-info {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 480px) {
@@ -1205,7 +1552,7 @@
     <div class="dashboard-container">
         <header class="header">
             <div class="header-left">
-                <h1>Liste Clients</h1>
+                <h1>Base Client</h1>
             </div>
             <div class="user-info">
                 <span id="username-display"></span>
@@ -1219,16 +1566,11 @@
             </button>
         </div>
 
-        <!-- Nouvelle grille des statuts de deals -->
-        <div class="status-stats-grid" id="statusStatsGrid">
-            <!-- Les cartes de statuts seront générées dynamiquement -->
-        </div>
-
         <!-- Bulk Actions -->
         <div class="bulk-actions" id="bulkActions">
             <span class="selected-count" id="selectedCount">0</span> client(s) sélectionné(s)
-            <button class="bulk-action-btn" onclick="sendCommande()">
-                <i class="fas fa-paper-plane"></i> Passer Commande Fournisseur
+            <button class="bulk-action-btn" onclick="prepareCommande()">
+                <i class="fas fa-shopping-cart"></i> Préparer Commande Fournisseur
             </button>
             <button class="bulk-action-btn delete" onclick="clearSelection()">
                 <i class="fas fa-times"></i> Tout désélectionner
@@ -1236,7 +1578,7 @@
         </div>
 
         <div class="section-header">
-            <h2 class="section-title">Gestion des Clients</h2>
+            <h2 class="section-title">Liste des Clients</h2>
             <div class="search-filters">
                 <div class="filter-group">
                     <label class="form-label">Rechercher</label>
@@ -1249,23 +1591,12 @@
                     <label class="form-label">Statut</label>
                     <select class="form-control" id="statusFilter">
                         <option value="">Tous les statuts</option>
-                        <!-- Les options seront générées dynamiquement -->
                     </select>
                 </div>
                 <div class="filter-group">
                     <label class="form-label">Agence</label>
                     <select class="form-control" id="agencyFilter">
                         <option value="">Toutes les agences</option>
-                        <option value="Cotonou">Cotonou</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label class="form-label">Lignes/page</label>
-                    <select class="form-control" id="rowsPerPage">
-                        <option value="10">10</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
                     </select>
                 </div>
                 <button class="btn btn-secondary" onclick="refreshClients()">
@@ -1328,67 +1659,33 @@
     <!-- Menu de chargement -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="spinner-border"></div>
-        <div class="loading-text">Chargement des données de commande...</div>
+        <div class="loading-text">Chargement en cours...</div>
     </div>
 
     <!-- Modal Container -->
     <div id="modal-container"></div>
 
+    <!-- Custom Confirm Container -->
+    <div id="custom-confirm-container"></div>
+
     <!-- Alert Container -->
     <div id="alert-container"></div>
 
     <!-- Print Section -->
-    <div class="print-section" id="printSection">
-        <div class="company-header">
-            <div class="company-info">
-                <h1 class="company-name">FAR VISION Sarl</h1>
-                <div class="company-details">
-                    Etoile Rouge/Carré 962,<br>
-                    Cotonou-Benin.<br>
-                    Ifu: 3202112790471<br>
-                    Tel (229) 01 94359191<br>
-                    Email: farvision521@gmail.com
-                </div>
-            </div>
-            <div class="company-logo">
-                <img src="logo.png" alt="FAR VISION Logo" class="logo-img">
-            </div>
-        </div>
-        
-        <div class="print-title-section">
-            <h2>Commande Fournisseur</h2>
-            <div class="print-details">
-                <p><strong>Date:</strong> <span id="printDate"></span></p>
-                <p><strong>Fournisseur:</strong> <span id="printFournisseur"></span></p>
-                <p><strong>Référence:</strong> CMD-<span id="printReference"></span></p>
-            </div>
-        </div>
-        
-        <div id="printCommandesContent"></div>
-        
-        <div class="print-footer">
-            <div class="signature-section">
-                <div>
-                    <p>Signature Responsable</p>
-                    <p>_________________________</p>
-                </div>
-                <div>
-                    <p>Cachet et signature fournisseur</p>
-                    <p>_________________________</p>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div class="print-section" id="printSection"></div>
+    
 
     <script>
         // ==================== VARIABLES GLOBALES ====================
         let allClients = [];
         let filteredClients = [];
         let currentPage = 1;
-        let clientsPerPage = 10;
+        let clientsPerPage = 100;
         let selectedClients = new Set();
         let commandesData = [];
         let selectedFournisseur = null;
+        let fournisseursList = [];
+        let datesLivraison = new Map();
         let inactivityTimer;
         let activeStatusFilter = null;
         let statusConfig = [];
@@ -1404,6 +1701,8 @@
             'annulé': 'fas fa-ban',
             'perdu': 'fas fa-times-circle',
             'fr traitement': 'fas fa-cogs',
+            'commande passée': 'fas fa-paper-plane',
+            'réceptionné': 'fas fa-check-circle',
             'default': 'fas fa-circle'
         };
 
@@ -1417,8 +1716,109 @@
             'annulé': 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
             'perdu': 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
             'fr traitement': 'linear-gradient(135deg, #f6d365 0%, #fda085 100%)',
+            'commande passée': 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+            'réceptionné': 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
             'default': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
         };
+
+        // ==================== FONCTIONS DE CONFIRMATION PERSONNALISÉES ====================
+        
+        /**
+         * Affiche une boîte de confirmation personnalisée
+         * @param {Object} options - Options de confirmation
+         * @param {string} options.title - Titre de la confirmation
+         * @param {string} options.message - Message de la confirmation
+         * @param {string} options.type - Type de confirmation: 'danger', 'warning', 'info', 'success'
+         * @param {string} options.confirmText - Texte du bouton de confirmation
+         * @param {string} options.cancelText - Texte du bouton d'annulation
+         * @returns {Promise<boolean>} - Promise résolue avec true si confirmé, false sinon
+         */
+        function customConfirm({ title, message, type = 'warning', confirmText = 'Confirmer', cancelText = 'Annuler' }) {
+            return new Promise((resolve) => {
+                const container = document.getElementById('custom-confirm-container');
+                if (!container) {
+                    // Fallback sur confirm natif si le container n'existe pas
+                    resolve(confirm(message));
+                    return;
+                }
+                
+                const icons = {
+                    danger: { icon: 'fa-exclamation-triangle', color: '#dc2626' },
+                    warning: { icon: 'fa-exclamation-circle', color: '#d97706' },
+                    info: { icon: 'fa-info-circle', color: '#3b82f6' },
+                    success: { icon: 'fa-check-circle', color: '#10b981' }
+                };
+                
+                const iconData = icons[type] || icons.warning;
+                
+                const modalHTML = `
+                    <div class="custom-confirm-overlay active" id="customConfirmOverlay">
+                        <div class="custom-confirm-modal">
+                            <div class="custom-confirm-header">
+                                <div class="custom-confirm-icon ${type}">
+                                    <i class="fas ${iconData.icon}"></i>
+                                </div>
+                                <div>
+                                    <div class="custom-confirm-title">${title}</div>
+                                </div>
+                            </div>
+                            <div class="custom-confirm-message">${message}</div>
+                            <div class="custom-confirm-footer">
+                                <button class="custom-confirm-btn custom-confirm-btn-cancel" id="customConfirmCancel">${cancelText}</button>
+                                <button class="custom-confirm-btn custom-confirm-btn-confirm ${type}" id="customConfirmConfirm">${confirmText}</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                container.innerHTML = modalHTML;
+                
+                const overlay = document.getElementById('customConfirmOverlay');
+                const confirmBtn = document.getElementById('customConfirmConfirm');
+                const cancelBtn = document.getElementById('customConfirmCancel');
+                
+                const closeModal = (result) => {
+                    if (overlay) {
+                        overlay.style.animation = 'fadeOut 0.2s ease';
+                        setTimeout(() => {
+                            container.innerHTML = '';
+                            resolve(result);
+                        }, 200);
+                    } else {
+                        container.innerHTML = '';
+                        resolve(result);
+                    }
+                };
+                
+                if (confirmBtn) confirmBtn.onclick = () => closeModal(true);
+                if (cancelBtn) cancelBtn.onclick = () => closeModal(false);
+                if (overlay) overlay.onclick = (e) => {
+                    if (e.target === overlay) closeModal(false);
+                };
+                
+                // Gestion de la touche Escape
+                const handleEsc = (e) => {
+                    if (e.key === 'Escape') {
+                        closeModal(false);
+                        document.removeEventListener('keydown', handleEsc);
+                    }
+                };
+                document.addEventListener('keydown', handleEsc);
+            });
+        }
+
+        /**
+         * Version simplifiée pour les confirmations rapides
+         */
+        async function confirmAction(message, type = 'warning') {
+            return customConfirm({
+                title: type === 'danger' ? '⚠️ Action irréversible' : 'Confirmation',
+                message: message,
+                type: type,
+                confirmText: type === 'danger' ? 'Supprimer' : 'Confirmer',
+                cancelText: 'Annuler'
+            });
+        }
 
         // ==================== INITIALISATION ====================
         document.addEventListener('DOMContentLoaded', () => {
@@ -1457,7 +1857,7 @@
         }
 
         function startInactivityTimer() {
-            const INACTIVITY_LIMIT = 15 * 60 * 1000; // 15 minutes en ms
+            const INACTIVITY_LIMIT = 30 * 60 * 1000; // 30 minutes en ms
             
             function resetTimer() {
                 clearTimeout(inactivityTimer);
@@ -1500,9 +1900,6 @@
                 
                 // Générer dynamiquement la configuration des statuts
                 generateStatusConfig();
-                
-                // Mettre à jour les statistiques des statuts
-                updateStatusStats();
                 
                 // Mettre à jour les filtres d'agence
                 updateAgencyFilter();
@@ -1562,6 +1959,14 @@
             const uniqueStatuses = [...new Set(allClients.map(client => client.status))];
             availableStatuses = uniqueStatuses.sort();
             
+            // Ajouter les nouveaux statuts si nécessaire
+            if (!availableStatuses.includes('Commande passée')) {
+                availableStatuses.push('Commande passée');
+            }
+            if (!availableStatuses.includes('Réceptionné')) {
+                availableStatuses.push('Réceptionné');
+            }
+            
             // Générer la configuration dynamique
             statusConfig = availableStatuses.map(status => {
                 const normalizedKey = status.toLowerCase().trim();
@@ -1570,7 +1975,7 @@
                     id: normalizedKey.replace(/[^a-z0-9]/g, '-'),
                     name: status,
                     icon: defaultStatusIcons[normalizedKey] || defaultStatusIcons.default,
-                    color: normalizedKey, // Utilisé pour le nom de classe CSS
+                    color: normalizedKey,
                     statusValue: status
                 };
             });
@@ -1591,7 +1996,9 @@
                 'cancel': 'Cancel',
                 'annulé': 'Cancel',
                 'perdu': 'Cancel',
-                'fr traitement': 'En traitement'
+                'fr traitement': 'En traitement',
+                'commande passée': 'Commande passée',
+                'réceptionné': 'Réceptionné'
             };
             
             const lowerStatus = status.toLowerCase().trim();
@@ -1625,6 +2032,7 @@
                     if (date && !isNaN(date.getTime())) {
                         return date;
                     }
+                    return null;
                 } catch (e) {
                     continue;
                 }
@@ -1634,44 +2042,6 @@
         }
 
         // ==================== STATISTIQUES DES STATUTS ====================
-        function updateStatusStats() {
-            const container = document.getElementById('statusStatsGrid');
-            if (!container) return;
-            
-            let html = '';
-            
-            // Calculer les totaux par statut
-            const statusCounts = {};
-            statusConfig.forEach(status => {
-                statusCounts[status.id] = allClients.filter(client => 
-                    client.status === status.statusValue
-                ).length;
-            });
-            
-            statusConfig.forEach(status => {
-                const currentCount = statusCounts[status.id] || 0;
-                const isActive = activeStatusFilter === status.statusValue;
-                
-                // Obtenir la couleur spécifique pour ce statut
-                const statusColor = defaultStatusColors[status.color] || defaultStatusColors.default;
-                
-                html += `
-                    <div class="status-stat-card ${isActive ? 'active' : ''}" 
-                         onclick="filterByStatus('${status.statusValue}')"
-                         style="--status-color: ${statusColor};">
-                        <div class="status-stat-header">
-                            <div class="status-stat-title">${status.name}</div>
-                            <div class="status-stat-icon" style="background: ${statusColor}">
-                                <i class="${status.icon}"></i>
-                            </div>
-                        </div>
-                        <div class="status-stat-value">${currentCount.toLocaleString()}</div>
-                    </div>
-                `;
-            });
-            
-            container.innerHTML = html;
-        }
 
         function updateStatusFilter() {
             const statusFilter = document.getElementById('statusFilter');
@@ -1695,9 +2065,6 @@
                 activeStatusFilter = status;
                 document.getElementById('statusFilter').value = status;
             }
-            
-            // Mettre à jour l'affichage des cartes de statuts
-            updateStatusStats();
             
             // Appliquer les filtres
             applyFilters();
@@ -1750,14 +2117,14 @@
                             <div class="client-info-cell">
                                 <div class="client-avatar">${initials}</div>
                                 <div class="client-details">
-                                    <span class="client-name">${client.fullName || 'Non renseigné'}</span>
+                                    <span class="client-name">${escapeHtml(client.fullName) || 'Non renseigné'}</span>
                                     <span class="client-id">${client.id}</span>
                                 </div>
                             </div>
                         </td>
                         <td>${formattedPhone || 'N/A'}</td>
-                        <td>${client.agency || 'N/A'}</td>
-                        <td>${client.salesperson || 'N/A'}</td>
+                        <td>${escapeHtml(client.agency) || 'N/A'}</td>
+                        <td>${escapeHtml(client.salesperson) || 'N/A'}</td>
                         <td>${formattedAmount}</td>
                         <td>
                             <span class="status-badge" style="background: ${badgeColor}; color: white;">
@@ -1772,6 +2139,15 @@
                                 <button class="action-btn btn-call" title="Appeler" onclick="callClient('${client.phone}')">
                                     <i class="fas fa-phone"></i>
                                 </button>
+                                ${client.status !== 'Réceptionné' ? `
+                                <button class="action-btn btn-receive" title="Marquer comme réceptionné" onclick="markAsReceived('${client.id}')">
+                                    <i class="fas fa-check-circle"></i>
+                                </button>
+                                ` : ''}
+                                <!-- NOUVELLE ACTION : SUPPRIMER LE CLIENT AVEC CONFIRMATION STYLISÉE -->
+                                <button class="action-btn btn-delete" title="Supprimer le client" onclick="deleteClient('${client.id}', '${escapeHtml(client.fullName).replace(/'/g, "\\'")}')">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
                             </div>
                         </td>
                     `;
@@ -1783,6 +2159,84 @@
             updatePaginationInfo();
             updatePaginationControls();
             updateSelectAllCheckbox();
+        }
+
+        // Fonction utilitaire pour échapper les caractères HTML
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        // ==================== FONCTION SUPPRIMER UN CLIENT AVEC CONFIRMATION STYLISÉE ====================
+        async function deleteClient(clientId, clientName) {
+            // Utilisation de la confirmation personnalisée
+            const confirmed = await confirmAction(
+                `⚠️ Êtes-vous sûr de vouloir supprimer définitivement le client "${clientName}" (ID: ${clientId}) ?\n\nCette action est irréversible !`,
+                'danger'
+            );
+            
+            if (!confirmed) return;
+            
+            try {
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                if (loadingOverlay) loadingOverlay.classList.add('active');
+                
+                const username = sessionStorage.getItem("utilisateur") || localStorage.getItem("utilisateur");
+                const currentDate = new Date().toISOString().split('T')[0];
+                
+                // Envoyer la requête de suppression à l'API
+                await fetch('https://script.google.com/macros/s/AKfycbwdzHJGAL16KV_OnyoCIs5I7im2yNxrbEaEIbykQ8hy6ewQjJFQ0G4TfqYWWCMc7vfW/exec?action=deleteclient', {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        id: clientId,
+                        utilisateur: username,
+                        dateSuppression: currentDate
+                    })
+                });
+                
+                // Mise à jour locale : supprimer le client des tableaux
+                allClients = allClients.filter(c => c.id !== clientId);
+                filteredClients = filteredClients.filter(c => c.id !== clientId);
+                
+                // Supprimer de la sélection si présent
+                if (selectedClients.has(clientId)) {
+                    selectedClients.delete(clientId);
+                }
+                
+                // Recharger la liste et les filtres
+                generateStatusConfig();
+                updateAgencyFilter();
+                updateStatusFilter();
+                
+                // Réinitialiser la pagination si nécessaire
+                const totalPages = Math.ceil(filteredClients.length / clientsPerPage);
+                if (currentPage > totalPages && totalPages > 0) {
+                    currentPage = totalPages;
+                } else if (filteredClients.length === 0) {
+                    currentPage = 1;
+                }
+                
+                displayClients();
+                updateBulkActions();
+                
+                showAlertMessage(`Client "${clientName}" supprimé avec succès.`, "success");
+                
+            } catch (error) {
+                console.error("Erreur lors de la suppression:", error);
+                showAlertMessage("Erreur lors de la suppression du client.", "error");
+            } finally {
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                if (loadingOverlay) loadingOverlay.classList.remove('active');
+            }
         }
 
         function updatePaginationInfo() {
@@ -1867,7 +2321,6 @@
             const searchInput = document.getElementById('searchInput');
             const statusFilter = document.getElementById('statusFilter');
             const agencyFilter = document.getElementById('agencyFilter');
-            const rowsPerPage = document.getElementById('rowsPerPage');
             
             if (searchInput) {
                 searchInput.addEventListener('input', debounce(applyFilters, 300));
@@ -1876,21 +2329,12 @@
             if (statusFilter) {
                 statusFilter.addEventListener('change', function() {
                     activeStatusFilter = this.value || null;
-                    updateStatusStats();
                     applyFilters();
                 });
             }
             
             if (agencyFilter) {
                 agencyFilter.addEventListener('change', applyFilters);
-            }
-            
-            if (rowsPerPage) {
-                rowsPerPage.addEventListener('change', function() {
-                    clientsPerPage = parseInt(this.value);
-                    currentPage = 1;
-                    displayClients();
-                });
             }
         }
 
@@ -1926,7 +2370,7 @@
             
             let optionsHTML = '<option value="">Toutes les agences</option>';
             agencies.forEach(agency => {
-                optionsHTML += `<option value="${agency}">${agency}</option>`;
+                optionsHTML += `<option value="${escapeHtml(agency)}">${escapeHtml(agency)}</option>`;
             });
             
             agencyFilter.innerHTML = optionsHTML;
@@ -1999,8 +2443,8 @@
             updateBulkActions();
         }
 
-        // ==================== COMMANDES FOURNISSEUR (NOUVELLE INTERFACE) ====================
-        async function sendCommande() {
+        // ==================== PRÉPARATION DE LA COMMANDE (extrait) ====================
+        async function prepareCommande() {
             if (selectedClients.size === 0) {
                 showAlertMessage("Aucun client sélectionné", "error");
                 return;
@@ -2013,8 +2457,14 @@
                     selectedClients.has(client.id)
                 );
                 
+                // Charger la liste des fournisseurs
+                await loadFournisseurs();
+                
+                // Préparer les données des commandes
                 commandesData = await prepareCommandesData(selectedClientsData);
-                showCommandeVisualModal();
+                
+                // Afficher le modal de préparation de commande
+                showPreparationModal();
                 
             } catch (error) {
                 console.error("Erreur lors de la préparation des commandes:", error);
@@ -2022,8 +2472,29 @@
             }
         }
 
+        async function loadFournisseurs() {
+            try {
+                const response = await fetch('https://script.google.com/macros/s/AKfycbwdzHJGAL16KV_OnyoCIs5I7im2yNxrbEaEIbykQ8hy6ewQjJFQ0G4TfqYWWCMc7vfW/exec?action=fournisseur');
+                
+                if (!response.ok) {
+                    throw new Error(`Erreur HTTP: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                if (result.success && result.data && result.data.rows) {
+                    fournisseursList = result.data.rows.map(row => row[0]).filter(Boolean);
+                } else {
+                    fournisseursList = ['SIVO', 'Canada Optic', 'Zaih'];
+                }
+            } catch (error) {
+                console.error("Erreur lors du chargement des fournisseurs:", error);
+                fournisseursList = ['SIVO', 'Canada Optic', 'Zaih'];
+                showAlertMessage("Utilisation de la liste par défaut des fournisseurs", "warning");
+            }
+        }
+
         async function prepareCommandesData(selectedClientsData) {
-            // Afficher le menu de chargement
             const loadingOverlay = document.getElementById('loadingOverlay');
             if (loadingOverlay) {
                 loadingOverlay.classList.add('active');
@@ -2043,6 +2514,7 @@
                             salesperson: client.salesperson,
                             typeVerre: clientDetails.typeVerre || "Non spécifié",
                             gammeVerres: clientDetails.gammeVerres || "Standard",
+                            monture: clientDetails.monture || "Non spécifiée",
                             odSphere: clientDetails.odSphere || "0.00",
                             odCylindre: clientDetails.odCylindre || "0.00",
                             odAxe: clientDetails.odAxe || "0°",
@@ -2055,7 +2527,6 @@
                             ogADD: clientDetails.ogADD || "0.00",
                             ogDP: clientDetails.ogDP || "0",
                             ogHauteur: clientDetails.ogHauteur || "0",
-                            monture: clientDetails.monture || "Non spécifiée",
                             netAmount: client.netAmount || 0
                         });
                     } catch (error) {
@@ -2068,6 +2539,7 @@
                             salesperson: client.salesperson,
                             typeVerre: "Non spécifié",
                             gammeVerres: "Standard",
+                            monture: "Non spécifiée",
                             odSphere: "0.00",
                             odCylindre: "0.00",
                             odAxe: "0°",
@@ -2080,13 +2552,11 @@
                             ogADD: "0.00",
                             ogDP: "0",
                             ogHauteur: "0",
-                            monture: "Non spécifiée",
                             netAmount: client.netAmount || 0
                         });
                     }
                 }
             } finally {
-                // Cacher le menu de chargement
                 if (loadingOverlay) {
                     loadingOverlay.classList.remove('active');
                 }
@@ -2138,22 +2608,23 @@
             };
         }
 
-        function showCommandeVisualModal() {
+        // ==================== MODAL DE PRÉPARATION (1ÈRE ÉTAPE) ====================
+        function showPreparationModal() {
             const modalContainer = document.getElementById('modal-container');
             
             const modalHTML = `
                 <div class="modal-overlay active">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h3 class="modal-title">Commande Fournisseur - Vue Visuelle</h3>
+                            <h3 class="modal-title">Préparation de la Commande Fournisseur - Étape 1/2</h3>
                             <button class="modal-close" onclick="closeModal()">&times;</button>
                         </div>
                         <div class="modal-body">
                             <div class="commande-visual-container">
                                 <div class="commande-list-container">
                                     <div class="commande-list-header">
-                                        <div class="commande-list-title">${commandesData.length} Clients Sélectionnés</div>
-                                        <div class="commande-list-subtitle">Cliquez sur un client pour voir les détails</div>
+                                        <div class="commande-list-title">${commandesData.length} Client(s) Sélectionné(s)</div>
+                                        <div class="commande-list-subtitle">Double-cliquez sur un client pour modifier</div>
                                     </div>
                                     <div class="commande-list" id="commandeClientList">
                                         ${generateCommandeClientList()}
@@ -2162,7 +2633,7 @@
                                 <div class="commande-details-container">
                                     <div class="commande-details-header">
                                         <div class="commande-details-title">Détails de la Commande</div>
-                                        <div class="commande-details-badge">Sélectionnez un client</div>
+                                        <div class="commande-details-badge" id="commandeDetailsBadge">Sélectionnez un client</div>
                                     </div>
                                     <div id="commandeDetailsContent">
                                         <div class="no-data" style="padding: 4rem; text-align: center;">
@@ -2171,7 +2642,7 @@
                                                 Sélectionnez un client dans la liste
                                             </div>
                                             <div style="font-size: 0.875rem; color: var(--gray-500);">
-                                                Cliquez sur un nom de client pour afficher ses détails
+                                                Double-cliquez sur un client pour modifier ses informations
                                             </div>
                                         </div>
                                     </div>
@@ -2180,12 +2651,12 @@
                         </div>
                         <div class="modal-footer">
                             <div>
-                                <strong><span id="totalCommandes">${commandesData.length}</span> commande(s) préparée(s)</strong>
+                                <strong>Total: ${commandesData.length} commande(s)</strong>
                             </div>
                             <div>
-                                <button class="btn" onclick="closeModal()">Annuler</button>
-                                <button class="btn btn-primary" onclick="showFournisseurSelection()">
-                                    <i class="fas fa-arrow-right"></i> Choisir Fournisseur
+                                <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
+                                <button class="btn btn-primary" onclick="showFournisseurModal()">
+                                    <i class="fas fa-arrow-right"></i> Étape suivante
                                 </button>
                             </div>
                         </div>
@@ -2205,12 +2676,12 @@
 
         function generateCommandeClientList() {
             return commandesData.map((commande, index) => `
-                <div class="commande-client-item" onclick="selectCommandeClient(${index})" id="commande-client-${index}">
-                    <div class="commande-client-name">${commande.clientName}</div>
+                <div class="commande-client-item" ondblclick="editCommande(${index})" onclick="selectCommandeClient(${index})" id="commande-client-${index}">
+                    <div class="commande-client-name">${escapeHtml(commande.clientName)}</div>
                     <div class="commande-client-id">${commande.clientId}</div>
                     <div class="commande-client-details">
-                        <span class="commande-client-detail">${commande.typeVerre}</span>
-                        <span class="commande-client-detail">${commande.gammeVerres}</span>
+                        <span class="commande-client-detail">${escapeHtml(commande.typeVerre)}</span>
+                        <span class="commande-client-detail">${escapeHtml(commande.gammeVerres)}</span>
                     </div>
                 </div>
             `).join('');
@@ -2246,27 +2717,11 @@
                         </div>
                         <div class="commande-details-row">
                             <span class="commande-details-label">Nom Complet:</span>
-                            <span class="commande-details-value highlight">${commande.clientName}</span>
+                            <span class="commande-details-value highlight">${escapeHtml(commande.clientName)}</span>
                         </div>
                         <div class="commande-details-row">
                             <span class="commande-details-label">ID Client:</span>
                             <span class="commande-details-value">${commande.clientId}</span>
-                        </div>
-                        <div class="commande-details-row">
-                            <span class="commande-details-label">Téléphone:</span>
-                            <span class="commande-details-value">${formatPhoneNumber(commande.clientPhone)}</span>
-                        </div>
-                        <div class="commande-details-row">
-                            <span class="commande-details-label">Agence:</span>
-                            <span class="commande-details-value">${commande.clientAgency}</span>
-                        </div>
-                        <div class="commande-details-row">
-                            <span class="commande-details-label">Commercial:</span>
-                            <span class="commande-details-value">${commande.salesperson}</span>
-                        </div>
-                        <div class="commande-details-row">
-                            <span class="commande-details-label">Montant:</span>
-                            <span class="commande-details-value highlight">${parseFloat(commande.netAmount).toLocaleString('fr-FR')} FCFA</span>
                         </div>
                     </div>
                     
@@ -2276,15 +2731,11 @@
                         </div>
                         <div class="commande-details-row">
                             <span class="commande-details-label">Type de Verre:</span>
-                            <span class="commande-details-value">${commande.typeVerre}</span>
-                        </div>
-                        <div class="commande-details-row">
-                            <span class="commande-details-label">Gamme:</span>
-                            <span class="commande-details-value">${commande.gammeVerres}</span>
+                            <span class="commande-details-value editable" onclick="editField(${index}, 'typeVerre')">${escapeHtml(commande.typeVerre)}</span>
                         </div>
                         <div class="commande-details-row">
                             <span class="commande-details-label">Monture:</span>
-                            <span class="commande-details-value">${commande.monture}</span>
+                            <span class="commande-details-value editable" onclick="editField(${index}, 'monture')">${escapeHtml(commande.monture)}</span>
                         </div>
                     </div>
                     
@@ -2294,27 +2745,27 @@
                         </div>
                         <div class="commande-details-row">
                             <span class="commande-details-label">Sphere:</span>
-                            <span class="commande-details-value">${commande.odSphere}</span>
+                            <span class="commande-details-value editable" onclick="editField(${index}, 'odSphere')">${commande.odSphere}</span>
                         </div>
                         <div class="commande-details-row">
                             <span class="commande-details-label">Cylindre:</span>
-                            <span class="commande-details-value">${commande.odCylindre}</span>
+                            <span class="commande-details-value editable" onclick="editField(${index}, 'odCylindre')">${commande.odCylindre}</span>
                         </div>
                         <div class="commande-details-row">
                             <span class="commande-details-label">Axe:</span>
-                            <span class="commande-details-value">${commande.odAxe}</span>
+                            <span class="commande-details-value editable" onclick="editField(${index}, 'odAxe')">${commande.odAxe}</span>
                         </div>
                         <div class="commande-details-row">
                             <span class="commande-details-label">ADD:</span>
-                            <span class="commande-details-value">${commande.odADD}</span>
+                            <span class="commande-details-value editable" onclick="editField(${index}, 'odADD')">${commande.odADD}</span>
                         </div>
                         <div class="commande-details-row">
                             <span class="commande-details-label">DP:</span>
-                            <span class="commande-details-value">${commande.odDP}</span>
+                            <span class="commande-details-value editable" onclick="editField(${index}, 'odDP')">${commande.odDP}</span>
                         </div>
                         <div class="commande-details-row">
                             <span class="commande-details-label">Hauteur:</span>
-                            <span class="commande-details-value">${commande.odHauteur}</span>
+                            <span class="commande-details-value editable" onclick="editField(${index}, 'odHauteur')">${commande.odHauteur}</span>
                         </div>
                     </div>
                     
@@ -2324,234 +2775,444 @@
                         </div>
                         <div class="commande-details-row">
                             <span class="commande-details-label">Sphere:</span>
-                            <span class="commande-details-value">${commande.ogSphere}</span>
+                            <span class="commande-details-value editable" onclick="editField(${index}, 'ogSphere')">${commande.ogSphere}</span>
                         </div>
                         <div class="commande-details-row">
                             <span class="commande-details-label">Cylindre:</span>
-                            <span class="commande-details-value">${commande.ogCylindre}</span>
+                            <span class="commande-details-value editable" onclick="editField(${index}, 'ogCylindre')">${commande.ogCylindre}</span>
                         </div>
                         <div class="commande-details-row">
                             <span class="commande-details-label">Axe:</span>
-                            <span class="commande-details-value">${commande.ogAxe}</span>
+                            <span class="commande-details-value editable" onclick="editField(${index}, 'ogAxe')">${commande.ogAxe}</span>
                         </div>
                         <div class="commande-details-row">
                             <span class="commande-details-label">ADD:</span>
-                            <span class="commande-details-value">${commande.ogADD}</span>
+                            <span class="commande-details-value editable" onclick="editField(${index}, 'ogADD')">${commande.ogADD}</span>
                         </div>
                         <div class="commande-details-row">
                             <span class="commande-details-label">DP:</span>
-                            <span class="commande-details-value">${commande.ogDP}</span>
+                            <span class="commande-details-value editable" onclick="editField(${index}, 'ogDP')">${commande.ogDP}</span>
                         </div>
                         <div class="commande-details-row">
                             <span class="commande-details-label">Hauteur:</span>
-                            <span class="commande-details-value">${commande.ogHauteur}</span>
+                            <span class="commande-details-value editable" onclick="editField(${index}, 'ogHauteur')">${commande.ogHauteur}</span>
                         </div>
                     </div>
-                </div>
-                
-                <div style="margin-top: 2rem; padding: 1rem; background: var(--gray-50); border-radius: var(--border-radius-md);">
-                    <button class="btn btn-primary" onclick="editCommande(${index})" style="width: 100%;">
-                        <i class="fas fa-edit"></i> Modifier cette commande
-                    </button>
                 </div>
             `;
             
             // Mettre à jour le badge
-            const badge = document.querySelector('.commande-details-badge');
+            const badge = document.getElementById('commandeDetailsBadge');
             if (badge) {
                 badge.textContent = `Client ${index + 1}/${commandesData.length}`;
             }
         }
 
+        function editField(index, field) {
+            const commande = commandesData[index];
+            const currentValue = commande[field];
+            
+            // Créer un formulaire d'édition
+            const editForm = document.createElement('div');
+            editForm.className = 'edit-form';
+            editForm.innerHTML = `
+                <div class="edit-form-row">
+                    <label class="edit-form-label">Modifier ${field}</label>
+                    <input type="text" class="edit-form-input" id="editFieldInput" value="${escapeHtml(currentValue)}">
+                </div>
+                <div class="edit-form-actions">
+                    <button class="edit-form-btn btn-primary" onclick="saveFieldEdit(${index}, '${field}')">Enregistrer</button>
+                    <button class="edit-form-btn btn-secondary" onclick="cancelFieldEdit(this)">Annuler</button>
+                </div>
+            `;
+            
+            // Trouver l'élément cliqué et le remplacer par le formulaire
+            const target = event.target;
+            const parent = target.parentNode;
+            parent.innerHTML = '';
+            parent.appendChild(editForm);
+        }
+
+        function saveFieldEdit(index, field) {
+            const input = document.getElementById('editFieldInput');
+            if (input) {
+                const newValue = input.value;
+                commandesData[index][field] = newValue;
+                
+                // Rafraîchir l'affichage
+                selectCommandeClient(index);
+                showAlertMessage("Champ modifié avec succès", "success");
+            }
+        }
+
+        function cancelFieldEdit(button) {
+            // Retourner à l'affichage normal
+            const index = parseInt(document.querySelector('.commande-client-item.selected')?.id.split('-').pop() || '0');
+            selectCommandeClient(index);
+        }
+
         function editCommande(index) {
+            // Ouvrir un formulaire d'édition complet
             const commande = commandesData[index];
             
-            // Pour simplifier, nous utilisons un prompt pour chaque champ
-            // Dans une version plus avancée, on pourrait créer un formulaire d'édition
+            const modalContainer = document.getElementById('modal-container');
+            const editModalHTML = `
+                <div class="modal-overlay active">
+                    <div class="modal-content" style="max-width: 800px;">
+                        <div class="modal-header">
+                            <h3 class="modal-title">Modifier la commande - ${escapeHtml(commande.clientName)}</h3>
+                            <button class="modal-close" onclick="closeModal()">&times;</button>
+                        </div>
+                        <div class="modal-body" style="padding: 2rem;">
+                            <form id="editCommandeForm">
+                                <h4 style="margin-bottom: 1rem;">Détails des Verres</h4>
+                                
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                                    <div>
+                                        <label class="form-label">Type de Verre</label>
+                                        <input type="text" class="form-control" id="editTypeVerre" value="${escapeHtml(commande.typeVerre)}">
+                                    </div>
+                                    <div>
+                                        <label class="form-label">Gamme</label>
+                                        <input type="text" class="form-control" id="editGammeVerres" value="${escapeHtml(commande.gammeVerres)}">
+                                    </div>
+                                    <div>
+                                        <label class="form-label">Monture</label>
+                                        <input type="text" class="form-control" id="editMonture" value="${escapeHtml(commande.monture)}">
+                                    </div>
+                                </div>
+                                
+                                <h4 style="margin: 1.5rem 0 1rem;">Œil Droit (OD)</h4>
+                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+                                    <div>
+                                        <label class="form-label">Sphere</label>
+                                        <input type="text" class="form-control" id="editOdSphere" value="${commande.odSphere}">
+                                    </div>
+                                    <div>
+                                        <label class="form-label">Cylindre</label>
+                                        <input type="text" class="form-control" id="editOdCylindre" value="${commande.odCylindre}">
+                                    </div>
+                                    <div>
+                                        <label class="form-label">Axe</label>
+                                        <input type="text" class="form-control" id="editOdAxe" value="${commande.odAxe}">
+                                    </div>
+                                    <div>
+                                        <label class="form-label">ADD</label>
+                                        <input type="text" class="form-control" id="editOdADD" value="${commande.odADD}">
+                                    </div>
+                                    <div>
+                                        <label class="form-label">DP</label>
+                                        <input type="text" class="form-control" id="editOdDP" value="${commande.odDP}">
+                                    </div>
+                                    <div>
+                                        <label class="form-label">Hauteur</label>
+                                        <input type="text" class="form-control" id="editOdHauteur" value="${commande.odHauteur}">
+                                    </div>
+                                </div>
+                                
+                                <h4 style="margin: 1.5rem 0 1rem;">Œil Gauche (OG)</h4>
+                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+                                    <div>
+                                        <label class="form-label">Sphere</label>
+                                        <input type="text" class="form-control" id="editOgSphere" value="${commande.ogSphere}">
+                                    </div>
+                                    <div>
+                                        <label class="form-label">Cylindre</label>
+                                        <input type="text" class="form-control" id="editOgCylindre" value="${commande.ogCylindre}">
+                                    </div>
+                                    <div>
+                                        <label class="form-label">Axe</label>
+                                        <input type="text" class="form-control" id="editOgAxe" value="${commande.ogAxe}">
+                                    </div>
+                                    <div>
+                                        <label class="form-label">ADD</label>
+                                        <input type="text" class="form-control" id="editOgADD" value="${commande.ogADD}">
+                                    </div>
+                                    <div>
+                                        <label class="form-label">DP</label>
+                                        <input type="text" class="form-control" id="editOgDP" value="${commande.ogDP}">
+                                    </div>
+                                    <div>
+                                        <label class="form-label">Hauteur</label>
+                                        <input type="text" class="form-control" id="editOgHauteur" value="${commande.ogHauteur}">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
+                            <button class="btn btn-primary" onclick="saveCommandeEdit(${index})">Enregistrer</button>
+                        </div>
+                    </div>
+                </div>
+            `;
             
-            const newTypeVerre = prompt("Type de verre:", commande.typeVerre);
-            if (newTypeVerre !== null) {
-                commandesData[index].typeVerre = newTypeVerre;
-            }
+            modalContainer.innerHTML = editModalHTML;
+        }
+
+        function saveCommandeEdit(index) {
+            // Récupérer les valeurs du formulaire
+            commandesData[index].typeVerre = document.getElementById('editTypeVerre').value;
+            commandesData[index].gammeVerres = document.getElementById('editGammeVerres').value;
+            commandesData[index].monture = document.getElementById('editMonture').value;
+            commandesData[index].odSphere = document.getElementById('editOdSphere').value;
+            commandesData[index].odCylindre = document.getElementById('editOdCylindre').value;
+            commandesData[index].odAxe = document.getElementById('editOdAxe').value;
+            commandesData[index].odADD = document.getElementById('editOdADD').value;
+            commandesData[index].odDP = document.getElementById('editOdDP').value;
+            commandesData[index].odHauteur = document.getElementById('editOdHauteur').value;
+            commandesData[index].ogSphere = document.getElementById('editOgSphere').value;
+            commandesData[index].ogCylindre = document.getElementById('editOgCylindre').value;
+            commandesData[index].ogAxe = document.getElementById('editOgAxe').value;
+            commandesData[index].ogADD = document.getElementById('editOgADD').value;
+            commandesData[index].ogDP = document.getElementById('editOgDP').value;
+            commandesData[index].ogHauteur = document.getElementById('editOgHauteur').value;
             
-            const newGammeVerres = prompt("Gamme des verres:", commande.gammeVerres);
-            if (newGammeVerres !== null) {
-                commandesData[index].gammeVerres = newGammeVerres;
-            }
+            // Fermer le modal d'édition
+            closeModal();
             
-            // Mettre à jour l'affichage
-            selectCommandeClient(index);
+            // Rouvrir le modal de préparation
+            showPreparationModal();
+            
             showAlertMessage("Commande modifiée avec succès", "success");
         }
 
-        function showFournisseurSelection() {
-            closeModal();
-            
+        function showFournisseurModal() {
             const modalContainer = document.getElementById('modal-container');
+            
+            // Initialiser les dates de livraison si ce n'est pas déjà fait
+            commandesData.forEach(commande => {
+                if (!datesLivraison.has(commande.clientId)) {
+                    const defaultDate = new Date();
+                    defaultDate.setDate(defaultDate.getDate() + 7); // +7 jours par défaut
+                    datesLivraison.set(commande.clientId, defaultDate.toISOString().split('T')[0]);
+                }
+            });
             
             const modalHTML = `
                 <div class="modal-overlay active">
-                    <div class="modal-content">
+                    <div class="modal-content" style="max-width: 800px;">
                         <div class="modal-header">
-                            <h3 class="modal-title">Sélection du Fournisseur</h3>
+                            <h3 class="modal-title">Validation de la Commande - Étape 2/2</h3>
                             <button class="modal-close" onclick="closeModal()">&times;</button>
                         </div>
-                        <div class="modal-body">
-                            <div class="fournisseur-selection" style="padding: 2rem;">
-                                <h3 style="margin-bottom: 1rem; color: var(--gray-900);">Choisissez un fournisseur</h3>
-                                <p style="color: var(--gray-600); margin-bottom: 1.5rem;">
-                                    Vous êtes sur le point de passer une commande pour ${commandesData.length} client(s)
+                        <div class="modal-body" style="padding: 2rem;">
+                            <!-- Résumé des clients sélectionnés -->
+                            <div style="background: var(--gray-50); padding: 1rem; border-radius: var(--border-radius-md); margin-bottom: 2rem;">
+                                <h4 style="margin-bottom: 0.5rem; color: var(--gray-700);">Résumé de la commande</h4>
+                                <p style="color: var(--gray-600);">
+                                    <strong>${commandesData.length}</strong> client(s) sélectionné(s)
                                 </p>
-                                <div class="fournisseur-grid" id="fournisseurGrid"></div>
+                                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;">
+                                    ${commandesData.map(c => `
+                                        <span style="background: white; padding: 0.25rem 0.75rem; border-radius: var(--border-radius-full); font-size: 0.75rem; border: 1px solid var(--gray-200);">
+                                            ${escapeHtml(c.clientName)}
+                                        </span>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            
+                            <!-- Section Fournisseur -->
+                            <div class="fournisseur-form-group">
+                                <label class="form-label">Sélectionner un fournisseur</label>
+                                <select class="fournisseur-select" id="fournisseurSelect" onchange="selectFournisseur(this.value)">
+                                    <option value="">-- Choisir un fournisseur --</option>
+                                    ${fournisseursList.map(f => `<option value="${escapeHtml(f)}">${escapeHtml(f)}</option>`).join('')}
+                                    <option value="autre">Autre (ajouter manuellement)</option>
+                                </select>
+                                
+                                <div id="nouveauFournisseurContainer" style="display: none; margin-top: 1rem;">
+                                    <div class="fournisseur-add-form">
+                                        <input type="text" class="fournisseur-add-input" id="nouveauFournisseurInput" placeholder="Nom du nouveau fournisseur">
+                                        <button class="btn btn-primary" onclick="ajouterNouveauFournisseur()">Ajouter</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Section Dates de Livraison -->
+                            <div class="fournisseur-form-group">
+                                <label class="form-label">Dates de livraison prévues</label>
+                                <div class="date-livraison-grid" id="datesLivraisonContainer">
+                                    ${generateDatesLivraisonHTML()}
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button class="btn" onclick="showCommandeVisualModal()">
-                                <i class="fas fa-arrow-left"></i> Retour
-                            </button>
-                            <button class="btn btn-primary" id="btnImprimerCommande" disabled onclick="imprimerCommande()">
-                                <i class="fas fa-print"></i> Imprimer et Mettre à Jour
-                            </button>
+                            <div>
+                                <button class="btn btn-secondary" onclick="showPreparationModal()">
+                                    <i class="fas fa-arrow-left"></i> Retour
+                                </button>
+                            </div>
+                            <div>
+                                <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
+                                <button class="btn btn-primary" onclick="validerCommande()" id="btnValiderCommande" disabled>
+                                    <i class="fas fa-check"></i> Valider la Commande
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             `;
             
             modalContainer.innerHTML = modalHTML;
-            
-            const fournisseurGrid = document.getElementById('fournisseurGrid');
-            const fournisseurs = [
-                { id: 'essilor', name: 'Essilor', icon: 'fas fa-glasses', description: 'Leader mondial' },
-                { id: 'hoya', name: 'Hoya', icon: 'fas fa-eye', description: 'Technologie avancée' },
-                { id: 'zeiss', name: 'Zeiss', icon: 'fas fa-microscope', description: 'Précision allemande' },
-                { id: 'rodenstock', name: 'Rodenstock', icon: 'fas fa-certificate', description: 'Qualité premium' },
-                { id: 'seiko', name: 'Seiko', icon: 'fas fa-clock', description: 'Précision japonaise' },
-                { id: 'SIVO', name: 'SIVO', icon: 'fas fa-star', description: 'Fournisseur local' }
-            ];
-            
-            fournisseurGrid.innerHTML = fournisseurs.map(fournisseur => `
-                <div class="fournisseur-card" onclick="selectFournisseur('${fournisseur.id}', '${fournisseur.name}', this)">
-                    <div class="fournisseur-icon">
-                        <i class="${fournisseur.icon}"></i>
-                    </div>
-                    <div class="fournisseur-name">${fournisseur.name}</div>
-                    <div style="font-size: 0.75rem; color: var(--gray-500); margin-top: 0.25rem;">
-                        ${fournisseur.description}
-                    </div>
-                </div>
-            `).join('');
         }
 
-        function selectFournisseur(id, name, element) {
-            selectedFournisseur = { id, name };
-            
-            document.querySelectorAll('.fournisseur-card').forEach(card => {
-                card.classList.remove('selected');
-            });
-            
-            if (element) {
-                element.classList.add('selected');
-            }
-            
-            document.getElementById('btnImprimerCommande').disabled = false;
+        function generateDatesLivraisonHTML() {
+            return commandesData.map(commande => {
+                const date = datesLivraison.get(commande.clientId) || '';
+                return `
+                    <div class="date-livraison-item">
+                        <div class="date-livraison-client">${escapeHtml(commande.clientName)}</div>
+                        <input type="date" class="date-livraison-input" 
+                               value="${date}" 
+                               onchange="updateDateLivraison('${commande.clientId}', this.value)">
+                    </div>
+                `;
+            }).join('');
         }
 
-        function closeModal() {
-            const modal = document.querySelector('.modal-overlay.active');
-            if (modal) {
-                modal.remove();
+        function selectFournisseur(value) {
+            const nouveauFournisseurContainer = document.getElementById('nouveauFournisseurContainer');
+            const btnValider = document.getElementById('btnValiderCommande');
+            
+            if (value === 'autre') {
+                nouveauFournisseurContainer.style.display = 'block';
+                selectedFournisseur = null;
+                btnValider.disabled = true;
+            } else if (value) {
+                nouveauFournisseurContainer.style.display = 'none';
+                selectedFournisseur = value;
+                btnValider.disabled = false;
+            } else {
+                nouveauFournisseurContainer.style.display = 'none';
+                selectedFournisseur = null;
+                btnValider.disabled = true;
             }
         }
 
-        async function imprimerCommande() {
+        function ajouterNouveauFournisseur() {
+            const input = document.getElementById('nouveauFournisseurInput');
+            const nouveauFournisseur = input.value.trim();
+            
+            if (nouveauFournisseur) {
+                // Ajouter à la liste
+                fournisseursList.push(nouveauFournisseur);
+                
+                // Ajouter à la select
+                const select = document.getElementById('fournisseurSelect');
+                const option = document.createElement('option');
+                option.value = nouveauFournisseur;
+                option.textContent = nouveauFournisseur;
+                option.selected = true;
+                select.appendChild(option);
+                
+                // Sélectionner le nouveau fournisseur
+                selectedFournisseur = nouveauFournisseur;
+                document.getElementById('btnValiderCommande').disabled = false;
+                
+                // Cacher le formulaire d'ajout
+                document.getElementById('nouveauFournisseurContainer').style.display = 'none';
+                input.value = '';
+                
+                showAlertMessage(`Fournisseur "${nouveauFournisseur}" ajouté avec succès`, "success");
+            }
+        }
+
+        function updateDateLivraison(clientId, date) {
+            datesLivraison.set(clientId, date);
+        }
+
+        // ==================== VALIDATION DE LA COMMANDE ====================
+        async function validerCommande() {
             if (!selectedFournisseur) {
                 showAlertMessage("Veuillez sélectionner un fournisseur", "error");
                 return;
             }
             
-            try {
-                await updateClientStatuses();
-                generatePrintContent();
-                
-                const printSection = document.getElementById('printSection');
-                printSection.style.display = 'block';
-                
-                window.print();
-                
-                setTimeout(() => {
-                    printSection.style.display = 'none';
-                }, 500);
-                
-                closeModal();
-                showAlertMessage("Commande imprimée avec succès et statuts mis à jour", "success");
-                
-            } catch (error) {
-                console.error("Erreur lors de la mise à jour des statuts:", error);
-                showAlertMessage("Erreur lors de la mise à jour des statuts", "error");
-            }
-        }
-
-        async function updateClientStatuses() {
-            const username = sessionStorage.getItem("utilisateur") || localStorage.getItem("utilisateur");
-            const currentDate = new Date().toISOString().split('T')[0];
-            
-            const statusUpdates = [];
-            
-            for (const clientId of selectedClients) {
-                const client = allClients.find(c => c.id === clientId);
-                if (client) {
-                    statusUpdates.push({
-                        id: clientId,
-                        ancienStatut: client.status,
-                        nouveauStatut: "En traitement",
-                        dateMiseAJour: currentDate,
-                        utilisateur: username,
-                        fournisseur: selectedFournisseur.name
-                    });
+            // Vérifier que toutes les dates de livraison sont renseignées
+            let toutesDatesRenseignees = true;
+            for (const commande of commandesData) {
+                if (!datesLivraison.get(commande.clientId)) {
+                    toutesDatesRenseignees = false;
+                    break;
                 }
             }
             
-            if (statusUpdates.length > 0) {
-                await sendStatusUpdates(statusUpdates);
-                updateLocalStatuses();
+            if (!toutesDatesRenseignees) {
+                const confirmed = await confirmAction(
+                    "Certaines dates de livraison ne sont pas renseignées. Voulez-vous continuer quand même ?",
+                    'warning'
+                );
+                if (!confirmed) return;
             }
-        }
-
-        async function sendStatusUpdates(statusUpdates) {
-            const apiUrl = "https://script.google.com/macros/s/AKfycbwdzHJGAL16KV_OnyoCIs5I7im2yNxrbEaEIbykQ8hy6ewQjJFQ0G4TfqYWWCMc7vfW/exec?action=addpo";
             
             try {
-                const statusData = {
-                    updates: statusUpdates
-                };
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                if (loadingOverlay) {
+                    loadingOverlay.classList.add('active');
+                }
                 
-                await fetch(apiUrl, {
+                // Préparer les données pour l'API
+                const username = sessionStorage.getItem("utilisateur") || localStorage.getItem("utilisateur");
+                const currentDate = new Date().toISOString().split('T')[0];
+                
+                const updates = [];
+                
+                for (const commande of commandesData) {
+                    const client = allClients.find(c => c.id === commande.clientId);
+                    
+                    updates.push({
+                        id: commande.clientId,
+                        ancienStatut: client ? client.status : '',
+                        nouveauStatut: "Commande passée",
+                        dateMiseAJour: currentDate,
+                        utilisateur: username,
+                        fournisseur: selectedFournisseur,
+                        dateLivraisonPrevue: datesLivraison.get(commande.clientId) || ''
+                    });
+                }
+                
+                // Envoyer à l'API
+                await fetch('https://script.google.com/macros/s/AKfycbwdzHJGAL16KV_OnyoCIs5I7im2yNxrbEaEIbykQ8hy6ewQjJFQ0G4TfqYWWCMc7vfW/exec?action=addpo', {
                     method: 'POST',
                     mode: 'no-cors',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(statusData)
+                    body: JSON.stringify({ updates })
                 });
                 
-                return { success: true, message: "Requête envoyée" };
+                // Mettre à jour les statuts localement
+                updateLocalStatuses('Commande passée');
+                
+                // Générer et imprimer le bon de commande
+                generateBonDeCommande();
+                
+                closeModal();
+                
+                showAlertMessage("Commande validée avec succès", "success");
                 
             } catch (error) {
-                console.error("Erreur lors de l'envoi des mises à jour:", error);
-                return { success: true, message: "Requête envoyée (mode no-cors)" };
+                console.error("Erreur lors de la validation de la commande:", error);
+                showAlertMessage("Erreur lors de la validation de la commande", "error");
+            } finally {
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                if (loadingOverlay) {
+                    loadingOverlay.classList.remove('active');
+                }
             }
         }
 
-        function updateLocalStatuses() {
+        function updateLocalStatuses(newStatus) {
             allClients.forEach(client => {
                 if (selectedClients.has(client.id)) {
-                    client.status = "En traitement";
+                    client.status = newStatus;
                 }
             });
             
             filteredClients.forEach(client => {
                 if (selectedClients.has(client.id)) {
-                    client.status = "En traitement";
+                    client.status = newStatus;
                 }
             });
             
@@ -2560,96 +3221,195 @@
             
             // Mettre à jour l'affichage
             displayClients();
-            updateStatusStats();
             updateStatusFilter();
             clearSelection();
             
             // Rafraîchir aussi les filtres
             applyFilters();
             
-            console.log("✅ Statuts mis à jour localement pour", selectedClients.size, "clients");
+            console.log(`✅ Statuts mis à jour localement pour ${selectedClients.size} clients`);
         }
 
-        function generatePrintContent() {
-            const printDate = document.getElementById('printDate');
-            const printFournisseur = document.getElementById('printFournisseur');
-            const printReference = document.getElementById('printReference');
-            const printCommandesContent = document.getElementById('printCommandesContent');
+        // ==================== GÉNÉRATION DU BON DE COMMANDE ====================
+        function generateBonDeCommande() {
+            const printSection = document.getElementById('printSection');
+            const bcNumber = 'BC-' + Date.now().toString().slice(-6);
+            const currentDate = new Date().toLocaleDateString('fr-FR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
             
-            printDate.textContent = new Date().toLocaleDateString('fr-FR');
-            printFournisseur.textContent = selectedFournisseur.name;
-            printReference.textContent = Date.now().toString().slice(-6);
+            let clientsHTML = '';
             
-            let html = '';
-            const groupedByType = groupCommandesByType();
-            
-            Object.keys(groupedByType).forEach(typeVerre => {
-                const commandes = groupedByType[typeVerre];
+            commandesData.forEach((commande, index) => {
+                const dateLivraison = datesLivraison.get(commande.clientId);
+                const formattedDateLivraison = dateLivraison ? new Date(dateLivraison).toLocaleDateString('fr-FR') : 'Non spécifiée';
                 
-                html += `
-                    <div style="margin-bottom: 2rem; page-break-inside: avoid;">
-                        <h3 style="border-bottom: 2px solid #333; padding-bottom: 0.5rem; margin-bottom: 1rem;">${typeVerre}</h3>
-                        <table style="width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 12px;">
+                clientsHTML += `
+                    <div class="bc-client-section">
+                        <div class="bc-client-header">
+                            <div>
+                                <span class="bc-client-name">${escapeHtml(commande.clientName)}</span>
+                                <span class="bc-client-id"> (${commande.clientId})</span>
+                            </div>
+                            <div style="font-size: 0.875rem;">Livraison prévue: ${formattedDateLivraison}</div>
+                        </div>
+                        
+                        <div style="margin-bottom: 1rem;">
+                            <span class="bc-detail-label">Type de Verre:</span> ${escapeHtml(commande.typeVerre)}<br>
+                            <span class="bc-detail-label">Gamme:</span> ${escapeHtml(commande.gammeVerres)}<br>
+                            <span class="bc-detail-label">Monture:</span> ${escapeHtml(commande.monture)}
+                        </div>
+                        
+                        <table class="bc-prescription-table">
                             <thead>
-                                <tr style="background-color: #f8f9fa;">
-                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">Client</th>
-                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">Gamme</th>
-                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">OD</th>
-                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">OG</th>
-                                    <th style="border: 1px solid #333; padding: 8px; text-align: left;">ADD</th>
-                                </tr>
+                                <tr>
+                                    <th></th>
+                                    <th>Sphere</th>
+                                    <th>Cylindre</th>
+                                    <th>Axe</th>
+                                    <th>ADD</th>
+                                    <th>DP</th>
+                                    <th>Hauteur</th>
+                                 </tr>
                             </thead>
                             <tbody>
-                `;
-                
-                commandes.forEach(commande => {
-                    html += `
-                        <tr>
-                            <td style="border: 1px solid #333; padding: 8px; vertical-align: top;">
-                                <strong>${commande.clientName}</strong>
-                                <div style="font-size: 10px; color: #666; margin-top: 4px;">
-                                    ${commande.clientId} | ${commande.clientAgency}
-                                </div>
-                            </td>
-                            <td style="border: 1px solid #333; padding: 8px; vertical-align: top;">${commande.gammeVerres}</td>
-                            <td style="border: 1px solid #333; padding: 8px; vertical-align: top;">
-                                ${commande.odSphere}/${commande.odCylindre}/${commande.odAxe}
-                                ${commande.odDP ? `<br><small>DP: ${commande.odDP}</small>` : ''}
-                                ${commande.odHauteur ? `<br><small>Hauteur: ${commande.odHauteur}</small>` : ''}
-                            </td>
-                            <td style="border: 1px solid #333; padding: 8px; vertical-align: top;">
-                                ${commande.ogSphere}/${commande.ogCylindre}/${commande.ogAxe}
-                                ${commande.ogDP ? `<br><small>DP: ${commande.ogDP}</small>` : ''}
-                                ${commande.ogHauteur ? `<br><small>Hauteur: ${commande.ogHauteur}</small>` : ''}
-                            </td>
-                            <td style="border: 1px solid #333; padding: 8px; vertical-align: top;">
-                                OD: ${commande.odADD}<br>
-                                OG: ${commande.ogADD}
-                            </td>
-                        </tr>
-                    `;
-                });
-                
-                html += `
-                        </tbody>
-                    </table>
-                </div>
+                                 <tr>
+                                    <th style="background: var(--gray-100);">OD</th>
+                                    <td>${commande.odSphere}</td>
+                                    <td>${commande.odCylindre}</td>
+                                    <td>${commande.odAxe}</td>
+                                    <td>${commande.odADD}</td>
+                                    <td>${commande.odDP}</td>
+                                    <td>${commande.odHauteur}</td>
+                                 </tr>
+                                 <tr>
+                                    <th style="background: var(--gray-100);">OG</th>
+                                    <td>${commande.ogSphere}</td>
+                                    <td>${commande.ogCylindre}</td>
+                                    <td>${commande.ogAxe}</td>
+                                    <td>${commande.ogADD}</td>
+                                    <td>${commande.ogDP}</td>
+                                    <td>${commande.ogHauteur}</td>
+                                 </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 `;
             });
             
-            printCommandesContent.innerHTML = html;
+            printSection.innerHTML = `
+                <div class="bc-header">
+                    <div class="bc-company-info">
+                        <h1 class="bc-company-name">FAR VISION Sarl</h1>
+                        <div class="bc-company-details">
+                            Etoile Rouge/Carré 962,<br>
+                            Cotonou-Benin.<br>
+                            Ifu: 3202112790471<br>
+                            Tel (229) 01 94359191<br>
+                            Email: farvision521@gmail.com
+                        </div>
+                    </div>
+                    <div class="bc-logo">
+                        <img src="logo.png" alt="FAR VISION Logo" class="bc-logo-img" onerror="this.style.display='none'">
+                    </div>
+                </div>
+                
+                <div class="bc-title-section">
+                    <h2>BON DE COMMANDE FOURNISSEUR</h2>
+                </div>
+                <div class="bc-info">
+                    <div class="bc-info-item"><span class="bc-info-label">N° :</span> <span class="bc-info-value">${bcNumber}</span></div>
+                    <div class="bc-info-item"><span class="bc-info-label">Date :</span> <span class="bc-info-value">${currentDate}</span></div>
+                    <div class="bc-info-item"><span class="bc-info-label">Fournisseur :</span> <span class="bc-info-value">${escapeHtml(selectedFournisseur || 'Non spécifié')}</span></div>
+                </div>
+                
+                ${clientsHTML}
+            `;
+            
+            printSection.style.display = 'block';
+            
+            // Imprimer
+            setTimeout(() => {
+                window.print();
+                
+                // Cacher après impression
+                setTimeout(() => {
+                    printSection.style.display = 'none';
+                }, 500);
+            }, 100);
         }
-
-        function groupCommandesByType() {
-            const grouped = {};
-            commandesData.forEach(commande => {
-                const type = commande.typeVerre || "Non spécifié";
-                if (!grouped[type]) {
-                    grouped[type] = [];
+        
+        // ==================== RÉCEPTION DE COMMANDE ====================
+        async function markAsReceived(clientId) {
+            // Utilisation de la confirmation personnalisée
+            const confirmed = await confirmAction(
+                "Voulez-vous marquer cette commande comme réceptionnée ?",
+                'info'
+            );
+            
+            if (!confirmed) return;
+            
+            try {
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                if (loadingOverlay) {
+                    loadingOverlay.classList.add('active');
                 }
-                grouped[type].push(commande);
-            });
-            return grouped;
+                
+                const client = allClients.find(c => c.id === clientId);
+                const username = sessionStorage.getItem("utilisateur") || localStorage.getItem("utilisateur");
+                const currentDate = new Date().toISOString().split('T')[0];
+                
+                const updates = [{
+                    id: clientId,
+                    ancienStatut: client ? client.status : '',
+                    nouveauStatut: "Réceptionné",
+                    dateMiseAJour: currentDate,
+                    utilisateur: username,
+                    fournisseur: '',
+                    dateLivraisonPrevue: currentDate
+                }];
+                
+                // Envoyer à l'API
+                await fetch('https://script.google.com/macros/s/AKfycbwdzHJGAL16KV_OnyoCIs5I7im2yNxrbEaEIbykQ8hy6ewQjJFQ0G4TfqYWWCMc7vfW/exec?action=addpo', {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ updates })
+                });
+                
+                // Mettre à jour localement
+                allClients.forEach(c => {
+                    if (c.id === clientId) {
+                        c.status = "Réceptionné";
+                    }
+                });
+                
+                filteredClients.forEach(c => {
+                    if (c.id === clientId) {
+                        c.status = "Réceptionné";
+                    }
+                });
+                
+                // Mettre à jour l'affichage
+                generateStatusConfig();
+                displayClients();
+                updateStatusFilter();
+                
+                showAlertMessage(`Client ${client.fullName} marqué comme réceptionné`, "success");
+                
+            } catch (error) {
+                console.error("Erreur lors de la réception:", error);
+                showAlertMessage("Erreur lors de la mise à jour du statut", "error");
+            } finally {
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                if (loadingOverlay) {
+                    loadingOverlay.classList.remove('active');
+                }
+            }
         }
 
         // ==================== FONCTIONS UTILITAIRES ====================
@@ -2687,6 +3447,13 @@
             };
         }
 
+        function closeModal() {
+            const modal = document.querySelector('.modal-overlay.active');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
         // ==================== FONCTIONS D'ACTION ====================
         function openVueGlobale() {
             try {
@@ -2715,9 +3482,17 @@
                 return;
             }
             
-            if (confirm(`Voulez-vous appeler le numéro ${formatPhoneNumber(cleanedNumber)} ?`)) {
-                window.location.href = `tel:${cleanedNumber}`;
-            }
+            customConfirm({
+                title: "Appel téléphonique",
+                message: `Voulez-vous appeler le numéro ${formatPhoneNumber(cleanedNumber)} ?`,
+                type: "info",
+                confirmText: "Appeler",
+                cancelText: "Annuler"
+            }).then(confirmed => {
+                if (confirmed) {
+                    window.location.href = `tel:${cleanedNumber}`;
+                }
+            });
         }
 
         function cleanPhoneNumber(phoneNumber) {
@@ -2747,7 +3522,7 @@
                             <div>Chargement des clients...</div>
                         </div>
                     </td>
-                </tr>
+                 </tr>
             `;
         }
 
@@ -2778,8 +3553,8 @@
             const alertDiv = document.createElement('div');
             alertDiv.className = `alert-message alert-${type}`;
             alertDiv.innerHTML = `
-                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
-                <span>${message}</span>
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
+                <span>${escapeHtml(message)}</span>
             `;
             
             alertContainer.appendChild(alertDiv);
@@ -2793,7 +3568,6 @@
                 }, 300);
             }, 3000);
         }
-
     </script>
 </body>
 </html>
