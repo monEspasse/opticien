@@ -36,12 +36,25 @@
             display: flex;
             flex-direction: column;
             padding: 20px;
+            position: relative;
+        }
+
+        /* Background overlay pour meilleure lisibilité */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: -1;
         }
 
         /* Background animation */
-        body::before {
+        body::after {
             content: '';
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
@@ -51,17 +64,19 @@
                 radial-gradient(circle at 80% 20%, rgba(255, 101, 132, 0.1) 0%, transparent 50%),
                 radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
             z-index: -1;
+            pointer-events: none;
         }
 
         /* Floating elements */
         .floating-elements {
-            position: absolute;
+            position: fixed;
             width: 100%;
             height: 100%;
             top: 0;
             left: 0;
             overflow: hidden;
             z-index: -1;
+            pointer-events: none;
         }
 
         .floating-element {
@@ -122,6 +137,8 @@
             align-items: center;
             padding: 15px 30px;
             margin-bottom: 40px;
+            position: relative;
+            z-index: 10;
         }
 
         .logo-container {
@@ -143,6 +160,7 @@
             background: linear-gradient(90deg, var(--text-light), var(--primary-light));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         /* CONTAINER */
@@ -152,6 +170,7 @@
             margin: 0 auto;
             animation: fadeIn 0.8s ease-out;
             position: relative;
+            z-index: 10;
         }
 
         @keyframes fadeIn {
@@ -239,7 +258,6 @@
             border-radius: 15px;
             padding: 0 15px;
             backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
             transition: var(--transition);
             position: relative;
             overflow: hidden;
@@ -342,6 +360,12 @@
 
         .login-button:active {
             transform: translateY(0);
+        }
+        
+        .login-button.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            pointer-events: none;
         }
 
         /* ADDITIONAL OPTIONS */
@@ -463,7 +487,6 @@
             text-align: center;
             display: none;
             backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
         }
 
         .error-message {
@@ -476,6 +499,91 @@
             background: rgba(34, 197, 94, 0.2);
             color: #22c55e;
             border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+        
+        .warning-message {
+            background: rgba(255, 165, 0, 0.2);
+            color: #ffa500;
+            border: 1px solid rgba(255, 165, 0, 0.3);
+        }
+
+        /* WELCOME MESSAGE */
+        .welcome-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            padding: 40px 60px;
+            border-radius: 30px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            z-index: 1000;
+            text-align: center;
+            animation: fadeInScale 0.5s ease-out;
+            display: none;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .welcome-message i {
+            font-size: 70px;
+            color: var(--primary-light);
+            margin-bottom: 20px;
+        }
+
+        .welcome-message h3 {
+            color: var(--text-light);
+            font-size: 2rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .welcome-message p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .welcome-message .user-name {
+            color: var(--accent-color);
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-top: 10px;
+        }
+
+        .welcome-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 999;
+            display: none;
+        }
+        
+        /* Countdown timer styling */
+        .countdown-timer {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-top: 10px;
+            text-align: center;
+            background: rgba(0,0,0,0.3);
+            padding: 8px;
+            border-radius: 50px;
+            backdrop-filter: blur(5px);
         }
 
         /* MOBILE OPTIMISATION */
@@ -499,14 +607,22 @@
                 gap: 15px;
                 align-items: flex-start;
             }
+
+            .welcome-message {
+                padding: 30px 40px;
+                width: 90%;
+            }
+
+            .welcome-message h3 {
+                font-size: 1.5rem;
+            }
+
+            .welcome-message i {
+                font-size: 50px;
+            }
         }
 
         @media (max-width: 480px) {
-            body.keyboard-visible {
-                align-items: flex-start;
-                padding-top: 15px;
-            }
-            
             .logo-container h1 {
                 font-size: 1.5rem;
             }
@@ -517,6 +633,14 @@
             
             h2 {
                 font-size: 1.4rem;
+            }
+
+            .welcome-message {
+                padding: 25px 30px;
+            }
+
+            .welcome-message h3 {
+                font-size: 1.3rem;
             }
         }
 
@@ -539,6 +663,12 @@
         .pulse {
             animation: pulse 1.5s infinite ease-in-out;
         }
+        
+        /* Disabled inputs style */
+        input:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 
@@ -550,9 +680,18 @@
         <div class="floating-element"></div>
     </div>
 
+    <!-- Welcome Message Overlay -->
+    <div class="welcome-overlay" id="welcomeOverlay"></div>
+    <div class="welcome-message" id="welcomeMessage">
+        <i class="fas fa-user-circle"></i>
+        <h3>Bonjour</h3>
+        <div class="user-name" id="userNameDisplay"></div>
+        <p>Bienvenue sur VisioPro</p>
+    </div>
+
     <header>
         <div class="logo-container">
-            <img src="logoSF.png" alt="Logo">
+            <img src="logoSF.png" alt="Logo" onerror="this.style.display='none'">
             <h1>VisioPro</h1>
         </div>
     </header>
@@ -566,7 +705,7 @@
                     <label>Nom d'utilisateur</label>
                     <div class="input-field">
                         <i class="fa fa-user"></i>
-                        <input type="text" id="username" placeholder="Entrez votre nom" required>
+                        <input type="text" id="username" placeholder="Entrez votre nom" required autocomplete="username">
                     </div>
                 </div>
 
@@ -574,209 +713,399 @@
                     <label>Mot de passe</label>
                     <div class="input-field">
                         <i class="fa fa-lock"></i>
-                        <input type="password" id="password" placeholder="Mot de passe" required>
+                        <input type="password" id="password" placeholder="Mot de passe" required autocomplete="current-password">
                         <i class="fa fa-eye toggle-password" id="togglePassword"></i>
                     </div>
                 </div>
 
-                <button type="submit" class="login-button">
+                <button type="submit" class="login-button" id="loginBtn">
                     <i class="fas fa-sign-in-alt"></i> Connexion
                 </button>
 
                 <div id="message"></div>
+                <div id="countdownDisplay" class="countdown-timer" style="display: none;"></div>
             </form>
         </div>
     </div>
 
     <script>
+        console.log('=== APPLICATION DÉMARRÉE ===');
+        console.log('Date/heure:', new Date().toLocaleString());
+        
+        // ==================== BLOCAGE APRÈS 3 TENTATIVES ====================
+        const STORAGE_KEY = "visiopro_login_block";
+        const MAX_ATTEMPTS = 3;
+        const BLOCK_DURATION_MS = 60 * 1000; // 1 minute
+        
+        let blockData = null;
+        let countdownInterval = null;
+        
+        console.log('Configuration du blocage:', { MAX_ATTEMPTS, BLOCK_DURATION_MS });
+        
+        // Récupération et initialisation du système de blocage
+        function initBlockSystem() {
+            console.log('Initialisation du système de blocage...');
+            const stored = localStorage.getItem(STORAGE_KEY);
+            const now = Date.now();
+            
+            console.log('Données stockées:', stored);
+            
+            if (stored) {
+                try {
+                    blockData = JSON.parse(stored);
+                    console.log('Données de blocage chargées:', blockData);
+                    
+                    // Vérifier si le blocage est encore actif
+                    if (blockData.isBlocked) {
+                        const remaining = blockData.blockedUntil - now;
+                        console.log('Blocage actif, temps restant:', remaining, 'ms');
+                        
+                        if (remaining > 0) {
+                            activateBlockade(remaining);
+                            return;
+                        } else {
+                            console.log('Blocage expiré, réinitialisation');
+                            resetBlockState();
+                        }
+                    } else {
+                        console.log('Aucun blocage actif');
+                        // Vérifier si le compteur doit être réinitialisé (1h sans activité)
+                        const lastAttemptTime = blockData.lastAttemptTime || 0;
+                        if (now - lastAttemptTime > 3600000) {
+                            console.log('Réinitialisation après 1h d\'inactivité');
+                            resetBlockState();
+                        }
+                    }
+                } catch(e) {
+                    console.error('Erreur de lecture du localStorage:', e);
+                    resetBlockState();
+                }
+            } else {
+                console.log('Aucune donnée stockée, initialisation par défaut');
+                resetBlockState();
+            }
+        }
+        
+        function resetBlockState() {
+            console.log('Réinitialisation de l\'état de blocage');
+            blockData = {
+                attempts: 0,
+                isBlocked: false,
+                blockedUntil: null,
+                lastAttemptTime: null
+            };
+            saveBlockState();
+            console.log('État après réinitialisation:', blockData);
+        }
+        
+        function saveBlockState() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(blockData));
+            console.log('État sauvegardé:', blockData);
+        }
+        
+        function registerFailedAttempt() {
+            console.log('Enregistrement d\'une tentative échouée');
+            if (blockData.isBlocked) {
+                console.log('Système déjà bloqué, tentative ignorée');
+                return false;
+            }
+            
+            blockData.attempts++;
+            blockData.lastAttemptTime = Date.now();
+            console.log('Nombre de tentatives:', blockData.attempts, '/', MAX_ATTEMPTS);
+            
+            if (blockData.attempts >= MAX_ATTEMPTS) {
+                console.log('⚠️ Seuil de tentatives atteint! Activation du blocage');
+                blockData.isBlocked = true;
+                blockData.blockedUntil = Date.now() + BLOCK_DURATION_MS;
+                saveBlockState();
+                activateBlockade(BLOCK_DURATION_MS);
+                return true;
+            }
+            
+            saveBlockState();
+            return false;
+        }
+        
+        function activateBlockade(remainingMs) {
+            console.log('🔒 Activation du blocage pour', remainingMs, 'ms');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const loginBtn = document.getElementById('loginBtn');
+            const messageDiv = document.getElementById('message');
+            const countdownDiv = document.getElementById('countdownDisplay');
+            
+            usernameInput.disabled = true;
+            passwordInput.disabled = true;
+            loginBtn.disabled = true;
+            loginBtn.classList.add('disabled');
+            
+            console.log('Inputs désactivés, bouton désactivé');
+            
+            const secondsRemaining = Math.ceil(remainingMs / 1000);
+            messageDiv.textContent = `⛔ Trop de tentatives échouées. Accès bloqué pour ${secondsRemaining} secondes.`;
+            messageDiv.className = 'warning-message';
+            messageDiv.style.display = 'block';
+            
+            countdownDiv.style.display = 'block';
+            
+            if (countdownInterval) clearInterval(countdownInterval);
+            
+            let remaining = remainingMs;
+            countdownInterval = setInterval(() => {
+                remaining -= 1000;
+                if (remaining <= 0) {
+                    console.log('Déblocage automatique');
+                    clearInterval(countdownInterval);
+                    countdownInterval = null;
+                    resetBlockState();
+                    deactivateBlockade();
+                } else {
+                    const secs = Math.ceil(remaining / 1000);
+                    countdownDiv.textContent = `⏱️ Accès bloqué. Réessayez dans ${secs} secondes...`;
+                }
+            }, 1000);
+            
+            countdownDiv.textContent = `⏱️ Accès bloqué. Réessayez dans ${secondsRemaining} secondes...`;
+        }
+        
+        function deactivateBlockade() {
+            console.log('🔓 Désactivation du blocage');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const loginBtn = document.getElementById('loginBtn');
+            const messageDiv = document.getElementById('message');
+            const countdownDiv = document.getElementById('countdownDisplay');
+            
+            usernameInput.disabled = false;
+            passwordInput.disabled = false;
+            loginBtn.disabled = false;
+            loginBtn.classList.remove('disabled');
+            
+            messageDiv.style.display = 'none';
+            countdownDiv.style.display = 'none';
+            
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+                countdownInterval = null;
+            }
+            
+            console.log('Système débloqué');
+        }
+        
+        function isAccessBlocked() {
+            if (blockData && blockData.isBlocked) {
+                const now = Date.now();
+                if (now < blockData.blockedUntil) {
+                    console.log('Accès bloqué jusqu\'à:', new Date(blockData.blockedUntil));
+                    return true;
+                } else {
+                    console.log('Blocage expiré');
+                    resetBlockState();
+                    deactivateBlockade();
+                    return false;
+                }
+            }
+            return false;
+        }
+        
+        // ==================== FONCTIONS PRINCIPALES ====================
+        
         const form = document.getElementById('login-form');
         const message = document.getElementById('message');
         const togglePassword = document.getElementById('togglePassword');
-        const passwordInput = document.getElementById('password');
-        const usernameInput = document.getElementById('username');
-        const body = document.body;
-        const loginContainer = document.querySelector('.login-container');
+        const passwordInputField = document.getElementById('password');
+        const usernameInputField = document.getElementById('username');
+        const welcomeMessageDiv = document.getElementById('welcomeMessage');
+        const welcomeOverlay = document.getElementById('welcomeOverlay');
+        const userNameDisplay = document.getElementById('userNameDisplay');
 
-        // Détection de l'apparition du clavier sur mobile
-        function setupKeyboardDetection() {
-            // Hauteur initiale de la fenêtre
-            let initialWindowHeight = window.innerHeight;
+        function showWelcomeMessage(username) {
+            console.log('🎉 Affichage du message de bienvenue pour:', username);
+            userNameDisplay.textContent = username;
+            welcomeOverlay.style.display = 'block';
+            welcomeMessageDiv.style.display = 'block';
             
-            // Écouter les changements de taille de la fenêtre
-            window.addEventListener('resize', function() {
-                const newWindowHeight = window.innerHeight;
-                const heightDifference = initialWindowHeight - newWindowHeight;
-                
-                // Si la hauteur a diminué significativement, on suppose que le clavier est visible
-                if (heightDifference > 100) {
-                    body.classList.add('keyboard-visible');
-                } else {
-                    body.classList.remove('keyboard-visible');
-                }
-            });
-            
-            // Écouter le focus sur les champs de saisie pour les appareils mobiles
-            const inputs = [usernameInput, passwordInput];
-            inputs.forEach(input => {
-                input.addEventListener('focus', function() {
-                    if ('ontouchstart' in window || navigator.maxTouchPoints) {
-                        // C'est un appareil tactile, on ajuste la position
-                        setTimeout(() => {
-                            body.classList.add('keyboard-visible');
-                            
-                            // Scroll supplémentaire pour s'assurer que le champ est visible
-                            this.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        }, 300);
-                    }
-                });
-                
-                input.addEventListener('blur', function() {
-                    setTimeout(() => {
-                        body.classList.remove('keyboard-visible');
-                    }, 200);
-                });
-            });
+            setTimeout(() => {
+                console.log('Fermeture du message de bienvenue');
+                welcomeMessageDiv.style.animation = 'fadeInScale 0.3s reverse';
+                setTimeout(() => {
+                    welcomeMessageDiv.style.display = 'none';
+                    welcomeOverlay.style.display = 'none';
+                    welcomeMessageDiv.style.animation = '';
+                }, 300);
+            }, 3000);
         }
 
         // Toggle password visibility
-        togglePassword.addEventListener('click', function() {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-            this.classList.toggle('fa-eye');
-            this.classList.toggle('fa-eye-slash');
-        });
+        if (togglePassword) {
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInputField.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInputField.setAttribute('type', type);
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+                console.log('Visibilité du mot de passe:', type === 'text' ? 'visible' : 'masqué');
+            });
+        }
 
         // Form submission
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value.trim();
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                console.log('=== TENTATIVE DE CONNEXION ===');
+                
+                if (isAccessBlocked()) {
+                    console.log('❌ Accès refusé - système bloqué');
+                    message.textContent = "⛔ Accès temporairement bloqué. Veuillez patienter.";
+                    message.className = 'warning-message';
+                    message.style.display = 'block';
+                    return;
+                }
+                
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value.trim();
+                
+                console.log('Tentative de connexion pour:', username);
+                console.log('Mot de passe saisi (masqué):', password ? '****' : 'vide');
 
-            console.log('🔐 Tentative de connexion frontend:', { username, password });
-
-            // Show loading state
-            const submitBtn = form.querySelector('button[type="submit"]');
-            const originalBtnText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connexion en cours...';
-            submitBtn.disabled = true;
-            submitBtn.classList.add('pulse');
-
-            // Clear previous messages
-            message.style.display = 'none';
-
-            const timestamp = new Date().getTime();
-            const url = `https://script.google.com/macros/s/AKfycbwdzHJGAL16KV_OnyoCIs5I7im2yNxrbEaEIbykQ8hy6ewQjJFQ0G4TfqYWWCMc7vfW/exec?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}&_=${timestamp}`;
-            
-            console.log('🌐 URL appelée:', url);
-
-            fetch(url)
-                .then(res => {
-                    console.log('📡 Statut HTTP:', res.status, res.statusText);
-                    return res.json();
-                })
-                .then(data => {
-                    console.log('📨 Données brutes reçues:', data);
-                    
-                    const isAdmin = data.data && data.data.isAdmin;
-                    const hasCaisseAccess = data.data && data.data.hasCaisseAccess;
-                    const agence = data.data && data.data.agence; // Récupérer l'agence
-                    const analyse = data.data && data.data.analyse; // Récupérer l'analyse
-                    
-                    console.log('🔍 Détail data.data.isAdmin:', data.data?.isAdmin);
-                    console.log('💰 Détail data.data.hasCaisseAccess:', data.data?.hasCaisseAccess);
-                    console.log('🏢 Détail data.data.agence:', data.data?.agence);
-                    console.log('📊 Détail data.data.analyse:', data.data?.analyse);
-                    
-                    if (data.success) {
-                        console.log('✅ Connexion réussie côté frontend');
-                        message.textContent = 'Connexion réussie ! Redirection en cours...';
-                        message.className = 'success-message';
-                        message.style.display = 'block';
-
-                        // Save username in session storage
-                        sessionStorage.setItem("utilisateur", username);
-                        
-                        // Save admin status if user is admin
-                        if (isAdmin) {
-                            sessionStorage.setItem("isAdmin", "true");
-                            console.log(`✅ ${username} a un accès ADMINISTRATEUR`);
-                        } else {
-                            sessionStorage.setItem("isAdmin", "false");
-                            console.log(`👤 ${username} a un accès UTILISATEUR standard`);
-                        }
-
-                        // Sauvegarder l'accès caisse
-                        if (hasCaisseAccess) {
-                            sessionStorage.setItem("hasCaisseAccess", "true");
-                            console.log(`💰 ${username} a l'accès CAISSE AUTORISÉ`);
-                        } else {
-                            sessionStorage.setItem("hasCaisseAccess", "false");
-                            console.log(`🚫 ${username} a l'accès CAISSE REFUSÉ`);
-                        }
-
-                        // Sauvegarder l'agence
-                        if (agence) {
-                            sessionStorage.setItem("agence", agence);
-                            console.log(`🏢 ${username} appartient à l'agence: ${agence}`);
-                        } else {
-                            sessionStorage.setItem("agence", "");
-                            console.log(`🏢 ${username} n'a pas d'agence définie`);
-                        }
-
-                        // Sauvegarder l'analyse (commercial)
-                        if (analyse) {
-                            sessionStorage.setItem("analyse", analyse);
-                            console.log(`📊 ${username} a pour analyse: ${analyse}`);
-                        } else {
-                            sessionStorage.setItem("analyse", "");
-                            console.log(`📊 ${username} n'a pas d'analyse définie`);
-                        }
-
-                        // Afficher toutes les informations de session
-                        console.log('📋 Informations de session:');
-                        console.log('- Utilisateur:', sessionStorage.getItem("utilisateur"));
-                        console.log('- Admin:', sessionStorage.getItem("isAdmin"));
-                        console.log('- Accès Caisse:', sessionStorage.getItem("hasCaisseAccess"));
-                        console.log('- Agence:', sessionStorage.getItem("agence"));
-                        console.log('- Analyse:', sessionStorage.getItem("analyse"));
-                        console.log('- Timestamp:', new Date().toLocaleString());
-
-                        // Redirect after 1.5 seconds
-                        setTimeout(() => {
-                            window.location.href = 'Accueil.html';
-                        }, 1500);
-                    } else {
-                        console.log('❌ Connexion échouée côté frontend');
-                        message.textContent = data.message || 'Identifiants incorrects. Veuillez réessayer.';
-                        message.className = 'error-message';
-                        message.style.display = 'block';
-                        
-                        console.log('❌ Échec de la connexion pour:', username);
-                        console.log('📝 Message:', data.message || 'Identifiants incorrects');
-                        
-                        // Add shake animation to form
-                        form.classList.add('shake');
-                        setTimeout(() => {
-                            form.classList.remove('shake');
-                        }, 500);
-                    }
-                })
-                .catch(error => {
-                    console.error('💥 Erreur fetch:', error);
-                    message.textContent = "Erreur de connexion. Veuillez réessayer plus tard.";
+                if (!username || !password) {
+                    console.log('❌ Champs vides détectés');
+                    message.textContent = "Veuillez remplir tous les champs.";
                     message.className = 'error-message';
                     message.style.display = 'block';
-                })
-                .finally(() => {
-                    submitBtn.innerHTML = originalBtnText;
-                    submitBtn.disabled = false;
-                    submitBtn.classList.remove('pulse');
-                });
-        });
+                    return;
+                }
 
-        // Initialiser la détection du clavier
-        setupKeyboardDetection();
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const originalBtnText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connexion...';
+                submitBtn.disabled = true;
+                
+                console.log('Envoi de la requête au serveur...');
+
+                message.style.display = 'none';
+
+                const timestamp = new Date().getTime();
+                const url = `https://script.google.com/macros/s/AKfycbwdzHJGAL16KV_OnyoCIs5I7im2yNxrbEaEIbykQ8hy6ewQjJFQ0G4TfqYWWCMc7vfW/exec?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}&_=${timestamp}`;
+                
+                console.log('URL de requête:', url.replace(password, '****'));
+                
+                fetch(url)
+                    .then(res => {
+                        console.log('Réponse reçue, status:', res.status);
+                        return res.json();
+                    })
+                    .then(data => {
+                        console.log('Données de réponse:', data);
+                        if (data.success) {
+                            console.log('✅ Connexion réussie pour:', username);
+                            resetBlockState();
+                            deactivateBlockade();
+                            
+                            showWelcomeMessage(username);
+                            
+                            message.textContent = 'Connexion réussie ! Redirection...';
+                            message.className = 'success-message';
+                            message.style.display = 'block';
+
+                            sessionStorage.setItem("utilisateur", username);
+                            sessionStorage.setItem("isAdmin", data.data?.isAdmin ? "true" : "false");
+                            sessionStorage.setItem("hasCaisseAccess", data.data?.hasCaisseAccess ? "true" : "false");
+                            sessionStorage.setItem("agence", data.data?.agence || "");
+                            sessionStorage.setItem("analyse", data.data?.analyse || "");
+                            
+                            console.log('Données session sauvegardées:', {
+                                utilisateur: username,
+                                isAdmin: data.data?.isAdmin,
+                                hasCaisseAccess: data.data?.hasCaisseAccess,
+                                agence: data.data?.agence
+                            });
+
+                            setTimeout(() => {
+                                console.log('🔄 Redirection vers Accueil.html');
+                                window.location.href = 'Accueil.html';
+                            }, 2000);
+                        } else {
+                            console.log('❌ Échec de connexion:', data.message);
+                            const wasBlocked = registerFailedAttempt();
+                            
+                            if (wasBlocked) {
+                                console.log('🔒 3 tentatives échouées, système bloqué');
+                                message.textContent = "⛔ 3 tentatives échouées. Accès bloqué 1 minute.";
+                                message.className = 'warning-message';
+                                message.style.display = 'block';
+                            } else {
+                                const remainingAttempts = MAX_ATTEMPTS - blockData.attempts;
+                                console.log(`Tentatives restantes: ${remainingAttempts}/${MAX_ATTEMPTS}`);
+                                message.textContent = data.message || 'Identifiants incorrects.';
+                                message.className = 'error-message';
+                                message.style.display = 'block';
+                                
+                                if (remainingAttempts > 0 && remainingAttempts < MAX_ATTEMPTS) {
+                                    setTimeout(() => {
+                                        if (message.textContent.includes('incorrects')) {
+                                            message.textContent = `⚠️ Il reste ${remainingAttempts} tentative(s) avant blocage.`;
+                                            message.className = 'warning-message';
+                                            setTimeout(() => {
+                                                if (message.textContent.includes('reste')) message.style.display = 'none';
+                                            }, 3000);
+                                        }
+                                    }, 1500);
+                                }
+                            }
+                            
+                            form.classList.add('shake');
+                            setTimeout(() => {
+                                form.classList.remove('shake');
+                            }, 500);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('❌ Erreur fetch:', error);
+                        console.error('Détails:', error.message);
+                        message.textContent = "Erreur de connexion au serveur.";
+                        message.className = 'error-message';
+                        message.style.display = 'block';
+                    })
+                    .finally(() => {
+                        submitBtn.innerHTML = originalBtnText;
+                        if (!blockData.isBlocked) {
+                            submitBtn.disabled = false;
+                        }
+                        submitBtn.classList.remove('pulse');
+                        console.log('Fin de la tentative de connexion');
+                    });
+            });
+        }
+
+        // Initialisation
+        console.log('Démarrage de l\'application...');
+        initBlockSystem();
+        
+        // Vérifier le blocage au chargement
+        if (isAccessBlocked() && blockData && blockData.blockedUntil) {
+            const remaining = blockData.blockedUntil - Date.now();
+            if (remaining > 0) {
+                console.log('Blocage actif détecté au chargement');
+                activateBlockade(remaining);
+            }
+        }
+        
+        // Afficher les tentatives restantes si nécessaire
+        if (blockData && blockData.attempts > 0 && blockData.attempts < MAX_ATTEMPTS && !blockData.isBlocked) {
+            const remaining = MAX_ATTEMPTS - blockData.attempts;
+            console.log(`⚠️ Avertissement: ${remaining} tentative(s) restante(s)`);
+            message.textContent = `⚠️ Attention : ${remaining} tentative(s) restante(s) avant blocage.`;
+            message.className = 'warning-message';
+            message.style.display = 'block';
+            setTimeout(() => {
+                if (message.textContent.includes('restante')) {
+                    message.style.display = 'none';
+                }
+            }, 5000);
+        }
+        
+        console.log('=== APPLICATION PRÊTE ===');
     </script>
 </body>
 </html>
