@@ -401,39 +401,171 @@
             padding-top: 25px;
         }
 
-        .logo-container {
-            padding: 0 1.5rem 1.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
+  .logo-container {
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(74, 222, 128, 0.05));
+    border-radius: 1rem;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
+.logo-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.6s ease;
+}
 
-        .logo-image {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            object-fit: cover;
-            border: 2px solid var(--accent-color);
-        }
+.logo-container:hover::before {
+    left: 100%;
+}
 
-        .logo-text {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: white;
-            background: linear-gradient(135deg, #fff, var(--light-accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: relative;
+    z-index: 1;
+}
 
+.logo-image {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    object-fit: cover;
+    background: linear-gradient(135deg, var(--accent-color), var(--success-color));
+    padding: 2px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+}
+
+.logo:hover .logo-image {
+    transform: scale(1.05) rotate(5deg);
+    box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
+}
+
+.logo-text {
+    font-weight: 800;
+    font-size: 1.25rem;
+    background: linear-gradient(135deg, #FFFFFF 0%, var(--light-accent) 50%, var(--accent-color) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: -0.3px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.logo-text::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent-color), var(--success-color));
+    transition: width 0.3s ease;
+}
+
+.logo:hover .logo-text::after {
+    width: 100%;
+}
+
+/* Version avec badge de version */
+.version-badge {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(4px);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--light-accent);
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.logo-container:hover .version-badge {
+    background: rgba(67, 97, 238, 0.3);
+    border-color: var(--accent-color);
+    transform: translateY(-2px);
+}
+
+/* Variante avec icône animée */
+.logo-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--accent-color), var(--success-color));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+}
+
+.logo-icon i {
+    font-size: 1.5rem;
+    color: white;
+    transition: transform 0.3s ease;
+}
+
+.logo:hover .logo-icon i {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.logo:hover .logo-icon {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
+}
+
+/* Version compacte pour mobile */
+@media (max-width: 768px) {
+    .logo-container {
+        padding: 1rem 1.25rem;
+        margin-bottom: 1rem;
+    }
+    
+    .logo-image, .logo-icon {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .logo-text {
+        font-size: 1rem;
+    }
+    
+    .version-badge {
+        font-size: 0.6rem;
+        padding: 0.2rem 0.6rem;
+    }
+}
+
+/* Animation d'entrée */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.logo-container {
+    animation: slideIn 0.5s ease forwards;
+}
         .sidebar-toggle {
             color: var(--gray-color);
             cursor: pointer;
@@ -641,84 +773,244 @@
             gap: 1rem;
         }
 
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            flex: 1;
-            min-width: 0;
-        }
+/* Container principal du profil */
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+    min-width: 0;
+    padding: 0.5rem;
+    border-radius: 1rem;
+    transition: background-color 0.3s ease;
+}
 
-        .profile-avatar {
-            position: relative;
-            flex-shrink: 0;
-        }
+.user-profile:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
 
-        .profile-img {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            object-fit: cover;
-            border: 2px solid var(--accent-color);
-            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
-            transition: all 0.3s ease;
-        }
+/* Avatar avec effet de glow */
+.profile-avatar {
+    position: relative;
+    flex-shrink: 0;
+    cursor: pointer;
+}
 
-        .profile-img:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(67, 97, 238, 0.4);
-        }
+.profile-img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid transparent;
+    background: linear-gradient(135deg, var(--accent-color), var(--success-color)) border-box;
+    -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
 
-        .online-status {
-            position: absolute;
-            bottom: 2px;
-            right: 2px;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--success-color);
-            border: 2px solid var(--sidebar-bg);
-            box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.5);
-            animation: pulse 2s infinite;
-        }
+.profile-img:hover {
+    transform: scale(1.05) rotate(2deg);
+    box-shadow: 0 12px 28px rgba(67, 97, 238, 0.3);
+}
 
-        @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); }
-            50% { transform: scale(1.1); box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.3); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
-        }
+/* Statut online avec anneau lumineux */
+.online-status {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    width: 14px;
+    height: 14px;
+    background: #22c55e;
+    border-radius: 50%;
+    border: 2px solid var(--sidebar-bg);
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6);
+    animation: statusPulse 2s ease-in-out infinite;
+}
 
-        .profile-info {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
-            min-width: 0;
-        }
+@keyframes statusPulse {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.3);
+    }
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+    }
+}
 
-        .profile-name {
-            font-weight: 600;
-            font-size: 0.95rem;
-            color: white;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+/* Badge pour le statut "away" ou "busy" */
+.online-status.away {
+    background: #f59e0b;
+    animation: none;
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.3);
+}
 
-        .profile-role {
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            font-size: 0.75rem;
-            color: var(--gray-color);
-            font-weight: 500;
-        }
+.online-status.busy {
+    background: #ef4444;
+    animation: none;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.3);
+}
 
-        .profile-role i {
-            font-size: 0.5rem;
-            color: var(--success-color);
-            animation: blink 2s infinite;
-        }
+/* Informations utilisateur */
+.profile-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 0;
+}
+
+/* Nom avec gradient et animation au hover */
+.profile-name {
+    font-weight: 700;
+    font-size: 1rem;
+    background: linear-gradient(135deg, #fff 0%, rgba(255, 255, 255, 0.8) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: all 0.3s ease;
+    letter-spacing: -0.2px;
+}
+
+.user-profile:hover .profile-name {
+    background: linear-gradient(135deg, #fff 0%, var(--accent-color) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* Rôle utilisateur avec indicateur visuel */
+.profile-role {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: fit-content;
+    padding: 0.25rem 0.5rem;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--gray-color);
+    letter-spacing: 0.3px;
+    backdrop-filter: blur(4px);
+    transition: all 0.3s ease;
+}
+
+.user-profile:hover .profile-role {
+    background: rgba(67, 97, 238, 0.2);
+    color: var(--accent-color);
+}
+
+/* Indicateur lumineux pour le rôle actif */
+.profile-role i {
+    font-size: 0.6rem;
+    color: #22c55e;
+    filter: drop-shadow(0 0 2px rgba(34, 197, 94, 0.5));
+    animation: roleIndicator 1.5s ease-in-out infinite;
+}
+
+@keyframes roleIndicator {
+    0%, 100% {
+        opacity: 0.5;
+        transform: scale(0.8);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+}
+
+/* Badge pour le rôle admin/modérateur */
+.profile-role.admin i {
+    color: var(--accent-color);
+    animation: none;
+}
+
+.profile-role.moderator i {
+    color: #8b5cf6;
+}
+
+/* Effet de chargement pour les états de transition */
+.profile-avatar.loading .profile-img {
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        opacity: 0.6;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.6;
+    }
+}
+
+/* Version compacte pour mobile */
+@media (max-width: 768px) {
+    .user-profile {
+        gap: 0.75rem;
+        padding: 0.25rem;
+    }
+    
+    .profile-img {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .profile-name {
+        font-size: 0.9rem;
+    }
+    
+    .profile-role {
+        font-size: 0.65rem;
+        padding: 0.2rem 0.4rem;
+    }
+    
+    .online-status {
+        width: 12px;
+        height: 12px;
+        bottom: 2px;
+        right: 2px;
+    }
+}
+
+/* Version avec tooltip pour plus d'informations */
+.profile-info {
+    position: relative;
+}
+
+.profile-info::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 10;
+}
+
+.profile-info:hover::after {
+    opacity: 1;
+}
         .notification-badge {
             position: relative;
             cursor: pointer;
@@ -2379,8 +2671,7 @@
             }
         }
 
-
-        #newSaleModal.modal-overlay {
+#newSaleModal.modal-overlay {
     display: none;
     position: fixed;
     inset: 0;
@@ -3787,6 +4078,95 @@
     font-size: 20px;
 }
 
+/* Styles pour la section Analytics */
+.charts-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 20px;
+    margin-top: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    min-height: 400px;
+}
+
+.charts-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+#salesChart {
+    max-height: 350px;
+    width: 100%;
+}
+
+/* Loader personnalisé */
+.chart-loader .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(67, 97, 238, 0.2);
+    border-top: 3px solid #4361ee;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Résumé des ventes */
+.sales-summary {
+    animation: fadeInUp 0.5s ease;
+}
+
+.sales-summary .summary-item {
+    transition: transform 0.2s ease;
+}
+
+.sales-summary .summary-item:hover {
+    transform: translateY(-2px);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .charts-card {
+        padding: 15px;
+        min-height: 350px;
+    }
+    
+    #salesChart {
+        max-height: 280px;
+    }
+    
+    .sales-summary {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        padding: 15px;
+    }
+    
+    .sales-summary .summary-item {
+        padding: 8px;
+    }
+    
+    .sales-summary .summary-item div:last-child {
+        font-size: 1.2rem;
+    }
+}
+
     </style>
 </head>
 <body>
@@ -3829,7 +4209,7 @@
         </a>
         <div class="submenu">
             <a href="#" onclick="openDataClient()">
-                <i class="fas fa-users submenu-icon"></i> Liste des Clients
+                <i class="fas fa-users submenu-icon"></i>Clients
                 <span class="menu-badge">Data</span>
             </a>
             <a href="#" onclick="openProspect()">
@@ -3882,8 +4262,7 @@
                     <div class="profile-info">
                         <span class="profile-name" id="username-display"></span>
                         <span class="profile-role">
-                            <i class="fas fa-circle"></i>
-                            Session active
+                            <i class="fas fa-circle"></i> active
                         </span>
                     </div>
                 </div>
@@ -4005,6 +4384,25 @@
                             </div>
                         </div>
                     </div>
+    <!-- Analytics Card - à ajouter dans dashboard-grid -->
+<div class="card charts-card">
+    <div class="card-header">
+        <div class="header-content">
+            <h2 class="section-title">
+                <div class="title-icon"><i class="fas fa-chart-line"></i></div>
+                <span>Sales Trend</span>
+            </h2>
+            <div class="header-actions">
+                <div class="filter-info" style="font-size: 0.85rem; color: #64748b;">
+                    <i class="fas fa-chart-simple"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <canvas id="salesChart"></canvas>
+    </div>
+</div>
                 </div>
             </section>
         </div>
@@ -4060,7 +4458,8 @@
                 nom: null,
                 agence: null,
                 analyse: null,
-                isAdmin: false
+                isAdmin: false,
+                hasCaisseAccess: false
             },
             clients: {
                 all: [],
@@ -4424,37 +4823,38 @@ function replayNotifications() {
     startNotificationCarousel();
 }
 
-        // GESTION DE L'AUTHENTIFICATION
-        function initAuth() {
-            const username = sessionStorage.getItem("utilisateur") || localStorage.getItem("utilisateur");
-            if (!username) {
-                window.location.href = "code.html";
-                return;
-            }
+function initAuth() {
+    const username = sessionStorage.getItem("utilisateur") || localStorage.getItem("utilisateur");
+    if (!username) {
+        window.location.href = "code.html";
+        return;
+    }
 
-            AppState.user.nom = username;
-            AppState.user.agence = sessionStorage.getItem("agence") || "Tous";
-            AppState.user.analyse = sessionStorage.getItem("analyse") || "Tous";
-            AppState.user.isAdmin = sessionStorage.getItem("isAdmin") === "true";
+    AppState.user.nom = username;
+    AppState.user.agence = sessionStorage.getItem("agence") || "Tous";
+    AppState.user.analyse = sessionStorage.getItem("analyse") || "Tous";
+    AppState.user.isAdmin = sessionStorage.getItem("isAdmin") === "true";
+    
+    // ✅ AJOUTER CETTE LIGNE
+    AppState.user.hasCaisseAccess = sessionStorage.getItem("hasCaisseAccess") === "true";
+    
+    console.log('✅ Session chargée:', AppState.user); // Pour déboguer
 
-            $('username-display').textContent = username;
-            $('profile-img').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=4f46e5&color=fff`;
+    $('username-display').textContent = username;
+    $('profile-img').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=4f46e5&color=fff`;
 
-            $('logout-btn').addEventListener('click', () => {
-                stopNotificationCarousel();
-                sessionStorage.clear();
-                localStorage.removeItem("utilisateur");
-                window.location.href = "code.html";
-            });
+    $('logout-btn').addEventListener('click', () => {
+        stopNotificationCarousel();
+        sessionStorage.clear();
+        localStorage.removeItem("utilisateur");
+        window.location.href = "code.html";
+    });
 
-            startInactivityTimer();
-            
-            // Charger les notifications au démarrage
-            loadNotifications();
-            
-            // Recharger les notifications toutes les 30 secondes
-            setInterval(loadNotifications, 30000);
-        }
+    startInactivityTimer();
+    
+    // Charger les notifications au démarrage
+    loadNotifications();
+}
 
         function startInactivityTimer() {
             const TIMEOUT = 30 * 60 * 1000;
@@ -4475,40 +4875,115 @@ function replayNotifications() {
             reset();
         }
 
-        function hasAdminRights() {
-            return AppState.user.isAdmin;
-        }
-
-        // GESTION DU MENU
-        function toggleSubmenu(element) {
-            const item = element.closest('.menu-item');
-            document.querySelectorAll('.menu-item').forEach(i => {
-                if (i !== item) i.classList.remove('active');
-            });
-            item.classList.toggle('active');
-        }
-
-        function toggleAdminMenu(event) {
-            event.preventDefault();
-            if (!hasAdminRights()) {
-                alert("⛔ Accès refusé");
-                return;
+// Fonction d'alerte personnalisée
+function showAccessDenied(message = "⛔ Accès refusé") {
+    // Créer l'élément d'alerte s'il n'existe pas déjà
+    let toast = document.querySelector('.custom-toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.className = 'custom-toast';
+        document.body.appendChild(toast);
+        
+        // Ajouter les styles CSS
+        const style = document.createElement('style');
+        style.textContent = `
+            .custom-toast {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #ff4d4d, #ff3333);
+                color: white;
+                padding: 12px 20px;
+                border-radius: 10px;
+                font-weight: 500;
+                font-size: 14px;
+                z-index: 10000;
+                transform: translateX(120%);
+                transition: transform 0.3s ease-out;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255,255,255,0.2);
+                max-width: 300px;
             }
-            toggleSubmenu(event.currentTarget);
-        }
+            .custom-toast.show {
+                transform: translateX(0);
+            }
+            .custom-toast i {
+                margin-right: 8px;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    toast.innerHTML = `<i class="fas fa-ban"></i> ${message}`;
+    toast.classList.add('show');
+    
+    // Disparaître après 3 secondes
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
 
-        // NAVIGATION
-        function openProspect() { window.location.href = 'prospect.html'; }
-        function openAdmin() { hasAdminRights() ? window.location.href = 'Admin.html' : alert("⛔ Accès refusé"); }
-        function openCaisse() { window.location.href = 'Caisse.html'; }
-        function openDataClient() { hasAdminRights() ? window.location.href = 'Data.html' : alert("⛔ Accès refusé"); }
-        function openDataProduit() { window.location.href = 'Stock.html'; }
-        function openDataFacture() { window.location.href = 'Facturation.html'; }
-        function openCatalogueVerre() { window.open('Catalogue.pdf', '_blank'); }
+// FONCTIONS DE VÉRIFICATION DES DROITS
+function hasAdminRights() {
+    return AppState.user.isAdmin;
+}
 
-        // ============================================
-        // CORRECTION 1: Chargement de TOUS les clients (1200+)
-        // ============================================
+function hasCaisseAccess() {
+    return AppState.user.hasCaisseAccess;
+}
+
+// GESTION DU MENU
+function toggleSubmenu(element) {
+    const item = element.closest('.menu-item');
+    document.querySelectorAll('.menu-item').forEach(i => {
+        if (i !== item) i.classList.remove('active');
+    });
+    item.classList.toggle('active');
+}
+
+function toggleAdminMenu(event) {
+    event.preventDefault();
+    if (!hasAdminRights()) {
+        showAccessDenied("⛔ Accès refusé - Droits administrateur requis");
+        return;
+    }
+    toggleSubmenu(event.currentTarget);
+}
+
+function toggleCaisseMenu(event) {
+    event.preventDefault();
+    if (!hasCaisseAccess()) {
+        showAccessDenied("⛔ Accès refusé - Droits caisse requis");
+        return;
+    }
+    toggleSubmenu(event.currentTarget);
+}
+
+// NAVIGATION
+function openProspect() { window.location.href = 'prospect.html'; }
+function openAdmin() { 
+    hasAdminRights() ? window.location.href = 'Admin.html' : showAccessDenied("⛔ Accès refusé - Droits administrateur requis"); 
+}
+function openCaisse() { 
+    hasCaisseAccess() ? window.location.href = 'Caisse.html' : showAccessDenied("⛔ Accès refusé - Droits caisse requis"); 
+}
+function openDataClient() { 
+    hasAdminRights() ? window.location.href = 'Data.html' : showAccessDenied("⛔ Accès refusé - Droits administrateur requis"); 
+}
+function openDataProduit() { 
+    hasCaisseAccess() ? window.location.href = 'Stock.html' : showAccessDenied("⛔ Accès refusé - Droits caisse requis"); 
+}
+function openDataFacture() { 
+    console.log('Vérification accès caisse:', hasCaisseAccess());
+    console.log('État AppState:', AppState.user);
+    if (hasCaisseAccess()) {
+        console.log('Redirection vers Facturation.html');
+        window.location.href = 'Facturation.html';
+    } else {
+        showAccessDenied("⛔ Accès refusé - Droits caisse requis");
+    }
+}
         async function loadClientsFromScript() {
             showLoading();
             const searchInput = $('searchInput');
@@ -4525,10 +5000,9 @@ function replayNotifications() {
                 if (!data.success || !data.data) throw new Error("Réponse invalide");
 
                 AppState.clients.headers = data.data.headers;
-                AppState.clients.all = data.data.rows; // TOUTES les lignes (1200+)
-                
-                // FILTRER selon les droits de l'utilisateur
-                AppState.clients.filtered = filterClientsByUserRights(AppState.clients.all);
+AppState.clients.all = data.data.rows; 
+AppState.clients.filtered = AppState.clients.all;
+
                 
                 console.log(`✅ Total clients bruts: ${AppState.clients.all.length}`);
                 console.log(`✅ Clients après filtrage: ${AppState.clients.filtered.length}`);
@@ -4549,35 +5023,6 @@ function replayNotifications() {
             }
         }
 
-        // ============================================
-        // CORRECTION 2: Filtrage des clients selon les droits utilisateur
-        // ============================================
-        function filterClientsByUserRights(clients) {
-            const userAgence = AppState.user.agence;
-            const userAnalyse = AppState.user.analyse;
-            
-            console.log('👤 Filtrage utilisateur:', { agence: userAgence, analyse: userAnalyse });
-            
-            // Si l'utilisateur a accès à tout, retourner tous les clients
-            if (userAgence === 'Tous' && userAnalyse === 'Tous') {
-                return clients;
-            }
-            
-            return clients.filter(client => {
-                // Index 6 = Agence
-                const clientAgence = client[6] || '';
-                // Index 7 = Commercial (analyse)
-                const clientAnalyse = client[7] || '';
-                
-                let agenceMatch = userAgence === 'Tous' || 
-                                 clientAgence.toLowerCase() === userAgence.toLowerCase();
-                
-                let analyseMatch = userAnalyse === 'Tous' || 
-                                  clientAnalyse.toLowerCase() === userAnalyse.toLowerCase();
-                
-                return agenceMatch && analyseMatch;
-            });
-        }
 
         function renderTableHeaders() {
             const thead = document.querySelector("#client-table thead");
@@ -4673,16 +5118,14 @@ function replayNotifications() {
         function applySearchFilter() {
             const searchTerm = $('searchInput').value.toLowerCase();
             
-            if (!searchTerm) {
-                // Réinitialiser avec les clients filtrés par droits utilisateur
-                AppState.clients.filtered = filterClientsByUserRights(AppState.clients.all);
-            } else {
-                // Filtrer par nom (index 1) en respectant les droits utilisateur
-                const userFiltered = filterClientsByUserRights(AppState.clients.all);
-                AppState.clients.filtered = userFiltered.filter(client => 
-                    String(client[1] || '').toLowerCase().includes(searchTerm)
-                );
-            }
+if (!searchTerm) {
+    AppState.clients.filtered = AppState.clients.all;
+} else {
+    
+    AppState.clients.filtered = AppState.clients.all.filter(client => 
+        String(client[1] || '').toLowerCase().includes(searchTerm)
+    );
+}
             
             AppState.clients.currentPage = 1;
             updateTableAndPagination();
@@ -4711,8 +5154,8 @@ function replayNotifications() {
         // TOOLTIPS
         function createClientTooltip(client) {
             const nom = client[1] || "Non spécifié";
-            const montant = client[39] || "0"; // Net à payer (index 39)
-            const reste = client[41] || "0"; // Reste Client (index 41)
+            const montant = client[39] || "0"; 
+            const reste = client[54] || "0"; 
             return `
                 <div class="client-tooltip">
                     <div class="tooltip-header">Détails Client</div>
@@ -6457,11 +6900,19 @@ async function checkAndOpenProformaPDF() {
             return;
         }
         
-        if (pdfUrl) {
-            closeModal();
-            window.open(pdfUrl, '_blank');
-            showSuccess("PDF généré avec succès !");
-        }
+if (pdfUrl) {
+    closeModal();
+    
+    // Convertir l'URL Google Drive en lien direct
+    const fileId = pdfUrl.match(/\/d\/(.*?)\/|file\/d\/(.*?)(\/|$)/);
+    if (fileId) {
+        const directUrl = `https://drive.google.com/uc?export=download&id=${fileId[1] || fileId[2]}`;
+        window.open(directUrl, '_blank');
+        showSuccess("PDF généré avec succès !");
+    } else {
+        window.open(pdfUrl, '_blank');
+    }
+}
         
     } catch (error) {
         console.error("❌ Erreur ouverture PDF:", error);
@@ -6612,9 +7063,6 @@ async function checkAndOpenProformaPDF() {
             stopNotificationCarousel();
         });
 
-// ============================================
-// SYSTÈME DE NOTIFICATIONS VISIBLES (TOAST)
-// ============================================
 
 // Afficher une erreur (visible au-dessus de tout)
 window.showError = function(message) {
@@ -6753,6 +7201,620 @@ window.showErrorInModal = function(message) {
         }
     }, 5000);
 };
+
+
+
+class SalesAnalytics {
+    constructor() {
+        this.chart = null;
+        this.data = [];
+        this.loading = false;
+        this.agencesList = new Set();
+        this.agencyColors = new Map(); // Stocker les couleurs assignées
+        
+        // Récupérer les informations utilisateur depuis sessionStorage
+        this.userAgence = sessionStorage.getItem("agence") || localStorage.getItem("agence") || "Tous";
+        this.userAnalyse = sessionStorage.getItem("analyse") || localStorage.getItem("analyse") || "Tous";
+        this.userUtilisateur = sessionStorage.getItem("utilisateur") || localStorage.getItem("utilisateur") || "";
+        
+        console.log('📊 Analytics - Informations utilisateur:', {
+            utilisateur: this.userUtilisateur,
+            agence: this.userAgence,
+            analyse: this.userAnalyse
+        });
+    }
+
+    // Générer une couleur aléatoire mais harmonieuse
+    getRandomHarmoniousColor(seed) {
+        // Utiliser le nom de l'agence comme seed pour avoir une couleur cohérente
+        let hash = 0;
+        for (let i = 0; i < seed.length; i++) {
+            hash = ((hash << 5) - hash) + seed.charCodeAt(i);
+            hash = hash & hash;
+        }
+        
+        // Palette de couleurs harmonieuses (tons naturels)
+        const colorSchemes = [
+            // Teintes bleues
+            (h) => `hsl(${210 + (h % 30)}, 70%, 55%)`,
+            // Teintes vertes
+            (h) => `hsl(${140 + (h % 40)}, 65%, 50%)`,
+            // Teintes oranges
+            (h) => `hsl(${30 + (h % 40)}, 75%, 55%)`,
+            // Teintes violettes
+            (h) => `hsl(${270 + (h % 40)}, 65%, 60%)`,
+            // Teintes rouges/roses
+            (h) => `hsl(${350 + (h % 30)}, 70%, 60%)`,
+            // Teintes turquoises
+            (h) => `hsl(${180 + (h % 40)}, 70%, 50%)`,
+            // Teintes jaunes
+            (h) => `hsl(${50 + (h % 30)}, 75%, 55%)`,
+            // Teintes magenta
+            (h) => `hsl(${300 + (h % 40)}, 65%, 60%)`
+        ];
+        
+        // Choisir un schéma basé sur le hash
+        const schemeIndex = Math.abs(hash) % colorSchemes.length;
+        const hueOffset = Math.abs(hash >> 8) % 60;
+        
+        return colorSchemes[schemeIndex](hueOffset);
+    }
+
+    // Générer une couleur avec contraste et saturation optimale
+    getOptimalColor(agency, index) {
+        // Vérifier si une couleur est déjà assignée à cette agence
+        if (this.agencyColors.has(agency)) {
+            return this.agencyColors.get(agency);
+        }
+        
+        // Générer une couleur unique basée sur le nom et l'index
+        let hash = 0;
+        for (let i = 0; i < agency.length; i++) {
+            hash = ((hash << 5) - hash) + agency.charCodeAt(i);
+            hash = hash & hash;
+        }
+        
+        // Ajouter l'index pour plus de variation
+        hash = (hash * 131 + index * 37) & 0xFFFFFFFF;
+        
+        // Utiliser l'HSL pour des couleurs plus naturelles
+        // Hue: 0-360, mais on évite les tons trop similaires
+        const hue = Math.abs(hash % 360);
+        
+        // Saturation: entre 60% et 85% pour des couleurs vives mais agréables
+        const saturation = 65 + (Math.abs((hash >> 8) % 25));
+        
+        // Luminosité: entre 45% et 65% pour une bonne lisibilité
+        const lightness = 50 + (Math.abs((hash >> 16) % 20));
+        
+        // Ajouter une petite variation aléatoire pour plus de dynamisme
+        const finalHue = (hue + (index * 23)) % 360;
+        
+        const color = `hsl(${finalHue}, ${saturation}%, ${lightness}%)`;
+        
+        // Stocker la couleur assignée
+        this.agencyColors.set(agency, color);
+        
+        return color;
+    }
+
+    // Méthode principale pour obtenir la couleur d'une agence
+    getAgencyColor(agency, index) {
+        // Version 1: Couleurs harmonieuses avec seed (recommandée)
+        return this.getRandomHarmoniousColor(agency);
+        
+        // Version alternative: Couleurs optimales avec contraste
+        // return this.getOptimalColor(agency, index);
+        
+        // Version ultra dynamique: Couleurs complètement aléatoires mais harmonieuses
+        // return this.getRandomVibrantColor(agency);
+    }
+
+    // Version alternative: Couleurs vibrantes mais harmonieuses
+    getRandomVibrantColor(seed) {
+        let hash = 0;
+        for (let i = 0; i < seed.length; i++) {
+            hash = ((hash << 5) - hash) + seed.charCodeAt(i);
+            hash = hash & hash;
+        }
+        
+        // Utiliser des couleurs complémentaires pour plus de contraste
+        const baseHue = Math.abs(hash % 360);
+        const complementaryHue = (baseHue + 180) % 360;
+        
+        // Alterner entre base et complémentaire selon le hash
+        const useComplementary = (hash >> 8) % 2 === 0;
+        const finalHue = useComplementary ? complementaryHue : baseHue;
+        
+        // Saturation élevée pour des couleurs vives
+        const saturation = 75 + (Math.abs((hash >> 16) % 15));
+        const lightness = 55 + (Math.abs((hash >> 24) % 10));
+        
+        return `hsl(${finalHue}, ${saturation}%, ${lightness}%)`;
+    }
+
+    // Formatage en FCFA
+    formatFCFA(amount) {
+        return Math.round(amount || 0).toLocaleString('fr-FR') + ' FCFA';
+    }
+
+    // Filtrer les données selon les droits utilisateur
+    filterDataByUser(data) {
+        console.log(`🔍 Filtrage des données - Agence: ${this.userAgence}, Analyse: ${this.userAnalyse}`);
+        
+        return data.filter(item => {
+            // Filtre par agence
+            let agenceMatch = true;
+            if (this.userAgence !== 'Tous' && this.userAgence !== 'null' && this.userAgence !== 'undefined' && this.userAgence) {
+                const itemAgence = item.Agence || '';
+                agenceMatch = itemAgence === this.userAgence;
+                if (!agenceMatch) return false;
+            }
+            
+            // Filtre par commercial (analyse)
+            let commercialMatch = true;
+            if (this.userAnalyse !== 'Tous' && this.userAnalyse !== 'null' && this.userAnalyse !== 'undefined' && this.userAnalyse) {
+                const itemCommercial = item.Commercial || '';
+                commercialMatch = itemCommercial === this.userAnalyse;
+                if (!commercialMatch) return false;
+            }
+            
+            return true;
+        });
+    }
+
+    // Extraire les données de l'API
+    async fetchSalesData() {
+        this.showLoader(true);
+        
+        try {
+            const response = await fetch('https://script.google.com/macros/s/AKfycbwdzHJGAL16KV_OnyoCIs5I7im2yNxrbEaEIbykQ8hy6ewQjJFQ0G4TfqYWWCMc7vfW/exec?action=dataclient');
+            
+            if (!response.ok) throw new Error(`Erreur HTTP: ${response.status}`);
+            
+            const result = await response.json();
+            
+            if (!result.success || !result.data) throw new Error("Réponse invalide");
+            
+            // Convertir en objets
+            const headers = result.data.headers;
+            const rows = result.data.rows;
+            
+            this.data = rows.map(row => {
+                const obj = {};
+                headers.forEach((header, index) => {
+                    obj[header] = row[index];
+                });
+                return obj;
+            });
+            
+            console.log(`✅ Données chargées: ${this.data.length} enregistrements`);
+            
+            return this.data;
+            
+        } catch (error) {
+            console.error("❌ Erreur chargement données:", error);
+            this.showNoDataMessage("Erreur de chargement des données. Veuillez réessayer.");
+            return [];
+        } finally {
+            this.showLoader(false);
+        }
+    }
+
+    // Grouper les données par mois
+    groupDataByMonth(data) {
+        const monthlyData = new Map();
+        this.agencesList.clear();
+        
+        data.forEach(item => {
+            if (!item['Date Enregistrement'] || !item['Montant TTC']) return;
+            
+            const date = new Date(item['Date Enregistrement']);
+            if (isNaN(date.getTime())) return;
+            
+            const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+            const monthLabel = date.toLocaleDateString('fr-FR', { month: 'short', year: 'numeric' });
+            const amount = parseFloat(item['Montant TTC']) || 0;
+            const agence = item['Agence'] || 'Non spécifié';
+            
+            if (!monthlyData.has(monthKey)) {
+                monthlyData.set(monthKey, {
+                    label: monthLabel,
+                    total: 0,
+                    byAgency: new Map(),
+                    date: date
+                });
+            }
+            
+            const monthData = monthlyData.get(monthKey);
+            monthData.total += amount;
+            
+            const agencyAmount = monthData.byAgency.get(agence) || 0;
+            monthData.byAgency.set(agence, agencyAmount + amount);
+            
+            // Collecter les agences uniques
+            this.agencesList.add(agence);
+        });
+        
+        return monthlyData;
+    }
+
+    // Obtenir les 12 derniers mois
+    getLast12Months(monthlyData) {
+        const sortedMonths = Array.from(monthlyData.entries())
+            .sort((a, b) => a[1].date - b[1].date);
+        
+        // Prendre les 12 derniers mois
+        return sortedMonths.slice(-12);
+    }
+
+    // Préparer les datasets pour Chart.js
+    prepareDatasets(monthlyData) {
+        const last12Months = this.getLast12Months(monthlyData);
+        
+        if (last12Months.length === 0) {
+            return { labels: [], datasets: [] };
+        }
+        
+        const labels = last12Months.map(([_, data]) => data.label);
+        
+        // Dataset total
+        const totalDataset = {
+            label: 'All Sales',
+            data: last12Months.map(([_, data]) => data.total),
+            borderColor: '#1e293b',
+            backgroundColor: 'rgba(30, 41, 59, 0.1)',
+            borderWidth: 3,
+            tension: 0.4,
+            pointRadius: 4,
+            pointHoverRadius: 6,
+            pointBackgroundColor: '#1e293b',
+            pointBorderColor: '#fff',
+            fill: false
+        };
+        
+        const datasets = [totalDataset];
+        
+        // Déterminer les agences à afficher
+        let agenciesToShow = Array.from(this.agencesList).sort();
+        
+        // Si l'utilisateur a une agence spécifique, afficher uniquement celle-ci
+        if (this.userAgence !== 'Tous' && this.userAgence !== 'null' && this.userAgence !== 'undefined' && this.userAgence) {
+            agenciesToShow = [this.userAgence];
+        }
+        
+        console.log(`🏢 Agences à afficher: ${agenciesToShow.join(', ')}`);
+        
+        // Réinitialiser les couleurs assignées
+        this.agencyColors.clear();
+        
+        // Créer un dataset par agence
+        agenciesToShow.forEach((agency, index) => {
+            const agencyData = last12Months.map(([_, monthData]) => {
+                return monthData.byAgency.get(agency) || 0;
+            });
+            
+            // N'afficher que si l'agence a des données
+            const hasData = agencyData.some(value => value > 0);
+            
+            if (hasData) {
+                const color = this.getAgencyColor(agency, index);
+                datasets.push({
+                    label: agency,
+                    data: agencyData,
+                    borderColor: color,
+                    backgroundColor: 'transparent',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    pointRadius: 3,
+                    pointHoverRadius: 5,
+                    pointBackgroundColor: color,
+                    pointBorderColor: '#fff',
+                    fill: false
+                });
+            }
+        });
+        
+        return { labels, datasets };
+    }
+
+    updateChart(monthlyData) {
+        const canvas = document.getElementById('salesChart');
+        if (!canvas) {
+            console.warn("Canvas 'salesChart' non trouvé");
+            return;
+        }
+        
+        const { labels, datasets } = this.prepareDatasets(monthlyData);
+        
+        if (labels.length === 0) {
+            this.showNoDataMessage("Aucune donnée disponible pour la période sélectionnée");
+            return;
+        }
+        
+        if (this.chart) {
+            this.chart.destroy();
+        }
+        
+        this.chart = new Chart(canvas, {
+            type: 'line',
+            data: { labels, datasets },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) label += ': ';
+                                const value = context.raw || 0;
+                                label += Math.round(value).toLocaleString('fr-FR') + ' FCFA';
+                                return label;
+                            }
+                        },
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        borderColor: '#4361ee',
+                        borderWidth: 1,
+                        padding: 10,
+                        cornerRadius: 8
+                    },
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            boxWidth: 8,
+                            font: { size: 11, weight: '500' },
+                            generateLabels: (chart) => {
+                                const datasets = chart.data.datasets;
+                                return datasets.map((dataset, i) => ({
+                                    text: dataset.label,
+                                    fillStyle: dataset.borderColor,
+                                    strokeStyle: dataset.borderColor,
+                                    lineWidth: dataset.borderWidth,
+                                    hidden: !chart.isDatasetVisible(i),
+                                    index: i,
+                                    pointStyle: 'circle'
+                                }));
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(0,0,0,0.05)' },
+                        title: {
+                            display: true,
+                            text: 'Montant TTC (FCFA)',
+                            font: { weight: '500', size: 12 }
+                        },
+                        ticks: {
+                            callback: (value) => Math.round(value).toLocaleString('fr-FR') + ' FCFA',
+                            maxTicksLimit: 6
+                        }
+                    },
+                    x: {
+                        grid: { display: false },
+                        title: {
+                            display: true,
+                            text: 'Mois',
+                            font: { weight: '500', size: 12 }
+                        },
+                        ticks: { maxRotation: 45, minRotation: 45 }
+                    }
+                },
+                elements: {
+                    line: { fill: false, tension: 0.4 },
+                    point: { radius: 3, hoverRadius: 6, hitRadius: 10 }
+                }
+            }
+        });
+        
+        this.updateFilterInfo();
+        
+        const chartContainer = document.querySelector('.charts-card');
+        if (chartContainer) chartContainer.classList.add('loaded');
+    }
+    
+    updateFilterInfo() {
+        const filterInfo = document.getElementById('analyticsFilterInfo');
+        if (filterInfo) {
+            let filterText = '';
+            if (this.userAgence !== 'Tous' && this.userAgence) {
+                filterText += `Agence: ${this.userAgence}`;
+            } else {
+                filterText += `Toutes agences`;
+            }
+            if (this.userAnalyse !== 'Tous' && this.userAnalyse) {
+                filterText += ` | Commercial: ${this.userAnalyse}`;
+            }
+            filterInfo.innerHTML = `<i class="fas fa-filter"></i> ${filterText}`;
+        }
+    }
+
+    showLoader(show) {
+        const chartCard = document.querySelector('.charts-card');
+        if (!chartCard) return;
+        
+        let loader = chartCard.querySelector('.chart-loader');
+        
+        if (show) {
+            if (!loader) {
+                loader = document.createElement('div');
+                loader.className = 'chart-loader';
+                loader.innerHTML = `<div class="loading-spinner"></div><p>Chargement des données...</p>`;
+                loader.style.cssText = `position: absolute; inset: 0; background: rgba(255,255,255,0.9); display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 24px; z-index: 10;`;
+                chartCard.style.position = 'relative';
+                chartCard.appendChild(loader);
+            }
+            loader.style.display = 'flex';
+            const canvas = chartCard.querySelector('#salesChart');
+            if (canvas) canvas.style.opacity = '0.5';
+        } else {
+            if (loader) loader.style.display = 'none';
+            const canvas = chartCard.querySelector('#salesChart');
+            if (canvas) canvas.style.opacity = '1';
+        }
+    }
+
+    showNoDataMessage(message) {
+        const chartCard = document.querySelector('.charts-card');
+        if (!chartCard) return;
+        
+        let noDataMsg = chartCard.querySelector('.no-data-message');
+        
+        if (!noDataMsg) {
+            noDataMsg = document.createElement('div');
+            noDataMsg.className = 'no-data-message';
+            noDataMsg.style.cssText = `position: absolute; inset: 0; background: rgba(255,255,255,0.95); display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 24px; z-index: 10; text-align: center; padding: 20px;`;
+            chartCard.style.position = 'relative';
+            chartCard.appendChild(noDataMsg);
+        }
+        
+        noDataMsg.innerHTML = `
+            <i class="fas fa-chart-line" style="font-size: 3rem; color: #94a3b8; margin-bottom: 1rem;"></i>
+            <p style="color: #475569; font-size: 0.95rem;">${message || "Aucune donnée disponible"}</p>
+            <button class="btn-retry" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #4361ee; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                <i class="fas fa-sync-alt"></i> Réessayer
+            </button>
+        `;
+        
+        noDataMsg.style.display = 'flex';
+        
+        const retryBtn = noDataMsg.querySelector('.btn-retry');
+        if (retryBtn) {
+            retryBtn.onclick = () => {
+                noDataMsg.style.display = 'none';
+                this.loadAndRender();
+            };
+        }
+        
+        const canvas = chartCard.querySelector('#salesChart');
+        if (canvas) canvas.style.opacity = '0.3';
+    }
+
+    async loadAndRender() {
+        this.userAgence = sessionStorage.getItem("agence") || localStorage.getItem("agence") || "Tous";
+        this.userAnalyse = sessionStorage.getItem("analyse") || localStorage.getItem("analyse") || "Tous";
+        this.userUtilisateur = sessionStorage.getItem("utilisateur") || localStorage.getItem("utilisateur") || "";
+        
+        console.log('📊 Analytics - Chargement avec filtres:', {
+            utilisateur: this.userUtilisateur,
+            agence: this.userAgence,
+            analyse: this.userAnalyse
+        });
+        
+        const rawData = await this.fetchSalesData();
+        
+        if (!rawData || rawData.length === 0) {
+            this.showNoDataMessage("Aucune donnée disponible");
+            return;
+        }
+        
+        const filteredData = this.filterDataByUser(rawData);
+        
+        console.log(`📊 Données après filtrage: ${filteredData.length} enregistrements sur ${rawData.length}`);
+        
+        if (filteredData.length === 0) {
+            this.showNoDataMessage(`Aucune donnée pour les filtres: Agence=${this.userAgence}, Commercial=${this.userAnalyse}`);
+            return;
+        }
+        
+        const monthlyData = this.groupDataByMonth(filteredData);
+        
+        if (monthlyData.size === 0) {
+            this.showNoDataMessage("Aucune donnée de vente valide");
+            return;
+        }
+        
+        this.updateChart(monthlyData);
+        this.displaySummary(monthlyData);
+    }
+    
+    displaySummary(monthlyData) {
+    const last12Months = this.getLast12Months(monthlyData);
+    
+    if (last12Months.length === 0) return;
+    
+    const totalGlobal = last12Months.reduce((sum, [_, data]) => sum + data.total, 0);
+    const averageMonthly = totalGlobal / last12Months.length;
+    
+    // Trouver le meilleur mois (celui avec le plus grand total)
+    let bestMonth = last12Months[0];
+    for (let i = 1; i < last12Months.length; i++) {
+        if (last12Months[i][1].total > bestMonth[1].total) {
+            bestMonth = last12Months[i];
+        }
+    }
+    
+    const bestMonthLabel = bestMonth[1]?.label || '';
+    const bestMonthAmount = bestMonth[1]?.total || 0;
+    
+    // Trouver le mois actuel (le dernier mois de la période)
+    const currentMonth = last12Months[last12Months.length - 1];
+    const currentMonthLabel = currentMonth[1]?.label || '';
+    const currentMonthAmount = currentMonth[1]?.total || 0;
+    
+    let summaryDiv = document.querySelector('.sales-summary');
+    
+    if (!summaryDiv) {
+        const chartCard = document.querySelector('.charts-card');
+        if (chartCard) {
+            summaryDiv = document.createElement('div');
+            summaryDiv.className = 'sales-summary';
+            summaryDiv.style.cssText = `display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; padding: 20px; background: rgba(255,255,255,0.6); backdrop-filter: blur(10px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.4);`;
+            chartCard.appendChild(summaryDiv);
+        }
+    }
+    
+    if (summaryDiv) {
+        summaryDiv.innerHTML = `
+            <div class="summary-item" style="text-align: center;">
+                <div style="font-size: 0.8rem; color: #64748b;">Total 12 mois</div>
+                <div style="font-size: 1.5rem; font-weight: 700; color: #1e293b;">${this.formatFCFA(totalGlobal)}</div>
+            </div>
+            <div class="summary-item" style="text-align: center;">
+                <div style="font-size: 0.8rem; color: #64748b;">Moyenne mensuelle</div>
+                <div style="font-size: 1.5rem; font-weight: 700; color: #4361ee;">${this.formatFCFA(averageMonthly)}</div>
+            </div>
+            <div class="summary-item" style="text-align: center;">
+                <div style="font-size: 0.8rem; color: #64748b;">Mois en cours</div>
+                <div style="font-size: 1rem; font-weight: 600; color: #f59e0b;">${currentMonthLabel}</div>
+                <div style="font-size: 1.1rem; font-weight: 700;">${this.formatFCFA(currentMonthAmount)}</div>
+            </div>
+            <div class="summary-item" style="text-align: center;">
+                <div style="font-size: 0.8rem; color: #64748b;">Meilleur mois</div>
+                <div style="font-size: 1rem; font-weight: 600; color: #10b981;">${bestMonthLabel}</div>
+                <div style="font-size: 1.1rem; font-weight: 700;">${this.formatFCFA(bestMonthAmount)}</div>
+            </div>
+            <div class="summary-item" style="text-align: center;">
+                <div style="font-size: 0.8rem; color: #64748b;">Période</div>
+                <div style="font-size: 0.9rem; font-weight: 500;">
+                    ${last12Months[0]?.[1]?.label || ''} - ${last12Months[last12Months.length-1]?.[1]?.label || ''}
+                </div>
+            </div>
+        `;
+    }
+}
+}
+
+// Initialisation
+document.addEventListener('DOMContentLoaded', () => {
+    const canvas = document.getElementById('salesChart');
+    if (canvas) {
+        setTimeout(() => {
+            const analytics = new SalesAnalytics();
+            analytics.loadAndRender();
+            setInterval(() => analytics.loadAndRender(), 5 * 60 * 1000);
+        }, 500);
+    }
+});
+
+window.SalesAnalytics = SalesAnalytics;
     </script>
 </body>
 </html>
