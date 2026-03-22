@@ -2698,10 +2698,12 @@ function openEditFactureModal(index, factureData = null) {
                                     <input type="text" class="edit-form-control" id="editPolice" value="${facture['N°Police'] || ''}" aria-label="Numéro de police">
                                 </div>
                                 
-                                <div class="edit-form-group">
-                                    <label class="edit-form-label">Société</label>
-                                    <input type="text" class="edit-form-control" id="editSociete" value="${facture['Société'] || ''}" aria-label="Société">
-                                </div>
+<div class="edit-form-group">
+    <label class="edit-form-label">Société</label>
+    <select class="edit-form-control" id="editSociete" aria-label="Société">
+        <option value="${facture['Société'] || ''}">${facture['Société'] || 'Sélectionner une société'}</option>
+    </select>
+</div>
                                 
                                 <div class="edit-form-group">
                                     <label class="edit-form-label">Assuré Principal</label>
@@ -2740,15 +2742,19 @@ function openEditFactureModal(index, factureData = null) {
                                     <input type="number" step="0.01" class="edit-form-control" id="editTVA" value="${facture['TVA sur Monture'] || ''}" aria-label="TVA sur monture">
                                 </div>
                                 
-                                <div class="edit-form-group">
-                                    <label class="edit-form-label">Assurance</label>
-                                    <input type="text" class="edit-form-control" id="editAssurance" value="${facture['Assurance'] || ''}" aria-label="Assurance">
-                                </div>
+<div class="edit-form-group">
+    <label class="edit-form-label">Assurance</label>
+    <select class="edit-form-control" id="editAssurance" aria-label="Assurance">
+        <option value="${facture['Assurance'] || ''}">${facture['Assurance'] || 'Sélectionner une assurance'}</option>
+    </select>
+</div>
                                 
-                                <div class="edit-form-group">
-                                    <label class="edit-form-label">Compagnie</label>
-                                    <input type="text" class="edit-form-control" id="editCompagnie" value="${facture['Compagnie'] || ''}" aria-label="Compagnie">
-                                </div>
+ <div class="edit-form-group">
+    <label class="edit-form-label">Compagnie</label>
+    <select class="edit-form-control" id="editCompagnie" aria-label="Compagnie">
+        <option value="${facture['Compagnie'] || ''}">${facture['Compagnie'] || 'Sélectionner une compagnie'}</option>
+    </select>
+</div>
                             </div>
                         </div>
                     </form>
@@ -2767,6 +2773,7 @@ function openEditFactureModal(index, factureData = null) {
     `;
     
     modalContainer.innerHTML = modalHTML;
+    loadEditDynamicOptions(facture['Société'] || '', facture['Assurance'] || '', facture['Compagnie'] || '');
 }
 
 function submitFactureUpdate(index) {
@@ -2835,6 +2842,61 @@ function submitFactureUpdate(index) {
         submitBtn.disabled = false;
     });
 }
+
+async function loadEditDynamicOptions(currentSociete, currentAssurance, currentCompagnie) {
+    try {
+        const response = await fetch('https://script.google.com/macros/s/AKfycbwdzHJGAL16KV_OnyoCIs5I7im2yNxrbEaEIbykQ8hy6ewQjJFQ0G4TfqYWWCMc7vfW/exec?action=importassurance');
+        if (!response.ok) throw new Error('Erreur réseau');
+
+        const data = await response.json();
+        if (!data?.data?.rows) throw new Error('Erreur de données');
+
+        const assurances = [...new Set(data.data.rows.map(row => row[data.data.headers.indexOf('Assurance')]).filter(Boolean))];
+        const compagnies = [...new Set(data.data.rows.map(row => row[data.data.headers.indexOf('Compagnie')]).filter(Boolean))];
+        const societes   = [...new Set(data.data.rows.map(row => row[data.data.headers.indexOf('Société')]).filter(Boolean))];
+
+        const societeSelect   = document.getElementById('editSociete');
+        const assuranceSelect = document.getElementById('editAssurance');
+        const compagnieSelect = document.getElementById('editCompagnie');
+
+        if (societeSelect) {
+            societeSelect.innerHTML = '<option value="">Sélectionner une société</option>';
+            societes.sort().forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s;
+                opt.textContent = s;
+                if (s === currentSociete) opt.selected = true;
+                societeSelect.appendChild(opt);
+            });
+        }
+
+        if (assuranceSelect) {
+            assuranceSelect.innerHTML = '<option value="">Sélectionner une assurance</option>';
+            assurances.sort().forEach(a => {
+                const opt = document.createElement('option');
+                opt.value = a;
+                opt.textContent = a;
+                if (a === currentAssurance) opt.selected = true;
+                assuranceSelect.appendChild(opt);
+            });
+        }
+
+        if (compagnieSelect) {
+            compagnieSelect.innerHTML = '<option value="">Sélectionner une compagnie</option>';
+            compagnies.sort().forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c;
+                opt.textContent = c;
+                if (c === currentCompagnie) opt.selected = true;
+                compagnieSelect.appendChild(opt);
+            });
+        }
+
+    } catch (error) {
+        console.error('Erreur chargement options édition:', error);
+    }
+}
+
 async function cancelFacture(index) {
     // 1. Récupération de la facture
     const facture = factureManager.allData[index];
@@ -2952,12 +3014,12 @@ async function openAddFactureModal() {
                                        aria-label="Numéro de police">
                             </div>
                             
-                            <div class="edit-form-group">
-                                <label class="edit-form-label">Société</label>
-                                <input type="text" class="edit-form-control" id="addSociete"
-                                       placeholder="Nom de la société"
-                                       aria-label="Société">
-                            </div>
+<div class="edit-form-group">
+    <label class="edit-form-label">Société</label>
+    <select class="edit-form-control" id="addSociete" aria-label="Société">
+        <option value="">Sélectionner une société</option>
+    </select>
+</div>
                             
                             <div class="edit-form-group">
                                 <label class="edit-form-label">Assuré Principal</label>
@@ -3114,19 +3176,27 @@ async function loadDynamicOptions() {
 
         const assurances = [...new Set(data.data.rows.map(row => row[data.data.headers.indexOf('Assurance')]).filter(Boolean))];
         const compagnies = [...new Set(data.data.rows.map(row => row[data.data.headers.indexOf('Compagnie')]).filter(Boolean))];
+        const societes   = [...new Set(data.data.rows.map(row => row[data.data.headers.indexOf('Société')]).filter(Boolean))];
 
         const assuranceSelect = document.getElementById('addAssurance');
         const compagnieSelect = document.getElementById('addCompagnie');
-        
+        const societeSelect   = document.getElementById('addSociete');
+
         if (assuranceSelect) {
-            assurances.forEach(assurance => {
+            assurances.sort().forEach(assurance => {
                 assuranceSelect.innerHTML += `<option value="${assurance}">${assurance}</option>`;
             });
         }
 
         if (compagnieSelect) {
-            compagnies.forEach(compagnie => {
+            compagnies.sort().forEach(compagnie => {
                 compagnieSelect.innerHTML += `<option value="${compagnie}">${compagnie}</option>`;
+            });
+        }
+
+        if (societeSelect) {
+            societes.sort().forEach(societe => {
+                societeSelect.innerHTML += `<option value="${societe}">${societe}</option>`;
             });
         }
 
@@ -3134,7 +3204,6 @@ async function loadDynamicOptions() {
         console.error('Erreur lors du chargement des options:', error);
     }
 }
-
 // ==================== GÉNÉRER DÉPÔT AVEC SÉLECTION ====================
 async function genererFacture() {
     const selectedFactures = factureManager.getSelectedFactures();
