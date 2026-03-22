@@ -2708,121 +2708,271 @@
             }
         }
 
-        function openInventaireUpdate(agence) {
-            const config = AGENCE_CONFIG[agence];
-            const stockKey = config.stockKey;
-            const data = stockData[stockKey].allData;
-            
-            if (!data || !data.length) {
-                showToast(`Aucune donnée trouvée pour l'agence ${agence}`, 'error');
-                return;
-            }
-            
-            const modalContainer = document.getElementById('modal-container');
-            const inventaireHTML = `
-                <div class="modal-overlay active" id="inventaireModal">
-                    <div class="modal-content xlarge-modal">
-                        <div class="modal-header">
-                            <h3 class="modal-title">
-                                <i class="fas fa-clipboard-list" style="color: var(--primary-500); margin-right: 0.5rem;"></i>
-                                Inventaire - Agence ${agence}
-                            </h3>
-                            <button class="modal-close" onclick="closeModal()">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="alert-message alert-info" style="margin-bottom: 1.5rem;">
-                                <i class="fas fa-info-circle"></i> 
-                                Mettez à jour les quantités disponibles pour l'agence ${agence}.
-                            </div>
-                            
-                            <div class="search-box" style="margin-bottom: 1rem;">
-                                <i class="fas fa-search"></i>
-                                <input type="text" 
-                                       class="form-control" 
-                                       id="searchReference"
-                                       placeholder="Rechercher une référence..."
-                                       autocomplete="off"
-                                       onkeyup="filterProducts()">
-                            </div>
-                            
-                            <div class="table-container">
-                                <div class="table-wrapper">
-                                    <table class="stock-table" id="inventaireTable">
-                                        <thead>
-                                            <tr>
-                                                <th>Date</th>
-                                                <th>Catégorie</th>
-                                                <th>Référence</th>
-                                                <th class="text-end">Stock départ</th>
-                                                <th class="text-end">Prix vente</th>
-                                                <th class="text-end">Stock Physique</th>
-                                                <th class="text-end">Nouveau Stock</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="inventaireData">
-                                            ${data.map(item => {
-                                                const reference = item['Référence'] || '';
-                                                const stockPhysique = item['Stock Physique'] || 0;
-                                                
-                                                return `
-                                                <tr class="product-row" data-reference="${String(reference).toLowerCase()}">
-                                                    <td>${formatDate(item['Date'] || '')}</td>
-                                                    <td>${item['Catégorie'] || ''}</td>
-                                                    <td class="reference-cell">${reference}</td>
-                                                    <td class="text-end">${item['Stock de depart'] || 0}</td>
-                                                    <td class="text-end">${formatCurrency(item['Prix de vente'] || 0)}</td>
-                                                    <td class="text-end stock-actuel">${stockPhysique}</td>
-                                                    <td>
-                                                        <input type="number" 
-                                                               class="form-control nouvelle-quantite" 
-                                                               data-reference="${String(reference)}"
-                                                               data-categorie="${item['Catégorie'] || ''}"
-                                                               data-prix="${item['Prix de vente'] || 0}"
-                                                               data-stockdepart="${item['Stock de depart'] || 0}"
-                                                               min="0" 
-                                                               value="${stockPhysique}"
-                                                               placeholder="Qté"
-                                                               style="width: 100px;">
-                                                    </td>
-                                                </tr>
-                                            `}).join('')}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            
-                            <input type="hidden" id="agenceInventaireUpdate" value="${agence}">
-                            
-                            <div id="inventaire-progress" style="display: none; margin-top: 1.5rem;">
-                                <div class="progress-bar" style="height: 6px;">
-                                    <div class="progress-fill" id="progressBar" style="width: 0%;"></div>
-                                </div>
-                                <div id="progress-text" style="text-align: center; font-size: 0.875rem; color: var(--gray-600); margin-top: 0.5rem;"></div>
-                            </div>
-                            
-                            <div id="inventaire-message" class="alert-message" style="display: none;"></div>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-success" onclick="validerMiseAJourInventaire()" id="btnValiderInventaire">
-                                <i class="fas fa-check"></i> Valider la mise à jour
-                            </button>
-                            <button class="btn btn-secondary" onclick="closeModal()">
-                                <i class="fas fa-times"></i> Fermer
-                            </button>
-                        </div>
+function openInventaireUpdate(agence) {
+    const config = AGENCE_CONFIG[agence];
+    const stockKey = config.stockKey;
+    const data = stockData[stockKey].allData;
+    
+    if (!data || !data.length) {
+        showToast(`Aucune donnée trouvée pour l'agence ${agence}`, 'error');
+        return;
+    }
+    
+    const modalContainer = document.getElementById('modal-container');
+    const inventaireHTML = `
+        <div class="modal-overlay active" id="inventaireModal">
+            <div class="modal-content xlarge-modal">
+                <div class="modal-header">
+                    <h3 class="modal-title">
+                        <i class="fas fa-clipboard-list" style="color: var(--primary-500); margin-right: 0.5rem;"></i>
+                        Inventaire - Agence ${agence}
+                    </h3>
+                    <div class="modal-header-actions">
+                        <button class="modal-close" onclick="closeModal()">
+                            <i class="fas fa-times"></i>
+                        </button>
                     </div>
                 </div>
-            `;
-            modalContainer.innerHTML = inventaireHTML;
-            
-            setTimeout(() => {
-                const searchInput = document.getElementById('searchReference');
-                if (searchInput) searchInput.focus();
-            }, 100);
-        }
+                <div class="modal-body">
+                    <div class="alert-message alert-info" style="margin-bottom: 1.5rem;">
+                        <i class="fas fa-info-circle"></i> 
+                        Mettez à jour les quantités disponibles pour l'agence ${agence}.
+                    </div>
+                    
+                    <div class="search-box" style="margin-bottom: 1rem;">
+                        <i class="fas fa-search"></i>
+                        <input type="text" 
+                               class="form-control" 
+                               id="searchReference"
+                               placeholder="Rechercher une référence..."
+                               autocomplete="off"
+                               onkeyup="filterProducts()">
+                    </div>
+                    
+                    <div class="table-container">
+                        <div class="table-wrapper">
+                            <table class="stock-table" id="inventaireTable">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Catégorie</th>
+                                        <th>Référence</th>
+                                        <th class="text-end">Stock départ</th>
+                                        <th class="text-end">Prix vente</th>
+                                        <th class="text-end">Stock Physique</th>
+                                        <th class="text-end">Nouveau Stock</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="inventaireData">
+                                    ${data.map(item => {
+                                        const reference = item['Référence'] || '';
+                                        const stockPhysique = item['Stock Physique'] || 0;
+                                        
+                                        return `
+                                        <tr class="product-row" data-reference="${String(reference).toLowerCase()}">
+                                            <td>${formatDate(item['Date'] || '')}</td>
+                                            <td>${item['Catégorie'] || ''}</td>
+                                            <td class="reference-cell">${reference}</td>
+                                            <td class="text-end">${item['Stock de depart'] || 0}</td>
+                                            <td class="text-end">${formatCurrency(item['Prix de vente'] || 0)}</td>
+                                            <td class="text-end stock-actuel">${stockPhysique}</td>
+                                            <td>
+                                                <input type="number" 
+                                                       class="form-control nouvelle-quantite" 
+                                                       data-reference="${String(reference)}"
+                                                       data-categorie="${item['Catégorie'] || ''}"
+                                                       data-prix="${item['Prix de vente'] || 0}"
+                                                       data-stockdepart="${item['Stock de depart'] || 0}"
+                                                       min="0" 
+                                                       value=""
+                                                       placeholder="Qté"
+                                                       style="width: 100px;">
+                                            </td>
+                                        </tr>
+                                    `}).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <input type="hidden" id="agenceInventaireUpdate" value="${agence}">
+                    
+                    <div id="inventaire-progress" style="display: none; margin-top: 1.5rem;">
+                        <div class="progress-bar" style="height: 6px;">
+                            <div class="progress-fill" id="progressBar" style="width: 0%;"></div>
+                        </div>
+                        <div id="progress-text" style="text-align: center; font-size: 0.875rem; color: var(--gray-600); margin-top: 0.5rem;"></div>
+                    </div>
+                    
+                    <div id="inventaire-message" class="alert-message" style="display: none;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline-primary" onclick="imprimerInventairePDF('${agence}')" style="margin-right: 0.5rem;">
+                            <i class="fas fa-print"></i> Imprimer PDF
+                        </button>
+                    <button class="btn btn-success" onclick="validerMiseAJourInventaire()" id="btnValiderInventaire">
+                        <i class="fas fa-check"></i> Valider la mise à jour
+                    </button>
+                    <button class="btn btn-secondary" onclick="closeModal()">
+                        <i class="fas fa-times"></i> Fermer
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    modalContainer.innerHTML = inventaireHTML;
+    
+    setTimeout(() => {
+        const searchInput = document.getElementById('searchReference');
+        if (searchInput) searchInput.focus();
+    }, 100);
+}
 
+// Fonction pour imprimer l'inventaire en PDF
+function imprimerInventairePDF(agence) {
+    const table = document.getElementById('inventaireTable');
+    if (!table) return;
+    
+    // Récupérer les données actuelles du tableau
+    const rows = table.querySelectorAll('tbody tr');
+    const data = [];
+    
+    rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        const nouvelleQuantite = row.querySelector('.nouvelle-quantite').value;
+        
+        data.push({
+            date: cells[0].textContent,
+            categorie: cells[1].textContent,
+            reference: cells[2].textContent,
+            stockDepart: cells[3].textContent,
+            prixVente: cells[4].textContent,
+            stockPhysique: cells[5].textContent,
+            nouveauStock: nouvelleQuantite
+        });
+    });
+    
+    // Créer une nouvelle fenêtre pour l'impression
+    const printWindow = window.open('', '_blank');
+    
+    // Générer le contenu HTML pour l'impression
+    printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Inventaire - Agence ${agence}</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    margin: 20px;
+                }
+                h1 {
+                    color: #333;
+                    text-align: center;
+                    margin-bottom: 30px;
+                }
+                .header-info {
+                    margin-bottom: 20px;
+                    padding: 10px;
+                    background-color: #f5f5f5;
+                    border-radius: 5px;
+                }
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 20px;
+                }
+                th {
+                    background-color: #4CAF50;
+                    color: white;
+                    padding: 12px;
+                    text-align: left;
+                }
+                td {
+                    padding: 10px;
+                    border: 1px solid #ddd;
+                }
+                tr:nth-child(even) {
+                    background-color: #f2f2f2;
+                }
+                .text-end {
+                    text-align: right;
+                }
+                .footer {
+                    margin-top: 30px;
+                    text-align: center;
+                    font-size: 12px;
+                    color: #666;
+                }
+                @media print {
+                    .no-print {
+                        display: none;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <h1>Inventaire - Agence ${agence}</h1>
+            
+            <div class="header-info">
+                <p><strong>Date d'impression :</strong> ${new Date().toLocaleDateString('fr-FR')}</p>
+                <p><strong>Nombre d'articles :</strong> ${data.length}</p>
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Catégorie</th>
+                        <th>Référence</th>
+                        <th class="text-end">Stock départ</th>
+                        <th class="text-end">Prix vente</th>
+                        <th class="text-end">Stock Physique</th>
+                        <th class="text-end">Nouveau Stock</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${data.map(item => `
+                        <tr>
+                            <td>${item.date}</td>
+                            <td>${item.categorie}</td>
+                            <td>${item.reference}</td>
+                            <td class="text-end">${item.stockDepart}</td>
+                            <td class="text-end">${item.prixVente}</td>
+                            <td class="text-end">${item.stockPhysique}</td>
+                            <td class="text-end">${item.nouveauStock}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+            
+            <div class="footer">
+                <p>Document généré le ${new Date().toLocaleString('fr-FR')}</p>
+            </div>
+            
+            <div class="no-print" style="text-align: center; margin-top: 20px;">
+                <button onclick="window.print()" style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                    Imprimer
+                </button>
+                <button onclick="window.close()" style="padding: 10px 20px; background-color: #666; color: white; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px;">
+                    Fermer
+                </button>
+            </div>
+            
+            <script>
+                // Imprimer automatiquement après le chargement
+                window.onload = function() {
+                    setTimeout(function() {
+                        window.print();
+                    }, 500);
+                };
+            <\/script>
+        </body>
+        </html>
+    `);
+    
+    printWindow.document.close();
+}
         function filterProducts() {
             const searchInput = document.getElementById('searchReference');
             if (!searchInput) return;
