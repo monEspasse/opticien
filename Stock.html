@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>VisioPro</title>
+    <title>VisioPro - Gestion de Stock</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -59,9 +59,6 @@
         html {
             font-size: 15px;
             scroll-behavior: smooth;
-            font-smooth: always;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
 
         body {
@@ -73,7 +70,6 @@
             padding-bottom: 70px;
         }
 
-
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(5px); }
             to { opacity: 1; transform: translateY(0); }
@@ -84,36 +80,13 @@
             to { transform: translateX(0); opacity: 1; }
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
-        @keyframes shimmer {
-            0% { background-position: -1000px 0; }
-            100% { background-position: 1000px 0; }
-        }
-
-        .skeleton {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 1000px 100%;
-            animation: shimmer 2s infinite linear;
-            border-radius: var(--border-radius-sm);
-            min-height: 1em;
-        }
-
-        .skeleton-text {
-            height: 1em;
-            margin-bottom: 0.3rem;
-            width: 100%;
-        }
-
-        .skeleton-text.short {
-            width: 60%;
-        }
-
-        .skeleton-text.medium {
-            width: 80%;
+        @keyframes slideUp {
+            from { transform: translateY(15px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
 
         .dashboard-container {
@@ -123,7 +96,6 @@
             animation: fadeIn 0.5s ease;
         }
 
-        /* ==================== HEADER ==================== */
         .header {
             background: var(--glass-bg);
             backdrop-filter: blur(20px);
@@ -135,7 +107,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            animation: fadeIn 0.6s ease 0.1s both;
         }
 
         .header-left h1 {
@@ -144,33 +115,6 @@
             background-clip: text;
             color: transparent;
             font-size: 1.75rem;
-            margin: 0;
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .theme-toggle {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: var(--gray-600);
-        }
-
-        .theme-toggle:hover {
-            background: var(--primary-gradient);
-            color: white;
-            transform: scale(1.1);
         }
 
         .user-info {
@@ -184,18 +128,12 @@
             height: 36px;
             border-radius: 50%;
             border: 2px solid var(--primary-300);
-            transition: transform 0.3s ease;
-        }
-
-        .profile-img:hover {
-            transform: scale(1.05);
         }
 
         .stock-sections {
             display: flex;
             gap: 1.5rem;
             margin-bottom: 1.5rem;
-            animation: fadeIn 0.6s ease 0.2s both;
         }
 
         .stock-nav {
@@ -229,54 +167,20 @@
             width: 100%;
             text-align: left;
             margin-bottom: 0.5rem;
-            position: relative;
-            overflow: hidden;
             font-size: 0.9rem;
         }
 
-        .nav-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: var(--primary-gradient);
-            transition: left 0.3s ease;
-            z-index: 0;
-        }
-
         .nav-btn:hover {
-            color: var(--primary-600);
-            transform: translateX(3px);
-        }
-
-        .nav-btn:hover::before {
-            left: 0;
-        }
-
-        .nav-btn:hover span,
-        .nav-btn:hover i {
-            position: relative;
-            z-index: 1;
+            background: var(--primary-gradient);
             color: white;
+            transform: translateX(3px);
         }
 
         .nav-btn.active {
             background: var(--primary-gradient);
             color: white;
             border-color: transparent;
-            transform: translateX(3px);
-        }
-
-        .nav-btn i {
-            width: 18px;
-            text-align: center;
-            transition: transform 0.3s ease;
-        }
-
-        .nav-btn:hover i {
-            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
         }
 
         .content-area {
@@ -306,7 +210,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            animation: fadeIn 0.5s ease;
+            flex-wrap: wrap;
+            gap: 0.5rem;
         }
 
         .section-title {
@@ -318,94 +223,7 @@
             color: transparent;
         }
 
-        .controls-panel {
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--border-radius-lg);
-            padding: 1rem;
-            margin-bottom: 1rem;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.75rem;
-            align-items: center;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .search-box {
-            flex: 1;
-            min-width: 200px;
-            position: relative;
-        }
-
-        .search-box input {
-            width: 100%;
-            padding: 0.6rem 0.8rem 0.6rem 2.5rem;
-            border: 1px solid var(--gray-300);
-            border-radius: var(--border-radius-md);
-            font-family: inherit;
-            font-size: 0.9rem;
-            transition: all 0.3s var(--transition-smooth);
-            background: white;
-        }
-
-        .search-box input:focus {
-            outline: none;
-            border-color: var(--primary-400);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-        }
-
-        .search-box i {
-            position: absolute;
-            left: 0.8rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--gray-400);
-            font-size: 0.9rem;
-        }
-
-        .filters-group {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .filter-select {
-            padding: 0.6rem 0.8rem;
-            border: 1px solid var(--gray-300);
-            border-radius: var(--border-radius-md);
-            font-family: inherit;
-            font-size: 0.9rem;
-            background: white;
-            color: var(--gray-700);
-            cursor: pointer;
-            transition: all 0.3s var(--transition-smooth);
-            min-width: 130px;
-        }
-
-        .filter-select:focus {
-            outline: none;
-            border-color: var(--primary-400);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-        }
-
-        .date-filter-group {
-            display: flex;
-            gap: 0.3rem;
-            align-items: center;
-        }
-
-        .date-filter {
-            min-width: 140px;
-        }
-
-        .items-per-page {
-            min-width: 100px;
-        }
-
         .btn {
-            position: relative;
             padding: 0.6rem 1.2rem;
             border: none;
             border-radius: var(--border-radius-md);
@@ -416,36 +234,6 @@
             display: inline-flex;
             align-items: center;
             gap: 0.4rem;
-            overflow: hidden;
-        }
-
-        .btn::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 5px;
-            height: 5px;
-            background: rgba(255, 255, 255, 0.5);
-            opacity: 0;
-            border-radius: 100%;
-            transform: scale(1, 1) translate(-50%);
-            transform-origin: 50% 50%;
-        }
-
-        .btn:focus:not(:active)::after {
-            animation: ripple 1s ease-out;
-        }
-
-        @keyframes ripple {
-            0% {
-                transform: scale(0, 0);
-                opacity: 0.5;
-            }
-            100% {
-                transform: scale(40, 40);
-                opacity: 0;
-            }
         }
 
         .btn-primary {
@@ -463,6 +251,11 @@
             color: white;
         }
 
+        .btn-warning {
+            background: var(--warning-gradient);
+            color: white;
+        }
+
         .btn-secondary {
             background: var(--glass-bg);
             backdrop-filter: blur(10px);
@@ -470,24 +263,11 @@
             color: var(--primary-600);
         }
 
-        .btn-secondary:hover {
-            background: var(--primary-gradient);
-            color: white;
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none !important;
-        }
-
-        /* ==================== CARTES DE SYNTHÈSE ==================== */
         .summary-cards {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 0.8rem;
             margin-bottom: 1rem;
-            animation: fadeIn 0.5s ease 0.2s both;
         }
 
         .summary-card {
@@ -497,12 +277,6 @@
             border-radius: var(--border-radius-lg);
             padding: 1rem;
             transition: all 0.3s ease;
-            animation: fadeIn 0.4s ease;
-        }
-
-        .summary-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
         }
 
         .card-icon {
@@ -514,11 +288,6 @@
             justify-content: center;
             color: white;
             font-size: 0.9rem;
-            transition: transform 0.3s ease;
-        }
-
-        .summary-card:hover .card-icon {
-            transform: scale(1.1) rotate(5deg);
         }
 
         .table-container {
@@ -526,21 +295,17 @@
             backdrop-filter: blur(10px);
             border: 1px solid var(--glass-border);
             border-radius: var(--border-radius-lg);
-            padding: 0;
             overflow: hidden;
-            max-height: 450px;
-            animation: fadeIn 0.5s ease 0.3s both;
         }
 
         .table-wrapper {
-            max-height: 350px;
+            max-height: 400px;
             overflow-y: auto;
         }
 
         .stock-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 0;
         }
 
         .stock-table th {
@@ -549,111 +314,212 @@
             background: rgba(79, 70, 229, 0.95);
             color: white;
             font-weight: 600;
-            border-bottom: 2px solid var(--primary-300);
             position: sticky;
             top: 0;
             z-index: 10;
-            backdrop-filter: blur(10px);
             font-size: 0.85rem;
         }
 
         .stock-table td {
             padding: 0.8rem;
             border-bottom: 1px solid var(--glass-border);
-            transition: background-color 0.2s ease;
             font-size: 0.85rem;
-        }
-
-        .stock-table tbody tr {
-            animation: fadeIn 0.3s ease;
-            animation-fill-mode: both;
         }
 
         .stock-table tbody tr:hover {
             background: rgba(79, 70, 229, 0.05);
-            transform: translateX(3px);
-            transition: transform 0.2s ease;
         }
 
         .text-end {
             text-align: right;
         }
 
-        .table-skeleton {
-            width: 100%;
-        }
-
-        .table-skeleton-row {
-            display: flex;
-            padding: 0.8rem;
-            gap: 0.8rem;
-            border-bottom: 1px solid var(--gray-200);
-        }
-
-        .table-skeleton-cell {
-            flex: 1;
-        }
-
-        .table-skeleton-cell.short {
-            flex: 0.5;
-        }
-
-        .table-skeleton-cell.medium {
-            flex: 0.8;
-        }
-
-        .pagination-controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 0.3rem;
-            margin-top: 1rem;
-            padding: 0.8rem;
+        .controls-panel {
             background: var(--glass-bg);
             backdrop-filter: blur(10px);
             border: 1px solid var(--glass-border);
             border-radius: var(--border-radius-lg);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            align-items: center;
         }
 
-        .pagination-btn {
-            padding: 0.4rem 0.8rem;
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.6rem 0.8rem 0.6rem 2.5rem;
             border: 1px solid var(--gray-300);
             border-radius: var(--border-radius-md);
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 0.8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-400);
+        }
+
+        .filter-select {
+            padding: 0.6rem 0.8rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--border-radius-md);
+            font-family: inherit;
+            font-size: 0.9rem;
             background: white;
-            color: var(--gray-700);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 500;
-            min-width: 32px;
-            height: 32px;
-            display: flex;
+            min-width: 130px;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            display: none;
             align-items: center;
             justify-content: center;
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--border-radius-xl);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+            max-width: 500px;
+            width: 90%;
+            max-height: 85vh;
+            overflow: hidden;
+        }
+
+        .xlarge-modal {
+            max-width: 1400px;
+            width: 98%;
+            height: 90vh;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-content.xlarge-modal .modal-body {
+            flex: 1;
+            overflow-y: auto;
+            max-height: calc(90vh - 120px);
+            padding: 1rem;
+        }
+
+        .modal-content.xlarge-modal .table-container {
+            max-height: none;
+            height: auto;
+        }
+
+        .modal-content.xlarge-modal .table-wrapper {
+            max-height: calc(70vh - 150px);
+            overflow-y: auto;
+            overflow-x: auto;
+        }
+
+        .modal-content.xlarge-modal .stock-table {
+            font-size: 0.9rem;
+        }
+
+        .modal-content.xlarge-modal .stock-table th,
+        .modal-content.xlarge-modal .stock-table td {
+            padding: 0.5rem 0.8rem;
+            white-space: nowrap;
+        }
+
+        .modal-header {
+            padding: 1.2rem;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            margin: 0;
+            font-size: 1.1rem;
+            color: var(--primary-700);
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            font-size: 1.1rem;
+            color: var(--gray-500);
+            cursor: pointer;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+        }
+
+        .modal-close:hover {
+            background: var(--gray-100);
+        }
+
+        .modal-body {
+            padding: 1.2rem;
+            max-height: 55vh;
+            overflow-y: auto;
+        }
+
+        .modal-footer {
+            padding: 1rem;
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.3rem;
+            font-weight: 500;
+            color: var(--gray-700);
             font-size: 0.85rem;
         }
 
-        .pagination-btn:hover:not(:disabled) {
-            background: var(--primary-50);
-            border-color: var(--primary-300);
-            color: var(--primary-600);
-            transform: translateY(-1px);
+        .form-control {
+            width: 100%;
+            padding: 0.6rem 0.8rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--border-radius-md);
+            font-family: inherit;
+            font-size: 0.9rem;
         }
 
-        .pagination-btn.active {
-            background: var(--primary-gradient);
-            color: white;
-            border-color: transparent;
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-400);
         }
 
-        .pagination-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .pagination-info {
-            margin: 0 0.8rem;
-            color: var(--gray-600);
-            font-size: 0.85rem;
+        .nouvelle-quantite {
+            width: 100px;
+            padding: 0.4rem 0.6rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--border-radius-md);
+            font-family: inherit;
+            font-size: 0.9rem;
+            text-align: center;
         }
 
         .alert-message {
@@ -663,7 +529,6 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            animation: slideIn 0.3s ease;
             font-size: 0.85rem;
         }
 
@@ -691,15 +556,6 @@
             border-left: 3px solid #3b82f6;
         }
 
-        .loading-indicator {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 1.5rem;
-            gap: 0.8rem;
-        }
-
         .spinner-border {
             width: 1.8rem;
             height: 1.8rem;
@@ -709,8 +565,13 @@
             animation: spin 1s linear infinite;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .loading-indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            gap: 0.8rem;
         }
 
         .no-data {
@@ -718,356 +579,6 @@
             padding: 1.5rem;
             color: var(--gray-500);
             font-style: italic;
-            font-size: 0.9rem;
-        }
-
-    .back-btn {
-        position: fixed;
-        bottom: 100px;
-        right: 20px;
-        z-index: 1001;
-        margin: 0;
-    }
-    
-    .back-btn .btn {
-        width: 50px;
-        height: 50px;
-        border-radius: 25px;
-        padding: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
-        border: none;
-        background: var(--primary-gradient);
-    }
-    
-    .back-btn .btn span {
-        display: none; /* Cache le texte "Retour" */
-    }
-    
-    .back-btn .btn i {
-        margin: 0;
-        font-size: 1.3rem;
-        color: white;
-    }
-    
-    .back-btn .btn:active {
-        transform: scale(0.9);
-    }
-
-        .fab {
-            position: fixed;
-            bottom: 5rem;
-            right: 1.5rem;
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: var(--primary-gradient);
-            color: white;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
-            z-index: 100;
-            transition: all 0.3s ease;
-        }
-
-        .fab:hover {
-            transform: scale(1.1) rotate(90deg);
-            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4);
-        }
-
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(8px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: var(--border-radius-xl);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
-            max-width: 500px;
-            width: 90%;
-            max-height: 85vh;
-            overflow: hidden;
-            animation: fadeIn 0.4s ease 0.1s both;
-        }
-
-
-.xlarge-modal {
-    max-width: 1400px;  /* Augmenté de 1200px à 1400px */
-    width: 98%;  /* Augmenté de 95% à 98% */
-    height: 90vh;  /* Ajout d'une hauteur fixe */
-    max-height: 90vh;  /* Hauteur maximale */
-    display: flex;
-    flex-direction: column;
-}
-
-
-.modal-content.xlarge-modal .modal-body {
-    flex: 1;
-    overflow-y: auto;
-    max-height: calc(90vh - 120px); /* Ajustement pour laisser de la place au header et footer */
-    padding: 1rem;
-}
-
-.modal-content.xlarge-modal .table-container {
-    max-height: none;  
-    height: auto;
-}
-
-.modal-content.xlarge-modal .table-wrapper {
-    max-height: calc(70vh - 150px);  
-    overflow-y: auto;
-}
-
-
-.modal-content.xlarge-modal .stock-table {
-    font-size: 0.9rem;
-}
-
-.modal-content.xlarge-modal .stock-table th,
-.modal-content.xlarge-modal .stock-table td {
-    padding: 0.5rem 0.8rem;
-    white-space: nowrap;  
-}
-
-
-.modal-content.xlarge-modal .table-wrapper {
-    overflow-x: auto;
-}
-
-
-.modal-content.xlarge-modal .search-box {
-    position: sticky;
-    top: 0;
-    z-index: 20;
-    background: white;
-    padding: 0.5rem 0;
-}
-
-/* Version mobile */
-@media (max-width: 768px) {
-    .xlarge-modal {
-        width: 100%;
-        height: 100vh;
-        max-height: 100vh;
-        border-radius: 0;  
-    }
-    
-    .modal-content.xlarge-modal .modal-body {
-        max-height: calc(100vh - 120px);
-    }
-    
-    .modal-content.xlarge-modal .table-wrapper {
-        max-height: calc(100vh - 200px);
-    }
-}
-
-        .modal-header {
-            padding: 1.2rem;
-            border-bottom: 1px solid var(--gray-200);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-title {
-            margin: 0;
-            font-size: 1.1rem;
-            color: var(--primary-700);
-        }
-
-        .modal-close {
-            background: transparent;
-            border: none;
-            font-size: 1.1rem;
-            color: var(--gray-500);
-            cursor: pointer;
-            transition: color 0.2s ease;
-            width: 28px;
-            height: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-        }
-
-        .modal-close:hover {
-            background: var(--gray-100);
-            color: var(--gray-700);
-        }
-
-        .modal-body {
-            padding: 1.2rem;
-            max-height: 55vh;
-            overflow-y: auto;
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 0.3rem;
-            font-weight: 500;
-            color: var(--gray-700);
-            font-size: 0.85rem;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 0.6rem 0.8rem;
-            border: 1px solid var(--gray-300);
-            border-radius: var(--border-radius-md);
-            font-family: inherit;
-            font-size: 0.9rem;
-            transition: all 0.3s var(--transition-smooth);
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary-400);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-            transform: translateY(-1px);
-        }
-
-        .modal-footer {
-            padding: 1rem;
-            border-top: 1px solid var(--gray-200);
-            display: flex;
-            justify-content: flex-end;
-            gap: 0.5rem;
-        }
-
-        .nouvelle-quantite {
-            width: 100px;
-            padding: 0.4rem 0.6rem;
-            border: 1px solid var(--gray-300);
-            border-radius: var(--border-radius-md);
-            font-family: inherit;
-            font-size: 0.9rem;
-            text-align: center;
-        }
-
-        .nouvelle-quantite:focus {
-            outline: none;
-            border-color: var(--primary-400);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-        }
-
-        .progress-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .progress-overlay.active {
-            opacity: 1;
-        }
-
-        .progress-modal {
-            background: white;
-            border-radius: 10px;
-            padding: 1.5rem;
-            min-width: 300px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-            animation: slideUp 0.3s ease;
-        }
-
-        @keyframes slideUp {
-            from {
-                transform: translateY(15px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .progress-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            gap: 1rem;
-        }
-
-        .progress-spinner {
-            font-size: 2.5rem;
-            color: #3b82f6;
-        }
-
-        .progress-spinner .fa-spin {
-            animation: spin 1s linear infinite;
-        }
-
-        .progress-icon {
-            font-size: 2.5rem;
-            margin-bottom: 0.8rem;
-        }
-
-        .progress-content.success .progress-icon {
-            color: #10b981;
-        }
-
-        .progress-content.error .progress-icon {
-            color: #ef4444;
-        }
-
-        .progress-text h4 {
-            margin: 0 0 0.3rem 0;
-            color: #1f2937;
-            font-size: 1.1rem;
-        }
-
-        .progress-text p {
-            margin: 0;
-            color: #6b7280;
-            font-size: 0.9rem;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 6px;
-            background: #e5e7eb;
-            border-radius: 3px;
-            overflow: hidden;
-            margin-top: 0.8rem;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #3b82f6, #60a5fa);
-            width: 0%;
-            transition: width 0.3s ease;
         }
 
         .toast-container {
@@ -1094,72 +605,11 @@
             font-size: 0.85rem;
         }
 
-        .toast.success {
-            border-left-color: #10b981;
-            background: linear-gradient(90deg, rgba(16, 185, 129, 0.1), white);
-        }
+        .toast.success { border-left-color: #10b981; }
+        .toast.error { border-left-color: #ef4444; }
+        .toast.warning { border-left-color: #f59e0b; }
+        .toast.info { border-left-color: #3b82f6; }
 
-        .toast.error {
-            border-left-color: #ef4444;
-            background: linear-gradient(90deg, rgba(239, 68, 68, 0.1), white);
-        }
-
-        .toast.warning {
-            border-left-color: #f59e0b;
-            background: linear-gradient(90deg, rgba(245, 158, 11, 0.1), white);
-        }
-
-        .toast.info {
-            border-left-color: #3b82f6;
-            background: linear-gradient(90deg, rgba(59, 130, 246, 0.1), white);
-        }
-
-        .toast-close {
-            margin-left: auto;
-            background: none;
-            border: none;
-            color: var(--gray-500);
-            cursor: pointer;
-            padding: 0.2rem;
-            border-radius: 3px;
-            font-size: 0.9rem;
-        }
-
-        .toast-close:hover {
-            background: var(--gray-100);
-            color: var(--gray-700);
-        }
-
-        .sortable {
-            cursor: pointer;
-            position: relative;
-            user-select: none;
-            transition: color 0.2s ease;
-        }
-
-        .sortable:hover {
-            color: white !important;
-            opacity: 0.9;
-        }
-
-        .sortable::after {
-            content: '↕';
-            margin-left: 0.3rem;
-            font-size: 0.75em;
-            opacity: 0.5;
-        }
-
-        .sortable.asc::after {
-            content: '↑';
-            opacity: 1;
-        }
-
-        .sortable.desc::after {
-            content: '↓';
-            opacity: 1;
-        }
-
-        /* ==================== NAVIGATION MOBILE ==================== */
         .mobile-stock-nav {
             display: none;
             position: fixed;
@@ -1168,43 +618,24 @@
             width: 100%;
             background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             border-top: 1px solid var(--glass-border);
-            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
             z-index: 1000;
             padding: 0.5rem 1rem;
             justify-content: space-around;
-            align-items: center;
-            animation: slideInUp 0.3s ease;
-        }
-
-        @keyframes slideInUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
         }
 
         .mobile-stock-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             gap: 0.2rem;
             background: none;
             border: none;
             color: var(--gray-500);
             font-size: 0.7rem;
-            font-weight: 500;
             cursor: pointer;
             padding: 0.3rem 0.5rem;
             border-radius: var(--border-radius-md);
-            transition: all 0.2s ease;
-            flex: 1;
-            max-width: 70px;
-        }
-
-        .mobile-stock-item i {
-            font-size: 1.3rem;
-            transition: transform 0.2s ease;
         }
 
         .mobile-stock-item.active {
@@ -1212,229 +643,129 @@
             background: var(--primary-50);
         }
 
-        .mobile-stock-item.active i {
-            transform: translateY(-2px);
-        }
-
-        .mobile-stock-item:active {
-            background: var(--gray-200);
-            transform: scale(0.95);
-        }
-
-        .text-danger {
-            color: #ef4444 !important;
-        }
-
-        .text-success {
-            color: #10b981 !important;
-        }
-
-        .text-center {
-            text-align: center !important;
-        }
-
-        .mb-2 {
-            margin-bottom: 0.6rem;
-        }
-
-        .mt-2 {
-            margin-top: 0.6rem;
-        }
-
-        /* ==================== MEDIA QUERIES POUR MOBILE ==================== */
-        @media (max-width: 1024px) {
-            .summary-cards {
-                grid-template-columns: repeat(2, 1fr);
-            }
+        .mobile-stock-item i {
+            font-size: 1.3rem;
         }
 
         @media (max-width: 768px) {
-            body {
-                padding-bottom: 80px;
-            }
-
-            .dashboard-container {
-                padding: 0.8rem;
-            }
-            
-            .stock-sections {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
-            .stock-nav {
-                display: none;
-            }
-            
-            .mobile-stock-nav {
-                display: flex;
-            }
-            
-            .section-header {
-                flex-direction: column;
-                gap: 0.8rem;
-                align-items: stretch;
-            }
-            
-            .section-header div {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 0.5rem;
-            }
-            
-            .section-header .btn {
-                flex: 1;
-                justify-content: center;
-                font-size: 0.75rem;
-                padding: 0.5rem;
-            }
-            
-            .controls-panel {
-                flex-direction: row;
-                flex-wrap: wrap;
-                align-items: center;
-                gap: 0.5rem;
-                padding: 0.8rem;
-            }
-
-            .search-box {
-                flex: 1 1 100%;
-                min-width: 100%;
-                margin-bottom: 0.25rem;
-            }
-
-            .filters-group {
-                flex-direction: row;
-                flex-wrap: wrap;
-                justify-content: flex-start;
-                gap: 0.4rem;
-                width: 100%;
-            }
-
-            .filter-select {
-                min-width: calc(50% - 0.2rem);
-                flex: 1 1 auto;
-                font-size: 0.8rem;
-                padding: 0.5rem;
-            }
-
-            .items-per-page {
-                min-width: 100px;
-                flex: 0 1 auto;
-            }
-            
-            .summary-cards {
-                display: flex;
-                flex-direction: row;
-                flex-wrap: nowrap;
-                gap: 0.3rem;
-                overflow-x: auto;
-                padding-bottom: 0.25rem;
-                margin-bottom: 0.8rem;
-                -webkit-overflow-scrolling: touch;
-                scrollbar-width: thin;
-            }
-
-            .summary-card {
-                flex: 0 0 auto;
-                min-width: 120px;
-                padding: 0.6rem;
-            }
-
-            .summary-card div:first-child {
-                gap: 0.4rem;
-            }
-
-            .card-icon {
-                width: 28px;
-                height: 28px;
-                font-size: 0.8rem;
-            }
-
-            .summary-card div:first-child div div:first-child {
-                font-size: 0.7rem;
-            }
-
-            .summary-card div:first-child div div:last-child {
-                font-size: 1.2rem;
-            }
-            
-            .table-container {
-                max-height: 400px;
-            }
-            
-            .table-wrapper {
-                max-height: 300px;
-            }
-            
-            .stock-table {
-                min-width: 800px;
-                display: table;
-            }
-            
-            .header-left h1 {
-                font-size: 1.5rem;
-            }
-
-            .fab {
-                bottom: 90px;
-            }
-
-            .modal-content {
-                width: 95%;
-                max-width: 450px;
-            }
-
-            .modal-footer {
-                flex-direction: column-reverse;
-            }
-
-            .modal-footer .btn {
-                width: 100%;
-            }
-
-            .pagination-controls {
-                flex-wrap: wrap;
-                padding: 0.5rem;
-            }
-
-            .pagination-info {
-                width: 100%;
-                text-align: center;
-                margin: 0.3rem 0 0 0;
-            }
+            .stock-nav { display: none; }
+            .mobile-stock-nav { display: flex; }
+            .summary-cards { grid-template-columns: repeat(2, 1fr); }
+            .section-header { flex-direction: column; align-items: stretch; }
+            .stock-table { min-width: 800px; }
+            .xlarge-modal { width: 100%; height: 100vh; max-height: 100vh; border-radius: 0; }
         }
 
-        @media (max-width: 480px) {
-            .header {
-                padding: 0.6rem 0.8rem;
-            }
+        .back-btn {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            z-index: 1001;
+        }
+        
+        .back-btn .btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 25px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+        }
+        
+        .back-btn .btn i {
+            margin: 0;
+            font-size: 1.3rem;
+        }
 
-            .header-left h1 {
-                font-size: 1.2rem;
-            }
+        .progress-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
 
-            .profile-img {
-                width: 28px;
-                height: 28px;
-            }
+        .progress-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
 
-            .mobile-stock-item {
-                font-size: 0.6rem;
-            }
+        .progress-modal {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            min-width: 300px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            animation: slideUp 0.3s ease;
+        }
 
-            .mobile-stock-item i {
-                font-size: 1.2rem;
-            }
+        .progress-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 1rem;
+        }
 
-            .summary-card {
-                min-width: 100px;
-                padding: 0.5rem;
-            }
+        .progress-spinner {
+            font-size: 2.5rem;
+            color: #3b82f6;
+        }
 
-            .summary-card div:first-child div div:last-child {
-                font-size: 1rem;
-            }
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 0.8rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .sortable {
+            cursor: pointer;
+        }
+
+        .sortable::after {
+            content: ' ↕';
+            font-size: 0.75em;
+            opacity: 0.5;
+        }
+
+        .fab {
+            position: fixed;
+            bottom: 5rem;
+            right: 1.5rem;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+            z-index: 100;
+            transition: all 0.3s ease;
         }
     </style>
 </head>
@@ -1444,815 +775,748 @@
 
     <div class="dashboard-container">
         <header class="header">
-            <div class="header-left"><h1>Inventory</h1></div>
-            <div class="header-actions">
-                <button class="theme-toggle" id="themeToggle" aria-label="Basculer le mode sombre"><i class="fas fa-moon"></i></button>
-                <div class="user-info">
-                    <span id="username-display">Admin</span>
-                    <img src="https://ui-avatars.com/api/?name=Admin&background=6366f1&color=fff" alt="Profil" class="profile-img">
-                </div>
+            <div class="header-left"><h1>Stock Manager</h1></div>
+            <div class="user-info">
+                <span id="username-display">Admin</span>
+                <img src="https://ui-avatars.com/api/?name=Admin&background=6366f1&color=fff" alt="Profil" class="profile-img">
             </div>
         </header>
 
         <div class="back-btn">
-            <button class="btn btn-primary" onclick="goBack()"><i class="fas fa-arrow-left"></i><span>Retour</span></button>
+            <button class="btn btn-primary" onclick="goBack()"><i class="fas fa-arrow-left"></i></button>
         </div>
 
         <div class="stock-sections">
-            <!-- Navigation latérale — générée dynamiquement -->
             <nav class="stock-nav" id="stock-nav">
                 <h3 class="nav-title">Agences</h3>
-                <div id="nav-buttons">
-                    <div class="nav-skeleton">
-                        <div class="nav-skeleton-item skeleton"></div>
-                        <div class="nav-skeleton-item skeleton"></div>
-                        <div class="nav-skeleton-item skeleton"></div>
-                    </div>
-                </div>
+                <div id="nav-buttons"></div>
             </nav>
 
-            <!-- Zone de contenu — générée dynamiquement -->
-            <div class="content-area" id="content-area">
-                <div class="global-loading">
-                    <div class="spinner-border"></div>
-                    <div>Chargement des agences...</div>
-                </div>
-            </div>
+            <div class="content-area" id="content-area"></div>
         </div>
     </div>
 
-    <!-- Navigation mobile — générée dynamiquement -->
     <nav class="mobile-stock-nav" id="mobile-stock-nav"></nav>
-
     <div id="modal-container"></div>
 
     <script>
-    // ==================== CONFIG ====================
-    const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbwdzHJGAL16KV_OnyoCIs5I7im2yNxrbEaEIbykQ8hy6ewQjJFQ0G4TfqYWWCMc7vfW/exec';
+        const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbwdzHJGAL16KV_OnyoCIs5I7im2yNxrbEaEIbykQ8hy6ewQjJFQ0G4TfqYWWCMc7vfW/exec';
 
-    // ==================== STATE ====================
-    let agencies = [];      // [{ value, label }] — chargé dynamiquement
-    let stockData = {};     // { [agenceId]: { allData:[], filteredData:[] } }
-    let currentPage = {};
-    let itemsPerPage = {};
-    let sortState = {};
-    let toastId = 0;
+        let agencies = [];
+        let stockData = {};
+        let currentAgency = null;
+        let toastId = 0;
+        let pendingSourceAgenceId = null;
+        let progressInterval = null;
 
-    // ==================== INIT ====================
-    document.addEventListener('DOMContentLoaded', () => {
-        initTheme();
-        window.addEventListener('scroll', handleScroll);
-        loadAgencies();
-    });
-
-    // ==================== CHARGEMENT AGENCES (dynamique) ====================
-    async function loadAgencies() {
-        try {
-            const res = await fetch(`${API_BASE_URL}?action=getCategories`);
-            const json = await res.json();
-            if (!json.success || !json.data?.categories?.length) throw new Error('Réponse invalide');
-
-            agencies = json.data.categories; // [{ value, label }]
-            initState();
-            buildUI();
-            showSection(agencies[0].value);
-            loadAgenceStock(agencies[0].value);
-
-        } catch (err) {
-            console.error('Erreur chargement agences:', err);
-            document.getElementById('content-area').innerHTML = `
-                <div style="padding:2rem;text-align:center;">
-                    <i class="fas fa-exclamation-triangle" style="font-size:2rem;color:#ef4444;margin-bottom:1rem;display:block;"></i>
-                    <div style="margin-bottom:1rem;">Impossible de charger les agences.<br><small style="color:var(--gray-500);">${err.message}</small></div>
-                    <button class="btn btn-primary" onclick="loadAgencies()"><i class="fas fa-sync-alt"></i> Réessayer</button>
-                </div>`;
-            document.getElementById('nav-buttons').innerHTML =
-                `<div style="color:#ef4444;font-size:.85rem;padding:.5rem;">Erreur de chargement</div>`;
-        }
-    }
-
-    function initState() {
-        agencies.forEach(({ value }) => {
-            stockData[value] = { allData: [], filteredData: [] };
-            currentPage[value] = 1;
-            itemsPerPage[value] = 10;
-            sortState[value] = { column: 'Date', direction: 'desc' };
+        document.addEventListener('DOMContentLoaded', () => {
+            window.addEventListener('scroll', handleScroll);
+            loadAgencies();
         });
-    }
 
-    // ==================== CONSTRUCTION UI ====================
-    function buildUI() {
-        buildSideNav();
-        buildMobileNav();
-        buildSections();
-    }
+        async function loadAgencies() {
+            try {
+                const res = await fetch(`${API_BASE_URL}?action=getCategories`);
+                const json = await res.json();
+                if (!json.success || !json.data?.categories?.length) throw new Error('Réponse invalide');
 
-    function buildSideNav() {
-        document.getElementById('nav-buttons').innerHTML = agencies.map(({ value, label }, i) => `
-            <button class="nav-btn ${i === 0 ? 'active' : ''}" id="nav-btn-${value}" onclick="showSection('${value}')">
-                <i class="fas fa-warehouse"></i>
-                <span>${label}</span>
-            </button>`).join('');
-    }
-
-    function buildMobileNav() {
-        document.getElementById('mobile-stock-nav').innerHTML = agencies.map(({ value, label }, i) => `
-            <button class="mobile-stock-item ${i === 0 ? 'active' : ''}" id="mobile-nav-${value}" onclick="showSection('${value}')">
-                <i class="fas fa-warehouse"></i>
-                <span>${label}</span>
-            </button>`).join('');
-    }
-
-    function buildSections() {
-        document.getElementById('content-area').innerHTML = agencies.map(({ value, label }, i) => `
-            <div id="section-${value}" class="section-content ${i === 0 ? 'active' : ''}">
-                <div class="section-header">
-                    <h2 class="section-title">Agence ${label}</h2>
-                    <div>
-                        <button class="btn btn-primary" onclick="demarrerInventaire('${value}')">
-                            <i class="fas fa-clipboard-list"></i> Faire l'inventaire
-                        </button>
-                        <button class="btn btn-primary" onclick="exportStockData('${value}')">
-                            <i class="fas fa-file-export"></i> Exporter
-                        </button>
-                        <button class="btn btn-secondary" onclick="refreshStockData('${value}')">
-                            <i class="fas fa-sync-alt"></i> Actualiser
-                        </button>
-                    </div>
-                </div>
-
-                <div class="controls-panel">
-                    <div class="search-box">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="search-${value}" placeholder="Rechercher par référence, catégorie..." onkeyup="applyStockFilter('${value}')">
-                    </div>
-                    <div>
-                        <select class="filter-select" id="filter-category-${value}" onchange="applyStockFilter('${value}')">
-                            <option value="">Toutes les catégories</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="summary-cards">
-                    ${buildSummaryCard('total-products-'+value,'#3b82f6','#60a5fa','fa-box','Total Produits')}
-                    ${buildSummaryCard('total-stock-'+value,'#10b981','#34d399','fa-cubes','Stock Total')}
-                    ${buildSummaryCard('total-categories-'+value,'#f59e0b','#fbbf24','fa-tag','Catégories')}
-                </div>
-
-                <div class="table-container">
-                    <div class="table-wrapper">
-                        <div id="skeleton-${value}" class="table-skeleton" style="display:none;">
-                            ${buildSkeletonRows(3)}
-                        </div>
-                        <table class="stock-table" id="stock-table-${value}">
-                            <thead id="stock-header-${value}"></thead>
-                            <tbody id="stock-data-${value}">
-                                <tr><td colspan="12" class="text-center">
-                                    <div class="loading-indicator">
-                                        <div class="spinner-border"></div>
-                                        <div>Chargement des produits...</div>
-                                    </div>
-                                </td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div id="pagination-${value}" class="pagination-controls" style="display:none;"></div>
-                </div>
-
-                <div id="message-${value}" class="alert-message" style="display:none;"></div>
-            </div>`).join('');
-    }
-
-    function buildSummaryCard(id, c1, c2, icon, label) {
-        return `
-        <div class="summary-card">
-            <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem;">
-                <div class="card-icon" style="background:linear-gradient(135deg,${c1},${c2});">
-                    <i class="fas ${icon}"></i>
-                </div>
-                <div>
-                    <div style="font-size:.875rem;color:var(--gray-500);font-weight:500;">${label}</div>
-                    <div id="${id}" style="font-size:1.5rem;font-weight:700;color:${c1};">0</div>
-                </div>
-            </div>
-        </div>`;
-    }
-
-    function buildSkeletonRows(n) {
-        return Array.from({length:n}, () => `
-            <div class="table-skeleton-row">
-                <div class="table-skeleton-cell skeleton"></div>
-                <div class="table-skeleton-cell medium skeleton"></div>
-                <div class="table-skeleton-cell short skeleton"></div>
-                <div class="table-skeleton-cell short skeleton"></div>
-                <div class="table-skeleton-cell medium skeleton"></div>
-            </div>`).join('');
-    }
-
-    // ==================== NAVIGATION ====================
-    function showSection(agenceId) {
-        agencies.forEach(({ value }) => {
-            document.getElementById(`section-${value}`)?.classList.remove('active');
-            document.getElementById(`nav-btn-${value}`)?.classList.remove('active');
-            document.getElementById(`mobile-nav-${value}`)?.classList.remove('active');
-        });
-        document.getElementById(`section-${agenceId}`)?.classList.add('active');
-        document.getElementById(`nav-btn-${agenceId}`)?.classList.add('active');
-        document.getElementById(`mobile-nav-${agenceId}`)?.classList.add('active');
-
-        // Lazy-load si pas encore chargé
-        if (!stockData[agenceId]?.allData.length) loadAgenceStock(agenceId);
-
-        if (window.innerWidth <= 768) {
-            setTimeout(() => document.querySelector(`#section-${agenceId} .section-header`)?.scrollIntoView({behavior:'smooth',block:'start'}), 100);
-        }
-    }
-
-    // ==================== CHARGEMENT DONNÉES ====================
-    async function loadAgenceStock(agenceId) {
-        const agency = agencies.find(a => a.value === agenceId);
-        if (!agency) return;
-        showTableSkeleton(agenceId);
-
-        try {
-            // Convention : stockagence1, stockagence2... basé sur l'index dans le tableau agencies
-            const idx = agencies.findIndex(a => a.value === agenceId) + 1;
-            const res = await fetch(`${API_BASE_URL}?action=stockagence${idx}`);
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
-            const json = await res.json();
-
-            if (!json?.data?.rows || !json?.data?.headers) throw new Error('Structure de données invalide');
-
-            stockData[agenceId].allData = json.data.rows.map(row => {
-                const item = {};
-                json.data.headers.forEach((h, i) => {
-                    const key = h.trim();
-                    let val = row[i] ?? '';
-                    if (['Stock','Prix','Conso','Stock de depart'].some(k => key.includes(k)))
-                        val = parseFloat(val) || 0;
-                    item[key] = val;
+                agencies = json.data.categories;
+                
+                agencies.forEach(({ value }) => {
+                    stockData[value] = { allData: [], filteredData: [] };
                 });
-                item['Agence'] = agency.label;
-                return item;
-            });
-
-            // Tri par date décroissante par défaut
-            stockData[agenceId].allData.sort((a, b) =>
-                new Date(b['Date'] || 0) - new Date(a['Date'] || 0));
-            stockData[agenceId].filteredData = [...stockData[agenceId].allData];
-
-            hideTableSkeleton(agenceId);
-            generateTableHeaders(agenceId);
-            populateFilters(agenceId);
-            updateSummaryCards(agenceId);
-            applySort(agenceId);
-            updateTableDisplay(agenceId);
-            showToast(`${stockData[agenceId].allData.length} produits chargés pour ${agency.label}`, 'success');
-
-        } catch (err) {
-            console.error(`Erreur ${agenceId}:`, err);
-            hideTableSkeleton(agenceId);
-            document.getElementById(`stock-data-${agenceId}`).innerHTML = `
-                <tr><td colspan="12">
-                    <div style="border:2px dashed #ef4444;padding:1.5rem;border-radius:var(--br-md);text-align:center;">
-                        <i class="fas fa-exclamation-triangle" style="font-size:2rem;color:#ef4444;margin-bottom:1rem;display:block;"></i>
-                        <div style="margin-bottom:1rem;">Erreur : ${err.message}</div>
-                        <button class="btn btn-primary" onclick="loadAgenceStock('${agenceId}')">Réessayer</button>
-                    </div>
-                </td></tr>`;
-            showToast(`Erreur chargement ${agency.label}`, 'error');
-        }
-    }
-
-    // ==================== TABLE ====================
-    function generateTableHeaders(agenceId) {
-        const data = stockData[agenceId].allData;
-        const thead = document.getElementById(`stock-header-${agenceId}`);
-        if (!data[0] || !thead) return;
-        const headers = Object.keys(data[0]).filter(h => h !== 'User' && h !== 'Agence');
-        thead.innerHTML = '<tr>' + headers.map(h => {
-            const cls = (h.includes('Prix') || h.includes('Stock')) ? 'text-end' : '';
-            return `<th class="sortable ${cls}" onclick="sortTable('${agenceId}','${h}')">${h}</th>`;
-        }).join('') + '</tr>';
-        updateSortIndicators(agenceId);
-    }
-
-    function populateFilters(agenceId) {
-        const sel = document.getElementById(`filter-category-${agenceId}`);
-        if (!sel) return;
-        const cats = [...new Set(stockData[agenceId].allData.map(d => d['Catégorie']).filter(Boolean))].sort();
-        sel.innerHTML = '<option value="">Toutes les catégories</option>' +
-            cats.map(c => `<option value="${c}">${c}</option>`).join('');
-    }
-
-    function updateSummaryCards(agenceId) {
-        const data = stockData[agenceId].allData;
-        const totalStock = data.reduce((s, d) => s + (parseFloat(d['Stock Physique']) || 0), 0);
-        const totalCats = new Set(data.map(d => d['Catégorie']).filter(Boolean)).size;
-        animateValue(`total-products-${agenceId}`, 0, data.length, 500);
-        animateValue(`total-stock-${agenceId}`, 0, totalStock, 500);
-        animateValue(`total-categories-${agenceId}`, 0, totalCats, 500);
-    }
-
-    function displayStockData(agenceId, data) {
-        const tbody = document.getElementById(`stock-data-${agenceId}`);
-        if (!data?.length) { tbody.innerHTML = '<tr><td colspan="12" class="no-data">Aucun produit trouvé</td></tr>'; return; }
-        const headers = Object.keys(stockData[agenceId].allData[0] || {}).filter(h => h !== 'User' && h !== 'Agence');
-        tbody.innerHTML = data.map((item, i) => `
-            <tr style="animation-delay:${i*.02}s">
-                ${headers.map(h => {
-                    const v = item[h] ?? '';
-                    if (h === 'Date') return `<td>${formatDate(v)}</td>`;
-                    if (h.includes('Prix')) return `<td class="text-end">${formatCurrency(v)}</td>`;
-                    if (h.includes('Stock')) return `<td class="text-end">${v}</td>`;
-                    return `<td>${v}</td>`;
-                }).join('')}
-            </tr>`).join('');
-    }
-
-    // ==================== FILTRES / TRI / PAGINATION ====================
-    function applyStockFilter(agenceId) {
-        const term = (document.getElementById(`search-${agenceId}`)?.value || '').toLowerCase().trim();
-        const cat  = document.getElementById(`filter-category-${agenceId}`)?.value || '';
-        let filtered = stockData[agenceId].allData;
-        if (term) filtered = filtered.filter(d =>
-            (d['Référence']||'').toString().toLowerCase().includes(term) ||
-            (d['Catégorie']||'').toString().toLowerCase().includes(term));
-        if (cat) filtered = filtered.filter(d => d['Catégorie'] === cat);
-        stockData[agenceId].filteredData = filtered;
-        applySort(agenceId);
-        currentPage[agenceId] = 1;
-        updateTableDisplay(agenceId);
-    }
-
-    function sortTable(agenceId, column) {
-        const s = sortState[agenceId];
-        s.direction = s.column === column ? (s.direction === 'asc' ? 'desc' : 'asc') : 'asc';
-        s.column = column;
-        updateSortIndicators(agenceId);
-        applySort(agenceId);
-        currentPage[agenceId] = 1;
-        updateTableDisplay(agenceId);
-    }
-
-    function applySort(agenceId) {
-        const { column, direction } = sortState[agenceId];
-        const data = stockData[agenceId].filteredData.length
-            ? stockData[agenceId].filteredData : stockData[agenceId].allData;
-        data.sort((a, b) => {
-            let va = a[column], vb = b[column];
-            if (column.includes('Date')) { va = new Date(va); vb = new Date(vb); }
-            if (typeof va === 'string') va = va.toLowerCase();
-            if (typeof vb === 'string') vb = vb.toLowerCase();
-            return direction === 'asc' ? (va < vb ? -1 : va > vb ? 1 : 0) : (va > vb ? -1 : va < vb ? 1 : 0);
-        });
-        stockData[agenceId].filteredData = data;
-    }
-
-    function updateSortIndicators(agenceId) {
-        const table = document.getElementById(`stock-table-${agenceId}`);
-        if (!table) return;
-        const { column, direction } = sortState[agenceId];
-        table.querySelectorAll('th.sortable').forEach(th => {
-            th.classList.remove('asc', 'desc');
-            if (th.textContent.replace(/[↕↑↓]/g,'').trim() === column) th.classList.add(direction);
-        });
-    }
-
-    function getCurrentData(agenceId) {
-        return stockData[agenceId].filteredData.length
-            ? stockData[agenceId].filteredData : stockData[agenceId].allData;
-    }
-
-    function getPaginatedData(agenceId) {
-        const data = getCurrentData(agenceId);
-        const start = (currentPage[agenceId] - 1) * itemsPerPage[agenceId];
-        return data.slice(start, start + itemsPerPage[agenceId]);
-    }
-
-    function updateTableDisplay(agenceId) {
-        displayStockData(agenceId, getPaginatedData(agenceId));
-        updatePagination(agenceId);
-    }
-
-    function updatePagination(agenceId) {
-        const total = getCurrentData(agenceId).length;
-        const totalPages = Math.ceil(total / itemsPerPage[agenceId]);
-        const pagDiv = document.getElementById(`pagination-${agenceId}`);
-        if (!pagDiv) return;
-        if (totalPages <= 1) { pagDiv.style.display = 'none'; return; }
-
-        const cur = currentPage[agenceId];
-        const maxVis = 5;
-        let s = Math.max(1, cur - Math.floor(maxVis/2));
-        let e = Math.min(totalPages, s + maxVis - 1);
-        if (e - s + 1 < maxVis) s = Math.max(1, e - maxVis + 1);
-
-        let html = `<button class="pagination-btn" onclick="changePage('${agenceId}',${cur-1})" ${cur===1?'disabled':''}><i class="fas fa-chevron-left"></i></button>`;
-        if (s > 1) { html += `<button class="pagination-btn" onclick="changePage('${agenceId}',1)">1</button>`; if (s > 2) html += `<span style="margin:0 .3rem;color:var(--gray-500);">…</span>`; }
-        for (let i = s; i <= e; i++) html += `<button class="pagination-btn ${i===cur?'active':''}" onclick="changePage('${agenceId}',${i})">${i}</button>`;
-        if (e < totalPages) { if (e < totalPages-1) html += `<span style="margin:0 .3rem;color:var(--gray-500);">…</span>`; html += `<button class="pagination-btn" onclick="changePage('${agenceId}',${totalPages})">${totalPages}</button>`; }
-        html += `<button class="pagination-btn" onclick="changePage('${agenceId}',${cur+1})" ${cur===totalPages?'disabled':''}><i class="fas fa-chevron-right"></i></button>`;
-
-        const si = (cur-1)*itemsPerPage[agenceId]+1;
-        const ei = Math.min(cur*itemsPerPage[agenceId], total);
-        html += `<span class="pagination-info">${si}-${ei} sur ${total}</span>`;
-        pagDiv.style.display = 'flex';
-        pagDiv.innerHTML = html;
-    }
-
-    function changePage(agenceId, page) {
-        const totalPages = Math.ceil(getCurrentData(agenceId).length / itemsPerPage[agenceId]);
-        if (page < 1 || page > totalPages) return;
-        currentPage[agenceId] = page;
-        updateTableDisplay(agenceId);
-        document.querySelector(`#section-${agenceId} .table-container`)?.scrollIntoView({behavior:'smooth',block:'start'});
-    }
-
-    // ==================== SKELETON ====================
-    function showTableSkeleton(id) {
-        const sk = document.getElementById(`skeleton-${id}`);
-        const tb = document.getElementById(`stock-table-${id}`);
-        if (sk) sk.style.display = 'block';
-        if (tb) tb.style.display = 'none';
-    }
-    function hideTableSkeleton(id) {
-        const sk = document.getElementById(`skeleton-${id}`);
-        const tb = document.getElementById(`stock-table-${id}`);
-        if (sk) sk.style.display = 'none';
-        if (tb) tb.style.display = 'table';
-    }
-
-    // ==================== EXPORT ====================
-    function exportStockData(agenceId) {
-        const agency = agencies.find(a => a.value === agenceId);
-        const data = getCurrentData(agenceId);
-        if (!data.length) { showMessage('Aucune donnée à exporter','warning',agenceId); return; }
-        const headers = Object.keys(stockData[agenceId].allData[0]||{}).filter(h => h !== 'User' && h !== 'Agence');
-        const csv = [headers.join(','), ...data.map(row =>
-            headers.map(h => {
-                let c = row[h] ?? '';
-                if (typeof c === 'string') { c = c.replace(/"/g,'""'); if (/[,\n"]/.test(c)) c = `"${c}"`; }
-                return c;
-            }).join(','))].join('\n');
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
-        a.download = `stock_${agency?.label||agenceId}_${new Date().toISOString().split('T')[0]}.csv`;
-        a.style.display = 'none';
-        document.body.appendChild(a); a.click(); document.body.removeChild(a);
-        showMessage(`Export CSV généré pour ${agency?.label}`,'success',agenceId);
-    }
-
-    function refreshStockData(agenceId) {
-        stockData[agenceId] = { allData:[], filteredData:[] };
-        loadAgenceStock(agenceId);
-    }
-
-    // ==================== INVENTAIRE ====================
-    function demarrerInventaire(agenceId) { openCodeVerificationDialog(agenceId); }
-
-    function openCodeVerificationDialog(agenceId) {
-        const agency = agencies.find(a => a.value === agenceId);
-        document.getElementById('modal-container').innerHTML = `
-        <div class="modal-overlay active" id="codeVerificationModal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title"><i class="fas fa-shield-alt" style="color:var(--primary-500);margin-right:.5rem;"></i>Accès Inventaire — ${agency?.label}</h3>
-                    <button class="modal-close" onclick="fermerCodeDialog()"><i class="fas fa-times"></i></button>
-                </div>
-                <div class="modal-body">
-                    <div class="alert-message alert-info" style="margin-bottom:1.5rem;">
-                        <i class="fas fa-exclamation-triangle"></i> Accès sécurisé. Un code a été envoyé par email.
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Code de vérification à 6 chiffres :</label>
-                        <input type="text" class="form-control" id="codeInput" maxlength="6" placeholder="000000" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,6)">
-                        <div style="font-size:.875rem;color:var(--gray-500);margin-top:.5rem;">Code reçu par email</div>
-                        <input type="hidden" id="agenceInventaire" value="${agenceId}">
-                    </div>
-                    <div id="codeMessage" class="alert-message" style="display:none;"></div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-primary" onclick="verifierCodeAcces()" id="btnVerifierCode"><i class="fas fa-check"></i> Vérifier</button>
-                    <button class="btn btn-secondary" onclick="regenererCode()"><i class="fas fa-sync-alt"></i> Renvoyer</button>
-                </div>
-            </div>
-        </div>`;
-        setTimeout(() => document.getElementById('codeInput')?.focus(), 100);
-        regenererCode();
-    }
-
-    function fermerCodeDialog() { document.getElementById('codeVerificationModal')?.remove(); }
-
-    async function regenererCode() {
-        const btn = document.getElementById('btnVerifierCode');
-        if (btn) { btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Génération...'; }
-        const msg = document.getElementById('codeMessage');
-        if (msg) msg.style.display = 'none';
-        try {
-            await fetch(`${API_BASE_URL}?action=accesinventaire`,{method:'GET',mode:'no-cors'});
-            showCodeMessage('✅ Nouveau code envoyé par email !','success');
-            const inp = document.getElementById('codeInput');
-            if (inp) { inp.value=''; inp.focus(); }
-        } catch { showCodeMessage('❌ Erreur lors de la génération','error'); }
-        finally {
-            if (btn) { btn.disabled=false; btn.innerHTML='<i class="fas fa-check"></i> Vérifier'; }
-        }
-    }
-
-    async function verifierCodeAcces() {
-        const code = document.getElementById('codeInput')?.value.trim();
-        const agenceId = document.getElementById('agenceInventaire')?.value;
-        if (!code || code.length !== 6) { showCodeMessage('❌ Code à 6 chiffres requis','error'); return; }
-        const btn = document.getElementById('btnVerifierCode');
-        btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Vérification...';
-        try {
-            await fetch(`${API_BASE_URL}?action=codeaccess&code=${code}`,{method:'GET',mode:'no-cors'});
-            setTimeout(() => {
-                btn.disabled=false; btn.innerHTML='<i class="fas fa-check"></i> Vérifier';
-                if (/^\d{6}$/.test(code)) {
-                    showCodeMessage('✅ Code vérifié ! Ouverture...','success');
-                    setTimeout(() => { fermerCodeDialog(); openInventaireUpdate(agenceId); }, 1500);
-                } else {
-                    showCodeMessage('❌ Code incorrect.','error');
-                    document.getElementById('codeInput')?.select();
+                
+                buildUI();
+                if (agencies.length > 0) {
+                    currentAgency = agencies[0].value;
+                    showSection(currentAgency);
+                    loadAgenceStock(currentAgency);
                 }
-            }, 1000);
-        } catch {
-            showCodeMessage('❌ Erreur de vérification','error');
-            btn.disabled=false; btn.innerHTML='<i class="fas fa-check"></i> Vérifier';
+            } catch (err) {
+                console.error('Erreur chargement agences:', err);
+                document.getElementById('content-area').innerHTML = `
+                    <div style="padding:2rem;text-align:center;">
+                        <i class="fas fa-exclamation-triangle" style="font-size:2rem;color:#ef4444;"></i>
+                        <div>Impossible de charger les agences.</div>
+                        <button class="btn btn-primary" onclick="loadAgencies()">Réessayer</button>
+                    </div>`;
+            }
         }
-    }
 
-    function showCodeMessage(msg, type) {
-        const d = document.getElementById('codeMessage');
-        if (d) { d.textContent=msg; d.className=`alert-message alert-${type}`; d.style.display='flex'; }
-    }
+        function buildUI() {
+            buildSideNav();
+            buildMobileNav();
+            buildSections();
+        }
 
-    function openInventaireUpdate(agenceId) {
-        const agency = agencies.find(a => a.value === agenceId);
-        const data = stockData[agenceId].allData;
-        if (!data?.length) { showToast(`Aucune donnée pour ${agency?.label}`,'error'); return; }
+        function buildSideNav() {
+            const navButtons = document.getElementById('nav-buttons');
+            navButtons.innerHTML = agencies.map(({ value, label }, i) => `
+                <button id="nav-btn-${value}" class="nav-btn ${i === 0 ? 'active' : ''}" onclick="showSection('${value}')">
+                    <i class="fas fa-warehouse"></i>
+                    <span>${label}</span>
+                </button>
+            `).join('');
+        }
 
-        document.getElementById('modal-container').innerHTML = `
-        <div class="modal-overlay active" id="inventaireModal">
-            <div class="modal-content xlarge-modal">
-                <div class="modal-header">
-                    <h3 class="modal-title"><i class="fas fa-clipboard-list" style="color:var(--primary-500);margin-right:.5rem;"></i>Inventaire — ${agency?.label}</h3>
-                    <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
-                </div>
-                <div class="modal-body">
-                    <div class="alert-message alert-info" style="margin-bottom:1rem;">
-                        <i class="fas fa-info-circle"></i> Mettez à jour les quantités pour ${agency?.label}.
+        function buildMobileNav() {
+            const mobileNav = document.getElementById('mobile-stock-nav');
+            mobileNav.innerHTML = agencies.map(({ value, label }, i) => `
+                <button id="mobile-nav-${value}" class="mobile-stock-item ${i === 0 ? 'active' : ''}" onclick="showSection('${value}')">
+                    <i class="fas fa-warehouse"></i>
+                    <span>${label}</span>
+                </button>
+            `).join('');
+        }
+
+        function buildSections() {
+            document.getElementById('content-area').innerHTML = agencies.map(({ value, label }, i) => `
+                <div id="section-${value}" class="section-content ${i === 0 ? 'active' : ''}">
+                    <div class="section-header">
+                        <h2 class="section-title">Agence ${label}</h2>
+                        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                            <button class="btn btn-primary" onclick="demarrerInventaire('${value}')">
+                                <i class="fas fa-clipboard-list"></i> Inventaire
+                            </button>
+                            <button class="btn btn-warning" onclick="openTransferCodeVerification('${value}')">
+                                <i class="fas fa-exchange-alt"></i> Transférer vers
+                            </button>
+                            <button class="btn btn-secondary" onclick="refreshStockData('${value}')">
+                                <i class="fas fa-sync-alt"></i> Actualiser
+                            </button>
+                        </div>
                     </div>
-                    <div class="search-box" style="margin-bottom:1rem;">
-                        <i class="fas fa-search"></i>
-                        <input type="text" class="form-control" id="searchReference" placeholder="Rechercher une référence..." autocomplete="off" onkeyup="filterProducts()">
+
+                    <div class="controls-panel">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="search-${value}" placeholder="Rechercher par référence..." onkeyup="applyStockFilter('${value}')">
+                        </div>
+                        <div>
+                            <select class="filter-select" id="filter-category-${value}" onchange="applyStockFilter('${value}')">
+                                <option value="">Toutes les catégories</option>
+                            </select>
+                        </div>
                     </div>
+
+                    <div class="summary-cards">
+                        <div class="summary-card">
+                            <div style="display:flex;align-items:center;gap:.75rem;">
+                                <div class="card-icon" style="background:linear-gradient(135deg,#3b82f6,#60a5fa);"><i class="fas fa-box"></i></div>
+                                <div><div style="font-size:.875rem;color:var(--gray-500);">Total Produits</div><div id="total-products-${value}" style="font-size:1.5rem;font-weight:700;color:#3b82f6;">0</div></div>
+                            </div>
+                        </div>
+                        <div class="summary-card">
+                            <div style="display:flex;align-items:center;gap:.75rem;">
+                                <div class="card-icon" style="background:linear-gradient(135deg,#10b981,#34d399);"><i class="fas fa-cubes"></i></div>
+                                <div><div style="font-size:.875rem;color:var(--gray-500);">Stock Total</div><div id="total-stock-${value}" style="font-size:1.5rem;font-weight:700;color:#10b981;">0</div></div>
+                            </div>
+                        </div>
+                        <div class="summary-card">
+                            <div style="display:flex;align-items:center;gap:.75rem;">
+                                <div class="card-icon" style="background:linear-gradient(135deg,#f59e0b,#fbbf24);"><i class="fas fa-tag"></i></div>
+                                <div><div style="font-size:.875rem;color:var(--gray-500);">Catégories</div><div id="total-categories-${value}" style="font-size:1.5rem;font-weight:700;color:#f59e0b;">0</div></div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="table-container">
                         <div class="table-wrapper">
-                            <table class="stock-table" id="inventaireTable">
-                                <thead>
-                                    <tr>
-                                        <th>Date</th><th>Catégorie</th><th>Référence</th>
-                                        <th class="text-end">Stock départ</th><th class="text-end">Prix vente</th>
-                                        <th class="text-end">Stock Physique</th><th class="text-end">Nouveau Stock</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="inventaireData">
-                                    ${data.map(item => {
-                                        const ref = item['Référence'] || '';
-                                        return `
-                                        <tr class="product-row" data-reference="${String(ref).toLowerCase()}">
-                                            <td>${formatDate(item['Date']||'')}</td>
-                                            <td>${item['Catégorie']||''}</td>
-                                            <td class="reference-cell">${ref}</td>
-                                            <td class="text-end">${item['Stock de depart']||0}</td>
-                                            <td class="text-end">${formatCurrency(item['Prix de vente']||0)}</td>
-                                            <td class="text-end stock-actuel">${item['Stock Physique']||0}</td>
-                                            <td>
-                                                <input type="number" class="form-control nouvelle-quantite"
-                                                    data-reference="${ref}"
-                                                    data-categorie="${item['Catégorie']||''}"
-                                                    data-prix="${item['Prix de vente']||0}"
-                                                    data-stockdepart="${item['Stock de depart']||0}"
-                                                    min="0" value="" placeholder="Qté" style="width:100px;">
-                                            </td>
-                                        </tr>`;
-                                    }).join('')}
+                            <table class="stock-table" id="stock-table-${value}">
+                                <thead id="stock-header-${value}"></thead>
+                                <tbody id="stock-data-${value}">
+                                    <tr><td colspan="12"><div class="loading-indicator"><div class="spinner-border"></div><div>Chargement...</div></div><\/td><\/tr>
                                 </tbody>
-                            </table>
+                            <\/table>
                         </div>
                     </div>
-                    <input type="hidden" id="agenceInventaireUpdate" value="${agenceId}">
-                    <div id="inventaire-progress" style="display:none;margin-top:1rem;">
-                        <div class="progress-bar"><div class="progress-fill" id="progressBar" style="width:0%;"></div></div>
-                        <div id="progress-text" style="text-align:center;font-size:.875rem;color:var(--gray-600);margin-top:.5rem;"></div>
-                    </div>
-                    <div id="inventaire-message" class="alert-message" style="display:none;"></div>
                 </div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" onclick="imprimerInventairePDF('${agenceId}')"><i class="fas fa-print"></i> Imprimer PDF</button>
-                    <button class="btn btn-success" onclick="validerMiseAJourInventaire()" id="btnValiderInventaire"><i class="fas fa-check"></i> Valider</button>
-                    <button class="btn btn-secondary" onclick="closeModal()"><i class="fas fa-times"></i> Fermer</button>
-                </div>
-            </div>
-        </div>`;
-        setTimeout(() => document.getElementById('searchReference')?.focus(), 100);
-    }
+            `).join('');
+        }
 
-    function filterProducts() {
-        const term = (document.getElementById('searchReference')?.value || '').toLowerCase().trim();
-        document.querySelectorAll('#inventaireData .product-row').forEach(row => {
-            const ref = row.getAttribute('data-reference') || '';
-            const show = !term || ref.includes(term);
-            row.style.display = show ? '' : 'none';
-            if (show && term) {
-                const cell = row.querySelector('.reference-cell');
-                if (cell) {
-                    const orig = cell.textContent;
-                    try {
-                        const rx = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
-                        cell.innerHTML = orig.replace(rx, '<mark style="background:#f59e0b;color:white;padding:2px 4px;border-radius:3px;">$1</mark>');
-                    } catch { cell.textContent = orig; }
-                }
-            }
-        });
-    }
+        function showSection(agenceId) {
+            agencies.forEach(({ value }) => {
+                const section = document.getElementById(`section-${value}`);
+                if (section) section.classList.remove('active');
+                const navBtn = document.getElementById(`nav-btn-${value}`);
+                if (navBtn) navBtn.classList.remove('active');
+                const mobileBtn = document.getElementById(`mobile-nav-${value}`);
+                if (mobileBtn) mobileBtn.classList.remove('active');
+            });
+            
+            const activeSection = document.getElementById(`section-${agenceId}`);
+            if (activeSection) activeSection.classList.add('active');
+            const activeNavBtn = document.getElementById(`nav-btn-${agenceId}`);
+            if (activeNavBtn) activeNavBtn.classList.add('active');
+            const activeMobileBtn = document.getElementById(`mobile-nav-${agenceId}`);
+            if (activeMobileBtn) activeMobileBtn.classList.add('active');
+            
+            currentAgency = agenceId;
+            if (!stockData[agenceId]?.allData.length) loadAgenceStock(agenceId);
+        }
 
-    async function validerMiseAJourInventaire() {
-        const agenceId = document.getElementById('agenceInventaireUpdate')?.value;
-        const agency = agencies.find(a => a.value === agenceId);
-        const username = localStorage.getItem('username') || 'Admin';
-        const modifications = [];
+        async function loadAgenceStock(agenceId) {
+            const agency = agencies.find(a => a.value === agenceId);
+            if (!agency) return;
 
-        document.querySelectorAll('.nouvelle-quantite').forEach(input => {
-            if (input.closest('tr')?.style.display !== 'none') {
-                modifications.push({
-                    reference: input.dataset.reference || '',
-                    categorie: input.dataset.categorie || '',
-                    agence: agency?.label || agenceId,
-                    prix: input.dataset.prix || '',
-                    nouvelleQuantite: parseInt(input.value) || 0,
-                    ancienneQuantite: parseInt(input.closest('tr')?.querySelector('.stock-actuel')?.textContent) || 0
+            try {
+                const idx = agencies.findIndex(a => a.value === agenceId) + 1;
+                const res = await fetch(`${API_BASE_URL}?action=stockagence${idx}`);
+                const json = await res.json();
+
+                if (!json?.data?.rows || !json?.data?.headers) throw new Error('Structure de données invalide');
+
+                stockData[agenceId].allData = json.data.rows.map(row => {
+                    const item = {};
+                    json.data.headers.forEach((h, i) => {
+                        const key = h.trim();
+                        let val = row[i] ?? '';
+                        if (['Stock', 'Prix', 'Conso', 'Stock de depart', 'Stock Physique'].some(k => key.includes(k)))
+                            val = parseFloat(val) || 0;
+                        item[key] = val;
+                    });
+                    item['Agence'] = agency.label;
+                    return item;
                 });
+
+                stockData[agenceId].filteredData = [...stockData[agenceId].allData];
+                generateTableHeaders(agenceId);
+                populateFilters(agenceId);
+                updateSummaryCards(agenceId);
+                displayStockData(agenceId);
+                showToast(`${stockData[agenceId].allData.length} produits chargés`, 'success');
+            } catch (err) {
+                console.error(`Erreur ${agenceId}:`, err);
+                document.getElementById(`stock-data-${agenceId}`).innerHTML = `
+                    <tr><td colspan="12"><div style="text-align:center;padding:1.5rem;color:#ef4444;">Erreur: ${err.message}</div><\/td><\/tr>`;
             }
-        });
+        }
 
-        if (!modifications.length) { showInventaireMessage('Aucun produit à mettre à jour.','warning'); return; }
-        if (!confirm(`Mettre à jour ${modifications.length} produit(s) pour ${agency?.label} ?`)) return;
+        function generateTableHeaders(agenceId) {
+            const data = stockData[agenceId].allData;
+            const thead = document.getElementById(`stock-header-${agenceId}`);
+            if (!data[0] || !thead) return;
+            const headers = Object.keys(data[0]).filter(h => h !== 'User' && h !== 'Agence');
+            thead.innerHTML = '<tr>' + headers.map(h => {
+                const cls = (h.includes('Prix') || h.includes('Stock')) ? 'text-end' : '';
+                return `<th class="sortable ${cls}" onclick="sortTable('${agenceId}','${h}')">${h}</th>`;
+            }).join('') + '<\/tr>';
+        }
 
-        const btn = document.getElementById('btnValiderInventaire');
-        btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Envoi...';
-        document.getElementById('inventaire-progress').style.display = 'block';
-        showProgressOverlay('Mise à jour en cours...');
+        function sortTable(agenceId, column) {
+            const data = stockData[agenceId].filteredData.length ? stockData[agenceId].filteredData : stockData[agenceId].allData;
+            data.sort((a, b) => {
+                let va = a[column], vb = b[column];
+                if (typeof va === 'string') va = va.toLowerCase();
+                if (typeof vb === 'string') vb = vb.toLowerCase();
+                return va < vb ? -1 : va > vb ? 1 : 0;
+            });
+            stockData[agenceId].filteredData = data;
+            displayStockData(agenceId);
+        }
 
-        try {
-            const progressBar = document.getElementById('progressBar');
-            const progressText = document.getElementById('progress-text');
-            let p = 0;
-            const iv = setInterval(() => { if (p < 90) { p+=5; progressBar.style.width=p+'%'; progressText.textContent=`Envoi... ${p}%`; } }, 100);
+        function populateFilters(agenceId) {
+            const sel = document.getElementById(`filter-category-${agenceId}`);
+            if (!sel) return;
+            const cats = [...new Set(stockData[agenceId].allData.map(d => d['Catégorie']).filter(Boolean))].sort();
+            sel.innerHTML = '<option value="">Toutes les catégories</option>' +
+                cats.map(c => `<option value="${c}">${c}</option>`).join('');
+        }
 
-            await fetch(`${API_BASE_URL}?action=inventaire`, {
-                method:'POST', mode:'no-cors',
-                headers:{'Content-Type':'application/json'},
-                body: JSON.stringify({ action:'inventaire', utilisateur:username, agence:agency?.label||agenceId, modifications, timestamp:new Date().toISOString() })
+        function updateSummaryCards(agenceId) {
+            const data = stockData[agenceId].allData;
+            const totalStock = data.reduce((s, d) => s + (parseFloat(d['Stock Physique']) || 0), 0);
+            const totalCats = new Set(data.map(d => d['Catégorie']).filter(Boolean)).size;
+            document.getElementById(`total-products-${agenceId}`).textContent = data.length;
+            document.getElementById(`total-stock-${agenceId}`).textContent = totalStock;
+            document.getElementById(`total-categories-${agenceId}`).textContent = totalCats;
+        }
+
+        function displayStockData(agenceId) {
+            const data = stockData[agenceId].filteredData.length ? stockData[agenceId].filteredData : stockData[agenceId].allData;
+            const tbody = document.getElementById(`stock-data-${agenceId}`);
+            if (!data.length) {
+                tbody.innerHTML = '<tr><td colspan="12" class="no-data">Aucun produit trouvé<\/td><\/tr>';
+                return;
+            }
+            const headers = Object.keys(data[0] || {}).filter(h => h !== 'User' && h !== 'Agence');
+            tbody.innerHTML = data.map(item => `
+                <tr>
+                    ${headers.map(h => {
+                        let v = item[h] ?? '';
+                        if (h === 'Date') v = formatDate(v);
+                        if (h.includes('Prix')) v = formatCurrency(v);
+                        return `<td class="${h.includes('Prix') || h.includes('Stock') ? 'text-end' : ''}">${v}<\/td>`;
+                    }).join('')}
+                <\/tr>
+            `).join('');
+        }
+
+        function applyStockFilter(agenceId) {
+            const term = (document.getElementById(`search-${agenceId}`)?.value || '').toLowerCase();
+            const cat = document.getElementById(`filter-category-${agenceId}`)?.value || '';
+            
+            let filtered = stockData[agenceId].allData;
+            if (term) {
+                filtered = filtered.filter(d => (d['Référence'] || '').toString().toLowerCase().includes(term));
+            }
+            if (cat) {
+                filtered = filtered.filter(d => d['Catégorie'] === cat);
+            }
+            stockData[agenceId].filteredData = filtered;
+            displayStockData(agenceId);
+        }
+
+        function refreshStockData(agenceId) {
+            stockData[agenceId] = { allData: [], filteredData: [] };
+            loadAgenceStock(agenceId);
+        }
+
+        // ==================== INVENTAIRE (COMPLET DU CODE 2) ====================
+        function demarrerInventaire(agenceId) { openCodeVerificationDialog(agenceId); }
+
+        function openCodeVerificationDialog(agenceId) {
+            const agency = agencies.find(a => a.value === agenceId);
+            document.getElementById('modal-container').innerHTML = `
+                <div class="modal-overlay active" id="codeVerificationModal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title"><i class="fas fa-shield-alt" style="color:var(--primary-500);margin-right:.5rem;"></i>Accès Inventaire — ${agency?.label}</h3>
+                            <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="alert-message alert-info" style="margin-bottom:1.5rem;">
+                                <i class="fas fa-exclamation-triangle"></i> Accès sécurisé. Un code a été envoyé par email.
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Code de vérification à 6 chiffres :</label>
+                                <input type="text" class="form-control" id="codeInput" maxlength="6" placeholder="000000" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,6)">
+                                <div style="font-size:.875rem;color:var(--gray-500);margin-top:.5rem;">Code reçu par email</div>
+                                <input type="hidden" id="agenceInventaire" value="${agenceId}">
+                            </div>
+                            <div id="codeMessage" class="alert-message" style="display:none;"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" onclick="verifierCodeAcces()" id="btnVerifierCode"><i class="fas fa-check"></i> Vérifier</button>
+                            <button class="btn btn-secondary" onclick="regenererCode()"><i class="fas fa-sync-alt"></i> Renvoyer</button>
+                        </div>
+                    </div>
+                </div>`;
+            setTimeout(() => document.getElementById('codeInput')?.focus(), 100);
+            regenererCode();
+        }
+
+        async function regenererCode() {
+            const btn = document.getElementById('btnVerifierCode');
+            if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Génération...'; }
+            try {
+                await fetch(`${API_BASE_URL}?action=accesinventaire`, { method: 'GET', mode: 'no-cors' });
+                showCodeMessage('✅ Nouveau code envoyé par email !', 'success');
+                const inp = document.getElementById('codeInput');
+                if (inp) { inp.value = ''; inp.focus(); }
+            } catch { showCodeMessage('❌ Erreur lors de la génération', 'error'); }
+            finally { if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-check"></i> Vérifier'; } }
+        }
+
+        async function verifierCodeAcces() {
+            const code = document.getElementById('codeInput')?.value.trim();
+            const agenceId = document.getElementById('agenceInventaire')?.value;
+            if (!code || code.length !== 6) { showCodeMessage('❌ Code à 6 chiffres requis', 'error'); return; }
+            const btn = document.getElementById('btnVerifierCode');
+            btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Vérification...';
+            try {
+                await fetch(`${API_BASE_URL}?action=codeaccess&code=${code}`, { method: 'GET', mode: 'no-cors' });
+                setTimeout(() => {
+                    btn.disabled = false; btn.innerHTML = '<i class="fas fa-check"></i> Vérifier';
+                    if (/^\d{6}$/.test(code)) {
+                        showCodeMessage('✅ Code vérifié ! Ouverture...', 'success');
+                        setTimeout(() => { closeModal(); openInventaireUpdate(agenceId); }, 1500);
+                    } else { showCodeMessage('❌ Code incorrect.', 'error'); document.getElementById('codeInput')?.select(); }
+                }, 1000);
+            } catch { showCodeMessage('❌ Erreur de vérification', 'error'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-check"></i> Vérifier'; }
+        }
+
+        function showCodeMessage(msg, type) {
+            const d = document.getElementById('codeMessage');
+            if (d) { d.textContent = msg; d.className = `alert-message alert-${type}`; d.style.display = 'flex'; }
+        }
+
+        function openInventaireUpdate(agenceId) {
+            const agency = agencies.find(a => a.value === agenceId);
+            const data = stockData[agenceId].allData;
+            if (!data?.length) { showToast(`Aucune donnée pour ${agency?.label}`, 'error'); return; }
+
+            document.getElementById('modal-container').innerHTML = `
+                <div class="modal-overlay active" id="inventaireModal">
+                    <div class="modal-content xlarge-modal">
+                        <div class="modal-header">
+                            <h3 class="modal-title"><i class="fas fa-clipboard-list" style="color:var(--primary-500);margin-right:.5rem;"></i>Inventaire — ${agency?.label}</h3>
+                            <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="alert-message alert-info" style="margin-bottom:1rem;"><i class="fas fa-info-circle"></i> Mettez à jour les quantités pour ${agency?.label}.</div>
+                            <div class="search-box" style="margin-bottom:1rem;">
+                                <i class="fas fa-search"></i>
+                                <input type="text" class="form-control" id="searchReference" placeholder="Rechercher une référence..." autocomplete="off" onkeyup="filterProducts()">
+                            </div>
+                            <div class="table-container">
+                                <div class="table-wrapper">
+                                    <table class="stock-table" id="inventaireTable">
+                                        <thead><tr><th>Date</th><th>Catégorie</th><th>Référence</th><th class="text-end">Stock départ</th><th class="text-end">Prix vente</th><th class="text-end">Stock Physique</th><th class="text-end">Nouveau Stock</th><\/tr></thead>
+                                        <tbody id="inventaireData">
+                                            ${data.map(item => {
+                                                const ref = item['Référence'] || '';
+                                                return `<tr class="product-row" data-reference="${String(ref).toLowerCase()}">
+                                                    <td>${formatDate(item['Date']||'')}<\/td>
+                                                    <td>${item['Catégorie']||''}<\/td>
+                                                    <td class="reference-cell">${ref}<\/td>
+                                                    <td class="text-end">${item['Stock de depart']||0}<\/td>
+                                                    <td class="text-end">${formatCurrency(item['Prix de vente']||0)}<\/td>
+                                                    <td class="text-end stock-actuel">${item['Stock Physique']||0}<\/td>
+                                                    <td><input type="number" class="form-control nouvelle-quantite" data-reference="${ref}" data-categorie="${item['Catégorie']||''}" data-prix="${item['Prix de vente']||0}" data-stockdepart="${item['Stock de depart']||0}" min="0" value="" placeholder="Qté" style="width:100px;"><\/td>
+                                                <\/tr>`;
+                                            }).join('')}
+                                        </tbody>
+                                    <\/table>
+                                </div>
+                            </div>
+                            <input type="hidden" id="agenceInventaireUpdate" value="${agenceId}">
+                            <div id="inventaire-progress" style="display:none;margin-top:1rem;"><div class="progress-bar"><div class="progress-fill" id="progressBar" style="width:0%;"></div></div><div id="progress-text" style="text-align:center;font-size:.875rem;color:var(--gray-600);margin-top:.5rem;"></div></div>
+                            <div id="inventaire-message" class="alert-message" style="display:none;"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" onclick="imprimerInventairePDF('${agenceId}')"><i class="fas fa-print"></i> Imprimer PDF</button>
+                            <button class="btn btn-success" onclick="validerMiseAJourInventaire()" id="btnValiderInventaire"><i class="fas fa-check"></i> Valider</button>
+                            <button class="btn btn-secondary" onclick="closeModal()"><i class="fas fa-times"></i> Fermer</button>
+                        </div>
+                    </div>
+                </div>`;
+            setTimeout(() => document.getElementById('searchReference')?.focus(), 100);
+        }
+
+        function filterProducts() {
+            const term = (document.getElementById('searchReference')?.value || '').toLowerCase().trim();
+            document.querySelectorAll('#inventaireData .product-row').forEach(row => {
+                const ref = row.getAttribute('data-reference') || '';
+                const show = !term || ref.includes(term);
+                row.style.display = show ? '' : 'none';
+            });
+        }
+
+        async function validerMiseAJourInventaire() {
+            const agenceId = document.getElementById('agenceInventaireUpdate')?.value;
+            const agency = agencies.find(a => a.value === agenceId);
+            const username = localStorage.getItem('username') || 'Admin';
+            const modifications = [];
+
+            document.querySelectorAll('.nouvelle-quantite').forEach(input => {
+                if (input.closest('tr')?.style.display !== 'none' && input.value) {
+                    modifications.push({
+                        reference: input.dataset.reference || '',
+                        categorie: input.dataset.categorie || '',
+                        agence: agency?.label || agenceId,
+                        prix: input.dataset.prix || '',
+                        nouvelleQuantite: parseInt(input.value) || 0,
+                        ancienneQuantite: parseInt(input.closest('tr')?.querySelector('.stock-actuel')?.textContent) || 0
+                    });
+                }
             });
 
-            clearInterval(iv);
-            progressBar.style.width='100%';
-            progressText.textContent='Terminé !';
-            hideProgressOverlay();
-            showInventaireMessage(`✅ ${modifications.length} produit(s) mis à jour pour ${agency?.label}.`,'success');
-            setTimeout(() => { closeModal(); refreshStockData(agenceId); }, 2000);
-        } catch {
-            hideProgressOverlay();
-            showInventaireMessage('❌ Erreur de connexion','error');
-            btn.disabled=false; btn.innerHTML='<i class="fas fa-check"></i> Valider';
+            if (!modifications.length) { showInventaireMessage('Aucun produit à mettre à jour.', 'warning'); return; }
+            if (!confirm(`Mettre à jour ${modifications.length} produit(s) pour ${agency?.label} ?`)) return;
+
+            const btn = document.getElementById('btnValiderInventaire');
+            btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi...';
+            document.getElementById('inventaire-progress').style.display = 'block';
+            showProgressOverlay('Mise à jour en cours...');
+
+            try {
+                const progressBar = document.getElementById('progressBar');
+                const progressText = document.getElementById('progress-text');
+                let p = 0;
+                const iv = setInterval(() => { if (p < 90) { p += 5; progressBar.style.width = p + '%'; progressText.textContent = `Envoi... ${p}%`; } }, 100);
+
+                await fetch(`${API_BASE_URL}?action=inventaire`, {
+                    method: 'POST', mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'inventaire', utilisateur: username, agence: agency?.label || agenceId, modifications, timestamp: new Date().toISOString() })
+                });
+
+                clearInterval(iv);
+                progressBar.style.width = '100%';
+                progressText.textContent = 'Terminé !';
+                hideProgressOverlay();
+                showInventaireMessage(`✅ ${modifications.length} produit(s) mis à jour pour ${agency?.label}.`, 'success');
+                setTimeout(() => { closeModal(); refreshStockData(agenceId); }, 2000);
+            } catch {
+                hideProgressOverlay();
+                showInventaireMessage('❌ Erreur de connexion', 'error');
+                btn.disabled = false; btn.innerHTML = '<i class="fas fa-check"></i> Valider';
+            }
         }
-    }
 
-    function showInventaireMessage(msg, type) {
-        const d = document.getElementById('inventaire-message');
-        if (d) { d.textContent=msg; d.className=`alert-message alert-${type}`; d.style.display='flex'; }
-    }
+        function showInventaireMessage(msg, type) {
+            const d = document.getElementById('inventaire-message');
+            if (d) { d.textContent = msg; d.className = `alert-message alert-${type}`; d.style.display = 'flex'; }
+        }
 
-    function imprimerInventairePDF(agenceId) {
-        const agency = agencies.find(a => a.value === agenceId);
-        const table = document.getElementById('inventaireTable');
-        if (!table) return;
-        const rows = [...table.querySelectorAll('tbody tr')].map(r => ({
-            date: r.cells[0].textContent, categorie: r.cells[1].textContent,
-            reference: r.cells[2].textContent, stockDepart: r.cells[3].textContent,
-            prixVente: r.cells[4].textContent, stockPhysique: r.cells[5].textContent,
-            nouveauStock: r.querySelector('.nouvelle-quantite')?.value || ''
-        }));
-        const w = window.open('','_blank');
-        w.document.write(`<!DOCTYPE html><html><head><title>Inventaire — ${agency?.label}</title><style>
-            body{font-family:Arial,sans-serif;margin:20px;}h1{text-align:center;}
-            table{width:100%;border-collapse:collapse;}th{background:#4CAF50;color:white;padding:10px;}
-            td{padding:8px;border:1px solid #ddd;}tr:nth-child(even){background:#f2f2f2;}
-            .text-end{text-align:right;}.footer{text-align:center;font-size:12px;color:#666;margin-top:20px;}
-            @media print{.no-print{display:none;}}
-        </style></head><body>
-            <h1>Inventaire — ${agency?.label}</h1>
-            <p><strong>Date :</strong> ${new Date().toLocaleDateString('fr-FR')} &nbsp;|&nbsp; <strong>Articles :</strong> ${rows.length}</p>
-            <table><thead><tr><th>Date</th><th>Catégorie</th><th>Référence</th><th>Stock départ</th><th>Prix vente</th><th>Stock Physique</th><th>Nouveau Stock</th></tr></thead>
-            <tbody>${rows.map(r=>`<tr><td>${r.date}</td><td>${r.categorie}</td><td>${r.reference}</td><td class="text-end">${r.stockDepart}</td><td class="text-end">${r.prixVente}</td><td class="text-end">${r.stockPhysique}</td><td class="text-end">${r.nouveauStock}</td></tr>`).join('')}</tbody>
-            </table>
-            <div class="footer">Généré le ${new Date().toLocaleString('fr-FR')}</div>
-            <div class="no-print" style="text-align:center;margin-top:20px;">
-                <button onclick="window.print()" style="padding:10px 20px;background:#4CAF50;color:white;border:none;border-radius:5px;cursor:pointer;">Imprimer</button>
-                <button onclick="window.close()" style="padding:10px 20px;background:#666;color:white;border:none;border-radius:5px;cursor:pointer;margin-left:10px;">Fermer</button>
-            </div>
-            <script>window.onload=()=>setTimeout(()=>window.print(),500);<\/script>
-        </body></html>`);
-        w.document.close();
-    }
+        function imprimerInventairePDF(agenceId) {
+            const agency = agencies.find(a => a.value === agenceId);
+            const table = document.getElementById('inventaireTable');
+            if (!table) return;
+            const rows = [...table.querySelectorAll('tbody tr')].map(r => ({
+                date: r.cells[0].textContent, categorie: r.cells[1].textContent,
+                reference: r.cells[2].textContent, stockDepart: r.cells[3].textContent,
+                prixVente: r.cells[4].textContent, stockPhysique: r.cells[5].textContent,
+                nouveauStock: r.querySelector('.nouvelle-quantite')?.value || ''
+            }));
+            const w = window.open('', '_blank');
+            w.document.write(`<!DOCTYPE html><html><head><title>Inventaire — ${agency?.label}</title><style>
+                body{font-family:Arial,sans-serif;margin:20px;}h1{text-align:center;}
+                table{width:100%;border-collapse:collapse;}th{background:#4CAF50;color:white;padding:10px;}
+                td{padding:8px;border:1px solid #ddd;}tr:nth-child(even){background:#f2f2f2;}
+                .text-end{text-align:right;}.footer{text-align:center;font-size:12px;color:#666;margin-top:20px;}
+                @media print{.no-print{display:none;}}
+            </style></head><body>
+                <h1>Inventaire — ${agency?.label}</h1>
+                <p><strong>Date :</strong> ${new Date().toLocaleDateString('fr-FR')} &nbsp;|&nbsp; <strong>Articles :</strong> ${rows.length}</p>
+                <table><thead><tr><th>Date</th><th>Catégorie</th><th>Référence</th><th>Stock départ</th><th>Prix vente</th><th>Stock Physique</th><th>Nouveau Stock</th></tr></thead>
+                <tbody>${rows.map(r => `<tr><td>${r.date}</td><td>${r.categorie}</td><td>${r.reference}</td><td class="text-end">${r.stockDepart}</td><td class="text-end">${r.prixVente}</td><td class="text-end">${r.stockPhysique}</td><td class="text-end">${r.nouveauStock}</td></tr>`).join('')}</tbody>
+                </table>
+                <div class="footer">Généré le ${new Date().toLocaleString('fr-FR')}</div>
+                <div class="no-print" style="text-align:center;margin-top:20px;"><button onclick="window.print()" style="padding:10px 20px;background:#4CAF50;color:white;border:none;border-radius:5px;cursor:pointer;">Imprimer</button><button onclick="window.close()" style="padding:10px 20px;background:#666;color:white;border:none;border-radius:5px;cursor:pointer;margin-left:10px;">Fermer</button></div>
+                <script>window.onload=()=>setTimeout(()=>window.print(),500);<\/script>
+            </body></html>`);
+            w.document.close();
+        }
 
-    // ==================== PROGRESS ====================
-    function showProgressOverlay(msg='Traitement...') {
-        const el = document.createElement('div');
-        el.className='progress-overlay active'; el.id='global-progress-overlay';
-        el.innerHTML=`<div class="progress-modal"><div class="progress-content">
-            <div class="progress-spinner"><i class="fas fa-spinner fa-spin"></i></div>
-            <div class="progress-text"><h4>${msg}</h4>
-            <div class="progress-bar"><div class="progress-fill"></div></div></div>
-        </div></div>`;
-        document.body.appendChild(el);
-        const fill = el.querySelector('.progress-fill');
-        let w = 0;
-        const iv = setInterval(() => { if (w < 80) { w+=5; fill.style.width=w+'%'; } }, 200);
-        el.dataset.interval = iv;
-    }
-    function hideProgressOverlay() {
-        const el = document.getElementById('global-progress-overlay');
-        if (el) { clearInterval(el.dataset.interval); el.querySelector('.progress-fill').style.width='100%'; setTimeout(()=>el.remove(),500); }
-    }
+        // ==================== TRANSFERT DE STOCK (CODE 1 - déjà présent) ====================
+        function openTransferCodeVerification(sourceAgenceId) {
+            pendingSourceAgenceId = sourceAgenceId;
+            const sourceAgency = agencies.find(a => a.value === sourceAgenceId);
+            
+            document.getElementById('modal-container').innerHTML = `
+                <div class="modal-overlay active" id="codeVerificationModalTransfer">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title"><i class="fas fa-shield-alt" style="color:var(--primary-500);margin-right:.5rem;"></i>Accès Transfert — ${sourceAgency?.label || 'Agence'}</h3>
+                            <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="alert-message alert-info" style="margin-bottom:1.5rem;"><i class="fas fa-exclamation-triangle"></i> Accès sécurisé au transfert de stock. Un code a été envoyé par email.</div>
+                            <div class="form-group">
+                                <label class="form-label">Code de vérification à 6 chiffres :</label>
+                                <input type="text" class="form-control" id="transferCodeInput" maxlength="6" placeholder="000000" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,6)">
+                                <div style="font-size:.875rem;color:var(--gray-500);margin-top:.5rem;">Code reçu par email</div>
+                            </div>
+                            <div id="transferCodeMessage" class="alert-message" style="display:none;"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" onclick="verifyTransferCode()" id="btnVerifierTransferCode"><i class="fas fa-check"></i> Vérifier</button>
+                            <button class="btn btn-secondary" onclick="regenerateTransferCode()"><i class="fas fa-sync-alt"></i> Renvoyer</button>
+                        </div>
+                    </div>
+                </div>`;
+            setTimeout(() => document.getElementById('transferCodeInput')?.focus(), 100);
+            regenerateTransferCode();
+        }
 
-    function closeModal() {
-        const m = document.querySelector('.modal-overlay.active');
-        if (m) { m.classList.remove('active'); setTimeout(()=>m.remove(),300); }
-    }
+        async function regenerateTransferCode() {
+            const btn = document.getElementById('btnVerifierTransferCode');
+            if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Génération...'; }
+            try {
+                await fetch(`${API_BASE_URL}?action=accesinventaire`, { method: 'GET', mode: 'no-cors' });
+                showTransferCodeMessage('✅ Nouveau code envoyé par email !', 'success');
+                const inp = document.getElementById('transferCodeInput');
+                if (inp) { inp.value = ''; inp.focus(); }
+            } catch { showTransferCodeMessage('❌ Erreur lors de la génération', 'error'); }
+            finally { if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-check"></i> Vérifier'; } }
+        }
 
-    // ==================== UTILS ====================
-    function formatDate(d) {
-        if (!d) return '';
-        try { const dt=new Date(d); return isNaN(dt)?d:dt.toLocaleDateString('fr-FR'); } catch { return d; }
-    }
-    function formatCurrency(v) {
-        const n = typeof v!=='number' ? parseFloat(v)||0 : v;
-        return n.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})+' FCFA';
-    }
-    function animateValue(id, start, end, dur) {
-        const el=document.getElementById(id); if(!el) return;
-        const t0=performance.now();
-        const step=now=>{
-            const p=Math.min((now-t0)/dur,1);
-            el.textContent=Math.round(start+(end-start)*(1-Math.pow(1-p,4))).toLocaleString('fr-FR');
-            if(p<1) requestAnimationFrame(step); else el.textContent=end.toLocaleString('fr-FR');
-        };
-        requestAnimationFrame(step);
-    }
+        async function verifyTransferCode() {
+            const code = document.getElementById('transferCodeInput')?.value.trim();
+            if (!code || code.length !== 6) { showTransferCodeMessage('❌ Code à 6 chiffres requis', 'error'); return; }
+            const btn = document.getElementById('btnVerifierTransferCode');
+            btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Vérification...';
+            try {
+                await fetch(`${API_BASE_URL}?action=codeaccess&code=${code}`, { method: 'GET', mode: 'no-cors' });
+                setTimeout(() => {
+                    btn.disabled = false; btn.innerHTML = '<i class="fas fa-check"></i> Vérifier';
+                    if (/^\d{6}$/.test(code)) {
+                        showTransferCodeMessage('✅ Code vérifié ! Ouverture du transfert...', 'success');
+                        setTimeout(() => { closeModal(); if (pendingSourceAgenceId) openTransferModal(pendingSourceAgenceId); else showToast('Erreur: aucune agence source sélectionnée', 'error'); }, 1500);
+                    } else { showTransferCodeMessage('❌ Code incorrect.', 'error'); document.getElementById('transferCodeInput')?.select(); }
+                }, 1000);
+            } catch { showTransferCodeMessage('❌ Erreur de vérification', 'error'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-check"></i> Vérifier'; }
+        }
 
-    function showToast(msg, type='info', dur=5000) {
-        const c=document.getElementById('toast-container');
-        const id=`toast-${toastId++}`;
-        const icons={success:'check-circle',error:'exclamation-circle',warning:'exclamation-triangle',info:'info-circle'};
-        const t=document.createElement('div');
-        t.className=`toast ${type}`; t.id=id;
-        t.innerHTML=`<i class="fas fa-${icons[type]}"></i><span>${msg}</span><button class="toast-close" onclick="closeToast('${id}')"><i class="fas fa-times"></i></button>`;
-        c.appendChild(t);
-        setTimeout(()=>closeToast(id), dur);
-    }
-    function closeToast(id) {
-        const t=document.getElementById(id);
-        if(t){t.style.animation='slideIn .3s ease reverse';setTimeout(()=>t.remove(),300);}
-    }
+        function showTransferCodeMessage(msg, type) {
+            const d = document.getElementById('transferCodeMessage');
+            if (d) { d.textContent = msg; d.className = `alert-message alert-${type}`; d.style.display = 'flex'; }
+        }
 
-    function showMessage(msg, type, agenceId) {
-        const d=document.getElementById(`message-${agenceId}`);
-        if(d){d.textContent=msg;d.className=`alert-message alert-${type}`;d.style.display='flex';setTimeout(()=>d.style.display='none',3000);}
-    }
+        function openTransferModal(sourceAgenceId) {
+            const sourceAgency = agencies.find(a => a.value === sourceAgenceId);
+            const targetAgencies = agencies.filter(a => a.value !== sourceAgenceId);
+            
+            if (targetAgencies.length === 0) { showToast('Aucune autre agence disponible pour le transfert', 'warning'); return; }
+            const products = stockData[sourceAgenceId]?.allData || [];
+            if (!products.length) { showToast('Aucun produit disponible dans cette agence', 'warning'); return; }
 
-    function initTheme() {
-        const btn=document.getElementById('themeToggle');
-        if(localStorage.getItem('theme')==='dark'){document.body.classList.add('dark-mode');btn.innerHTML='<i class="fas fa-sun"></i>';}
-        btn.addEventListener('click',()=>{
-            document.body.classList.toggle('dark-mode');
-            const dark=document.body.classList.contains('dark-mode');
-            localStorage.setItem('theme',dark?'dark':'light');
-            btn.innerHTML=`<i class="fas fa-${dark?'sun':'moon'}"></i>`;
-        });
-    }
+            document.getElementById('modal-container').innerHTML = `
+                <div class="modal-overlay active" id="transferModal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title"><i class="fas fa-exchange-alt" style="color:var(--primary-500);margin-right:.5rem;"></i>Transfert de Stock</h3>
+                            <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="alert-message alert-info" style="margin-bottom:1rem;"><i class="fas fa-info-circle"></i> Transférer un produit de <strong>${sourceAgency?.label || 'l\'agence source'}</strong> vers une autre agence</div>
+                            <div class="form-group">
+                                <label class="form-label">Produit à transférer (référence)</label>
+                                <select class="form-control" id="transfer-product-ref" onchange="updateProductInfo()">
+                                    <option value="">Sélectionner une référence...</option>
+                                    ${products.map(p => `<option value="${p['Référence']}">${p['Référence']} - ${p['Catégorie'] || ''} (Stock: ${p['Stock Physique'] || 0})</option>`).join('')}
+                                </select>
+                            </div>
+                            <div id="product-info" style="display:none; background:var(--gray-50); padding:0.8rem; border-radius:8px; margin-bottom:1rem;">
+                                <div><strong>Catégorie:</strong> <span id="info-categorie"></span></div>
+                                <div><strong>Stock actuel:</strong> <span id="info-stock"></span></div>
+                                <div><strong>Prix de vente:</strong> <span id="info-prix"></span></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Agence destinataire</label>
+                                <select class="form-control" id="transfer-target-agency">${targetAgencies.map(a => `<option value="${a.value}">${a.label}</option>`).join('')}</select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Quantité à transférer</label>
+                                <input type="number" class="form-control" id="transfer-quantity" min="1" value="1" step="1">
+                            </div>
+                            <div id="transfer-message" class="alert-message" style="display:none;"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" onclick="closeModal()"><i class="fas fa-times"></i> Annuler</button>
+                            <button class="btn btn-primary" onclick="executeTransfer('${sourceAgenceId}')"><i class="fas fa-exchange-alt"></i> Transférer</button>
+                        </div>
+                    </div>
+                </div>`;
+        }
 
-    function handleScroll() { document.getElementById('fab').style.display=window.scrollY>300?'flex':'none'; }
-    function scrollToTop() { window.scrollTo({top:0,behavior:'smooth'}); }
-    function goBack() { window.history.back(); }
+        function updateProductInfo() {
+            const ref = document.getElementById('transfer-product-ref')?.value;
+            if (!ref || !currentAgency) return;
+            const product = stockData[currentAgency]?.allData?.find(p => p['Référence'] === ref);
+            if (!product) return;
+            document.getElementById('product-info').style.display = 'block';
+            document.getElementById('info-categorie').textContent = product['Catégorie'] || '-';
+            document.getElementById('info-stock').textContent = product['Stock Physique'] || 0;
+            document.getElementById('info-prix').textContent = formatCurrency(product['Prix de vente'] || 0);
+            const maxQty = parseInt(product['Stock Physique']) || 0;
+            const qtyInput = document.getElementById('transfer-quantity');
+            qtyInput.max = maxQty;
+            if (parseInt(qtyInput.value) > maxQty) qtyInput.value = maxQty;
+        }
 
-    document.addEventListener('keypress', e => {
-        if(e.key==='Enter' && document.getElementById('codeVerificationModal')) verifierCodeAcces();
-    });
+        async function executeTransfer(sourceAgenceId) {
+            const ref = document.getElementById('transfer-product-ref')?.value;
+            const targetAgencyId = document.getElementById('transfer-target-agency')?.value;
+            const quantity = parseInt(document.getElementById('transfer-quantity')?.value) || 0;
+            
+            if (!ref) { showTransferMessage('Veuillez sélectionner un produit', 'warning'); return; }
+            if (!targetAgencyId) { showTransferMessage('Veuillez sélectionner une agence destinataire', 'warning'); return; }
+            if (quantity <= 0) { showTransferMessage('La quantité doit être supérieure à 0', 'warning'); return; }
+            
+            const sourceProduct = stockData[sourceAgenceId]?.allData?.find(p => p['Référence'] === ref);
+            if (!sourceProduct) { showTransferMessage('Produit non trouvé', 'error'); return; }
+            
+            const currentStock = parseInt(sourceProduct['Stock Physique']) || 0;
+            if (quantity > currentStock) { showTransferMessage(`Stock insuffisant. Disponible: ${currentStock}`, 'error'); return; }
+            
+            const sourceAgency = agencies.find(a => a.value === sourceAgenceId);
+            const targetAgency = agencies.find(a => a.value === targetAgencyId);
+            const username = localStorage.getItem('username') || 'Admin';
+            
+            const btn = document.querySelector('#transferModal .btn-primary');
+            if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Transfert...'; }
+            showProgressOverlay('Transfert en cours...');
+            
+            try {
+                const transferData = { source_agence: sourceAgency?.label || sourceAgenceId, target_agence: targetAgency?.label || targetAgencyId, reference: ref, categorie: sourceProduct['Catégorie'] || '', quantite: quantity, prix: sourceProduct['Prix de vente'] || 0, utilisateur: username };
+                await fetch(`${API_BASE_URL}?action=transfert_stock`, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(transferData) });
+                
+                setTimeout(() => {
+                    if (stockData[sourceAgenceId]?.allData) {
+                        const productIndex = stockData[sourceAgenceId].allData.findIndex(p => p['Référence'] === ref);
+                        if (productIndex !== -1) stockData[sourceAgenceId].allData[productIndex]['Stock Physique'] = currentStock - quantity;
+                    }
+                    Promise.all([loadAgenceStock(sourceAgenceId), loadAgenceStock(targetAgencyId)]).then(() => {
+                        hideProgressOverlay();
+                        showTransferMessage(`✅ Transfert réussi! ${quantity} unité(s) de ${ref} transférées vers ${targetAgency?.label || 'l\'agence destinataire'}`, 'success');
+                        showToast(`Transfert effectué: ${quantity}x ${ref} → ${targetAgency?.label || 'destination'}`, 'success');
+                        setTimeout(() => closeModal(), 2000);
+                    }).catch(() => { hideProgressOverlay(); showTransferMessage(`⚠️ Transfert effectué mais erreur lors du rechargement des données`, 'warning'); setTimeout(() => closeModal(), 2000); });
+                }, 1000);
+            } catch (err) { hideProgressOverlay(); showTransferMessage(`❌ Erreur: ${err.message}`, 'error'); if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-exchange-alt"></i> Transférer'; } }
+        }
+
+        function showTransferMessage(msg, type) {
+            const div = document.getElementById('transfer-message');
+            if (div) { div.textContent = msg; div.className = `alert-message alert-${type}`; div.style.display = 'flex'; setTimeout(() => div.style.display = 'none', 3000); }
+        }
+
+        // ==================== PROGRESS ====================
+        function showProgressOverlay(msg = 'Traitement...') {
+            const el = document.createElement('div');
+            el.className = 'progress-overlay active'; el.id = 'global-progress-overlay';
+            el.innerHTML = `<div class="progress-modal"><div class="progress-content"><div class="progress-spinner"><i class="fas fa-spinner fa-spin"></i></div><div class="progress-text"><h4>${msg}</h4><div class="progress-bar"><div class="progress-fill"></div></div></div></div></div>`;
+            document.body.appendChild(el);
+            const fill = el.querySelector('.progress-fill');
+            let w = 0;
+            progressInterval = setInterval(() => { if (w < 80) { w += 5; if (fill) fill.style.width = w + '%'; } }, 200);
+        }
+
+        function hideProgressOverlay() {
+            if (progressInterval) { clearInterval(progressInterval); progressInterval = null; }
+            const el = document.getElementById('global-progress-overlay');
+            if (el) { const fill = el.querySelector('.progress-fill'); if (fill) fill.style.width = '100%'; setTimeout(() => el.remove(), 500); }
+        }
+
+        function closeModal() {
+            const modal = document.querySelector('.modal-overlay.active');
+            if (modal) { modal.classList.remove('active'); setTimeout(() => modal.remove(), 300); }
+        }
+
+        // ==================== UTILS ====================
+        function formatDate(d) {
+            if (!d) return '';
+            try { const dt = new Date(d); return isNaN(dt) ? d : dt.toLocaleDateString('fr-FR'); } catch { return d; }
+        }
+
+        function formatCurrency(v) {
+            const n = typeof v !== 'number' ? parseFloat(v) || 0 : v;
+            return n.toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + ' FCFA';
+        }
+
+        function showToast(msg, type = 'info', duration = 4000) {
+            const container = document.getElementById('toast-container');
+            const id = `toast-${toastId++}`;
+            const icons = { success: 'check-circle', error: 'exclamation-circle', warning: 'exclamation-triangle', info: 'info-circle' };
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.id = id;
+            toast.innerHTML = `<i class="fas fa-${icons[type]}"></i><span>${msg}</span><button class="modal-close" style="margin-left:auto;" onclick="closeToast('${id}')"><i class="fas fa-times"></i></button>`;
+            container.appendChild(toast);
+            setTimeout(() => closeToast(id), duration);
+        }
+
+        function closeToast(id) {
+            const toast = document.getElementById(id);
+            if (toast) toast.remove();
+        }
+
+        function handleScroll() { document.getElementById('fab').style.display = window.scrollY > 300 ? 'flex' : 'none'; }
+        function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+        function goBack() { window.history.back(); }
     </script>
 </body>
 </html>
