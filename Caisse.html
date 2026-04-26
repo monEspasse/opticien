@@ -2,1986 +2,1425 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>VisioPro - Gestion de Caisses</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>VisioPro</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        /* ===== VARIABLES & RESET ===== */
-        :root {
-            --primary: #4f46e5;
-            --primary-light: #818cf8;
-            --primary-dark: #3730a3;
-            --secondary: #f59e0b;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --info: #3b82f6;
-            
-            --gray-50: #f9fafb;
-            --gray-100: #f3f4f6;
-            --gray-200: #e5e7eb;
-            --gray-300: #d1d5db;
-            --gray-400: #9ca3af;
-            --gray-500: #6b7280;
-            --gray-600: #4b5563;
-            --gray-700: #374151;
-            --gray-800: #1f2937;
-            --gray-900: #111827;
-            
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --success-gradient: linear-gradient(135deg, #10b981 0%, #34d399 100%);
-            --danger-gradient: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
-            
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
-            
-            --radius-sm: 0.375rem;
-            --radius-md: 0.5rem;
-            --radius-lg: 0.75rem;
-            --radius-xl: 1rem;
-            --radius-full: 9999px;
-            
-            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        :root {
+            --c-bg: #F7F6F3;
+            --c-surface: #FFFFFF;
+            --c-surface2: #F0EEE9;
+            --c-ink: #1A1916;
+            --c-ink2: #6B6860;
+            --c-ink3: #A8A69F;
+            --c-border: #E3E1DB;
+            --c-border2: #C8C5BC;
+            --c-accent: #3D4FE0;
+            --c-accent-lt: #EEF0FD;
+            --c-accent-dk: #2534B8;
+            --c-green: #1A8A5A;
+            --c-green-lt: #E6F5EE;
+            --c-red: #C43B3B;
+            --c-red-lt: #FCEAEA;
+            --c-amber: #B07020;
+            --c-amber-lt: #FDF3E3;
+            --shadow-sm: 0 1px 3px rgba(26,25,22,.06), 0 1px 2px rgba(26,25,22,.04);
+            --shadow-md: 0 4px 12px rgba(26,25,22,.08), 0 2px 4px rgba(26,25,22,.04);
+            --shadow-lg: 0 12px 32px rgba(26,25,22,.10), 0 4px 8px rgba(26,25,22,.06);
+            --r-sm: 6px;
+            --r-md: 10px;
+            --r-lg: 14px;
+            --r-xl: 20px;
+            --ease: cubic-bezier(.4,0,.2,1);
+        }
+
         body {
-            background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+            background: var(--c-bg);
+            font-family: 'DM Sans', system-ui, sans-serif;
+            color: var(--c-ink);
             min-height: 100vh;
-            font-family: 'Inter', sans-serif;
-            color: #2d3748;
-            position: relative;
-            padding-bottom: 70px;
+            padding-bottom: 80px;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* ===== LAYOUT PRINCIPAL ===== */
-        .app-container {
-            max-width: 1440px;
-            margin: 0 auto;
-            padding: 1rem;
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ===== HEADER ===== */
-        .header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: var(--radius-xl);
-            padding: 1rem 2rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow-lg);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(16px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
-        .header h1 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @keyframes btnPulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(61, 79, 224, 0.7);
+            }
+            70% {
+                transform: scale(0.98);
+                box-shadow: 0 0 0 10px rgba(61, 79, 224, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(61, 79, 224, 0);
+            }
         }
 
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .profile-img {
-            width: 45px;
-            height: 45px;
-            border-radius: var(--radius-full);
-            border: 3px solid white;
-            box-shadow: var(--shadow-md);
-        }
-
-        /* ===== BOUTONS ===== */
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: var(--radius-md);
-            font-weight: 600;
-            font-size: 0.875rem;
-            cursor: pointer;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: white;
-            color: var(--gray-700);
-            border: 1px solid var(--gray-200);
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .btn:active {
-            transform: translateY(0);
-        }
-
-        .btn-primary {
-            background: var(--primary-gradient);
-            color: white;
-            border: none;
-        }
-
-        .btn-primary:hover {
-            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
-        }
-
-        .btn-success {
-            background: var(--success-gradient);
-            color: white;
-            border: none;
-        }
-
-        .btn-danger {
-            background: var(--danger-gradient);
-            color: white;
-            border: none;
-        }
-
-        /* ===== SECTION TITRES ===== */
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--gray-800);
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0 0.5rem;
-        }
-
-        .section-title i {
-            color: var(--primary);
-            background: rgba(79, 70, 229, 0.1);
-            padding: 0.5rem;
-            border-radius: var(--radius-md);
-        }
-
-        /* ===== GRILLE DES CAISSES ===== */
-        .caisses-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .caisse-card {
-            background: white;
-            border-radius: var(--radius-lg);
-            padding: 1.5rem;
-            box-shadow: var(--shadow-md);
-            transition: var(--transition);
-            cursor: pointer;
-            border: 1px solid var(--gray-200);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .caisse-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--primary-gradient);
-        }
-
-        .caisse-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-xl);
-            border-color: var(--primary-light);
-        }
-
-        .caisse-header {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .caisse-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: var(--radius-md);
-            background: var(--primary-gradient);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.8rem;
-            flex-shrink: 0;
-        }
-
-        .caisse-info {
-            flex: 1;
-        }
-
-        .caisse-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--gray-800);
-            margin-bottom: 0.25rem;
-        }
-
-        .caisse-location {
-            font-size: 0.875rem;
-            color: var(--gray-500);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .caisse-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.25rem 1rem;
-            border-radius: var(--radius-full);
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .status-online {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-        }
-
-        .status-offline {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--danger);
-        }
-
-        .caisse-stats {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin: 1rem 0;
-        }
-
-        .stat-item {
-            background: var(--gray-50);
-            border-radius: var(--radius-md);
-            padding: 0.75rem;
-            text-align: center;
-        }
-
-        .stat-label {
-            font-size: 0.7rem;
-            color: var(--gray-500);
-            display: block;
-            margin-bottom: 0.25rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .stat-value {
-            font-size: 1.125rem;
-            font-weight: 700;
-            color: var(--gray-800);
-        }
-
-        .stat-value.positive {
-            color: var(--success);
-        }
-
-        .stat-value.negative {
-            color: var(--danger);
-        }
-
-        /* ===== PANEL DE FILTRES ===== */
-        .filters-panel {
-            background: white;
-            border-radius: var(--radius-lg);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: var(--shadow-md);
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            align-items: end;
-        }
-
-        .filter-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .filter-group label {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: var(--gray-700);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border: 1px solid var(--gray-200);
-            border-radius: var(--radius-md);
-            font-family: inherit;
-            font-size: 0.875rem;
-            transition: var(--transition);
-            background: white;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-        }
-
-        .select-control {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 0.75rem center;
-            background-size: 1rem;
-            padding-right: 2.5rem;
-        }
-
-        /* ===== TABLEAU ===== */
-        .table-container {
-            background: white;
-            border-radius: var(--radius-lg);
-            padding: 1.5rem;
-            box-shadow: var(--shadow-md);
-            overflow-x: auto;
-            margin-bottom: 1rem;
-        }
-
-        .cumul-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.875rem;
-        }
-
-        .cumul-table th {
-            text-align: left;
-            padding: 1rem;
-            background: var(--gray-50);
-            color: var(--gray-700);
-            font-weight: 600;
-            border-bottom: 2px solid var(--gray-200);
-            white-space: nowrap;
-        }
-
-        .cumul-table td {
-            padding: 0.75rem 1rem;
-            border-bottom: 1px solid var(--gray-200);
-        }
-
-        .cumul-table tbody tr:hover {
-            background: var(--gray-50);
-        }
-
-        /* ===== BADGES ===== */
-        .badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: var(--radius-full);
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .badge-success {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-        }
-
-        .badge-danger {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--danger);
-        }
-
-        .badge-warning {
-            background: rgba(245, 158, 11, 0.1);
-            color: var(--warning);
-        }
-
-        .badge-info {
-            background: rgba(59, 130, 246, 0.1);
-            color: var(--info);
-        }
-
-        /* ===== PAGINATION ===== */
-        .pagination-controls {
-            background: white;
-            border-radius: var(--radius-lg);
-            padding: 1rem 1.5rem;
-            box-shadow: var(--shadow-md);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .pagination-info {
-            font-size: 0.875rem;
-            color: var(--gray-600);
-        }
-
-        .pagination-navigation {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .pagination-btn {
-            padding: 0.5rem 1rem;
-            border: 1px solid var(--gray-200);
-            background: white;
-            border-radius: var(--radius-md);
-            font-size: 0.875rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .pagination-btn:hover:not(:disabled) {
-            background: var(--gray-50);
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-
-        .pagination-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .items-per-page {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .modern-select {
-            padding: 0.5rem 2rem 0.5rem 1rem;
-            border: 1px solid var(--gray-200);
-            border-radius: var(--radius-md);
-            background: white;
-            font-size: 0.875rem;
-            cursor: pointer;
-            appearance: none;
-        }
-
-        /* ===== MODALES ===== */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(5px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: 1rem;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-xl);
-            max-width: 600px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            animation: modalSlideIn 0.3s ease;
-        }
-
-        .modal-content-large {
-            max-width: 1200px;
+        @keyframes btnShine {
+            0% {
+                background-position: -100% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
         }
 
         @keyframes modalSlideIn {
             from {
                 opacity: 0;
-                transform: translateY(-20px);
+                transform: scale(0.9) translateY(-20px);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: scale(1) translateY(0);
             }
         }
 
-        .modal-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--gray-200);
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        .shell {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.25rem 1.25rem 0;
+            animation: fadeUp .4s var(--ease) both;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--c-surface);
+            border: 1px solid var(--c-border);
+            border-radius: var(--r-xl);
+            padding: .75rem 1.25rem;
+            margin-bottom: 1.25rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .topbar-brand {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+        }
+
+        .brand-mark {
+            width: 36px;
+            height: 36px;
+            background: var(--c-accent);
+            border-radius: var(--r-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: .85rem;
+        }
+
+        .brand-name {
+            font-size: 1.05rem;
+            font-weight: 600;
+            letter-spacing: -.02em;
+            color: var(--c-ink);
+        }
+
+        .brand-name span {
+            color: var(--c-accent);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+        }
+
+        .topbar-date {
+            font-size: .8rem;
+            color: var(--c-ink3);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: 2px solid var(--c-border);
+            object-fit: cover;
+        }
+
+        .main {
+            display: flex;
+            gap: 1.25rem;
+        }
+
+        .sidebar {
+            flex: 0 0 200px;
+            display: flex;
+            flex-direction: column;
+            gap: .5rem;
+        }
+
+        .sidebar-label {
+            font-size: .7rem;
+            font-weight: 600;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--c-ink3);
+            padding: .25rem .75rem;
+            margin-bottom: .25rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: .65rem;
+            padding: .65rem .9rem;
+            border-radius: var(--r-md);
+            border: 1px solid transparent;
+            background: transparent;
+            color: var(--c-ink2);
+            font-family: inherit;
+            font-size: .88rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all .2s var(--ease);
+            width: 100%;
+            text-align: left;
+        }
+
+        .nav-item:hover {
+            background: var(--c-surface2);
+            color: var(--c-ink);
+        }
+
+        .nav-item.active {
+            background: var(--c-accent-lt);
+            color: var(--c-accent);
+            border-color: rgba(61,79,224,.12);
+        }
+
+        .content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .section {
+            display: none;
+            animation: fadeUp .35s var(--ease) both;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: -.025em;
+            color: var(--c-ink);
+            margin-bottom: .2rem;
+        }
+
+        .section-sub {
+            font-size: .82rem;
+            color: var(--c-ink3);
+        }
+
+        .section-actions {
+            display: flex;
+            gap: .5rem;
+            align-items: center;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            padding: .55rem 1rem;
+            border-radius: var(--r-md);
+            font-family: inherit;
+            font-size: .83rem;
+            font-weight: 500;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all .15s var(--ease);
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-ghost {
+            background: var(--c-surface);
+            color: var(--c-ink2);
+            border-color: var(--c-border);
+        }
+
+        .btn-ghost:hover {
+            background: var(--c-surface2);
+            color: var(--c-ink);
+            border-color: var(--c-border2);
+            transform: translateY(-1px);
+        }
+
+        .btn-accent {
+            background: var(--c-accent);
+            color: #fff;
+            border-color: var(--c-accent);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-accent:hover {
+            background: var(--c-accent-dk);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(61,79,224,.35);
+        }
+
+        .btn-accent:active {
+            transform: scale(0.96);
+        }
+
+        .btn-accent .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.6);
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+        }
+
+        .btn-accent.btn-clicked {
+            animation: btnPulse 0.4s ease-out;
+        }
+
+        .btn-accent::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-accent:hover::before {
+            left: 100%;
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: .75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .kpi-card {
+            background: var(--c-surface);
+            border: 1px solid var(--c-border);
+            border-radius: var(--r-lg);
+            padding: 1rem 1.1rem;
+            box-shadow: var(--shadow-sm);
+            transition: all .2s var(--ease);
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .kpi-label {
+            font-size: .75rem;
+            font-weight: 500;
+            color: var(--c-ink3);
+            letter-spacing: .02em;
+            text-transform: uppercase;
+            margin-bottom: .6rem;
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+        }
+
+        .kpi-icon {
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .65rem;
+        }
+
+        .kpi-value {
+            font-family: 'DM Mono', monospace;
+            font-size: 1.35rem;
+            font-weight: 500;
+            letter-spacing: -.02em;
+            color: var(--c-ink);
+            line-height: 1;
+            margin-bottom: .25rem;
+        }
+
+        .kpi-unit {
+            font-size: .72rem;
+            color: var(--c-ink3);
+            margin-left: .2rem;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .toolbar {
+            background: var(--c-surface);
+            border: 1px solid var(--c-border);
+            border-radius: var(--r-lg);
+            padding: .75rem 1rem;
+            margin-bottom: .75rem;
+            display: flex;
+            gap: .75rem;
+            align-items: center;
+            box-shadow: var(--shadow-sm);
+            flex-wrap: wrap;
+        }
+
+        .search-wrap {
+            flex: 1;
+            min-width: 180px;
+            position: relative;
+        }
+
+        .search-wrap i {
+            position: absolute;
+            left: .8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--c-ink3);
+            font-size: .8rem;
+            pointer-events: none;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: .55rem .8rem .55rem 2.2rem;
+            background: var(--c-bg);
+            border: 1px solid var(--c-border);
+            border-radius: var(--r-md);
+            font-family: inherit;
+            font-size: .85rem;
+            color: var(--c-ink);
+            transition: all .15s;
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: var(--c-accent);
+            box-shadow: 0 0 0 3px rgba(61,79,224,.1);
+        }
+
+        .result-count {
+            font-size: .8rem;
+            color: var(--c-ink3);
+            white-space: nowrap;
+        }
+
+        .table-card {
+            background: var(--c-surface);
+            border: 1px solid var(--c-border);
+            border-radius: var(--r-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .table-scroll {
+            max-height: 420px;
+            overflow-y: auto;
+            overflow-x: auto;
+        }
+
+        .table-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+        .table-scroll::-webkit-scrollbar-track { background: transparent; }
+        .table-scroll::-webkit-scrollbar-thumb { background: var(--c-border2); border-radius: 3px; }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 580px;
+        }
+
+        .data-table thead {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .data-table th {
+            background: var(--c-surface2);
+            padding: .65rem .85rem;
+            text-align: left;
+            font-size: .75rem;
+            font-weight: 600;
+            color: var(--c-ink2);
+            letter-spacing: .04em;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--c-border);
+        }
+
+        .data-table tbody tr {
+            border-bottom: 1px solid var(--c-border);
+            transition: background .12s;
+        }
+
+        .data-table tbody tr:hover {
+            background: var(--c-accent-lt);
+        }
+
+        .data-table td {
+            padding: .7rem .85rem;
+            font-size: .84rem;
+            color: var(--c-ink);
+            vertical-align: middle;
+        }
+
+        .td-date {
+            font-family: 'DM Mono', monospace;
+            font-size: .78rem;
+            color: var(--c-ink2);
+        }
+
+        .td-amount {
+            font-family: 'DM Mono', monospace;
+            font-weight: 500;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .3rem;
+            padding: .22rem .6rem;
+            border-radius: 999px;
+            font-size: .73rem;
+            font-weight: 600;
+        }
+
+        .badge-entree {
+            background: var(--c-green-lt);
+            color: var(--c-green);
+        }
+
+        .badge-sortie {
+            background: var(--c-red-lt);
+            color: var(--c-red);
+        }
+
+        .cat-pill {
+            display: inline-block;
+            padding: .18rem .55rem;
+            border-radius: var(--r-sm);
+            font-size: .73rem;
+            background: var(--c-surface2);
+            color: var(--c-ink2);
+        }
+
+        .empty-state {
+            padding: 3rem 1rem;
+            text-align: center;
+            color: var(--c-ink3);
+        }
+
+        .empty-state i {
+            font-size: 1.8rem;
+            margin-bottom: .75rem;
+            display: block;
+            opacity: .4;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(26,25,22,.75);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 1rem;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal {
+            background: var(--c-surface);
+            border-radius: var(--r-xl);
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 460px;
+            overflow: hidden;
+            animation: modalSlideIn .3s var(--ease);
+        }
+
+        .modal-head {
+            padding: 1.25rem 1.5rem 1rem;
+            border-bottom: 1px solid var(--c-border);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .modal-title {
-            font-size: 1.25rem;
+        .modal-head-title {
+            font-size: 1rem;
             font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
         }
 
         .modal-close {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            font-size: 1.5rem;
+            width: 28px;
+            height: 28px;
+            border-radius: var(--r-sm);
+            border: 1px solid var(--c-border);
+            background: transparent;
+            color: var(--c-ink2);
             cursor: pointer;
-            width: 40px;
-            height: 40px;
-            border-radius: var(--radius-md);
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: var(--transition);
+            transition: all .15s;
         }
 
         .modal-close:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: var(--c-surface2);
+            transform: rotate(90deg);
         }
 
         .modal-body {
-            padding: 1.5rem;
+            padding: 1.25rem 1.5rem;
+            max-height: 60vh;
+            overflow-y: auto;
         }
 
-        .modal-footer {
+        .modal-foot {
             padding: 1rem 1.5rem;
-            border-top: 1px solid var(--gray-200);
+            border-top: 1px solid var(--c-border);
             display: flex;
             justify-content: flex-end;
-            gap: 1rem;
-            background: var(--gray-50);
+            gap: .5rem;
         }
 
-        /* ===== FORMULAIRES ===== */
-        .form-group {
-            margin-bottom: 1.25rem;
-        }
+        .form-group { margin-bottom: 1rem; }
 
-        .form-group label {
+        .form-label {
             display: block;
-            margin-bottom: 0.5rem;
+            font-size: .8rem;
             font-weight: 500;
-            color: var(--gray-700);
+            color: var(--c-ink2);
+            margin-bottom: .35rem;
         }
 
-        .form-group .required {
-            color: var(--danger);
+        .form-control {
+            width: 100%;
+            padding: .6rem .85rem;
+            background: var(--c-bg);
+            border: 1px solid var(--c-border);
+            border-radius: var(--r-md);
+            font-family: inherit;
+            font-size: .88rem;
+            color: var(--c-ink);
+            outline: none;
+            transition: all .15s;
         }
 
-        .form-message {
-            padding: 0.75rem 1rem;
-            border-radius: var(--radius-md);
-            margin-top: 1rem;
-            display: none;
+        .form-control:focus {
+            border-color: var(--c-accent);
+            box-shadow: 0 0 0 3px rgba(61,79,224,.1);
+            background: var(--c-surface);
+            transform: scale(1.01);
         }
 
-        .form-message.error {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--danger);
-            border: 1px solid rgba(239, 68, 68, 0.2);
-            display: block;
+        .form-control[readonly] {
+            background: var(--c-surface2);
+            cursor: not-allowed;
         }
 
-        .form-message.success {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-            border: 1px solid rgba(16, 185, 129, 0.2);
-            display: block;
-        }
-
-        .input-error {
-            border-color: var(--danger) !important;
-        }
-
-        /* ===== LOADING ===== */
-        .loading-indicator {
-            text-align: center;
-            padding: 3rem;
-        }
-
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid var(--gray-200);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* ===== ALERTES ===== */
-        .alert {
-            padding: 1rem 1.5rem;
-            border-radius: var(--radius-md);
-            margin: 1rem 0;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            border-left: 4px solid;
-        }
-
-        .alert-info {
-            background: rgba(59, 130, 246, 0.1);
-            color: var(--info);
-            border-left-color: var(--info);
-        }
-
-        .alert-danger {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--danger);
-            border-left-color: var(--danger);
-        }
-
-        .alert-success {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-            border-left-color: var(--success);
-        }
-
-        /* ===== BOUTON FLOTTANT ===== */
-        .fab-container {
+        .toast-zone {
             position: fixed;
-            bottom: 2rem;
-            right: 2rem;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
             display: flex;
             flex-direction: column;
-            gap: 1rem;
-            z-index: 99;
+            gap: .5rem;
+            pointer-events: none;
         }
 
-        .fab {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: var(--primary-gradient);
-            color: white;
-            border: none;
-            cursor: pointer;
-            box-shadow: var(--shadow-lg);
+        .toast {
+            display: flex;
+            align-items: center;
+            gap: .65rem;
+            padding: .75rem 1rem;
+            background: var(--c-surface);
+            border: 1px solid var(--c-border);
+            border-radius: var(--r-lg);
+            box-shadow: var(--shadow-md);
+            font-size: .85rem;
+            font-weight: 500;
+            max-width: 320px;
+            animation: toastIn .3s var(--ease) both;
+            pointer-events: auto;
+        }
+
+        .toast-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: var(--r-sm);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            transition: var(--transition);
+            font-size: .8rem;
+            flex-shrink: 0;
         }
 
-        .fab:hover {
-            transform: scale(1.1) translateY(-4px);
-            box-shadow: var(--shadow-xl);
+        .toast.success .toast-icon { background: var(--c-green-lt); color: var(--c-green); }
+        .toast.error .toast-icon { background: var(--c-red-lt); color: var(--c-red); }
+
+        .toast-msg { flex: 1; color: var(--c-ink); }
+
+        .toast-dismiss {
+            background: none;
+            border: none;
+            color: var(--c-ink3);
+            cursor: pointer;
+            font-size: 1.1rem;
+            padding: .1rem .25rem;
         }
 
-        .fab.secondary {
-            background: var(--success-gradient);
-        }
-
-        /* ===== MOBILE BOTTOM NAV ===== */
-        .mobile-bottom-nav {
+        .mobile-nav {
             display: none;
             position: fixed;
             bottom: 0;
             left: 0;
-            right: 0;
-            background: white;
-            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
-            padding: 0.5rem;
-            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-            z-index: 100;
-        }
-
-        .nav-items {
-            display: flex;
+            width: 100%;
+            background: var(--c-surface);
+            border-top: 1px solid var(--c-border);
+            z-index: 1000;
+            padding: .5rem 1rem env(safe-area-inset-bottom, .5rem);
             justify-content: space-around;
+            box-shadow: 0 -4px 20px rgba(26,25,22,.06);
         }
 
-        .nav-item {
+        .mob-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 0.5rem;
-            color: var(--gray-500);
-            text-decoration: none;
-            transition: var(--transition);
-            flex: 1;
-            max-width: 80px;
-        }
-
-        .nav-item i {
-            font-size: 1.5rem;
-            margin-bottom: 0.25rem;
-        }
-
-        .nav-item span {
-            font-size: 0.7rem;
+            gap: .2rem;
+            background: none;
+            border: none;
+            color: var(--c-ink3);
+            font-family: inherit;
+            font-size: .65rem;
             font-weight: 500;
+            cursor: pointer;
+            padding: .4rem .6rem;
+            border-radius: var(--r-md);
+            transition: all .15s;
         }
 
-        .nav-item.active {
-            color: var(--primary);
-            background: rgba(79, 70, 229, 0.1);
-            border-radius: var(--radius-md);
+        .mob-item i { font-size: .95rem; }
+
+        .mob-item.active {
+            color: var(--c-accent);
+            background: var(--c-accent-lt);
         }
 
-        /* ===== UTILITAIRES ===== */
-        .text-right {
-            text-align: right;
+        .fab {
+            display: none;
+            position: fixed;
+            bottom: 5.5rem;
+            right: 1.25rem;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--c-accent);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            box-shadow: var(--shadow-md);
+            z-index: 100;
+            transition: all .2s;
         }
 
-        .text-center {
-            text-align: center;
+        .fab:hover {
+            transform: translateY(-2px) scale(1.1);
+            background: var(--c-accent-dk);
         }
 
-        .hidden {
-            display: none !important;
+        @media (max-width: 900px) {
+            .kpi-grid { grid-template-columns: repeat(2, 1fr); }
         }
 
-        .mobile-only {
-            display: none !important;
+        @media (max-width: 700px) {
+            .sidebar { display: none; }
+            .mobile-nav { display: flex; }
+            .fab { display: flex; }
         }
 
-        /* ===== MEDIA QUERIES ===== */
-        @media (max-width: 1023px) {
-            .app-container {
-                padding: 0.75rem;
-                padding-bottom: 80px;
-            }
-
-            .header {
-                padding: 0.75rem 1rem;
-            }
-
-            .header h1 {
-                font-size: 1.5rem;
-            }
-
-            .desktop-only {
-                display: none !important;
-            }
-
-            .mobile-bottom-nav {
-                display: block;
-            }
-
-            .mobile-only {
-                display: block !important;
-            }
-
-            .caisses-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .caisse-card {
-                padding: 1rem;
-            }
-
-            .caisse-icon {
-                width: 50px;
-                height: 50px;
-                font-size: 1.5rem;
-            }
-
-            .caisse-stats {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 0.5rem;
-            }
-
-            .stat-item {
-                padding: 0.5rem;
-            }
-
-            .filters-panel {
-                grid-template-columns: 1fr;
-                padding: 1rem;
-            }
-
-            .table-container {
-                padding: 0.5rem;
-            }
-
-            .cumul-table {
-                font-size: 0.7rem;
-            }
-
-            .cumul-table th,
-            .cumul-table td {
-                padding: 0.5rem;
-            }
-
-            .pagination-controls {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .pagination-navigation {
-                justify-content: center;
-            }
-
-            .fab-container {
-                bottom: 5rem;
-                right: 1rem;
-            }
-
-            .fab {
-                width: 48px;
-                height: 48px;
-                font-size: 1.25rem;
-            }
-
-            .modal-content {
-                margin: 1rem;
-                max-height: 80vh;
-            }
-
-            .modal-header {
-                padding: 1rem;
-            }
-
-            .modal-body {
-                padding: 1rem;
-            }
-
-            .modal-footer {
-                padding: 0.75rem 1rem;
-                flex-direction: column;
-            }
-
-            .modal-footer .btn {
-                width: 100%;
-                justify-content: center;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .header h1 {
-                font-size: 1.25rem;
-            }
-
-            .user-info span {
-                display: none;
-            }
-
-            .profile-img {
-                width: 35px;
-                height: 35px;
-            }
-
-            .caisse-title {
-                font-size: 1rem;
-            }
-
-            .stat-value {
-                font-size: 1rem;
-            }
-
-            .section-title {
-                font-size: 1.25rem;
-            }
-
-            .btn {
-                padding: 0.6rem 1rem;
-                font-size: 0.8rem;
-            }
-
-            .fab-container {
-                bottom: 4.5rem;
-                right: 0.75rem;
-            }
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--c-border);
+            border-top-color: var(--c-accent);
+            border-radius: 50%;
+            animation: spin .7s linear infinite;
+            margin: 2rem auto;
         }
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <!-- HEADER -->
-        <header class="header">
-            <h1>Gestion de Caisses</h1>
-            <div class="user-info">
-                <span id="username-display"></span>
-                <img src="https://ui-avatars.com/api/?name=Caisse&background=6366f1&color=fff" alt="Profile" class="profile-img">
+    <div class="toast-zone" id="toast-zone"></div>
+    <button class="fab" id="fab" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <div class="shell">
+        <header class="topbar">
+            <div class="topbar-brand">
+                <div class="brand-mark"><i class="fas fa-cash-register"></i></div>
+                <span class="brand-name">Visio<span>Pro</span></span>
+            </div>
+            <div class="topbar-right">
+                <span class="topbar-date" id="current-date"></span>
+                <span class="topbar-user">Admin</span>
+                <img src="https://ui-avatars.com/api/?name=Admin&background=3D4FE0&color=fff&size=64" alt="Profil" class="avatar">
             </div>
         </header>
 
-        <!-- SECTION CAISSES -->
-        <section class="caisses-section">
-            <h2 class="section-title">
-                <i class="fas fa-cash-register"></i>
-                Caisses Physiques
-            </h2>
-            <div class="caisses-grid" id="caissesContainer">
-                <div class="loading-indicator">
-                    <div class="spinner"></div>
-                    <div>Chargement des caisses...</div>
-                </div>
-            </div>
-        </section>
+        <div class="main">
+            <aside class="sidebar" id="sidebar">
+                <p class="sidebar-label">Caisses</p>
+                <div id="nav-buttons"></div>
+            </aside>
 
-        <!-- SECTION DÉTAIL MOBILE -->
-        <div id="mobileCaisseDetail" class="mobile-only" style="margin-bottom: 1rem;"></div>
-
-        <!-- SECTION TABLEAU CUMULATIF -->
-        <section class="cumul-section desktop-only">
-            <h2 class="section-title">
-                <i class="fas fa-chart-bar"></i>
-                Vue Cumulée
-            </h2>
-            
-            <!-- FILTRES -->
-            <div class="filters-panel">
-                <div class="filter-group">
-                    <label><i class="fas fa-calendar"></i> Date début</label>
-                    <input type="date" id="filterDateStart" class="form-control" onchange="applyCumulFilter()">
-                </div>
-                <div class="filter-group">
-                    <label><i class="fas fa-calendar"></i> Date fin</label>
-                    <input type="date" id="filterDateEnd" class="form-control" onchange="applyCumulFilter()">
-                </div>
-                <div class="filter-group">
-                    <label><i class="fas fa-building"></i> Agence</label>
-                    <select id="filterAgence" class="form-control select-control" onchange="applyCumulFilter()">
-                        <option value="">Toutes</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label><i class="fas fa-exchange-alt"></i> Mouvement</label>
-                    <select id="filterMouvement" class="form-control select-control" onchange="applyCumulFilter()">
-                        <option value="">Tous</option>
-                        <option value="Entrée">Entrée</option>
-                        <option value="Sortie">Sortie</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label><i class="fas fa-tag"></i> Catégorie</label>
-                    <select id="filterCategorie" class="form-control select-control" onchange="applyCumulFilter()">
-                        <option value="">Toutes</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label>&nbsp;</label>
-                    <button class="btn btn-secondary" onclick="resetCumulFilter()">
-                        <i class="fas fa-undo"></i> Réinitialiser
-                    </button>
-                </div>
-            </div>
-
-            <!-- TABLEAU -->
-            <div class="table-container">
-                <table class="cumul-table" id="cumulTable">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Agence</th>
-                            <th>Désignation</th>
-                            <th class="text-right">Montant</th>
-                            <th>Mouvement</th>
-                            <th>Utilisateur</th>
-                            <th>Catégorie</th>
-                            <th>Note</th>
-                        </tr>
-                    </thead>
-                    <tbody id="cumulData">
-                        <tr><td colspan="8" class="text-center"><div class="spinner"></div></td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- PAGINATION -->
-            <div class="pagination-controls">
-                <div class="pagination-info" id="page-info"></div>
-                <div class="pagination-navigation">
-                    <button class="pagination-btn" id="prevPage" disabled>
-                        <i class="fas fa-chevron-left"></i> Précédent
-                    </button>
-                    <button class="pagination-btn" id="nextPage">
-                        Suivant <i class="fas fa-chevron-right"></i>
-                    </button>
-                </div>
-                <div class="items-per-page">
-                    <span>Lignes:</span>
-                    <select id="itemsPerPageSelect" class="modern-select">
-                        <option value="20">20</option>
-                        <option value="50" selected>50</option>
-                        <option value="100">100</option>
-                    </select>
-                </div>
-            </div>
-
-            <div id="cumul-message" class="alert alert-info" style="display:none;"></div>
-        </section>
+            <div class="content" id="content-area"></div>
+        </div>
     </div>
 
-    <!-- BOUTONS FLOTTANTS -->
-    <div class="fab-container">
-        <button class="fab" onclick="openVueGlobale()" title="Retour">
-            <i class="fas fa-arrow-left"></i>
-        </button>
-        <button class="fab secondary" onclick="openDepense()" title="Ajouter une dépense">
-            <i class="fas fa-plus"></i>
-        </button>
-    </div>
-
-    <!-- NAVIGATION MOBILE -->
-    <nav class="mobile-bottom-nav mobile-only">
-        <div class="nav-items" id="mobileBottomNav"></div>
-    </nav>
-
-    <!-- CONTENEUR MODALES -->
+    <nav class="mobile-nav" id="mobile-nav"></nav>
     <div id="modal-container"></div>
 
     <script>
-        // ==================== CONFIGURATION ====================
-        const CONFIG = {
-            API_URL: 'https://script.google.com/macros/s/AKfycbwdzHJGAL16KV_OnyoCIs5I7im2yNxrbEaEIbykQ8hy6ewQjJFQ0G4TfqYWWCMc7vfW/exec',
-            REFRESH_INTERVAL: 5 * 60 * 1000, // 5 minutes
-            CAISSES: [
-                { id: 'caisse1', name: 'Cotonou', code: 'Maromilitaire', endpoint: 'caisse1', status: 'online', color: '#4f46e5', icon: 'fa-store' },
-                { id: 'caisse2', name: 'Calavi', code: 'Carrefour ITTA', endpoint: 'caisse2', status: 'online', color: '#ec4899', icon: 'fa-building' },
-                { id: 'caisse3', name: 'Natitingou', code: 'Hôpital départemental', endpoint: 'caisse3', status: 'online', color: '#f59e0b', icon: 'fa-hospital' }
-            ]
-        };
+        const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbwdzHJGAL16KV_OnyoCIs5I7im2yNxrbEaEIbykQ8hy6ewQjJFQ0G4TfqYWWCMc7vfW/exec';
+        
+        let caisses = [];
+        let caisseData = {};
+        let currentCaisse = null;
 
-        // ==================== ÉTAT GLOBAL ====================
-        let currentUser = '';
-        let activeCaisseId = null;
-        const caisseDataStore = {};
-        let allCumulData = [];
-        let filteredData = [];
-        let currentPage = 1;
-        let itemsPerPage = 50;
-
-        // ==================== INITIALISATION ====================
-        document.addEventListener('DOMContentLoaded', async () => {
-            try {
-                await initializeApp();
-                setupEventListeners();
-                startAutoRefresh();
-            } catch (error) {
-                console.error('Erreur initialisation:', error);
-                showError('Erreur lors du chargement de l\'application');
-            }
-        });
-
-        async function initializeApp() {
-            // Récupérer utilisateur
-            currentUser = sessionStorage.getItem("utilisateur") || 
-                         localStorage.getItem("utilisateur") || 
-                         'Gestionnaire';
-            
-            document.getElementById('username-display').textContent = currentUser;
-            document.querySelector('.profile-img').src = 
-                `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser)}&background=6366f1&color=fff&bold=true`;
-
-            // Charger données
-            await loadAllCaisses();
-            
-            if (window.innerWidth < 1024) {
-                setupMobileView();
-            } else {
-                await loadCumulData();
-            }
-        }
-
-        function setupEventListeners() {
-            // Pagination
-            document.getElementById('prevPage')?.addEventListener('click', () => changePage(-1));
-            document.getElementById('nextPage')?.addEventListener('click', () => changePage(1));
-            
-            document.getElementById('itemsPerPageSelect')?.addEventListener('change', function() {
-                itemsPerPage = parseInt(this.value);
-                currentPage = 1;
-                updatePagination();
-                displayCurrentPage();
-            });
-
-            // Redimensionnement
-            window.addEventListener('resize', debounce(handleResize, 250));
-        }
-
-        function handleResize() {
-            if (window.innerWidth >= 1024) {
-                if (allCumulData.length === 0) loadCumulData();
-            } else {
-                setupMobileView();
-            }
-        }
-
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
-
-        function startAutoRefresh() {
-            setInterval(async () => {
-                await loadAllCaisses();
-                if (window.innerWidth >= 1024) {
-                    await loadCumulData();
-                } else if (activeCaisseId) {
-                    await displayCaisseDetailMobile(activeCaisseId);
-                }
-            }, CONFIG.REFRESH_INTERVAL);
-        }
-
-        // ==================== GESTION DES CAISSES ====================
-        async function loadAllCaisses() {
-            const container = document.getElementById('caissesContainer');
-            if (!container) return;
-
-            try {
-                const promises = CONFIG.CAISSES.map(async (caisse) => {
-                    try {
-                        const response = await fetch(`${CONFIG.API_URL}?action=${caisse.endpoint}`);
-                        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                        
-                        const data = await response.json();
-                        
-                        if (data.success && data.data?.rows) {
-                            caisseDataStore[caisse.id] = {
-                                data: data.data.rows,
-                                headers: data.data.headers,
-                                timestamp: data.timestamp
-                            };
-                            
-                            return {
-                                ...caisse,
-                                data: data.data.rows,
-                                lastUpdate: new Date(data.timestamp || Date.now()).toLocaleDateString('fr-FR'),
-                                totalOperations: data.data.rows.length
-                            };
-                        }
-                        return { ...caisse, data: [] };
-                    } catch (error) {
-                        console.error(`Erreur ${caisse.name}:`, error);
-                        return { ...caisse, status: 'offline', lastUpdate: 'Erreur', data: [] };
-                    }
-                });
-
-                const caissesWithData = await Promise.all(promises);
-                renderCaissesCards(caissesWithData);
-                
-            } catch (error) {
-                console.error('Erreur:', error);
-                container.innerHTML = '<div class="alert alert-danger">Erreur de chargement des caisses</div>';
-            }
-        }
-
-        function renderCaissesCards(caisses) {
-            const container = document.getElementById('caissesContainer');
-            
-            container.innerHTML = caisses.map(caisse => {
-                const stats = calculateWeeklyStats(caisse);
-                return `
-                    <div class="caisse-card" onclick="openCaisseModal('${caisse.id}', '${caisse.name}')">
-                        <div class="caisse-header">
-                            <div class="caisse-icon" style="background: ${caisse.color}">
-                                <i class="fas ${caisse.icon}"></i>
-                            </div>
-                            <div class="caisse-info">
-                                <div class="caisse-title">${caisse.name}</div>
-                                <div class="caisse-location">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    ${caisse.code}
-                                </div>
-                                <span class="caisse-status status-${caisse.status}">
-                                    <i class="fas fa-circle"></i>
-                                    ${caisse.status === 'online' ? 'En ligne' : 'Hors ligne'}
-                                </span>
-                            </div>
-                        </div>
-                        
-                        <div class="caisse-stats">
-                            <div class="stat-item">
-                                <span class="stat-label">Solde</span>
-                                <span class="stat-value ${stats.solde >= 0 ? 'positive' : 'negative'}">
-                                    ${formatCurrency(stats.solde)}
-                                </span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-label">Entrées (semaine)</span>
-                                <span class="stat-value positive">${formatCurrency(stats.entrees)}</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-label">Sorties (semaine)</span>
-                                <span class="stat-value negative">${formatCurrency(stats.sorties)}</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-label">Opérations</span>
-                                <span class="stat-value">${stats.operations || 0}</span>
-                            </div>
-                        </div>
-                        
-                        <div class="text-center" style="font-size: 0.75rem; color: var(--gray-500);">
-                            <i class="fas fa-sync-alt"></i> MAJ: ${caisse.lastUpdate || '--'}
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function calculateWeeklyStats(caisse) {
-            if (!caisse.data?.length) return { solde: 0, entrees: 0, sorties: 0, operations: 0 };
-            
-            let solde = 0;
-            let entrees = 0;
-            let sorties = 0;
-            let operations = 0;
-            
+        function getCurrentYearMonth() {
             const now = new Date();
-            const weekStart = new Date(now);
-            weekStart.setDate(now.getDate() - now.getDay() + (now.getDay() === 0 ? -6 : 1));
-            weekStart.setHours(0, 0, 0, 0);
-            
-            const weekEnd = new Date(weekStart);
-            weekEnd.setDate(weekEnd.getDate() + 6);
-            weekEnd.setHours(23, 59, 59, 999);
-            
-            caisse.data.forEach(row => {
-                const montant = parseFloat(row[2]) || 0;
-                const mouvement = row[3];
-                
-                if (mouvement === 'Entrée') solde += montant;
-                else if (mouvement === 'Sortie') solde -= montant;
-                
-                const rowDate = new Date(row[0]);
-                if (rowDate >= weekStart && rowDate <= weekEnd) {
-                    if (mouvement === 'Entrée') entrees += montant;
-                    else if (mouvement === 'Sortie') sorties += montant;
-                    operations++;
-                }
-            });
-            
-            return { solde, entrees, sorties, operations };
+            return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
         }
 
-        // ==================== VUE MOBILE ====================
-        function setupMobileView() {
-            generateMobileNav();
-            if (CONFIG.CAISSES.length > 0 && !activeCaisseId) {
-                selectCaisseMobile(CONFIG.CAISSES[0].id);
-            }
-        }
-
-        function generateMobileNav() {
-            const nav = document.getElementById('mobileBottomNav');
-            if (!nav) return;
-            
-            nav.innerHTML = CONFIG.CAISSES.map((caisse, index) => `
-                <a href="#" class="nav-item ${index === 0 ? 'active' : ''}" 
-                   onclick="selectCaisseMobile('${caisse.id}'); return false;">
-                    <i class="fas ${caisse.icon}"></i>
-                    <span>${caisse.name}</span>
-                </a>
-            `).join('');
-        }
-
-        function selectCaisseMobile(caisseId) {
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            
-            const activeNav = Array.from(document.querySelectorAll('.nav-item')).find(
-                item => item.querySelector('span')?.textContent === CONFIG.CAISSES.find(c => c.id === caisseId)?.name
-            );
-            if (activeNav) activeNav.classList.add('active');
-            
-            activeCaisseId = caisseId;
-            displayCaisseDetailMobile(caisseId);
-        }
-
-        async function displayCaisseDetailMobile(caisseId) {
-            const detailSection = document.getElementById('mobileCaisseDetail');
-            const caisse = CONFIG.CAISSES.find(c => c.id === caisseId);
-            
-            if (!detailSection || !caisse) return;
-            
-            detailSection.innerHTML = `
-                <div class="text-center" style="padding: 2rem;">
-                    <div class="spinner"></div>
-                    <p>Chargement de ${caisse.name}...</p>
-                </div>
-            `;
-
+        function isCurrentMonth(dateStr) {
+            if (!dateStr) return false;
             try {
-                const response = await fetch(`${CONFIG.API_URL}?action=${caisse.endpoint}`);
-                if (!response.ok) throw new Error('Erreur réseau');
-                
-                const data = await response.json();
-                
-                if (data.success && data.data?.rows) {
-                    renderMobileDetail(caisse, data.data.rows);
-                } else {
-                    throw new Error('Données invalides');
-                }
-                
-            } catch (error) {
-                console.error('Erreur:', error);
-                detailSection.innerHTML = `
-                    <div class="alert alert-danger">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        Erreur de chargement
-                        <button class="btn btn-primary" onclick="selectCaisseMobile('${caisseId}')">
-                            <i class="fas fa-redo"></i> Réessayer
-                        </button>
-                    </div>
-                `;
+                const d = new Date(dateStr);
+                if (isNaN(d.getTime())) return false;
+                const currentYearMonth = getCurrentYearMonth();
+                const itemYearMonth = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+                return currentYearMonth === itemYearMonth;
+            } catch(e) {
+                return false;
             }
         }
 
-        function renderMobileDetail(caisse, rows) {
-            const stats = calculateDetailStats(rows);
-            const recentRows = rows.slice(-10).reverse();
-            
-            document.getElementById('mobileCaisseDetail').innerHTML = `
-                <div class="caisse-card" style="margin-bottom: 1rem;">
-                    <div class="caisse-header">
-                        <div class="caisse-icon" style="background: ${caisse.color}">
-                            <i class="fas ${caisse.icon}"></i>
-                        </div>
-                        <div>
-                            <div class="caisse-title">${caisse.name}</div>
-                            <div class="caisse-location">${caisse.code}</div>
-                            <span class="caisse-status status-${caisse.status}">
-                                <i class="fas fa-circle"></i> ${caisse.status === 'online' ? 'En ligne' : 'Hors ligne'}
-                            </span>
-                        </div>
-                    </div>
-                    
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin: 1rem 0;">
-                        <div class="stat-item">
-                            <span class="stat-label">SOLDE</span>
-                            <div class="stat-value ${stats.solde >= 0 ? 'positive' : 'negative'}">
-                                ${formatCurrency(stats.solde)}
-                            </div>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label">OPÉRATIONS</span>
-                            <div class="stat-value">${rows.length}</div>
-                        </div>
-                    </div>
-                    
-                    <div style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem;">
-                        <div class="stat-item" style="flex: 1; background: rgba(16, 185, 129, 0.1);">
-                            <span class="stat-label">ENTRÉES</span>
-                            <div class="stat-value positive">${formatCurrency(stats.entrees)}</div>
-                        </div>
-                        <div class="stat-item" style="flex: 1; background: rgba(239, 68, 68, 0.1);">
-                            <span class="stat-label">SORTIES</span>
-                            <div class="stat-value negative">${formatCurrency(stats.sorties)}</div>
-                        </div>
-                    </div>
-                    
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                        <h3 style="font-size: 1rem; font-weight: 600;">Dernières opérations</h3>
-                        <button class="btn btn-primary" onclick="openCaisseModal('${caisse.id}', '${caisse.name}')">
-                            Voir tout <i class="fas fa-arrow-right"></i>
-                        </button>
-                    </div>
-                    
-                    <div class="table-container" style="padding: 0;">
-                        <table class="cumul-table" style="font-size: 0.7rem;">
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Désignation</th>
-                                    <th class="text-right">Montant</th>
-                                    <th>Type</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${recentRows.map(row => `
-                                    <tr>
-                                        <td>${formatDate(row[0])}</td>
-                                        <td>${truncate(row[1] || '', 20)}</td>
-                                        <td class="text-right" style="color: ${row[3] === 'Entrée' ? 'var(--success)' : 'var(--danger)'}">
-                                            ${formatCurrency(row[2])}
-                                        </td>
-                                        <td>
-                                            <span class="badge ${row[3] === 'Entrée' ? 'badge-success' : 'badge-danger'}">
-                                                ${row[3] || ''}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            `;
+        function getCaisseBalance(caisseId) {
+            const data = caisseData[caisseId]?.allData || [];
+            return data.reduce((balance, item) => {
+                if (item.mouvement === 'Entrée') return balance + item.montant;
+                if (item.mouvement === 'Sortie') return balance - item.montant;
+                return balance;
+            }, 0);
         }
 
-        function calculateDetailStats(rows) {
-            let solde = 0;
-            let entrees = 0;
-            let sorties = 0;
-            
-            rows.forEach(row => {
-                const montant = parseFloat(row[2]) || 0;
-                const mouvement = row[3];
-                
-                if (mouvement === 'Entrée') {
-                    solde += montant;
-                    entrees += montant;
-                } else if (mouvement === 'Sortie') {
-                    solde -= montant;
-                    sorties += montant;
-                }
-            });
-            
-            return { solde, entrees, sorties };
-        }
-
-        // ==================== DONNÉES CUMULATIVES ====================
-        async function loadCumulData() {
-            const cumulData = document.getElementById('cumulData');
-            if (!cumulData) return;
-            
-            cumulData.innerHTML = '<tr><td colspan="8" class="text-center"><div class="spinner"></div></td></tr>';
-            
-            try {
-                allCumulData = [];
-                
-                for (const caisse of CONFIG.CAISSES) {
-                    const response = await fetch(`${CONFIG.API_URL}?action=${caisse.endpoint}`);
-                    
-                    if (response.ok) {
-                        const data = await response.json();
-                        
-                        if (data.success && data.data?.rows) {
-                            data.data.rows.forEach(row => {
-                                allCumulData.push({
-                                    agence: caisse.name,
-                                    agenceCode: caisse.id,
-                                    date: row[0] || '',
-                                    designation: row[1] || '',
-                                    montant: parseFloat(row[2]) || 0,
-                                    mouvement: row[3] || '',
-                                    user: row[4] || '',
-                                    categorie: row[6] || '',
-                                    note: row[7] || '',
-                                    rawDate: new Date(row[0] || Date.now())
-                                });
-                            });
-                        }
-                    }
-                }
-                
-                allCumulData.sort((a, b) => b.rawDate - a.rawDate);
-                updateFilterOptions();
-                resetCumulFilter();
-                
-            } catch (error) {
-                console.error('Erreur:', error);
-                cumulData.innerHTML = '<tr><td colspan="8" class="text-center">Erreur de chargement</td></tr>';
-            }
-        }
-
-        function updateFilterOptions() {
-            const agenceFilter = document.getElementById('filterAgence');
-            const categorieFilter = document.getElementById('filterCategorie');
-            
-            if (agenceFilter) {
-                agenceFilter.innerHTML = '<option value="">Toutes</option>' + 
-                    CONFIG.CAISSES.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-            }
-            
-            if (categorieFilter) {
-                const categories = [...new Set(allCumulData.map(i => i.categorie).filter(Boolean))];
-                categorieFilter.innerHTML = '<option value="">Toutes</option>' + 
-                    categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
-            }
-        }
-
-        function applyCumulFilter() {
-            const dateStart = document.getElementById('filterDateStart')?.value;
-            const dateEnd = document.getElementById('filterDateEnd')?.value;
-            const agence = document.getElementById('filterAgence')?.value;
-            const mouvement = document.getElementById('filterMouvement')?.value;
-            const categorie = document.getElementById('filterCategorie')?.value;
-            
-            filteredData = allCumulData.filter(item => {
-                if (!item.date) return false;
-                
-                let dateMatch = true;
-                if (dateStart || dateEnd) {
-                    const itemDate = new Date(item.date);
-                    const startDate = dateStart ? new Date(dateStart) : null;
-                    const endDate = dateEnd ? new Date(dateEnd) : null;
-                    
-                    if (startDate && endDate) {
-                        dateMatch = itemDate >= startDate && itemDate <= endDate;
-                    } else if (startDate) {
-                        dateMatch = itemDate >= startDate;
-                    } else if (endDate) {
-                        dateMatch = itemDate <= endDate;
-                    }
-                }
-                
-                return dateMatch &&
-                       (!agence || item.agenceCode === agence) &&
-                       (!mouvement || item.mouvement === mouvement) &&
-                       (!categorie || item.categorie === categorie);
-            });
-            
-            currentPage = 1;
-            updatePagination();
-            displayCurrentPage();
-            
-            const message = document.getElementById('cumul-message');
-            if (message) {
-                message.textContent = `📊 ${filteredData.length} enregistrement(s) trouvé(s)`;
-                message.style.display = 'flex';
-            }
-        }
-
-        function resetCumulFilter() {
-            const today = new Date();
-            const lastWeek = new Date(today);
-            lastWeek.setDate(lastWeek.getDate() - 7);
-            
-            document.getElementById('filterDateStart').value = lastWeek.toISOString().split('T')[0];
-            document.getElementById('filterDateEnd').value = today.toISOString().split('T')[0];
-            document.getElementById('filterAgence').value = '';
-            document.getElementById('filterMouvement').value = '';
-            document.getElementById('filterCategorie').value = '';
-            
-            applyCumulFilter();
-        }
-
-        function displayCurrentPage() {
-            const cumulData = document.getElementById('cumulData');
-            if (!cumulData) return;
-            
-            if (!filteredData.length) {
-                cumulData.innerHTML = '<tr><td colspan="8" class="text-center">Aucune donnée</td></tr>';
-                return;
-            }
-            
-            const start = (currentPage - 1) * itemsPerPage;
-            const end = Math.min(start + itemsPerPage, filteredData.length);
-            const pageData = filteredData.slice(start, end);
-            
-            cumulData.innerHTML = pageData.map(item => `
-                <tr>
-                    <td>${formatDate(item.date)}</td>
-                    <td>
-                        <span class="badge" style="background: ${getCaisseColor(item.agenceCode)}20; color: ${getCaisseColor(item.agenceCode)};">
-                            ${item.agence}
-                        </span>
-                    </td>
-                    <td title="${item.designation}">${truncate(item.designation, 50)}</td>
-                    <td class="text-right">${formatCurrency(item.montant)}</td>
-                    <td>
-                        <span class="badge ${item.mouvement === 'Entrée' ? 'badge-success' : 'badge-danger'}">
-                            ${item.mouvement || ''}
-                        </span>
-                    </td>
-                    <td>${item.user || ''}</td>
-                    <td>${item.categorie || ''}</td>
-                    <td title="${item.note}">${truncate(item.note, 30)}</td>
-                </tr>
-            `).join('');
-        }
-
-        function updatePagination() {
-            const pageInfo = document.getElementById('page-info');
-            const prevBtn = document.getElementById('prevPage');
-            const nextBtn = document.getElementById('nextPage');
-            
-            if (!pageInfo) return;
-            
-            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-            
-            if (filteredData.length === 0) {
-                pageInfo.textContent = 'Aucune donnée';
-                if (prevBtn) prevBtn.disabled = true;
-                if (nextBtn) nextBtn.disabled = true;
-                return;
-            }
-            
-            const start = (currentPage - 1) * itemsPerPage + 1;
-            const end = Math.min(currentPage * itemsPerPage, filteredData.length);
-            
-            pageInfo.textContent = `${start}-${end} sur ${filteredData.length} enregistrements`;
-            
-            if (prevBtn) prevBtn.disabled = currentPage === 1;
-            if (nextBtn) nextBtn.disabled = currentPage === totalPages;
-        }
-
-        function changePage(direction) {
-            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-            
-            if (direction === 1 && currentPage < totalPages) {
-                currentPage++;
-            } else if (direction === -1 && currentPage > 1) {
-                currentPage--;
-            }
-            
-            updatePagination();
-            displayCurrentPage();
-        }
-
-        // ==================== MODALES ====================
-        window.openCaisseModal = function(caisseId, caisseName) {
-            const modalContainer = document.getElementById('modal-container');
-            
-            modalContainer.innerHTML = `
-                <div class="modal-overlay active" id="modal-${caisseId}">
-                    <div class="modal-content modal-content-large">
-                        <div class="modal-header">
-                            <h3 class="modal-title">
-                                <i class="fas fa-cash-register"></i>
-                                Caisse ${caisseName}
-                            </h3>
-                            <button class="modal-close" onclick="closeModal()">&times;</button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="text-center" style="padding: 2rem;">
-                                <div class="spinner"></div>
-                                <p>Chargement...</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            setTimeout(() => loadCaisseModalData(caisseId, caisseName), 100);
-        };
-
-        async function loadCaisseModalData(caisseId, caisseName) {
-            const modalBody = document.querySelector(`#modal-${caisseId} .modal-body`);
-            
-            try {
-                const response = await fetch(`${CONFIG.API_URL}?action=${caisseId}`);
-                if (!response.ok) throw new Error('Erreur réseau');
-                
-                const data = await response.json();
-                
-                if (!data.success || !data.data?.rows) {
-                    throw new Error('Données invalides');
-                }
-                
-                const rows = data.data.rows.reverse();
-                
-                modalBody.innerHTML = `
-                    <div style="margin-bottom: 1rem;">
-                        <input type="text" class="form-control" 
-                               placeholder="Rechercher..." 
-                               onkeyup="filterModalTable('${caisseId}', this.value)">
-                    </div>
-                    <div class="table-container" style="padding: 0;">
-                        <table class="cumul-table" id="modal-table-${caisseId}">
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Désignation</th>
-                                    <th class="text-right">Montant</th>
-                                    <th>Mouvement</th>
-                                    <th>Utilisateur</th>
-                                    ${window.innerWidth >= 1024 ? '<th>Catégorie</th><th>Note</th>' : ''}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${rows.map(row => `
-                                    <tr>
-                                        <td>${formatDate(row[0])}</td>
-                                        <td title="${row[1] || ''}">${truncate(row[1] || '', 50)}</td>
-                                        <td class="text-right" style="color: ${row[3] === 'Entrée' ? 'var(--success)' : 'var(--danger)'}">
-                                            ${formatCurrency(row[2])}
-                                        </td>
-                                        <td>
-                                            <span class="badge ${row[3] === 'Entrée' ? 'badge-success' : 'badge-danger'}">
-                                                ${row[3] || ''}
-                                            </span>
-                                        </td>
-                                        <td>${row[4] || ''}</td>
-                                        ${window.innerWidth >= 1024 ? `
-                                            <td>${row[6] || ''}</td>
-                                            <td title="${row[7] || ''}">${truncate(row[7] || '', 30)}</td>
-                                        ` : ''}
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="text-center" style="margin-top: 1rem; padding: 1rem; background: var(--gray-50); border-radius: var(--radius-md);">
-                        <strong>${rows.length} opération(s)</strong>
-                    </div>
-                `;
-                
-            } catch (error) {
-                console.error('Erreur:', error);
-                modalBody.innerHTML = `
-                    <div class="text-center" style="padding: 2rem;">
-                        <i class="fas fa-exclamation-triangle" style="font-size: 2rem; color: var(--danger);"></i>
-                        <p style="margin: 1rem 0;">Erreur de chargement</p>
-                        <button class="btn btn-primary" onclick="loadCaisseModalData('${caisseId}', '${caisseName}')">
-                            <i class="fas fa-redo"></i> Réessayer
-                        </button>
-                    </div>
-                `;
-            }
-        }
-
-        window.filterModalTable = function(caisseId, searchTerm) {
-            const table = document.getElementById(`modal-table-${caisseId}`);
-            if (!table) return;
-            
-            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
-            searchTerm = searchTerm.toLowerCase();
-            
-            Array.from(rows).forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(searchTerm) ? '' : 'none';
-            });
-        };
-
-        window.closeModal = function() {
-            // me permet de me rassurer que tous est a jour
-           window.location.href = 'Caisse.html';
-        };
-
-        // ==================== GESTION DES DÉPENSES ====================
-        window.openDepense = async function() {
-            const modalContainer = document.getElementById('modal-container');
-            
-            modalContainer.innerHTML = `
-                <div class="modal-overlay active" id="depenseModal">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h3 class="modal-title">
-                                <i class="fas fa-plus-circle"></i>
-                                Ajouter une Dépense
-                            </h3>
-                        </div>
-                        <div class="modal-body">
-                            <div class="text-center">
-                                <div class="spinner"></div>
-                                <p>Chargement des données...</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            try {
-                const response = await fetch(`${CONFIG.API_URL}?action=getconfigdata`);
-                const data = await response.json();
-                
-                if (!data.success || !data.data) {
-                    throw new Error('Impossible de charger les données');
-                }
-                
-                const { categories, agences } = data.data;
-                
-                document.querySelector('#depenseModal .modal-body').innerHTML = `
-                    <form id="depenseForm">
-                        <div class="form-group">
-                            <label>Date <span class="required">*</span></label>
-                            <input type="date" id="depenseDate" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Agence <span class="required">*</span></label>
-                            <select id="depenseAgence" class="form-control select-control" required>
-                                <option value="">Sélectionner</option>
-                                ${agences.map(a => `<option value="${a}">${a}</option>`).join('')}
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Désignation <span class="required">*</span></label>
-                            <input type="text" id="depenseDesignation" class="form-control" 
-                                   placeholder="Description de la dépense" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Catégorie <span class="required">*</span></label>
-                            <select id="depenseCategorie" class="form-control select-control" required>
-                                <option value="">Sélectionner</option>
-                                ${categories.map(c => `<option value="${c.value}">${c.label}</option>`).join('')}
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Montant (FCFA) <span class="required">*</span></label>
-                            <input type="number" id="depenseMontant" class="form-control" 
-                                   placeholder="0" min="0" step="1" required>
-                        </div>
-                        <div id="form-message" class="form-message"></div>
-                    </form>
-                    <div class="modal-footer" style="padding: 1rem 0 0 0;">
-                        <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
-                        <button class="btn btn-primary" onclick="submitDepense()">Enregistrer</button>
-                    </div>
-                `;
-                
-                document.getElementById('depenseDate').value = new Date().toISOString().split('T')[0];
-                
-            } catch (error) {
-                console.error('Erreur:', error);
-                document.querySelector('#depenseModal .modal-body').innerHTML = `
-                    <div class="alert alert-danger">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        Erreur: ${error.message}
-                    </div>
-                    <div class="modal-footer" style="padding: 1rem 0 0 0;">
-                        <button class="btn btn-primary" onclick="closeModal()">Fermer</button>
-                    </div>
-                `;
-            }
-        };
-
-        window.submitDepense = async function() {
-            const form = document.getElementById('depenseForm');
-            const formMessage = document.getElementById('form-message');
-            
-            if (!form.checkValidity()) {
-                form.reportValidity();
-                formMessage.textContent = 'Veuillez remplir tous les champs obligatoires.';
-                formMessage.classList.add('error');
-                return;
-            }
-            
-            const username = sessionStorage.getItem("utilisateur") || 
-                            localStorage.getItem("utilisateur") || 
-                            'Utilisateur';
-            
-            const depenseData = {
-                date: document.getElementById('depenseDate').value,
-                agence: document.getElementById('depenseAgence').value,
-                designation: document.getElementById('depenseDesignation').value.trim(),
-                categorie: document.getElementById('depenseCategorie').value,
-                utilisateur: username,
-                montant: parseFloat(document.getElementById('depenseMontant').value)
-            };
-            
-            if (isNaN(depenseData.montant) || depenseData.montant <= 0) {
-                formMessage.textContent = 'Veuillez entrer un montant valide.';
-                formMessage.classList.add('error');
-                return;
-            }
-            const submitButton = document.querySelector('#depenseModal .btn-primary');
-    submitButton.disabled = true;
-    submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Enregistrement...';
-
-    try {
-        const apiUrl = "https://script.google.com/macros/s/AKfycbwdzHJGAL16KV_OnyoCIs5I7im2yNxrbEaEIbykQ8hy6ewQjJFQ0G4TfqYWWCMc7vfW/exec?action=addDepense";
-
-            await fetch(apiUrl, {
-              method: 'POST',
-              mode: 'no-cors',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(depenseData)
-            });
-
-        // Succès
-        formMessage.textContent = '✅ Dépense enregistrée avec succès!';
-        formMessage.classList.add('success');
-        
-        // Réinitialiser le formulaire après succès
-        form.reset();
-        
-        // Fermer après 1.5s
-        setTimeout(() => {
-            closeModal();
-            // Rafraîchir les données si nécessaire
-            if (typeof refreshExpenses === 'function') {
-                refreshExpenses();
-            }
-        }, 1500);
-
-    } catch (error) {
-        console.error("Erreur:", error);
-        formMessage.innerHTML = `❌ ${error.message || "Une erreur est survenue lors de l'enregistrement"}`;
-        logError(`Dépense: ${errorMsg}`);
-        formMessage.classList.add('error');
-    } finally {
-        submitButton.disabled = false;
-        submitButton.textContent = 'Enregistrer';
-    }
-}
-
-        // ==================== UTILITAIRES ====================
         function formatDate(dateString) {
-            if (!dateString) return '';
+            if (!dateString) return '—';
             try {
-                return new Date(dateString).toLocaleDateString('fr-FR');
+                const d = new Date(dateString);
+                return d.toLocaleDateString('fr-FR');
             } catch {
                 return dateString;
             }
         }
 
-        function formatCurrency(amount) {
-            return new Intl.NumberFormat('fr-FR', { 
-                minimumFractionDigits: 0, 
-                maximumFractionDigits: 0 
-            }).format(amount || 0);
-        }
-
-        function truncate(text, length) {
+        function escapeHtml(text) {
             if (!text) return '';
-            return text.length > length ? text.substring(0, length) + '...' : text;
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
 
-        function getCaisseColor(caisseId) {
-            return CONFIG.CAISSES.find(c => c.id === caisseId)?.color || '#4f46e5';
+        function showToast(msg, type) {
+            const zone = document.getElementById('toast-zone');
+            const id = 'toast-' + Date.now();
+            const el = document.createElement('div');
+            el.className = `toast ${type}`;
+            el.id = id;
+            el.innerHTML = `
+                <div class="toast-icon">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
+                </div>
+                <span class="toast-msg">${escapeHtml(msg)}</span>
+                <button class="toast-dismiss" onclick="document.getElementById('${id}').remove()">✕</button>
+            `;
+            zone.appendChild(el);
+            setTimeout(() => {
+                if (document.getElementById(id)) el.remove();
+            }, 4000);
         }
 
-        window.openVueGlobale = function() {
-            window.location.href = 'Accueil.html';
-        };
-
-        function showError(message) {
-            const container = document.querySelector('.app-container');
-            if (container) {
-                container.innerHTML = `
-                    <div class="alert alert-danger">
-                        <i class="fas fa-exclamation-circle"></i>
-                        ${message}
-                    </div>
-                `;
+        function setCurrentDate() {
+            const el = document.getElementById('current-date');
+            if (el) {
+                el.textContent = new Date().toLocaleDateString('fr-FR', { 
+                    day: 'numeric', 
+                    month: 'long', 
+                    year: 'numeric' 
+                });
             }
         }
 
-        // Gestionnaire clic extérieur pour fermer les modales
-        document.addEventListener('click', (event) => {
-            if (event.target.classList.contains('modal-overlay')) {
-                closeModal();
+        function createRipple(event, element) {
+            const ripple = document.createElement('span');
+            ripple.classList.add('ripple');
+            const rect = element.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            ripple.style.width = ripple.style.height = `${size}px`;
+            const x = event.clientX - rect.left - size / 2;
+            const y = event.clientY - rect.top - size / 2;
+            ripple.style.left = `${x}px`;
+            ripple.style.top = `${y}px`;
+            element.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+        }
+
+        window.openDepenseWithEffect = async function(event) {
+            const button = event.currentTarget;
+            
+            button.classList.add('btn-clicked');
+            setTimeout(() => button.classList.remove('btn-clicked'), 400);
+            createRipple(event, button);
+            
+            const originalIcon = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Chargement...';
+            button.disabled = true;
+            
+            try {
+                await openDepense();
+            } finally {
+                button.innerHTML = originalIcon;
+                button.disabled = false;
+            }
+        };
+
+        async function loadCaisses() {
+            try {
+                const response = await fetch(`${API_BASE_URL}?action=getdataagence&_=${Date.now()}`);
+                const result = await response.json();
+                
+                if (result.success && result.data && result.data.caisses && result.data.caisses.length > 0) {
+                    caisses = result.data.caisses.map(caisse => ({
+                        id: caisse.value,
+                        name: caisse.label,
+                        code: caisse.code || caisse.value,
+                        endpoint: caisse.getAgenceSheetName,
+                        icon: caisse.icon || 'fa-store',
+                        color: caisse.color || '#3D4FE0',
+                        sheetName: caisse.getAgenceSheetName
+                    }));
+                    return true;
+                } else {
+                    showToast('Aucune caisse trouvée', 'error');
+                    return false;
+                }
+            } catch (error) {
+                console.error('Erreur chargement agences:', error);
+                showToast('Erreur de connexion à l\'API', 'error');
+                return false;
+            }
+        }
+
+        async function loadCaisseData(caisseId) {
+            const caisse = caisses.find(c => c.id === caisseId);
+            if (!caisse || !caisse.endpoint) return false;
+            
+            try {
+                const res = await fetch(`${API_BASE_URL}?action=${caisse.endpoint}&_=${Date.now()}`);
+                const json = await res.json();
+                
+                if (json && json.data && json.data.rows && Array.isArray(json.data.rows)) {
+                    caisseData[caisseId] = {
+                        allData: json.data.rows.map(row => ({
+                            date: row[0] || '',
+                            designation: row[1] || '',
+                            montant: parseFloat(row[2]) || 0,
+                            mouvement: row[3] || '',
+                            user: row[4] || '',
+                            agence: caisse.name,
+                            categorie: row[6] || '',
+                            note: row[7] || ''
+                        })),
+                        filteredData: []
+                    };
+                    caisseData[caisseId].filteredData = [...caisseData[caisseId].allData];
+                    return true;
+                } else {
+                    caisseData[caisseId] = { allData: [], filteredData: [] };
+                    return false;
+                }
+            } catch (err) {
+                console.error(`Erreur chargement ${caisse.name}:`, err);
+                caisseData[caisseId] = { allData: [], filteredData: [] };
+                return false;
+            }
+        }
+
+        async function loadAllCaisseData() {
+            for (let caisse of caisses) {
+                await loadCaisseData(caisse.id);
+            }
+        }
+
+        function buildUI() {
+            buildSideNav();
+            buildMobileNav();
+            buildSections();
+        }
+
+        function buildSideNav() {
+            const container = document.getElementById('nav-buttons');
+            if (!container) return;
+            
+            container.innerHTML = caisses.map((c, i) => `
+                <button id="nav-btn-${c.id}" class="nav-item ${i === 0 ? 'active' : ''}" onclick="showSection('${c.id}')">
+                    <i class="fas ${c.icon}"></i>
+                    <span>${escapeHtml(c.name)}</span>
+                </button>
+            `).join('');
+        }
+
+        function buildMobileNav() {
+            const container = document.getElementById('mobile-nav');
+            if (!container) return;
+            
+            container.innerHTML = caisses.map((c, i) => `
+                <button id="mobile-nav-${c.id}" class="mob-item ${i === 0 ? 'active' : ''}" onclick="showSection('${c.id}')">
+                    <i class="fas ${c.icon}"></i>
+                    <span>${escapeHtml(c.name)}</span>
+                </button>
+            `).join('');
+        }
+
+        function buildSections() {
+            const container = document.getElementById('content-area');
+            if (!container) return;
+            
+            container.innerHTML = caisses.map((c, i) => `
+                <section id="section-${c.id}" class="section ${i === 0 ? 'active' : ''}">
+                    <div class="section-head">
+                        <div class="section-meta">
+                            <h2 class="section-title">Caisse ${escapeHtml(c.name)}</h2>
+                            <p class="section-sub">${escapeHtml(c.code)}</p>
+                        </div>
+                        <div class="section-actions">
+                            <button class="btn btn-ghost" onclick="refreshCaisseData('${c.id}')">
+                                <i class="fas fa-rotate-right"></i> Actualiser
+                            </button>
+                            <button class="btn btn-accent" onclick="openDepenseWithEffect(event)">
+                                <i class="fas fa-plus"></i> Dépense
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="kpi-grid">
+                        <div class="kpi-card">
+                            <div class="kpi-label">
+                                <span class="kpi-icon" style="background:rgba(61,79,224,.1);color:#3D4FE0"><i class="fas fa-scale-balanced"></i></span>
+                                Solde
+                            </div>
+                            <div class="kpi-value" id="solde-${c.id}">—<span class="kpi-unit">FCFA</span></div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-label">
+                                <span class="kpi-icon" style="background:var(--c-green-lt);color:var(--c-green)"><i class="fas fa-arrow-down-long"></i></span>
+                                Entrées (mois)
+                            </div>
+                            <div class="kpi-value" id="entrees-${c.id}">—<span class="kpi-unit">FCFA</span></div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-label">
+                                <span class="kpi-icon" style="background:var(--c-red-lt);color:var(--c-red)"><i class="fas fa-arrow-up-long"></i></span>
+                                Sorties (mois)
+                            </div>
+                            <div class="kpi-value" id="sorties-${c.id}">—<span class="kpi-unit">FCFA</span></div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-label">
+                                <span class="kpi-icon" style="background:var(--c-amber-lt);color:var(--c-amber)"><i class="fas fa-list-check"></i></span>
+                                Opérations (mois)
+                            </div>
+                            <div class="kpi-value" id="operations-${c.id}">—</div>
+                        </div>
+                    </div>
+
+                    <div class="toolbar">
+                        <div class="search-wrap">
+                            <i class="fas fa-magnifying-glass"></i>
+                            <input type="text" id="search-${c.id}" class="search-input" placeholder="Rechercher..." oninput="applyFilter('${c.id}')">
+                        </div>
+                        <span class="result-count" id="count-${c.id}">0 opération(s)</span>
+                    </div>
+
+                    <div class="table-card">
+                        <div class="table-scroll">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Désignation</th>
+                                        <th>Montant</th>
+                                        <th>Mouvement</th>
+                                        <th>Catégorie</th>
+                                        <th>Note</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="data-${c.id}">
+                                    <tr><td colspan="6"><div class="spinner"></div></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            `).join('');
+        }
+
+        function updateSummary(caisseId) {
+            const data = caisseData[caisseId]?.allData || [];
+            
+            let solde = getCaisseBalance(caisseId);
+            
+            let entreesMois = 0, sortiesMois = 0, operationsMois = 0;
+            data.forEach(item => {
+                if (isCurrentMonth(item.date)) {
+                    operationsMois++;
+                    if (item.mouvement === 'Entrée') entreesMois += item.montant;
+                    else if (item.mouvement === 'Sortie') sortiesMois += item.montant;
+                }
+            });
+            
+            const fmt = v => v.toLocaleString('fr-FR');
+            
+            const soldeEl = document.getElementById(`solde-${caisseId}`);
+            const entreesEl = document.getElementById(`entrees-${caisseId}`);
+            const sortiesEl = document.getElementById(`sorties-${caisseId}`);
+            const operationsEl = document.getElementById(`operations-${caisseId}`);
+            
+            if (soldeEl) soldeEl.innerHTML = `${fmt(solde)}<span class="kpi-unit">FCFA</span>`;
+            if (entreesEl) entreesEl.innerHTML = `${fmt(entreesMois)}<span class="kpi-unit">FCFA</span>`;
+            if (sortiesEl) sortiesEl.innerHTML = `${fmt(sortiesMois)}<span class="kpi-unit">FCFA</span>`;
+            if (operationsEl) operationsEl.textContent = operationsMois;
+        }
+
+        function displayData(caisseId) {
+            const data = caisseData[caisseId]?.filteredData || [];
+            const tbody = document.getElementById(`data-${caisseId}`);
+            const count = document.getElementById(`count-${caisseId}`);
+            
+            if (count) count.textContent = `${data.length} opération(s)`;
+
+            if (!data.length) {
+                if (tbody) {
+                    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-inbox"></i><p>Aucune donnée disponible</p></div></td></tr>`;
+                }
+                return;
+            }
+
+            if (tbody) {
+                tbody.innerHTML = data.map(item => `
+                    <tr>
+                        <td class="td-date">${formatDate(item.date)}</td>
+                        <td>${escapeHtml(item.designation)}</td>
+                        <td class="td-amount">${item.montant.toLocaleString('fr-FR')} FCFA</td>
+                        <td><span class="badge ${item.mouvement === 'Entrée' ? 'badge-entree' : 'badge-sortie'}">${item.mouvement}</span></td>
+                        <td>${item.categorie ? `<span class="cat-pill">${escapeHtml(item.categorie)}</span>` : '—'}</td>
+                        <td>${item.note ? escapeHtml(item.note) : '—'}</td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        function applyFilter(caisseId) {
+            const searchInput = document.getElementById(`search-${caisseId}`);
+            const term = (searchInput?.value || '').toLowerCase();
+            
+            if (caisseData[caisseId]) {
+                caisseData[caisseId].filteredData = caisseData[caisseId].allData.filter(
+                    item => item.designation.toLowerCase().includes(term) ||
+                            (item.categorie || '').toLowerCase().includes(term) ||
+                            (item.note || '').toLowerCase().includes(term)
+                );
+                displayData(caisseId);
+            }
+        }
+
+        async function refreshCaisseData(caisseId) {
+            const btn = document.querySelector(`#section-${caisseId} .btn-ghost`);
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Chargement...';
+            }
+            
+            await loadCaisseData(caisseId);
+            updateSummary(caisseId);
+            displayData(caisseId);
+            showToast('Données actualisées', 'success');
+            
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-rotate-right"></i> Actualiser';
+            }
+        }
+
+        function showSection(caisseId) {
+            caisses.forEach(c => {
+                const section = document.getElementById(`section-${c.id}`);
+                const navBtn = document.getElementById(`nav-btn-${c.id}`);
+                const mobBtn = document.getElementById(`mobile-nav-${c.id}`);
+                if (section) section.classList.remove('active');
+                if (navBtn) navBtn.classList.remove('active');
+                if (mobBtn) mobBtn.classList.remove('active');
+            });
+            
+            const activeSection = document.getElementById(`section-${caisseId}`);
+            const activeNav = document.getElementById(`nav-btn-${caisseId}`);
+            const activeMob = document.getElementById(`mobile-nav-${caisseId}`);
+            
+            if (activeSection) activeSection.classList.add('active');
+            if (activeNav) activeNav.classList.add('active');
+            if (activeMob) activeMob.classList.add('active');
+            
+            currentCaisse = caisseId;
+            updateSummary(caisseId);
+            displayData(caisseId);
+        }
+
+        window.openDepense = async function() {
+            if (!currentCaisse) {
+                showToast('Veuillez sélectionner une caisse', 'error');
+                return;
+            }
+            
+            const currentCaisseObj = caisses.find(c => c.id === currentCaisse);
+            if (!currentCaisseObj) return;
+            
+            const balance = getCaisseBalance(currentCaisse);
+            
+            let categoriesOptions = '<option value="Divers">Divers</option>';
+            try {
+                const response = await fetch(`${API_BASE_URL}?action=getconfigdata&_=${Date.now()}`);
+                const data = await response.json();
+                const categories = data.data?.categories || [];
+                if (categories.length > 0) {
+                    categoriesOptions = categories.map(c => 
+                        `<option value="${escapeHtml(c.value)}">${escapeHtml(c.label)}</option>`
+                    ).join('');
+                }
+            } catch (error) {
+                console.warn('Erreur chargement catégories:', error);
+            }
+            
+            const mc = document.getElementById('modal-container');
+            mc.innerHTML = `
+                <div class="modal-overlay active" id="depenseModal">
+                    <div class="modal">
+                        <div class="modal-head">
+                            <h3 class="modal-head-title">Nouvelle dépense</h3>
+                            <button class="modal-close" onclick="closeModal()"><i class="fas fa-xmark"></i></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label class="form-label">Date</label>
+                                <input type="date" id="depenseDate" class="form-control" value="${new Date().toISOString().split('T')[0]}">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Agence</label>
+                                <input type="text" id="depenseAgence" class="form-control" value="${escapeHtml(currentCaisseObj.name)}" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Désignation</label>
+                                <input type="text" id="depenseDesignation" class="form-control" placeholder="Description de la dépense">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Catégorie</label>
+                                <select id="depenseCategorie" class="form-control">
+                                    ${categoriesOptions}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Montant (FCFA)</label>
+                                <input type="number" id="depenseMontant" class="form-control" placeholder="0" step="1" min="1">
+                                <small style="color:var(--c-ink3);font-size:.7rem;margin-top:.2rem;display:block">
+                                    Solde disponible: ${balance.toLocaleString('fr-FR')} FCFA
+                                </small>
+                            </div>
+                        </div>
+                        <div class="modal-foot">
+                            <button class="btn btn-ghost" onclick="closeModal()">Annuler</button>
+                            <button class="btn btn-accent" onclick="submitDepense()">Enregistrer</button>
+                        </div>
+                    </div>
+                </div>`;
+        };
+
+        window.submitDepense = async function() {
+            const montantInput = document.getElementById('depenseMontant');
+            const montant = parseFloat(montantInput?.value || 0);
+            const designation = document.getElementById('depenseDesignation')?.value || '';
+            const categorie = document.getElementById('depenseCategorie')?.value || 'Divers';
+            
+            if (!designation.trim()) {
+                showToast('Veuillez indiquer une désignation', 'error');
+                return;
+            }
+            
+            if (isNaN(montant) || montant <= 0) {
+                showToast('Veuillez entrer un montant valide', 'error');
+                return;
+            }
+            
+            const balance = getCaisseBalance(currentCaisse);
+            if (montant > balance) {
+                showToast(`Montant supérieur au solde disponible (${balance.toLocaleString('fr-FR')} FCFA)`, 'error');
+                return;
+            }
+            
+            const username = sessionStorage.getItem("utilisateur") || 
+                    localStorage.getItem("utilisateur") || 
+                    'Utilisateur';
+            
+            const depenseData = {
+                action: 'addDepense',
+                date: document.getElementById('depenseDate').value,
+                agence: document.getElementById('depenseAgence').value,
+                designation: designation,
+                categorie: categorie,
+                utilisateur: username,
+                montant: montant
+            };
+            
+            const submitButton = document.querySelector('#depenseModal .btn-accent');
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement...';
+            }
+            
+try {
+        const apiUrl = "https://script.google.com/macros/s/AKfycbwdzHJGAL16KV_OnyoCIs5I7im2yNxrbEaEIbykQ8hy6ewQjJFQ0G4TfqYWWCMc7vfW/exec";
+        
+        // Utilisation de mode: 'no-cors' pour éviter les problèmes CORS
+        await fetch(`${apiUrl}?action=addDepense`, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(depenseData)
+        });
+        
+        // Avec no-cors, on ne peut pas lire la réponse
+        // On considère que ça a fonctionné si aucune erreur n'est levée
+    // c'est volontaire
+        showToast('✅ Dépense enregistrée avec succès!', 'success');
+        
+        setTimeout(() => {
+            closeModal();
+            refreshCaisseData(currentCaisse);
+        }, 1500);
+        
+    } catch (error) {
+        console.error("Erreur de connexion:", error);
+        showToast(`❌ Erreur de connexion: ${error.message}`, 'error');
+        
+        if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.innerHTML = 'Enregistrer';
+        }
+    }
+};
+
+        window.closeModal = function() {
+            const modal = document.querySelector('.modal-overlay.active');
+            if (modal) modal.classList.remove('active');
+            setTimeout(() => document.getElementById('modal-container').innerHTML = '', 300);
+        };
+
+        window.onscroll = function() {
+            const fab = document.getElementById('fab');
+            if (fab) {
+                fab.style.display = window.scrollY > 300 ? 'flex' : 'none';
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            setCurrentDate();
+            const loaded = await loadCaisses();
+            
+            if (loaded && caisses.length > 0) {
+                buildUI();
+                await loadAllCaisseData();
+                
+                if (caisses.length > 0) {
+                    currentCaisse = caisses[0].id;
+                    updateSummary(currentCaisse);
+                    displayData(currentCaisse);
+                }
+            } else {
+                document.getElementById('content-area').innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Aucune caisse trouvée. Vérifiez votre connexion API.</p>
+                    </div>
+                `;
             }
         });
     </script>
