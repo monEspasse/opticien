@@ -7,7 +7,7 @@
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
+        <style>
 :root {
     --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
@@ -283,8 +283,6 @@ body {
     right: 20px;
     z-index: 1001;
     margin: 0;
-    display: flex;
-    gap: 10px;
 }
 
 .back-btn .btn {
@@ -690,8 +688,8 @@ body {
 .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
+    background: rgba(255, 255, 255, 0.1); 
+    backdrop-filter: blur(2px) brightness(0.9);
     display: none;
     align-items: center;
     justify-content: center;
@@ -707,11 +705,18 @@ body {
     background: white;
     border-radius: var(--border-radius-xl);
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
-    width: 90%;
-    max-width: 800px;
-    max-height: 90vh;
+    width: 45%;
+    max-width: none;
+    height: 100vh;
+    max-height: 100vh;
+    position: fixed;
+    top: 0;
+    right: 0; 
+    left: auto; 
+    margin: 0;
+    border-radius: 0; 
     overflow: hidden;
-    animation: modalPopIn 0.3s ease;
+    animation: slideInFromRight 0.4s ease;
 }
 
 .xlarge-modal {
@@ -747,12 +752,12 @@ body {
 .modal-close {
     background: transparent;
     border: none;
-    font-size: 1.5rem;
+    font-size: 1.1rem;
     color: white;
     cursor: pointer;
     transition: color 0.2s ease;
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -765,7 +770,7 @@ body {
 
 .modal-body {
     padding: 1.2rem;
-    max-height: calc(90vh - 120px);
+    height: calc(100vh - 120px); 
     overflow-y: auto;
 }
 
@@ -780,14 +785,13 @@ body {
     background: white;
 }
 
-@keyframes modalPopIn {
-    0% {
-        opacity: 0;
-        transform: scale(0.9);
+/* Animation d'entrée depuis la droite */
+@keyframes slideInFromRight {
+    from {
+        transform: translateX(100%);
     }
-    100% {
-        opacity: 1;
-        transform: scale(1);
+    to {
+        transform: translateX(0);
     }
 }
 
@@ -1471,6 +1475,21 @@ textarea.form-control {
     margin-right: 0.5rem;
 }
 
+@keyframes modalPopIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+#deleteModal.modal-overlay.active .modal-content {
+    animation: modalPopIn 0.3s ease;
+}
+
 /* ==================== MODAL DE CONSIGNATION D'APPEL ==================== */
 #logCallModal .modal-content {
     max-width: 500px;
@@ -1526,6 +1545,1398 @@ textarea.form-control {
         min-width: auto;
     }
 }
+
+.modal-close {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.close-square {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    background-color: #ff0000;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+
+.close-square:hover {
+    background-color: #cc0000;
+}
+#newSaleModal.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.15) 0%, transparent 50%);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+    animation: modalEntrance 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Modal actif */
+#newSaleModal.active {
+    display: flex;
+}
+
+/* -----------------------
+   MODAL CONTAINER NÉOMORPHISME
+   ----------------------- */
+#newSaleModal .modal-content {
+    background: 
+        linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.95) 0%,
+            rgba(255, 255, 255, 0.88) 100%);
+    backdrop-filter: blur(40px) saturate(200%);
+    -webkit-backdrop-filter: blur(40px) saturate(200%);
+    border-radius: 32px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    width: 98%;
+    max-width: 1600px;
+    max-height: 98vh; /* Limite la hauteur maximale */
+    height: auto; /* Permet l'adaptation automatique */
+    overflow-y: auto; /* ✅ DÉFILEMENT VERTICAL ACTIVÉ */
+    overflow-x: hidden; /* Évite le défilement horizontal */
+    box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+    animation: contentSlideUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+/* Effet de bordure lumineuse */
+#newSaleModal .modal-content::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 32px;
+    padding: 2px;
+    background: linear-gradient(135deg, 
+        rgba(106, 17, 203, 0.3), 
+        rgba(37, 117, 252, 0.3), 
+        transparent 30%,
+        transparent 70%,
+        rgba(106, 17, 203, 0.3));
+    -webkit-mask: 
+        linear-gradient(#fff 0 0) content-box, 
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+/* =======================
+   STYLES MANQUANTS POUR LA PRESCRIPTION
+   ======================= */
+
+/* Styles pour la table desktop */
+#newSaleModal .prescription-table.desktop-view {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.6));
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+#newSaleModal .prescription-table.desktop-view th {
+    background: linear-gradient(135deg, rgba(106, 17, 203, 0.9), rgba(37, 117, 252, 0.9));
+    color: white;
+    padding: 18px 16px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+}
+
+#newSaleModal .prescription-table.desktop-view td {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    padding: 16px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.5);
+    transition: all 0.3s;
+}
+
+#newSaleModal .prescription-table.desktop-view select,
+#newSaleModal .prescription-table.desktop-view input {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(106, 17, 203, 0.2);
+    background: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+}
+
+/* Styles pour la version mobile */
+#newSaleModal .prescription-mobile.mobile-view .prescription-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+#newSaleModal .prescription-mobile.mobile-view .card-header {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid rgba(106, 17, 203, 0.2);
+}
+
+#newSaleModal .prescription-mobile.mobile-view .card-header h4 {
+    margin: 0;
+    color: #6a11cb;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+#newSaleModal .prescription-mobile.mobile-view .card-body {
+    display: grid;
+    gap: 15px;
+}
+
+#newSaleModal .prescription-mobile.mobile-view .mobile-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+#newSaleModal .prescription-mobile.mobile-view .mobile-form-group label {
+    font-weight: 600;
+    color: #4a5568;
+    font-size: 0.9rem;
+}
+
+#newSaleModal .prescription-mobile.mobile-view .measures-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+#newSaleModal .prescription-mobile.mobile-view .measure-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+#newSaleModal .prescription-mobile.mobile-view .measure-group label {
+    font-weight: 600;
+    color: #4a5568;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+/* Responsive breakpoints pour la prescription */
+@media (min-width: 1025px) {
+    #newSaleModal .prescription-table.desktop-view {
+        display: table;
+    }
+    #newSaleModal .prescription-mobile.mobile-view {
+        display: none;
+    }
+}
+
+@media (max-width: 1024px) {
+    #newSaleModal .prescription-table.desktop-view {
+        display: none;
+    }
+    #newSaleModal .prescription-mobile.mobile-view {
+        display: block;
+    }
+}
+/* -----------------------
+   HEADER AVEC GRADIENT ANIMÉ
+   ----------------------- */
+#newSaleModal .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 30px;
+    background: 
+        linear-gradient(135deg, 
+            #667eea 0%,
+            #764ba2 25%,
+            #f093fb 50%,
+            #f5576c 75%,
+            #4facfe 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 8s ease infinite;
+    color: #fff;
+    border-radius: 30px 30px 0 0;
+    position: relative;
+    overflow: hidden;
+}
+
+#newSaleModal .modal-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: 
+        radial-gradient(circle at 30% 20%, rgba(255,255,255,0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255,255,255,0.2) 0%, transparent 50%);
+}
+
+#newSaleModal .modal-title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #fff, #e0f7ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: relative;
+    z-index: 2;
+}
+
+#newSaleModal .modal-close {
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.3);
+    font-size: 1.3rem;
+    color: white;
+    cursor: pointer;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    z-index: 2;
+}
+
+#newSaleModal .modal-close:hover {
+    background: rgba(255,255,255,0.3);
+    transform: scale(1.1) rotate(90deg);
+    box-shadow: 0 8px 25px rgba(255,255,255,0.3);
+}
+
+/* -----------------------
+   STEPPER AVEC DESIGN 3D
+   ----------------------- */
+#newSaleModal .step-indicator {
+    display: flex;
+    justify-content: space-between;
+    margin: 30px 40px;
+    position: relative;
+    padding: 0 20px;
+}
+
+#newSaleModal .step-indicator::before {
+    content: '';
+    position: absolute;
+    top: 28px;
+    left: 50px;
+    right: 50px;
+    height: 4px;
+    background: 
+        linear-gradient(90deg, 
+            rgba(106, 17, 203, 0.3) 0%,
+            rgba(37, 117, 252, 0.6) 50%,
+            rgba(106, 17, 203, 0.3) 100%);
+    border-radius: 2px;
+    z-index: 1;
+    box-shadow: 0 2px 8px rgba(106, 17, 203, 0.2);
+}
+
+#newSaleModal .step {
+    flex: 1;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+#newSaleModal .step-number {
+    width: 56px;
+    height: 56px;
+    border-radius: 18px;
+    background: 
+        linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(106, 17, 203, 0.3);
+    color: rgba(106, 17, 203, 0.7);
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 
+        0 4px 20px rgba(106, 17, 203, 0.15),
+        inset 0 1px 0 rgba(255,255,255,0.8);
+    position: relative;
+    overflow: hidden;
+}
+
+#newSaleModal .step-number::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(106, 17, 203, 0.1), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+#newSaleModal .step.active .step-number {
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: white;
+    transform: scale(1.15) translateY(-5px);
+    border-color: transparent;
+    box-shadow: 
+        0 8px 30px rgba(37, 117, 252, 0.4),
+        0 2px 0 rgba(255,255,255,0.2) inset;
+}
+
+#newSaleModal .step.active .step-number::before {
+    opacity: 1;
+}
+
+#newSaleModal .step-label {
+    font-size: 0.9rem;
+    color: #4a5568;
+    font-weight: 600;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+#newSaleModal .step.active .step-label {
+    color: #6a11cb;
+    font-weight: 700;
+    transform: translateY(2px);
+}
+
+/* -----------------------
+   FORM SECTIONS AVEC DESIGN FLOATING
+   ----------------------- */
+#newSaleModal .form-step {
+    display: none;
+    padding: 30px 40px;
+    animation: formSlideIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+#newSaleModal .form-step.active {
+    display: block;
+}
+
+#newSaleModal .section-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 25px;
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    padding-left: 15px;
+    position: relative;
+}
+
+#newSaleModal .section-title::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 30px;
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    border-radius: 3px;
+    box-shadow: 0 4px 12px rgba(106, 17, 203, 0.3);
+}
+
+/* -----------------------
+   FORM GRID AVANCÉ
+   ----------------------- */
+#newSaleModal .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+#newSaleModal .form-group {
+    position: relative;
+}
+
+#newSaleModal .form-group label {
+    font-weight: 700;
+    margin-bottom: 8px;
+    display: block;
+    color: #2d3748;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+}
+
+/* Inputs avec design glassmorphism */
+#newSaleModal input,
+#newSaleModal select,
+#newSaleModal textarea {
+    width: 100%;
+    padding: 16px 20px;
+    border-radius: 16px;
+    border: 2px solid transparent;
+    font-size: 1rem;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    background: 
+        linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.9),
+            rgba(255, 255, 255, 0.7));
+    backdrop-filter: blur(10px);
+    box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    position: relative;
+}
+
+#newSaleModal input:focus,
+#newSaleModal select:focus,
+#newSaleModal textarea:focus {
+    border-color: #6a11cb;
+    box-shadow: 
+        0 8px 30px rgba(106, 17, 203, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    transform: translateY(-2px);
+    outline: none;
+}
+
+/* Effet de lueur au focus */
+#newSaleModal input:focus,
+#newSaleModal select:focus,
+#newSaleModal textarea:focus {
+    background: 
+        linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.95),
+            rgba(255, 255, 255, 0.8));
+}
+
+/* -----------------------
+   TABLE PRESCRIPTION AVEC DESIGN MODERNE
+   ----------------------- */
+#newSaleModal .prescription-table-container {
+    overflow-x: auto;
+    margin: 25px 0;
+    border-radius: 20px;
+    background: 
+        linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.8),
+            rgba(255, 255, 255, 0.6));
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+#newSaleModal .prescription-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    min-width: 700px;
+}
+
+#newSaleModal .prescription-table th {
+    background: 
+        linear-gradient(135deg, 
+            rgba(106, 17, 203, 0.9),
+            rgba(37, 117, 252, 0.9));
+    color: white;
+    padding: 18px 16px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+}
+
+#newSaleModal .prescription-table th::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.6s;
+}
+
+#newSaleModal .prescription-table th:hover::before {
+    left: 100%;
+}
+
+#newSaleModal .prescription-table td {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    padding: 16px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.5);
+    transition: all 0.3s;
+}
+
+#newSaleModal .prescription-table tr:hover td {
+    background: rgba(106, 17, 203, 0.03);
+    transform: translateX(4px);
+}
+
+/* -----------------------
+   PAYMENT CARDS AVEC EFFET 3D
+   ----------------------- */
+#newSaleModal .payment-card {
+    background: 
+        linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.9),
+            rgba(255, 255, 255, 0.7));
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+#newSaleModal .payment-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #6a11cb, #2575fc);
+    transform: scaleX(0);
+    transition: transform 0.4s;
+}
+
+#newSaleModal .payment-card:hover::before {
+    transform: scaleX(1);
+}
+
+#newSaleModal .payment-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 
+        0 15px 40px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+#newSaleModal .payment-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+}
+
+#newSaleModal .payment-label {
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #4a5568;
+    font-size: 0.95rem;
+}
+
+#newSaleModal .payment-value {
+    font-weight: 800;
+    font-size: 1.3rem;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: 
+        linear-gradient(135deg, 
+            rgba(106, 17, 203, 0.1),
+            rgba(37, 117, 252, 0.1));
+    border: 1px solid rgba(106, 17, 203, 0.2);
+    color: #6a11cb;
+    box-shadow: 
+        inset 0 1px 0 rgba(255, 255, 255, 0.6),
+        0 2px 8px rgba(106, 17, 203, 0.1);
+}
+
+/* -----------------------
+   BOUTONS AVEC MICRO-INTERACTIONS
+   ----------------------- */
+#newSaleModal .btn {
+    padding: 16px 32px;
+    border-radius: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border: none;
+    min-width: 140px;
+    position: relative;
+    overflow: hidden;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+#newSaleModal .btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    transition: left 0.6s;
+}
+
+#newSaleModal .btn:hover::before {
+    left: 100%;
+}
+
+#newSaleModal .btn-primary {
+    background: 
+        linear-gradient(135deg, 
+            #6a11cb 0%,
+            #2575fc 50%,
+            #6a11cb 100%);
+    background-size: 200% 200%;
+    color: white;
+    box-shadow: 
+        0 8px 25px rgba(37, 117, 252, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+#newSaleModal .btn-primary:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 
+        0 12px 35px rgba(37, 117, 252, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    background-position: 100% 100%;
+}
+
+#newSaleModal .btn-secondary {
+    background: 
+        linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.9),
+            rgba(255, 255, 255, 0.7));
+    color: #4a5568;
+    border: 2px solid rgba(106, 17, 203, 0.2);
+    box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+#newSaleModal .btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    border-color: #6a11cb;
+    color: #6a11cb;
+}
+
+/* -----------------------
+   STEP NAVIGATION AVANCÉE
+   ----------------------- */
+#newSaleModal .step-navigation {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    padding: 0 40px 30px;
+    gap: 15px;
+}
+
+/* -----------------------
+   LOADER HOLOGRAPRHIQUE
+   ----------------------- */
+#newSaleModal .loader-overlay {
+    position: fixed;
+    inset: 0;
+    background: 
+        radial-gradient(circle at 30% 30%, rgba(106, 17, 203, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 70% 70%, rgba(37, 117, 252, 0.2) 0%, transparent 50%),
+        rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(30px) saturate(180%);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 20000;
+    animation: fadeIn 0.4s ease-out;
+}
+
+#newSaleModal .loader-overlay.active {
+    display: flex;
+}
+
+#newSaleModal .loader-content {
+    background: 
+        linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.95),
+            rgba(255, 255, 255, 0.85));
+    backdrop-filter: blur(40px);
+    padding: 3rem;
+    border-radius: 24px;
+    text-align: center;
+    max-width: 400px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    animation: contentSlideUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+#newSaleModal .loader-spinner {
+    border: 3px solid transparent;
+    border-top: 3px solid #6a11cb;
+    border-right: 3px solid #2575fc;
+    border-bottom: 3px solid #6a11cb;
+    border-left: 3px solid #2575fc;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1.5s linear infinite, colors 3s ease-in-out infinite;
+    margin: 0 auto 1.5rem;
+    position: relative;
+}
+
+#newSaleModal .loader-spinner::before {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border: 2px solid transparent;
+    border-top: 2px solid #6a11cb;
+    border-radius: 50%;
+    animation: spin 2s linear infinite reverse;
+}
+
+/* -----------------------
+   ANIMATIONS AVANCÉES
+   ----------------------- */
+@keyframes modalEntrance {
+    0% { 
+        opacity: 0; 
+        backdrop-filter: blur(0px) saturate(100%);
+    }
+    100% { 
+        opacity: 1; 
+        backdrop-filter: blur(20px) saturate(180%);
+    }
+}
+
+@keyframes contentSlideUp {
+    0% { 
+        opacity: 0; 
+        transform: translateY(30px) scale(0.95);
+    }
+    100% { 
+        opacity: 1; 
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes formSlideIn {
+    0% { 
+        opacity: 0; 
+        transform: translateX(20px);
+    }
+    100% { 
+        opacity: 1; 
+        transform: translateX(0);
+    }
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes colors {
+    0%, 100% { 
+        border-top-color: #6a11cb;
+        border-right-color: #2575fc;
+        border-bottom-color: #6a11cb;
+        border-left-color: #2575fc;
+    }
+    25% { 
+        border-top-color: #2575fc;
+        border-right-color: #6a11cb;
+        border-bottom-color: #2575fc;
+        border-left-color: #6a11cb;
+    }
+    50% { 
+        border-top-color: #f093fb;
+        border-right-color: #f5576c;
+        border-bottom-color: #f093fb;
+        border-left-color: #f5576c;
+    }
+    75% { 
+        border-top-color: #4facfe;
+        border-right-color: #00f2fe;
+        border-bottom-color: #4facfe;
+        border-left-color: #00f2fe;
+    }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn { 
+    from { opacity: 0; } 
+    to { opacity: 1; } 
+}
+
+/* =======================
+   RESPONSIVE DESIGN 2025
+   ======================= */
+@media (max-width: 1200px) {
+    #newSaleModal .modal-content {
+        max-width: 95%;
+    }
+    
+    #newSaleModal .form-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    #newSaleModal.modal-overlay {
+        padding: 15px;
+        align-items: flex-start;
+        padding-top: 40px;
+    }
+    
+    #newSaleModal .modal-content {
+        width: 100%;
+        max-height: 90vh;
+        border-radius: 24px;
+    }
+    
+    #newSaleModal .modal-header {
+        padding: 20px 25px;
+        border-radius: 24px 24px 0 0;
+    }
+    
+    #newSaleModal .modal-title {
+        font-size: 1.5rem;
+    }
+    
+    #newSaleModal .step-indicator {
+        margin: 20px 25px;
+        padding: 0 10px;
+    }
+    
+    #newSaleModal .step-number {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+    }
+    
+    #newSaleModal .step-label {
+        font-size: 0.8rem;
+    }
+    
+    #newSaleModal .form-step {
+        padding: 20px 25px;
+    }
+    
+    #newSaleModal .section-title {
+        font-size: 1.3rem;
+    }
+    
+    #newSaleModal .form-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    #newSaleModal .step-navigation {
+        flex-direction: column;
+        padding: 0 25px 25px;
+    }
+    
+    #newSaleModal .btn {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    #newSaleModal .modal-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    #newSaleModal .step-indicator::before {
+        left: 30px;
+        right: 30px;
+        top: 24px;
+    }
+    
+    #newSaleModal .step-number {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        font-size: 0.9rem;
+    }
+    
+    #newSaleModal input,
+    #newSaleModal select,
+    #newSaleModal textarea {
+        padding: 14px 16px;
+    }
+    
+    #newSaleModal .payment-card {
+        padding: 20px;
+    }
+    
+    #newSaleModal .payment-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Support pour les appareils avec préférence de mouvement réduit */
+@media (prefers-reduced-motion: reduce) {
+    #newSaleModal * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+/* =======================
+   PRESCRIPTION RESPONSIVE
+   ======================= */
+
+.prescription-container {
+    margin: 25px 0;
+}
+
+/* Version desktop visible par défaut */
+.prescription-table.desktop-view {
+    display: table;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.6));
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+/* Version mobile cachée par défaut */
+.prescription-mobile.mobile-view {
+    display: none;
+}
+
+/* Cartes pour la version mobile */
+.prescription-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.prescription-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.card-header {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid rgba(106, 17, 203, 0.2);
+}
+
+.card-header h4 {
+    margin: 0;
+    color: #6a11cb;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+/* Corps des cartes */
+.card-body {
+    display: grid;
+    gap: 15px;
+}
+
+.mobile-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.mobile-form-group label {
+    font-weight: 600;
+    color: #4a5568;
+    font-size: 0.9rem;
+}
+
+.mobile-form-group select,
+.mobile-form-group input {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 2px solid transparent;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.mobile-form-group select:focus,
+.mobile-form-group input:focus {
+    border-color: #6a11cb;
+    box-shadow: 0 8px 30px rgba(106, 17, 203, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    outline: none;
+}
+
+/* Grille pour les mesures */
+.measures-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.measure-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.measure-group label {
+    font-weight: 600;
+    color: #4a5568;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.measure-group input {
+    text-align: center;
+    padding: 12px;
+}
+
+/* Carte mesures spéciale */
+.measures-card .card-header {
+    text-align: center;
+    border-bottom-color: rgba(37, 117, 252, 0.3);
+}
+
+.measures-card .card-header h4 {
+    color: #2575fc;
+}
+
+/* Inputs plus petits pour desktop */
+.small-input {
+    padding: 8px 12px !important;
+    text-align: center;
+}
+
+/* =======================
+   RESPONSIVE BREAKPOINTS
+   ======================= */
+
+@media (max-width: 1024px) {
+    .prescription-table.desktop-view {
+        display: none;
+    }
+    
+    .prescription-mobile.mobile-view {
+        display: block;
+    }
+}
+
+@media (max-width: 768px) {
+    .prescription-card {
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .card-body {
+        gap: 12px;
+    }
+    
+    .mobile-form-group select,
+    .mobile-form-group input {
+        padding: 10px 14px;
+        font-size: 0.9rem;
+    }
+    
+    .measures-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .prescription-card {
+        padding: 12px;
+        border-radius: 16px;
+    }
+    
+    .card-header {
+        margin-bottom: 15px;
+        padding-bottom: 12px;
+    }
+    
+    .card-header h4 {
+        font-size: 1.1rem;
+    }
+    
+    .mobile-form-group select,
+    .mobile-form-group input {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
+}
+
+/* Support pour les appareils avec préférence de mouvement réduit */
+@media (prefers-reduced-motion: reduce) {
+    .prescription-card {
+        transition: none;
+    }
+    
+    .prescription-card:hover {
+        transform: none;
+    }
+}
+/* Cacher/montrer selon l'écran */
+@media (min-width: 1025px) {
+    .prescription-table.desktop-view {
+        display: table;
+    }
+    .prescription-mobile.mobile-view {
+        display: none;
+    }
+}
+
+@media (max-width: 1024px) {
+    .prescription-table.desktop-view {
+        display: none;
+    }
+    .prescription-mobile.mobile-view {
+        display: block;
+    }
+}
+
+    </style>
+
+    <style>
+        /* Additional styles for the mobile bottom nav visibility */
+        .mobile-bottom-nav {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-bottom-nav {
+                display: flex;
+            }
+        }
+/* Style pour les boutons "Ajouter nouveau" */
+.btn-small {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border: 1px solid rgba(106, 17, 203, 0.2);
+    color: #6a11cb;
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+    width: auto;
+    backdrop-filter: blur(4px);
+}
+
+.btn-small::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s;
+    z-index: 1;
+}
+
+.btn-small:hover {
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: white;
+    transform: translateY(-2px) scale(1.02);
+    border-color: transparent;
+    box-shadow: 0 8px 20px rgba(106, 17, 203, 0.25);
+}
+
+.btn-small:hover::before {
+    left: 100%;
+}
+
+.btn-small i {
+    font-size: 0.9rem;
+    transition: transform 0.3s ease;
+}
+
+.btn-small:hover i {
+    transform: rotate(90deg);
+}
+
+.btn-small:active {
+    transform: translateY(0) scale(0.98);
+}
+
+/* Version lorsque le bouton est en mode "Choisir existant" */
+.btn-small.choisir-mode {
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    color: #1976d2;
+    border-color: rgba(25, 118, 210, 0.3);
+}
+
+.btn-small.choisir-mode:hover {
+    background: linear-gradient(135deg, #1976d2, #0d47a1);
+    color: white;
+}
+
+.btn-small.choisir-mode i {
+    transform: none;
+}
+
+.btn-small.choisir-mode:hover i {
+    transform: rotate(-90deg);
+}
+
+/* Animation de pulsation pour attirer l'attention */
+@keyframes subtle-pulse {
+    0% {
+        box-shadow: 0 2px 8px rgba(106, 17, 203, 0.1);
+    }
+    50% {
+        box-shadow: 0 4px 16px rgba(106, 17, 203, 0.25);
+    }
+    100% {
+        box-shadow: 0 2px 8px rgba(106, 17, 203, 0.1);
+    }
+}
+
+.btn-small {
+    animation: subtle-pulse 2s infinite ease-in-out;
+}
+
+.btn-small:hover {
+    animation: none;
+}
+
+/* Style pour le conteneur du bouton */
+.form-group {
+    position: relative;
+}
+
+.form-group .btn-small {
+    margin-top: 5px;
+}
+
+/* Style pour l'input personnalisé qui apparaît */
+.form-group input[style*="display: block"] {
+    border: 2px solid #6a11cb !important;
+    box-shadow: 0 4px 16px rgba(106, 17, 203, 0.15) !important;
+    transform: translateY(-1px);
+}
+
+/* Animation d'apparition pour l'input */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form-group input[style*="display: block"] {
+    animation: slideDown 0.3s ease-out;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .btn-small {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .btn-small {
+        margin-top: 8px;
+        order: 2;
+    }
+    
+    .form-group select,
+    .form-group input[type="text"] {
+        order: 1;
+    }
+}
+
+@media (max-width: 480px) {
+    .btn-small {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
+    
+    .btn-small i {
+        font-size: 1rem;
+    }
+}
+
+/* Support pour le mode sombre si nécessaire */
+@media (prefers-color-scheme: dark) {
+    .btn-small {
+        background: linear-gradient(135deg, #2d3748, #1a202c);
+        color: #a0aec0;
+        border-color: rgba(255,255,255,0.1);
+    }
+    
+    .btn-small:hover {
+        background: linear-gradient(135deg, #6a11cb, #2575fc);
+        color: white;
+    }
+}
+
+
 
 .rdv-quick-filters {
     display: flex;
