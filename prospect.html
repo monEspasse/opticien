@@ -283,6 +283,8 @@ body {
     right: 20px;
     z-index: 1001;
     margin: 0;
+    display: flex;
+    gap: 10px;
 }
 
 .back-btn .btn {
@@ -688,8 +690,8 @@ body {
 .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(255, 255, 255, 0.1); 
-    backdrop-filter: blur(2px) brightness(0.9);
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
     display: none;
     align-items: center;
     justify-content: center;
@@ -705,18 +707,11 @@ body {
     background: white;
     border-radius: var(--border-radius-xl);
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
-    width: 45%;
-    max-width: none;
-    height: 100vh;
-    max-height: 100vh;
-    position: fixed;
-    top: 0;
-    right: 0; 
-    left: auto; 
-    margin: 0;
-    border-radius: 0; 
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
     overflow: hidden;
-    animation: slideInFromRight 0.4s ease;
+    animation: modalPopIn 0.3s ease;
 }
 
 .xlarge-modal {
@@ -752,12 +747,12 @@ body {
 .modal-close {
     background: transparent;
     border: none;
-    font-size: 1.1rem;
+    font-size: 1.5rem;
     color: white;
     cursor: pointer;
     transition: color 0.2s ease;
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -770,7 +765,7 @@ body {
 
 .modal-body {
     padding: 1.2rem;
-    height: calc(100vh - 120px); 
+    max-height: calc(90vh - 120px);
     overflow-y: auto;
 }
 
@@ -785,13 +780,14 @@ body {
     background: white;
 }
 
-/* Animation d'entrée depuis la droite */
-@keyframes slideInFromRight {
-    from {
-        transform: translateX(100%);
+@keyframes modalPopIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.9);
     }
-    to {
-        transform: translateX(0);
+    100% {
+        opacity: 1;
+        transform: scale(1);
     }
 }
 
@@ -1475,21 +1471,6 @@ textarea.form-control {
     margin-right: 0.5rem;
 }
 
-@keyframes modalPopIn {
-    0% {
-        opacity: 0;
-        transform: scale(0.9);
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-#deleteModal.modal-overlay.active .modal-content {
-    animation: modalPopIn 0.3s ease;
-}
-
 /* ==================== MODAL DE CONSIGNATION D'APPEL ==================== */
 #logCallModal .modal-content {
     max-width: 500px;
@@ -1546,1700 +1527,439 @@ textarea.form-control {
     }
 }
 
-.modal-close {
-    background: transparent;
-    border: none;
+.rdv-quick-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.3rem;
+}
+
+.rdv-quick-btn {
+    padding: 0.4rem 0.8rem;
+    border-radius: var(--border-radius-full);
+    border: 1px solid var(--gray-300);
+    background: white;
+    font-size: 0.75rem;
+    font-weight: 500;
     cursor: pointer;
-    padding: 0;
+    transition: all 0.2s ease;
+    color: var(--gray-700);
 }
 
-.close-square {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 30px;
-    height: 30px;
-    background-color: #ff0000;
-    color: white;
-    font-size: 24px;
-    font-weight: bold;
-    border-radius: 6px;
-    transition: background-color 0.2s ease;
-}
-
-.close-square:hover {
-    background-color: #cc0000;
-}
-#newSaleModal.modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: 
-        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.2) 0%, transparent 50%),
-        radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.15) 0%, transparent 50%);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    z-index: 10000;
-    justify-content: center;
-    align-items: center;
-    animation: modalEntrance 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    padding: 20px;
-    box-sizing: border-box;
-}
-
-/* Modal actif */
-#newSaleModal.active {
-    display: flex;
-}
-
-/* -----------------------
-   MODAL CONTAINER NÉOMORPHISME
-   ----------------------- */
-#newSaleModal .modal-content {
-    background: 
-        linear-gradient(135deg, 
-            rgba(255, 255, 255, 0.95) 0%,
-            rgba(255, 255, 255, 0.88) 100%);
-    backdrop-filter: blur(40px) saturate(200%);
-    -webkit-backdrop-filter: blur(40px) saturate(200%);
-    border-radius: 32px;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    width: 98%;
-    max-width: 1600px;
-    max-height: 98vh; /* Limite la hauteur maximale */
-    height: auto; /* Permet l'adaptation automatique */
-    overflow-y: auto; /* ✅ DÉFILEMENT VERTICAL ACTIVÉ */
-    overflow-x: hidden; /* Évite le défilement horizontal */
-    box-shadow: 
-        0 25px 50px -12px rgba(0, 0, 0, 0.25),
-        inset 0 1px 0 rgba(255, 255, 255, 0.6),
-        inset 0 -1px 0 rgba(0, 0, 0, 0.05);
-    animation: contentSlideUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-}
-
-/* Effet de bordure lumineuse */
-#newSaleModal .modal-content::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 32px;
-    padding: 2px;
-    background: linear-gradient(135deg, 
-        rgba(106, 17, 203, 0.3), 
-        rgba(37, 117, 252, 0.3), 
-        transparent 30%,
-        transparent 70%,
-        rgba(106, 17, 203, 0.3));
-    -webkit-mask: 
-        linear-gradient(#fff 0 0) content-box, 
-        linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-}
-
-/* =======================
-   STYLES MANQUANTS POUR LA PRESCRIPTION
-   ======================= */
-
-/* Styles pour la table desktop */
-#newSaleModal .prescription-table.desktop-view {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.6));
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.6);
-}
-
-#newSaleModal .prescription-table.desktop-view th {
-    background: linear-gradient(135deg, rgba(106, 17, 203, 0.9), rgba(37, 117, 252, 0.9));
-    color: white;
-    padding: 18px 16px;
-    font-weight: 700;
-    font-size: 0.95rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    position: relative;
-    overflow: hidden;
-}
-
-#newSaleModal .prescription-table.desktop-view td {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-    padding: 16px;
-    text-align: center;
-    background: rgba(255, 255, 255, 0.5);
-    transition: all 0.3s;
-}
-
-#newSaleModal .prescription-table.desktop-view select,
-#newSaleModal .prescription-table.desktop-view input {
-    width: 100%;
-    padding: 8px 12px;
-    border-radius: 8px;
-    border: 1px solid rgba(106, 17, 203, 0.2);
-    background: rgba(255, 255, 255, 0.8);
-    font-size: 0.9rem;
-}
-
-/* Styles pour la version mobile */
-#newSaleModal .prescription-mobile.mobile-view .prescription-card {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
-    backdrop-filter: blur(15px);
-    border-radius: 20px;
-    padding: 20px;
-    margin-bottom: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.8);
-}
-
-#newSaleModal .prescription-mobile.mobile-view .card-header {
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid rgba(106, 17, 203, 0.2);
-}
-
-#newSaleModal .prescription-mobile.mobile-view .card-header h4 {
-    margin: 0;
-    color: #6a11cb;
-    font-weight: 700;
-    font-size: 1.2rem;
-}
-
-#newSaleModal .prescription-mobile.mobile-view .card-body {
-    display: grid;
-    gap: 15px;
-}
-
-#newSaleModal .prescription-mobile.mobile-view .mobile-form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-#newSaleModal .prescription-mobile.mobile-view .mobile-form-group label {
-    font-weight: 600;
-    color: #4a5568;
-    font-size: 0.9rem;
-}
-
-#newSaleModal .prescription-mobile.mobile-view .measures-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-}
-
-#newSaleModal .prescription-mobile.mobile-view .measure-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-#newSaleModal .prescription-mobile.mobile-view .measure-group label {
-    font-weight: 600;
-    color: #4a5568;
-    font-size: 0.9rem;
-    text-align: center;
-}
-
-/* Responsive breakpoints pour la prescription */
-@media (min-width: 1025px) {
-    #newSaleModal .prescription-table.desktop-view {
-        display: table;
-    }
-    #newSaleModal .prescription-mobile.mobile-view {
-        display: none;
-    }
-}
-
-@media (max-width: 1024px) {
-    #newSaleModal .prescription-table.desktop-view {
-        display: none;
-    }
-    #newSaleModal .prescription-mobile.mobile-view {
-        display: block;
-    }
-}
-/* -----------------------
-   HEADER AVEC GRADIENT ANIMÉ
-   ----------------------- */
-#newSaleModal .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 25px 30px;
-    background: 
-        linear-gradient(135deg, 
-            #667eea 0%,
-            #764ba2 25%,
-            #f093fb 50%,
-            #f5576c 75%,
-            #4facfe 100%);
-    background-size: 400% 400%;
-    animation: gradientShift 8s ease infinite;
-    color: #fff;
-    border-radius: 30px 30px 0 0;
-    position: relative;
-    overflow: hidden;
-}
-
-#newSaleModal .modal-header::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: 
-        radial-gradient(circle at 30% 20%, rgba(255,255,255,0.3) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(255,255,255,0.2) 0%, transparent 50%);
-}
-
-#newSaleModal .modal-title {
-    font-size: 1.8rem;
-    font-weight: 800;
-    background: linear-gradient(135deg, #fff, #e0f7ff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    position: relative;
-    z-index: 2;
-}
-
-#newSaleModal .modal-close {
-    background: rgba(255,255,255,0.2);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.3);
-    font-size: 1.3rem;
-    color: white;
-    cursor: pointer;
-    width: 44px;
-    height: 44px;
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    position: relative;
-    z-index: 2;
-}
-
-#newSaleModal .modal-close:hover {
-    background: rgba(255,255,255,0.3);
-    transform: scale(1.1) rotate(90deg);
-    box-shadow: 0 8px 25px rgba(255,255,255,0.3);
-}
-
-/* -----------------------
-   STEPPER AVEC DESIGN 3D
-   ----------------------- */
-#newSaleModal .step-indicator {
-    display: flex;
-    justify-content: space-between;
-    margin: 30px 40px;
-    position: relative;
-    padding: 0 20px;
-}
-
-#newSaleModal .step-indicator::before {
-    content: '';
-    position: absolute;
-    top: 28px;
-    left: 50px;
-    right: 50px;
-    height: 4px;
-    background: 
-        linear-gradient(90deg, 
-            rgba(106, 17, 203, 0.3) 0%,
-            rgba(37, 117, 252, 0.6) 50%,
-            rgba(106, 17, 203, 0.3) 100%);
-    border-radius: 2px;
-    z-index: 1;
-    box-shadow: 0 2px 8px rgba(106, 17, 203, 0.2);
-}
-
-#newSaleModal .step {
-    flex: 1;
-    text-align: center;
-    position: relative;
-    z-index: 2;
-    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-#newSaleModal .step-number {
-    width: 56px;
-    height: 56px;
-    border-radius: 18px;
-    background: 
-        linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
-    backdrop-filter: blur(10px);
-    border: 2px solid rgba(106, 17, 203, 0.3);
-    color: rgba(106, 17, 203, 0.7);
-    font-weight: 800;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 12px;
-    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-    box-shadow: 
-        0 4px 20px rgba(106, 17, 203, 0.15),
-        inset 0 1px 0 rgba(255,255,255,0.8);
-    position: relative;
-    overflow: hidden;
-}
-
-#newSaleModal .step-number::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(106, 17, 203, 0.1), transparent);
-    opacity: 0;
-    transition: opacity 0.3s;
-}
-
-#newSaleModal .step.active .step-number {
-    background: linear-gradient(135deg, #6a11cb, #2575fc);
-    color: white;
-    transform: scale(1.15) translateY(-5px);
-    border-color: transparent;
-    box-shadow: 
-        0 8px 30px rgba(37, 117, 252, 0.4),
-        0 2px 0 rgba(255,255,255,0.2) inset;
-}
-
-#newSaleModal .step.active .step-number::before {
-    opacity: 1;
-}
-
-#newSaleModal .step-label {
-    font-size: 0.9rem;
-    color: #4a5568;
-    font-weight: 600;
-    transition: all 0.3s;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-#newSaleModal .step.active .step-label {
-    color: #6a11cb;
-    font-weight: 700;
-    transform: translateY(2px);
-}
-
-/* -----------------------
-   FORM SECTIONS AVEC DESIGN FLOATING
-   ----------------------- */
-#newSaleModal .form-step {
-    display: none;
-    padding: 30px 40px;
-    animation: formSlideIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-#newSaleModal .form-step.active {
-    display: block;
-}
-
-#newSaleModal .section-title {
-    font-size: 1.5rem;
-    font-weight: 800;
-    margin-bottom: 25px;
-    background: linear-gradient(135deg, #6a11cb, #2575fc);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    padding-left: 15px;
-    position: relative;
-}
-
-#newSaleModal .section-title::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 6px;
-    height: 30px;
-    background: linear-gradient(135deg, #6a11cb, #2575fc);
-    border-radius: 3px;
-    box-shadow: 0 4px 12px rgba(106, 17, 203, 0.3);
-}
-
-/* -----------------------
-   FORM GRID AVANCÉ
-   ----------------------- */
-#newSaleModal .form-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 25px;
-}
-
-#newSaleModal .form-group {
-    position: relative;
-}
-
-#newSaleModal .form-group label {
-    font-weight: 700;
-    margin-bottom: 8px;
-    display: block;
-    color: #2d3748;
-    font-size: 0.95rem;
-    transition: all 0.3s;
-}
-
-/* Inputs avec design glassmorphism */
-#newSaleModal input,
-#newSaleModal select,
-#newSaleModal textarea {
-    width: 100%;
-    padding: 16px 20px;
-    border-radius: 16px;
-    border: 2px solid transparent;
-    font-size: 1rem;
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    background: 
-        linear-gradient(135deg, 
-            rgba(255, 255, 255, 0.9),
-            rgba(255, 255, 255, 0.7));
-    backdrop-filter: blur(10px);
-    box-shadow: 
-        0 4px 20px rgba(0, 0, 0, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.6);
-    position: relative;
-}
-
-#newSaleModal input:focus,
-#newSaleModal select:focus,
-#newSaleModal textarea:focus {
-    border-color: #6a11cb;
-    box-shadow: 
-        0 8px 30px rgba(106, 17, 203, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.8);
-    transform: translateY(-2px);
-    outline: none;
-}
-
-/* Effet de lueur au focus */
-#newSaleModal input:focus,
-#newSaleModal select:focus,
-#newSaleModal textarea:focus {
-    background: 
-        linear-gradient(135deg, 
-            rgba(255, 255, 255, 0.95),
-            rgba(255, 255, 255, 0.8));
-}
-
-/* -----------------------
-   TABLE PRESCRIPTION AVEC DESIGN MODERNE
-   ----------------------- */
-#newSaleModal .prescription-table-container {
-    overflow-x: auto;
-    margin: 25px 0;
-    border-radius: 20px;
-    background: 
-        linear-gradient(135deg, 
-            rgba(255, 255, 255, 0.8),
-            rgba(255, 255, 255, 0.6));
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.6);
-}
-
-#newSaleModal .prescription-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    min-width: 700px;
-}
-
-#newSaleModal .prescription-table th {
-    background: 
-        linear-gradient(135deg, 
-            rgba(106, 17, 203, 0.9),
-            rgba(37, 117, 252, 0.9));
-    color: white;
-    padding: 18px 16px;
-    font-weight: 700;
-    font-size: 0.95rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    position: relative;
-    overflow: hidden;
-}
-
-#newSaleModal .prescription-table th::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: left 0.6s;
-}
-
-#newSaleModal .prescription-table th:hover::before {
-    left: 100%;
-}
-
-#newSaleModal .prescription-table td {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-    padding: 16px;
-    text-align: center;
-    background: rgba(255, 255, 255, 0.5);
-    transition: all 0.3s;
-}
-
-#newSaleModal .prescription-table tr:hover td {
-    background: rgba(106, 17, 203, 0.03);
-    transform: translateX(4px);
-}
-
-/* -----------------------
-   PAYMENT CARDS AVEC EFFET 3D
-   ----------------------- */
-#newSaleModal .payment-card {
-    background: 
-        linear-gradient(135deg, 
-            rgba(255, 255, 255, 0.9),
-            rgba(255, 255, 255, 0.7));
-    backdrop-filter: blur(15px);
-    border-radius: 20px;
-    padding: 25px;
-    margin-bottom: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.12),
-        inset 0 1px 0 rgba(255, 255, 255, 0.8);
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    position: relative;
-    overflow: hidden;
-}
-
-#newSaleModal .payment-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #6a11cb, #2575fc);
-    transform: scaleX(0);
-    transition: transform 0.4s;
-}
-
-#newSaleModal .payment-card:hover::before {
-    transform: scaleX(1);
-}
-
-#newSaleModal .payment-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 
-        0 15px 40px rgba(0, 0, 0, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.8);
-}
-
-#newSaleModal .payment-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 20px;
-}
-
-#newSaleModal .payment-label {
-    font-weight: 700;
-    margin-bottom: 8px;
-    color: #4a5568;
-    font-size: 0.95rem;
-}
-
-#newSaleModal .payment-value {
-    font-weight: 800;
-    font-size: 1.3rem;
-    padding: 12px 16px;
-    border-radius: 12px;
-    background: 
-        linear-gradient(135deg, 
-            rgba(106, 17, 203, 0.1),
-            rgba(37, 117, 252, 0.1));
-    border: 1px solid rgba(106, 17, 203, 0.2);
-    color: #6a11cb;
-    box-shadow: 
-        inset 0 1px 0 rgba(255, 255, 255, 0.6),
-        0 2px 8px rgba(106, 17, 203, 0.1);
-}
-
-/* -----------------------
-   BOUTONS AVEC MICRO-INTERACTIONS
-   ----------------------- */
-#newSaleModal .btn {
-    padding: 16px 32px;
-    border-radius: 16px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    border: none;
-    min-width: 140px;
-    position: relative;
-    overflow: hidden;
-    font-size: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-#newSaleModal .btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-    transition: left 0.6s;
-}
-
-#newSaleModal .btn:hover::before {
-    left: 100%;
-}
-
-#newSaleModal .btn-primary {
-    background: 
-        linear-gradient(135deg, 
-            #6a11cb 0%,
-            #2575fc 50%,
-            #6a11cb 100%);
-    background-size: 200% 200%;
-    color: white;
-    box-shadow: 
-        0 8px 25px rgba(37, 117, 252, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
-}
-
-#newSaleModal .btn-primary:hover {
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 
-        0 12px 35px rgba(37, 117, 252, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.4);
-    background-position: 100% 100%;
-}
-
-#newSaleModal .btn-secondary {
-    background: 
-        linear-gradient(135deg, 
-            rgba(255, 255, 255, 0.9),
-            rgba(255, 255, 255, 0.7));
-    color: #4a5568;
-    border: 2px solid rgba(106, 17, 203, 0.2);
-    box-shadow: 
-        0 4px 20px rgba(0, 0, 0, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.6);
-}
-
-#newSaleModal .btn-secondary:hover {
-    transform: translateY(-2px);
-    box-shadow: 
-        0 8px 25px rgba(0, 0, 0, 0.12),
-        inset 0 1px 0 rgba(255, 255, 255, 0.8);
-    border-color: #6a11cb;
-    color: #6a11cb;
-}
-
-/* -----------------------
-   STEP NAVIGATION AVANCÉE
-   ----------------------- */
-#newSaleModal .step-navigation {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 30px;
-    padding: 0 40px 30px;
-    gap: 15px;
-}
-
-/* -----------------------
-   LOADER HOLOGRAPRHIQUE
-   ----------------------- */
-#newSaleModal .loader-overlay {
-    position: fixed;
-    inset: 0;
-    background: 
-        radial-gradient(circle at 30% 30%, rgba(106, 17, 203, 0.2) 0%, transparent 50%),
-        radial-gradient(circle at 70% 70%, rgba(37, 117, 252, 0.2) 0%, transparent 50%),
-        rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(30px) saturate(180%);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 20000;
-    animation: fadeIn 0.4s ease-out;
-}
-
-#newSaleModal .loader-overlay.active {
-    display: flex;
-}
-
-#newSaleModal .loader-content {
-    background: 
-        linear-gradient(135deg, 
-            rgba(255, 255, 255, 0.95),
-            rgba(255, 255, 255, 0.85));
-    backdrop-filter: blur(40px);
-    padding: 3rem;
-    border-radius: 24px;
-    text-align: center;
-    max-width: 400px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 
-        0 25px 50px -12px rgba(0, 0, 0, 0.25),
-        inset 0 1px 0 rgba(255, 255, 255, 0.6);
-    animation: contentSlideUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-#newSaleModal .loader-spinner {
-    border: 3px solid transparent;
-    border-top: 3px solid #6a11cb;
-    border-right: 3px solid #2575fc;
-    border-bottom: 3px solid #6a11cb;
-    border-left: 3px solid #2575fc;
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    animation: spin 1.5s linear infinite, colors 3s ease-in-out infinite;
-    margin: 0 auto 1.5rem;
-    position: relative;
-}
-
-#newSaleModal .loader-spinner::before {
-    content: '';
-    position: absolute;
-    inset: -6px;
-    border: 2px solid transparent;
-    border-top: 2px solid #6a11cb;
-    border-radius: 50%;
-    animation: spin 2s linear infinite reverse;
-}
-
-/* -----------------------
-   ANIMATIONS AVANCÉES
-   ----------------------- */
-@keyframes modalEntrance {
-    0% { 
-        opacity: 0; 
-        backdrop-filter: blur(0px) saturate(100%);
-    }
-    100% { 
-        opacity: 1; 
-        backdrop-filter: blur(20px) saturate(180%);
-    }
-}
-
-@keyframes contentSlideUp {
-    0% { 
-        opacity: 0; 
-        transform: translateY(30px) scale(0.95);
-    }
-    100% { 
-        opacity: 1; 
-        transform: translateY(0) scale(1);
-    }
-}
-
-@keyframes formSlideIn {
-    0% { 
-        opacity: 0; 
-        transform: translateX(20px);
-    }
-    100% { 
-        opacity: 1; 
-        transform: translateX(0);
-    }
-}
-
-@keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-@keyframes colors {
-    0%, 100% { 
-        border-top-color: #6a11cb;
-        border-right-color: #2575fc;
-        border-bottom-color: #6a11cb;
-        border-left-color: #2575fc;
-    }
-    25% { 
-        border-top-color: #2575fc;
-        border-right-color: #6a11cb;
-        border-bottom-color: #2575fc;
-        border-left-color: #6a11cb;
-    }
-    50% { 
-        border-top-color: #f093fb;
-        border-right-color: #f5576c;
-        border-bottom-color: #f093fb;
-        border-left-color: #f5576c;
-    }
-    75% { 
-        border-top-color: #4facfe;
-        border-right-color: #00f2fe;
-        border-bottom-color: #4facfe;
-        border-left-color: #00f2fe;
-    }
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-@keyframes fadeIn { 
-    from { opacity: 0; } 
-    to { opacity: 1; } 
-}
-
-/* =======================
-   RESPONSIVE DESIGN 2025
-   ======================= */
-@media (max-width: 1200px) {
-    #newSaleModal .modal-content {
-        max-width: 95%;
-    }
-    
-    #newSaleModal .form-grid {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    }
-}
-
-@media (max-width: 768px) {
-    #newSaleModal.modal-overlay {
-        padding: 15px;
-        align-items: flex-start;
-        padding-top: 40px;
-    }
-    
-    #newSaleModal .modal-content {
-        width: 100%;
-        max-height: 90vh;
-        border-radius: 24px;
-    }
-    
-    #newSaleModal .modal-header {
-        padding: 20px 25px;
-        border-radius: 24px 24px 0 0;
-    }
-    
-    #newSaleModal .modal-title {
-        font-size: 1.5rem;
-    }
-    
-    #newSaleModal .step-indicator {
-        margin: 20px 25px;
-        padding: 0 10px;
-    }
-    
-    #newSaleModal .step-number {
-        width: 48px;
-        height: 48px;
-        border-radius: 14px;
-    }
-    
-    #newSaleModal .step-label {
-        font-size: 0.8rem;
-    }
-    
-    #newSaleModal .form-step {
-        padding: 20px 25px;
-    }
-    
-    #newSaleModal .section-title {
-        font-size: 1.3rem;
-    }
-    
-    #newSaleModal .form-grid {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-    
-    #newSaleModal .step-navigation {
-        flex-direction: column;
-        padding: 0 25px 25px;
-    }
-    
-    #newSaleModal .btn {
-        width: 100%;
-        margin-bottom: 10px;
-    }
-}
-
-@media (max-width: 480px) {
-    #newSaleModal .modal-header {
-        flex-direction: column;
-        gap: 15px;
-        text-align: center;
-    }
-    
-    #newSaleModal .step-indicator::before {
-        left: 30px;
-        right: 30px;
-        top: 24px;
-    }
-    
-    #newSaleModal .step-number {
-        width: 40px;
-        height: 40px;
-        border-radius: 12px;
-        font-size: 0.9rem;
-    }
-    
-    #newSaleModal input,
-    #newSaleModal select,
-    #newSaleModal textarea {
-        padding: 14px 16px;
-    }
-    
-    #newSaleModal .payment-card {
-        padding: 20px;
-    }
-    
-    #newSaleModal .payment-row {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* Support pour les appareils avec préférence de mouvement réduit */
-@media (prefers-reduced-motion: reduce) {
-    #newSaleModal * {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
-}
-/* =======================
-   PRESCRIPTION RESPONSIVE
-   ======================= */
-
-.prescription-container {
-    margin: 25px 0;
-}
-
-/* Version desktop visible par défaut */
-.prescription-table.desktop-view {
-    display: table;
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.6));
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.6);
-}
-
-/* Version mobile cachée par défaut */
-.prescription-mobile.mobile-view {
-    display: none;
-}
-
-/* Cartes pour la version mobile */
-.prescription-card {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
-    backdrop-filter: blur(15px);
-    border-radius: 20px;
-    padding: 20px;
-    margin-bottom: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.8);
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.prescription-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.8);
-}
-
-.card-header {
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid rgba(106, 17, 203, 0.2);
-}
-
-.card-header h4 {
-    margin: 0;
-    color: #6a11cb;
-    font-weight: 700;
-    font-size: 1.2rem;
-}
-
-/* Corps des cartes */
-.card-body {
-    display: grid;
-    gap: 15px;
-}
-
-.mobile-form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.mobile-form-group label {
-    font-weight: 600;
-    color: #4a5568;
-    font-size: 0.9rem;
-}
-
-.mobile-form-group select,
-.mobile-form-group input {
-    width: 100%;
-    padding: 12px 16px;
-    border-radius: 12px;
-    border: 2px solid transparent;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6);
-}
-
-.mobile-form-group select:focus,
-.mobile-form-group input:focus {
-    border-color: #6a11cb;
-    box-shadow: 0 8px 30px rgba(106, 17, 203, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.8);
-    outline: none;
-}
-
-/* Grille pour les mesures */
-.measures-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-}
-
-.measure-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.measure-group label {
-    font-weight: 600;
-    color: #4a5568;
-    font-size: 0.9rem;
-    text-align: center;
-}
-
-.measure-group input {
-    text-align: center;
-    padding: 12px;
-}
-
-/* Carte mesures spéciale */
-.measures-card .card-header {
-    text-align: center;
-    border-bottom-color: rgba(37, 117, 252, 0.3);
-}
-
-.measures-card .card-header h4 {
-    color: #2575fc;
-}
-
-/* Inputs plus petits pour desktop */
-.small-input {
-    padding: 8px 12px !important;
-    text-align: center;
-}
-
-/* =======================
-   RESPONSIVE BREAKPOINTS
-   ======================= */
-
-@media (max-width: 1024px) {
-    .prescription-table.desktop-view {
-        display: none;
-    }
-    
-    .prescription-mobile.mobile-view {
-        display: block;
-    }
-}
-
-@media (max-width: 768px) {
-    .prescription-card {
-        padding: 15px;
-        margin-bottom: 15px;
-    }
-    
-    .card-body {
-        gap: 12px;
-    }
-    
-    .mobile-form-group select,
-    .mobile-form-group input {
-        padding: 10px 14px;
-        font-size: 0.9rem;
-    }
-    
-    .measures-grid {
-        grid-template-columns: 1fr;
-        gap: 12px;
-    }
-}
-
-@media (max-width: 480px) {
-    .prescription-card {
-        padding: 12px;
-        border-radius: 16px;
-    }
-    
-    .card-header {
-        margin-bottom: 15px;
-        padding-bottom: 12px;
-    }
-    
-    .card-header h4 {
-        font-size: 1.1rem;
-    }
-    
-    .mobile-form-group select,
-    .mobile-form-group input {
-        padding: 8px 12px;
-        font-size: 0.85rem;
-    }
-}
-
-/* Support pour les appareils avec préférence de mouvement réduit */
-@media (prefers-reduced-motion: reduce) {
-    .prescription-card {
-        transition: none;
-    }
-    
-    .prescription-card:hover {
-        transform: none;
-    }
-}
-/* Cacher/montrer selon l'écran */
-@media (min-width: 1025px) {
-    .prescription-table.desktop-view {
-        display: table;
-    }
-    .prescription-mobile.mobile-view {
-        display: none;
-    }
-}
-
-@media (max-width: 1024px) {
-    .prescription-table.desktop-view {
-        display: none;
-    }
-    .prescription-mobile.mobile-view {
-        display: block;
-    }
-}
-
-    </style>
-
-    <style>
-        /* Additional styles for the mobile bottom nav visibility */
-        .mobile-bottom-nav {
-            display: none;
-        }
-        
-        @media (max-width: 768px) {
-            .mobile-bottom-nav {
-                display: flex;
-            }
-        }
-/* Style pour les boutons "Ajouter nouveau" */
-.btn-small {
-    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-    border: 1px solid rgba(106, 17, 203, 0.2);
-    color: #6a11cb;
-    padding: 8px 16px;
-    border-radius: 30px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    position: relative;
-    overflow: hidden;
-    width: auto;
-    backdrop-filter: blur(4px);
-}
-
-.btn-small::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-    transition: left 0.5s;
-    z-index: 1;
-}
-
-.btn-small:hover {
-    background: linear-gradient(135deg, #6a11cb, #2575fc);
-    color: white;
-    transform: translateY(-2px) scale(1.02);
-    border-color: transparent;
-    box-shadow: 0 8px 20px rgba(106, 17, 203, 0.25);
-}
-
-.btn-small:hover::before {
-    left: 100%;
-}
-
-.btn-small i {
-    font-size: 0.9rem;
-    transition: transform 0.3s ease;
-}
-
-.btn-small:hover i {
-    transform: rotate(90deg);
-}
-
-.btn-small:active {
-    transform: translateY(0) scale(0.98);
-}
-
-/* Version lorsque le bouton est en mode "Choisir existant" */
-.btn-small.choisir-mode {
-    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-    color: #1976d2;
-    border-color: rgba(25, 118, 210, 0.3);
-}
-
-.btn-small.choisir-mode:hover {
-    background: linear-gradient(135deg, #1976d2, #0d47a1);
-    color: white;
-}
-
-.btn-small.choisir-mode i {
-    transform: none;
-}
-
-.btn-small.choisir-mode:hover i {
-    transform: rotate(-90deg);
-}
-
-/* Animation de pulsation pour attirer l'attention */
-@keyframes subtle-pulse {
-    0% {
-        box-shadow: 0 2px 8px rgba(106, 17, 203, 0.1);
-    }
-    50% {
-        box-shadow: 0 4px 16px rgba(106, 17, 203, 0.25);
-    }
-    100% {
-        box-shadow: 0 2px 8px rgba(106, 17, 203, 0.1);
-    }
-}
-
-.btn-small {
-    animation: subtle-pulse 2s infinite ease-in-out;
-}
-
-.btn-small:hover {
-    animation: none;
-}
-
-/* Style pour le conteneur du bouton */
-.form-group {
-    position: relative;
-}
-
-.form-group .btn-small {
-    margin-top: 5px;
-}
-
-/* Style pour l'input personnalisé qui apparaît */
-.form-group input[style*="display: block"] {
-    border: 2px solid #6a11cb !important;
-    box-shadow: 0 4px 16px rgba(106, 17, 203, 0.15) !important;
+.rdv-quick-btn:hover {
+    background: var(--primary-50);
+    border-color: var(--primary-400);
+    color: var(--primary-600);
     transform: translateY(-1px);
 }
 
-/* Animation d'apparition pour l'input */
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.rdv-quick-btn.active {
+    background: var(--primary-gradient);
+    color: white;
+    border-color: transparent;
 }
 
-.form-group input[style*="display: block"] {
-    animation: slideDown 0.3s ease-out;
+.rdv-quick-btn.rdv-clear {
+    background: var(--gray-100);
+    color: var(--gray-600);
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .btn-small {
-        padding: 6px 12px;
-        font-size: 0.8rem;
-        width: 100%;
-        justify-content: center;
-    }
-    
-    .form-group {
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .btn-small {
-        margin-top: 8px;
-        order: 2;
-    }
-    
-    .form-group select,
-    .form-group input[type="text"] {
-        order: 1;
-    }
+.rdv-quick-btn.rdv-clear:hover {
+    background: var(--gray-200);
+    color: var(--gray-800);
 }
 
-@media (max-width: 480px) {
-    .btn-small {
-        padding: 8px 12px;
-        font-size: 0.85rem;
-    }
-    
-    .btn-small i {
-        font-size: 1rem;
-    }
+.filter-date-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    background: var(--glass-bg);
+    padding: 0.5rem 0.8rem;
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--glass-border);
 }
 
-/* Support pour le mode sombre si nécessaire */
-@media (prefers-color-scheme: dark) {
-    .btn-small {
-        background: linear-gradient(135deg, #2d3748, #1a202c);
-        color: #a0aec0;
-        border-color: rgba(255,255,255,0.1);
-    }
-    
-    .btn-small:hover {
-        background: linear-gradient(135deg, #6a11cb, #2575fc);
-        color: white;
-    }
+.filter-date-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--primary-600);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
+.filter-date-range {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
 
+.filter-date-range span {
+    color: var(--gray-500);
+    font-size: 0.8rem;
+}
+
+.filter-date-range input {
+    min-width: 120px;
+    padding: 0.4rem 0.5rem;
+    font-size: 0.8rem;
+}
     </style>
 </head>
 <body>
-    <div class="alert-container" id="alertContainer"></div>
+<div class="alert-container" id="alertContainer"></div>
 
-    <button class="fab" onclick="scrollToTop()" id="fab" style="display: none;">
-        <i class="fas fa-arrow-up"></i>
-    </button>
+<button class="fab" onclick="scrollToTop()" id="fab" style="display: none;">
+    <i class="fas fa-arrow-up"></i>
+</button>
 
-    <div class="dashboard-container">
-        <header class="header">
-            <div class="header-left">
-                <h1>Prospects</h1>
+<div class="dashboard-container">
+    <header class="header">
+        <div class="header-left">
+            <h1>Prospects</h1>
+        </div>
+        <div class="header-actions">
+            <button class="theme-toggle" id="themeToggle" aria-label="Basculer le mode sombre">
+                <i class="fas fa-moon"></i>
+            </button>
+            <div class="user-info">
+                <span id="usernameDisplay">Commercial</span>
+                <img src="https://ui-avatars.com/api/?name=Commercial&background=6366f1&color=fff" alt="Photo de profil" class="profile-img">
             </div>
-            <div class="header-actions">
-                <button class="theme-toggle" id="themeToggle" aria-label="Basculer le mode sombre">
-                    <i class="fas fa-moon"></i>
-                </button>
-                <div class="user-info">
-                    <span id="usernameDisplay">Commercial</span>
-                    <img src="https://ui-avatars.com/api/?name=Commercial&background=6366f1&color=fff" alt="Photo de profil" class="profile-img">
+        </div>
+    </header>
+
+    <div class="back-btn">
+        <button class="btn btn-primary" onclick="ouvrirModalAjout()">
+            <i class="fas fa-user-plus"></i>
+            <span>Nouveau prospect</span> 
+        </button>
+        <button class="btn btn-primary" onclick="openVueGlobale()">
+            <i class="fas fa-arrow-left"></i> 
+            <span>Retour</span> 
+        </button>
+    </div>
+
+    <div class="controls-panel">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Rechercher par nom, téléphone, ID...">
+        </div>
+        <div class="filters-group">
+            <select class="filter-select" id="agenceFilter">
+                <option value="">Toutes les agences</option>
+            </select>
+            <select class="filter-select" id="statusFilter">
+                <option value="">Tous les statuts</option>
+                <option value="Nouveau prospect">Nouveau prospect</option>
+                <option value="A contacter">A contacter</option>
+                <option value="RDV planifié">RDV planifié</option>
+                <option value="Intéressé">Intéressé</option>
+                <option value="RDV effectué / Pas intéressé">RDV effectué / Pas intéressé</option>
+                <option value="RDV effectué / Intéressé">RDV effectué / Intéressé</option>
+                <option value="Converti (Client)">Converti (Client)</option>
+                <option value="Perdu / Refusé">Perdu / Refusé</option>
+                <option value="Reporté / Pas maintenant">Reporté / Pas maintenant</option>
+                <option value="Mauvais numéro">Mauvais numéro</option>
+                <option value="Numéro injoignable">Numéro injoignable</option>
+                <option value="Ne décroche pas">Ne décroche pas</option>
+            </select>
+            <select class="filter-select" id="rdvStatusFilter">
+                <option value="">Tous les RDV</option>
+                <option value="Planifié">Planifié</option>
+                <option value="Confirmé">Confirmé</option>
+                <option value="Terminé">Terminé</option>
+                <option value="Reporté">Reporté</option>
+                <option value="Annulé">Annulé</option>
+                <option value="Manqué">Manqué</option>
+            </select>
+            <div class="filter-date-group">
+                <label class="filter-date-label">Filtre Date RDV</label>
+                <select id="rdvDateFilter" class="filter-select" style="width: 100%;">
+                    <option value="">Toutes les dates</option>
+                    <option value="today">Aujourd'hui</option>
+                    <option value="tomorrow">Demain</option>
+                    <option value="yesterday">Hier</option>
+                    <option value="daybefore">Avant-hier</option>
+                    <option value="thisWeek">Cette semaine</option>
+                    <option value="lastWeek">Semaine dernière</option>
+                    <option value="thisMonth">Ce mois-ci</option>
+                    <option value="lastMonth">Mois dernier</option>
+                    <option value="last3Months">Trois derniers mois</option>
+                    <option value="thisQuarter">Ce trimestre</option>
+                    <option value="thisYear">Cette année</option>
+                    <option value="lastYear">Année précédente</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- Filtres Date création -->
+        <div class="filters-group" style="flex-wrap: wrap; gap: 0.5rem;">
+            <div class="filter-date-group">
+                <label class="filter-date-label">Date création</label>
+                <div class="filter-date-range">
+                    <input type="date" class="filter-select" id="dateCreationStart" style="min-width: 130px;">
+                    <span>à</span>
+                    <input type="date" class="filter-select" id="dateCreationEnd" style="min-width: 130px;">
                 </div>
             </div>
-        </header>
-
-        <div class="back-btn">
-            <button class="btn btn-primary" onclick="ouvrirModalAjout()">
-                    <i class="fas fa-user-plus"></i>
-                <span>Nouveau prospect</span> 
-                </button>
-            <button class="btn btn-primary" onclick="openVueGlobale()">
-                <i class="fas fa-arrow-left"></i> 
-                <span>Retour</span> 
-            </button>
         </div>
-<div class="controls-panel">
-    <div class="search-box">
-        <i class="fas fa-search"></i>
-        <input type="text" id="searchInput" placeholder="Rechercher par nom, téléphone, ID...">
     </div>
-    <div class="filters-group">
-        <select class="filter-select" id="agenceFilter">
-            <option value="">Toutes les agences</option>
-        </select>
-        <select class="filter-select" id="statusFilter">
-            <option value="">Tous les statuts</option>
-            <option value="Nouveau prospect">Nouveau prospect</option>
-            <option value="Intéressé">Intéressé</option>
-            <option value="Converti (Client)">Converti (Client)</option>
-            <option value="Perdu / Refusé">Perdu / Refusé</option>
-            <option value="Mauvais Numero">Mauvais Numero</option>
-            <option value="Ne decroche pas">Ne decroche pas</option>
-        </select>
-        <select class="filter-select" id="rdvStatusFilter">
-            <option value="">Tous les RDV</option>
-            <option value="Planifié">Planifié</option>
-            <option value="Confirmé">Confirmé</option>
-            <option value="Terminé">Terminé</option>
-            <option value="Reporté">Reporté</option>
-            <option value="Annulé">Annulé</option>
-            <option value="Manqué">Manqué</option>
+    
+    <div class="table-container">
+        <div class="table-wrapper">
+            <table class="prospects-table" id="prospectsTable">
+                <thead>
+                    <tr>
+                        <th>ID Prospect</th>
+                        <th>Nom complet</th>
+                        <th>Téléphone</th>
+                        <th>Date création</th>
+                        <th>Agence</th>
+                        <th>Statut Prospect</th>
+                        <th>Date RDV</th>
+                        <th>Statut RDV</th>
+                    </tr>
+                </thead>
+                <tbody id="prospectsTableBody">
+                    <tr>
+                        <td colspan="8" class="text-center">
+                            <div class="loading-indicator">
+                                <div class="spinner-border"></div>
+                                <div>Chargement des prospects...</div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="pagination-controls" id="paginationControls">
+        <span class="pagination-info" id="paginationInfo"></span>
+        <div id="paginationButtons"></div>
+        <select class="filter-select items-per-page" id="rowsPerPage">
+            <option value="10">10 / page</option>
+            <option value="25">25 / page</option>
+            <option value="50">50 / page</option>
+            <option value="100">100 / page</option>
         </select>
     </div>
 </div>
 
-        <div class="table-container">
-            <div class="table-wrapper">
-                <table class="prospects-table" id="prospectsTable">
-                    <thead>
-                        <tr>
-                            <th>ID Prospect</th>
-                            <th>Nom complet</th>
-                            <th>Téléphone</th>
-                            <th>Date création</th>
-                            <th>Agence</th>
-                            <th>Statut Prospect</th>
-                            <th>Date RDV</th>
-                            <th>Statut RDV</th>
-                        </tr>
-                    </thead>
-                    <tbody id="prospectsTableBody">
-                        <tr>
-                            <td colspan="8" class="text-center">
-                                <div class="loading-indicator">
-                                    <div class="spinner-border"></div>
-                                    <div>Chargement des prospects...</div>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+<!-- Modal de consignation d'appel -->
+<div class="modal-overlay" id="logCallModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title"><i class="fas fa-clipboard-list"></i> Consigner l'appel</h3>
+            <button class="modal-close" onclick="telephone.fermerConsignation()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="form-label">ID Client</label>
+                <input type="text" id="logClientId" class="form-control" readonly>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Utilisateur</label>
+                <input type="text" id="logUser" class="form-control" readonly>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Numéro appelé</label>
+                <input type="text" id="logPhoneNumber" class="form-control" readonly>
+            </div>
+            <div class="form-group">
+                <label class="form-label">
+                    Notes de l'appel <span style="color: #ef4444;">*</span>
+                </label>
+                <textarea id="logNote" class="form-control" rows="4" placeholder="Décrivez le contenu de l'appel, les décisions prises, les actions à suivre..."></textarea>
+                <div style="font-size: 0.8rem; color: var(--gray-500); margin-top: 5px;">
+                    Minimum 5 caractères requis
+                </div>
             </div>
         </div>
-
-        <div class="pagination-controls" id="paginationControls">
-            <span class="pagination-info" id="paginationInfo"></span>
-            <div id="paginationButtons"></div>
-            <select class="filter-select items-per-page" id="rowsPerPage">
-                <option value="10">10 / page</option>
-                <option value="25">25 / page</option>
-                <option value="50">50 / page</option>
-                <option value="100">100 / page</option>
-            </select>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="telephone.fermerConsignation()">
+                <i class="fas fa-times"></i> Ne Pas Consigner
+            </button>
+            <button class="btn btn-primary" id="saveLogBtn" onclick="telephone.sauvegarderConsignation()">
+                <i class="fas fa-save"></i> Consigner
+            </button>
         </div>
     </div>
+</div>
 
-    <!-- Modal de consignation d'appel -->
-    <div class="modal-overlay" id="logCallModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title"><i class="fas fa-clipboard-list"></i> Consigner l'appel</h3>
-                <button class="modal-close" onclick="telephone.fermerConsignation()">&times;</button>
+<!-- Modal de détail prospect -->
+<div class="modal-overlay" id="detailModal">
+    <div class="modal-content xlarge-modal">
+        <div class="modal-header">
+            <h3 class="modal-title">
+                <i class="fas fa-user-circle"></i>
+                Fiche Prospect
+            </h3>
+            <button class="modal-close" onclick="fermerDetailModal()">
+                <span class="close-square">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body" id="detailModalBody">
+            <!-- Contenu dynamique -->
+        </div>
+    </div>
+</div>
+
+<!-- Modal d'ajout prospect -->
+<div class="modal-overlay" id="prospectModal">
+    <div class="modal-content xlarge-modal">
+        <div class="modal-header">
+            <h3 class="modal-title" id="modalTitle">
+                <i class="fas fa-user-plus"></i>
+                Ajouter un prospect
+            </h3>
+            <button class="modal-close" onclick="fermerModal()">
+                <span class="close-square">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="prospect-section-title">
+                <i class="fas fa-info-circle"></i> Informations principales
             </div>
-            <div class="modal-body">
+            <div class="prospect-form-grid">
                 <div class="form-group">
-                    <label class="form-label">ID Client</label>
-                    <input type="text" id="logClientId" class="form-control" readonly>
+                    <label class="form-label">ID Prospect <span class="required">*</span></label>
+                    <input type="text" class="form-control" id="editId" placeholder="PROP-001">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Utilisateur</label>
-                    <input type="text" id="logUser" class="form-control" readonly>
+                    <label class="form-label">Nom complet <span class="required">*</span></label>
+                    <input type="text" class="form-control" id="editNom" placeholder="Jean Dupont">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Numéro appelé</label>
-                    <input type="text" id="logPhoneNumber" class="form-control" readonly>
+                    <label class="form-label">Téléphone <span class="required">*</span></label>
+                    <input type="tel" class="form-control" id="editTel" placeholder="0612345678">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">
-                        Notes de l'appel <span style="color: #ef4444;">*</span>
-                    </label>
-                    <textarea id="logNote" class="form-control" rows="4" placeholder="Décrivez le contenu de l'appel, les décisions prises, les actions à suivre..."></textarea>
-                    <div style="font-size: 0.8rem; color: var(--gray-500); margin-top: 5px;">
-                        Minimum 5 caractères requis
-                    </div>
+                    <label class="form-label">Agence</label>
+                    <select class="form-control" id="editAgence">
+                        <option value="">Sélectionner une agence</option>
+                    </select>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="telephone.fermerConsignation()">
-                    <i class="fas fa-times"></i> Ne Pas Consigner
-                </button>
-                <button class="btn btn-primary" id="saveLogBtn" onclick="telephone.sauvegarderConsignation()">
-                    <i class="fas fa-save"></i> Consigner
-                </button>
+
+            <div class="prospect-section-title">
+                <i class="fas fa-chart-line"></i> Statuts
+            </div>
+            <div class="prospect-form-grid">
+                <div class="form-group">
+                    <label class="form-label">Statut prospect <span class="required">*</span></label>
+                    <select class="form-control" id="editStatutProspect">
+                        <option value="Nouveau prospect">Nouveau prospect</option>
+                        <option value="A contacter">A contacter</option>
+                        <option value="RDV planifié">RDV planifié</option>
+                        <option value="Intéressé">Intéressé</option>
+                        <option value="RDV effectué / Pas intéressé">RDV effectué / Pas intéressé</option>
+                        <option value="RDV effectué / Intéressé">RDV effectué / Intéressé</option>
+                        <option value="Converti (Client)">Converti (Client)</option>
+                        <option value="Perdu / Refusé">Perdu / Refusé</option>
+                        <option value="Reporté / Pas maintenant">Reporté / Pas maintenant</option>
+                        <option value="Mauvais numéro">Mauvais numéro</option>
+                        <option value="Numéro injoignable">Numéro injoignable</option>
+                        <option value="Ne décroche pas">Ne décroche pas</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Date RDV</label>
+                    <input type="date" class="form-control" id="editDateRdv">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Statut RDV <span class="required">*</span></label>
+                    <select class="form-control" id="editStatutRdv">
+                        <option value="">Non défini</option>
+                        <option value="Planifié">Planifié</option>
+                        <option value="Confirmé">Confirmé</option>
+                        <option value="Terminé">Terminé</option>
+                        <option value="Reporté">Reporté</option>
+                        <option value="Annulé">Annulé</option>
+                        <option value="Manqué">Manqué</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="prospect-section-title">
+                <i class="fas fa-sticky-note"></i> Notes (max 5)
+            </div>
+            <div class="prospect-notes-grid">
+                <div class="form-group">
+                    <label class="form-label">Note 1</label>
+                    <textarea class="form-control" id="editNote1" rows="2" placeholder="Note..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Note 2</label>
+                    <textarea class="form-control" id="editNote2" rows="2" placeholder="Note..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Note 3</label>
+                    <textarea class="form-control" id="editNote3" rows="2" placeholder="Note..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Note 4</label>
+                    <textarea class="form-control" id="editNote4" rows="2" placeholder="Note..."></textarea>
+                </div>
+                <div class="form-group full-width">
+                    <label class="form-label">Note 5</label>
+                    <textarea class="form-control" id="editNote5" rows="2" placeholder="Note..."></textarea>
+                </div>
+            </div>
+
+            <div class="prospect-section-title">
+                <i class="fas fa-comments"></i> Commentaires
+            </div>
+            <div class="prospect-form-grid">
+                <div class="form-group full-width">
+                    <label class="form-label">Commentaire 1</label>
+                    <textarea class="form-control" id="editComment1" rows="3" placeholder="Commentaire..."></textarea>
+                </div>
+                <div class="form-group full-width">
+                    <label class="form-label">Commentaire 2</label>
+                    <textarea class="form-control" id="editComment2" rows="3" placeholder="Commentaire..."></textarea>
+                </div>
             </div>
         </div>
-    </div>
-
-    <!-- Modal de détail prospect -->
-    <div class="modal-overlay" id="detailModal">
-        <div class="modal-content xlarge-modal">
-            <div class="modal-header">
-                <h3 class="modal-title">
-                    <i class="fas fa-user-circle"></i>
-                    Fiche Prospect
-                </h3>
-                <button class="modal-close" onclick="fermerDetailModal()">
-    <span class="close-square">&times;</span>
-</button>
-            </div>
-            <div class="modal-body" id="detailModalBody">
-                <!-- Contenu dynamique -->
-            </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="fermerModal()">
+                <i class="fas fa-times"></i> Annuler
+            </button>
+            <button class="btn btn-primary" onclick="sauvegarderProspect()" id="btnSave">
+                <i class="fas fa-save"></i> Enregistrer
+            </button>
         </div>
     </div>
+</div>
 
-    <!-- Modal d'ajout prospect -->
-    <div class="modal-overlay" id="prospectModal">
-        <div class="modal-content xlarge-modal">
-            <div class="modal-header">
-                <h3 class="modal-title" id="modalTitle">
-                    <i class="fas fa-user-plus"></i>
-                    Ajouter un prospect
-                </h3>
-                <button class="modal-close" onclick="fermerModal()">
-    <span class="close-square">&times;</span>
-</button>
-            </div>
-            <div class="modal-body">
-                <div class="prospect-section-title">
-                    <i class="fas fa-info-circle"></i> Informations principales
-                </div>
-                <div class="prospect-form-grid">
-                    <div class="form-group">
-                        <label class="form-label">ID Prospect <span class="required">*</span></label>
-                        <input type="text" class="form-control" id="editId" placeholder="PROP-001">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Nom complet <span class="required">*</span></label>
-                        <input type="text" class="form-control" id="editNom" placeholder="Jean Dupont">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Téléphone <span class="required">*</span></label>
-                        <input type="tel" class="form-control" id="editTel" placeholder="0612345678">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Agence</label>
-                        <select class="form-control" id="editAgence">
-                            <option value="">Sélectionner une agence</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="prospect-section-title">
-                    <i class="fas fa-chart-line"></i> Statuts
-                </div>
-                <div class="prospect-form-grid">
-                    <div class="form-group">
-                        <label class="form-label">Statut prospect <span class="readonly">*</span></label>
-                        <select class="form-control" id="editStatutProspect" >
-                            <option value="Nouveau prospect">Nouveau prospect</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Date RDV</label>
-                        <input type="date" class="form-control" id="editDateRdv">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Statut RDV<span class="readonly">*</span></label>
-                        <select class="form-control" id="editStatutRdv">
-                            <option value="">Non défini</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="prospect-section-title">
-                    <i class="fas fa-sticky-note"></i> Notes (max 5)
-                </div>
-                <div class="prospect-notes-grid">
-                    <div class="form-group">
-                        <label class="form-label">Note 1</label>
-                        <textarea class="form-control" id="editNote1" rows="2" placeholder="Note..."></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Note 2</label>
-                        <textarea class="form-control" id="editNote2" rows="2" placeholder="Note..."></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Note 3</label>
-                        <textarea class="form-control" id="editNote3" rows="2" placeholder="Note..."></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Note 4</label>
-                        <textarea class="form-control" id="editNote4" rows="2" placeholder="Note..."></textarea>
-                    </div>
-                    <div class="form-group full-width">
-                        <label class="form-label">Note 5</label>
-                        <textarea class="form-control" id="editNote5" rows="2" placeholder="Note..."></textarea>
-                    </div>
-                </div>
-
-                <div class="prospect-section-title">
-                    <i class="fas fa-comments"></i> Commentaires
-                </div>
-                <div class="prospect-form-grid">
-                    <div class="form-group full-width">
-                        <label class="form-label">Commentaire 1</label>
-                        <textarea class="form-control" id="editComment1" rows="3" placeholder="Commentaire..."></textarea>
-                    </div>
-                    <div class="form-group full-width">
-                        <label class="form-label">Commentaire 2</label>
-                        <textarea class="form-control" id="editComment2" rows="3" placeholder="Commentaire..."></textarea>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="fermerModal()">
-                    <i class="fas fa-times"></i> Annuler
-                </button>
-                <button class="btn btn-primary" onclick="sauvegarderProspect()" id="btnSave">
-                    <i class="fas fa-save"></i> Enregistrer
-                </button>
-            </div>
+<!-- Modal de confirmation suppression -->
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal-content" style="max-width: 400px;">
+        <div class="modal-header" style="background: var(--danger-gradient);">
+            <h3 class="modal-title">
+                <i class="fas fa-exclamation-triangle"></i>
+                Confirmation
+            </h3>
+            <button class="modal-close" onclick="fermerDeleteModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p id="deleteMessage" style="font-size: 1rem; text-align: center; margin: 1rem 0;">Voulez-vous vraiment supprimer ce prospect ?</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="fermerDeleteModal()">
+                <i class="fas fa-times"></i> Annuler
+            </button>
+            <button class="btn btn-danger" id="confirmDeleteBtn">
+                <i class="fas fa-trash"></i> Supprimer
+            </button>
         </div>
     </div>
+</div>
 
-    <!-- Modal de confirmation suppression -->
-    <div class="modal-overlay" id="deleteModal">
-        <div class="modal-content" style="max-width: 400px;">
-            <div class="modal-header" style="background: var(--danger-gradient);">
-                <h3 class="modal-title">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    Confirmation
-                </h3>
-                <button class="modal-close" onclick="fermerDeleteModal()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p id="deleteMessage" style="font-size: 1rem; text-align: center; margin: 1rem 0;">Voulez-vous vraiment supprimer ce prospect ?</p>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="fermerDeleteModal()">
-                    <i class="fas fa-times"></i> Annuler
-                </button>
-                <button class="btn btn-danger" id="confirmDeleteBtn">
-                    <i class="fas fa-trash"></i> Supprimer
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Overlay de chargement -->
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="spinner"></div>
-    </div>
+<!-- Overlay de chargement -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+</div>
 
     <script>
         const API_BASE = 'https://script.google.com/macros/s/AKfycbwdzHJGAL16KV_OnyoCIs5I7im2yNxrbEaEIbykQ8hy6ewQjJFQ0G4TfqYWWCMc7vfW/exec';
@@ -3307,7 +2027,7 @@ textarea.form-control {
                     }
                 }
                 
-                // Si aucun emplacement libre, utiliser le 6ème (Date Appel 6 seulement)
+                // Si aucun emplacement libre, utiliser le 6ème
                 if (!emplacementLibre) {
                     emplacementLibre = 6;
                 }
@@ -3322,7 +2042,6 @@ textarea.form-control {
                     updates[`consigne appel ${emplacementLibre}`] = note;
                 } else {
                     updates['Date Appel 6'] = dateActuelle;
-                    // Pour l'appel 6, on n'a pas de colonne consigne
                 }
                 
                 // Mettre à jour le prospect localement
@@ -3374,6 +2093,9 @@ textarea.form-control {
         let listeAgences = new Set();
         let pendingUpdates = new Map();
         let updateTimeout = null;
+        let currentRdvFilter = null;
+        let customRdvStart = null;
+        let customRdvEnd = null;
 
         // ==================== FONCTIONS D'INITIALISATION ====================
         document.addEventListener('DOMContentLoaded', () => {
@@ -3388,10 +2110,20 @@ textarea.form-control {
             document.getElementById('agenceFilter').addEventListener('change', appliquerFiltres);
             document.getElementById('statusFilter').addEventListener('change', appliquerFiltres);
             document.getElementById('rdvStatusFilter').addEventListener('change', appliquerFiltres);
+            document.getElementById('dateCreationStart').addEventListener('change', appliquerFiltres);
+            document.getElementById('dateCreationEnd').addEventListener('change', appliquerFiltres);
             document.getElementById('rowsPerPage').addEventListener('change', (e) => {
                 perPage = parseInt(e.target.value);
                 currentPage = 1;
                 appliquerFiltres();
+            });
+            
+            // Écouteurs pour les boutons RDV rapides
+            document.querySelectorAll('.rdv-quick-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const filter = btn.dataset.rdvFilter;
+                    setRdvFilter(filter);
+                });
             });
             
             document.addEventListener('click', (e) => {
@@ -3443,6 +2175,210 @@ textarea.form-control {
             });
         }
 
+        // ==================== FONCTIONS DE DATE ====================
+        function getDateDuJourJJMMAAAA() {
+            const today = new Date();
+            const jour = today.getDate().toString().padStart(2, '0');
+            const mois = (today.getMonth() + 1).toString().padStart(2, '0');
+            const annee = today.getFullYear();
+            return `${jour}/${mois}/${annee}`;
+        }
+
+        function parserDate(dateStr) {
+            if (!dateStr) return null;
+            let d = null;
+            if (dateStr.match(/^\d{2}\/\d{2}\/\d{4}$/)) {
+                const [jour, mois, annee] = dateStr.split('/');
+                d = new Date(parseInt(annee), parseInt(mois) - 1, parseInt(jour));
+            }
+            else if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                d = new Date(dateStr);
+            }
+            else {
+                d = new Date(dateStr);
+            }
+            return isNaN(d.getTime()) ? null : d;
+        }
+
+        function formaterDateVersJJMMAAAA(dateStr) {
+            if (!dateStr) return '-';
+            try {
+                const date = new Date(dateStr);
+                if (!isNaN(date.getTime())) {
+                    const jour = date.getDate().toString().padStart(2, '0');
+                    const mois = (date.getMonth() + 1).toString().padStart(2, '0');
+                    const annee = date.getFullYear();
+                    return `${jour}/${mois}/${annee}`;
+                }
+                if (dateStr.includes('/')) {
+                    return dateStr;
+                }
+                return '-';
+            } catch (e) {
+                return dateStr;
+            }
+        }
+
+        // ==================== FONCTIONS DE FILTRES RDV ====================
+        function getRdvDateRange(filter) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            const start = new Date(today);
+            const end = new Date(today);
+            
+            switch(filter) {
+                case 'today':
+                    return { start: today, end: today };
+                case 'tomorrow':
+                    const tomorrow = new Date(today);
+                    tomorrow.setDate(today.getDate() + 1);
+                    return { start: tomorrow, end: tomorrow };
+                case 'yesterday':
+                    const yesterday = new Date(today);
+                    yesterday.setDate(today.getDate() - 1);
+                    return { start: yesterday, end: yesterday };
+                case 'daybefore':
+                    const daybefore = new Date(today);
+                    daybefore.setDate(today.getDate() - 2);
+                    return { start: daybefore, end: daybefore };
+                case 'thisWeek':
+                    const weekStart = new Date(today);
+                    const dayOfWeek = today.getDay();
+                    const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+                    weekStart.setDate(today.getDate() + mondayOffset);
+                    const weekEnd = new Date(weekStart);
+                    weekEnd.setDate(weekStart.getDate() + 6);
+                    return { start: weekStart, end: weekEnd };
+                case 'lastWeek':
+                    const lastWeekStart = new Date(today);
+                    const lastWeekDayOfWeek = today.getDay();
+                    const lastWeekMondayOffset = lastWeekDayOfWeek === 0 ? -13 : -6 - lastWeekDayOfWeek;
+                    lastWeekStart.setDate(today.getDate() + lastWeekMondayOffset);
+                    const lastWeekEnd = new Date(lastWeekStart);
+                    lastWeekEnd.setDate(lastWeekStart.getDate() + 6);
+                    return { start: lastWeekStart, end: lastWeekEnd };
+                case 'thisMonth':
+                    const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+                    const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+                    return { start: monthStart, end: monthEnd };
+                case 'lastMonth':
+                    const lastMonthStart = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+                    const lastMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0);
+                    return { start: lastMonthStart, end: lastMonthEnd };
+                case 'last3Months':
+                    const threeMonthsStart = new Date(today);
+                    threeMonthsStart.setMonth(today.getMonth() - 3);
+                    return { start: threeMonthsStart, end: today };
+                case 'thisQuarter':
+                    const quarter = Math.floor(today.getMonth() / 3);
+                    const quarterStart = new Date(today.getFullYear(), quarter * 3, 1);
+                    const quarterEnd = new Date(today.getFullYear(), quarter * 3 + 3, 0);
+                    return { start: quarterStart, end: quarterEnd };
+                case 'thisYear':
+                    const yearStart = new Date(today.getFullYear(), 0, 1);
+                    const yearEnd = new Date(today.getFullYear(), 11, 31);
+                    return { start: yearStart, end: yearEnd };
+                case 'lastYear':
+                    const lastYearStart = new Date(today.getFullYear() - 1, 0, 1);
+                    const lastYearEnd = new Date(today.getFullYear() - 1, 11, 31);
+                    return { start: lastYearStart, end: lastYearEnd };
+                default:
+                    return null;
+            }
+        }
+
+        function setRdvFilter(filter) {
+            currentRdvFilter = filter;
+            
+            document.querySelectorAll('.rdv-quick-btn').forEach(btn => {
+                if (btn.dataset.rdvFilter === filter) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            if (filter === 'clear') {
+                currentRdvFilter = null;
+                customRdvStart = null;
+                customRdvEnd = null;
+            } else if (filter) {
+                const range = getRdvDateRange(filter);
+                if (range) {
+                    customRdvStart = range.start;
+                    customRdvEnd = range.end;
+                }
+            }
+            
+            appliquerFiltres();
+        }
+
+        // ==================== FONCTION APPLIQUER FILTRES ====================
+        function appliquerFiltres() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const agenceFilter = document.getElementById('agenceFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            const rdvStatusFilter = document.getElementById('rdvStatusFilter').value;
+            const dateCreationStart = document.getElementById('dateCreationStart').value;
+            const dateCreationEnd = document.getElementById('dateCreationEnd').value;
+            
+            filteredProspects = prospectsData.filter(prospect => {
+                // Filtre recherche
+                if (searchTerm) {
+                    const idMatch = (prospect['Idprospect'] || '').toLowerCase().includes(searchTerm);
+                    const nomMatch = (prospect['Nom complet'] || '').toLowerCase().includes(searchTerm);
+                    const telMatch = (prospect['Numero de telephone'] || '').toLowerCase().includes(searchTerm);
+                    if (!idMatch && !nomMatch && !telMatch) return false;
+                }
+                
+                // Filtre agence
+                if (agenceFilter && prospect['Agence'] !== agenceFilter) return false;
+                
+                // Filtre statut prospect
+                if (statusFilter && prospect['Statut du prospect'] !== statusFilter) return false;
+                
+                // Filtre statut RDV
+                if (rdvStatusFilter && prospect['Statut du Rdv'] !== rdvStatusFilter) return false;
+                
+                // Filtre date création
+                if (dateCreationStart || dateCreationEnd) {
+                    const dateCreation = parserDate(prospect['date de creaction']);
+                    if (dateCreation) {
+                        if (dateCreationStart) {
+                            const startDate = new Date(dateCreationStart);
+                            if (dateCreation < startDate) return false;
+                        }
+                        if (dateCreationEnd) {
+                            const endDate = new Date(dateCreationEnd);
+                            endDate.setHours(23, 59, 59);
+                            if (dateCreation > endDate) return false;
+                        }
+                    } else if (dateCreationStart || dateCreationEnd) {
+                        return false;
+                    }
+                }
+                
+                // Filtre date RDV
+                if (customRdvStart || customRdvEnd) {
+                    const dateRdv = parserDate(prospect['Date de RDV']);
+                    if (!dateRdv) return false;
+                    
+                    if (customRdvStart && dateRdv < customRdvStart) return false;
+                    if (customRdvEnd) {
+                        const endDate = new Date(customRdvEnd);
+                        endDate.setHours(23, 59, 59);
+                        if (dateRdv > endDate) return false;
+                    }
+                }
+                
+                return true;
+            });
+            
+            currentPage = 1;
+            afficherTableau();
+        }
+
         // ==================== CHARGEMENT DES DONNÉES ====================
         async function chargerProspects() {
             showLoading(true);
@@ -3464,9 +2400,9 @@ textarea.form-control {
                     
                     // TRI PAR DATE DE CRÉATION (LA PLUS RÉCENTE EN HAUT)
                     prospectsData.sort((a, b) => {
-                        const dateA = a['date de creaction'] ? new Date(a['date de creaction']) : new Date(0);
-                        const dateB = b['date de creaction'] ? new Date(b['date de creaction']) : new Date(0);
-                        return dateB - dateA; // Décroissant : plus récent en premier
+                        const dateA = parserDate(a['date de creaction']) || new Date(0);
+                        const dateB = parserDate(b['date de creaction']) || new Date(0);
+                        return dateB - dateA;
                     });
                     
                     listeAgences.clear();
@@ -3503,96 +2439,7 @@ textarea.form-control {
             });
         }
 
-        function appliquerFiltres() {
-            const search = document.getElementById('searchInput').value.toLowerCase();
-            const agenceF = document.getElementById('agenceFilter').value;
-            const statutF = document.getElementById('statusFilter').value;
-            const rdvF = document.getElementById('rdvStatusFilter').value;
-
-            filteredProspects = prospectsData.filter(p => {
-                const matchSearch = !search || 
-                    (p['Nom complet'] && p['Nom complet'].toLowerCase().includes(search)) ||
-                    (p['Numero de telephone'] && String(p['Numero de telephone']).includes(search)) ||
-                    (p['Idprospect'] && p['Idprospect'].toLowerCase().includes(search));
-                
-                const matchAgence = !agenceF || p['Agence'] === agenceF;
-                const matchStatut = !statutF || p['Statut du prospect'] === statutF;
-                const matchRdv = !rdvF || p['Statut du Rdv'] === rdvF;
-                
-                return matchSearch && matchAgence && matchStatut && matchRdv;
-            });
-
-            // TRIER LES PROSPECTS FILTRÉS PAR DATE (PLUS RÉCENT EN HAUT)
-            filteredProspects.sort((a, b) => {
-                const dateA = a['date de creaction'] ? new Date(a['date de creaction']) : new Date(0);
-                const dateB = b['date de creaction'] ? new Date(b['date de creaction']) : new Date(0);
-                return dateB - dateA;
-            });
-
-            currentPage = 1;
-            afficherTableau();
-        }
-
-        function formaterDateVersJJMMAAAA(dateStr) {
-            if (!dateStr) return '-';
-            
-            try {
-                const date = new Date(dateStr);
-                if (!isNaN(date.getTime())) {
-                    const jour = date.getDate().toString().padStart(2, '0');
-                    const mois = (date.getMonth() + 1).toString().padStart(2, '0');
-                    const annee = date.getFullYear();
-                    return `${jour}/${mois}/${annee}`;
-                }
-                
-                if (dateStr.includes('/')) {
-                    return dateStr;
-                }
-                
-                return '-';
-            } catch (e) {
-                return dateStr;
-            }
-        }
-
-        function formaterDateVersISO(dateStr) {
-            if (!dateStr) return '';
-            
-            try {
-                const match = dateStr.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-                if (match) {
-                    const [_, jour, mois, annee] = match;
-                    return `${annee}-${mois}-${jour}`;
-                }
-                
-                return dateStr;
-            } catch (e) {
-                return dateStr;
-            }
-        }
-
-        function getDateDuJourJJMMAAAA() {
-            const today = new Date();
-            const jour = today.getDate().toString().padStart(2, '0');
-            const mois = (today.getMonth() + 1).toString().padStart(2, '0');
-            const annee = today.getFullYear();
-            return `${jour}/${mois}/${annee}`;
-        }
-
-        function appliquerReglesRDV(prospect, champModifie, nouvelleValeur) {
-            let modifications = {};
-            
-            if (champModifie === 'Date de RDV' && nouvelleValeur && (!prospect['Statut du Rdv'] || prospect['Statut du Rdv'] === '')) {
-                modifications['Statut du Rdv'] = 'Planifié';
-            }
-            
-            if (champModifie === 'Statut du Rdv' && nouvelleValeur && nouvelleValeur !== '' && (!prospect['Date de RDV'] || prospect['Date de RDV'] === '' || prospect['Date de RDV'] === '-')) {
-                modifications['Date de RDV'] = getDateDuJourJJMMAAAA();
-            }
-            
-            return modifications;
-        }
-
+        // ==================== AFFICHAGE TABLEAU ====================
         function afficherTableau() {
             const tbody = document.getElementById('prospectsTableBody');
             const debut = (currentPage - 1) * perPage;
@@ -3712,11 +2559,33 @@ textarea.form-control {
             if (page < 1 || page > totalPages) return;
             currentPage = page;
             afficherTableau();
+        }
+
+        // ==================== FONCTIONS D'ÉDITION ====================
+        function appliquerReglesRDV(prospect, champModifie, nouvelleValeur) {
+            let modifications = {};
             
-            const tableContainer = document.querySelector('.table-container');
-            if (tableContainer) {
-                tableContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            if (champModifie === 'Date de RDV' && nouvelleValeur && (!prospect['Statut du Rdv'] || prospect['Statut du Rdv'] === '')) {
+                modifications['Statut du Rdv'] = 'Planifié';
             }
+            
+            if (champModifie === 'Statut du Rdv' && nouvelleValeur && nouvelleValeur !== '' && (!prospect['Date de RDV'] || prospect['Date de RDV'] === '' || prospect['Date de RDV'] === '-')) {
+                modifications['Date de RDV'] = getDateDuJourJJMMAAAA();
+            }
+            
+            return modifications;
+        }
+
+        function planifierEnvoi(id) {
+            if (updateTimeout) {
+                clearTimeout(updateTimeout);
+            }
+            
+            updateTimeout = setTimeout(() => {
+                const ids = Array.from(pendingUpdates.keys());
+                ids.forEach(id => envoyerModifications(id));
+                updateTimeout = null;
+            }, 1000);
         }
 
         async function envoyerModifications(id) {
@@ -3749,799 +2618,7 @@ textarea.form-control {
             }
         }
 
-        function planifierEnvoi(id) {
-            if (updateTimeout) {
-                clearTimeout(updateTimeout);
-            }
-            
-            updateTimeout = setTimeout(() => {
-                const ids = Array.from(pendingUpdates.keys());
-                ids.forEach(id => envoyerModifications(id));
-                updateTimeout = null;
-            }, 1000);
-        }
-
-        // ==================== FONCTIONS POUR LE MODAL VENTE ====================
-        function verifierChangementStatutProspect(id, ancienneValeur, nouvelleValeur, element) {
-            const prospect = prospectsData.find(p => p['Idprospect'] === id);
-            if (!prospect) return;
-            
-            // Vérifier si le nouveau statut est "Converti (Client)"
-            if (nouvelleValeur === 'Converti (Client)') {
-                console.log('Prospect converti en client - Ouverture du modal de vente');
-                
-                // Récupérer les informations du prospect
-                const nomComplet = prospect['Nom complet'] || '';
-                const telephone = prospect['Numero de telephone'] || '';
-                
-                // Créer le modal de vente avec les données pré-remplies
-                creerModalVenteAvecPreRemplissage(nomComplet, telephone, id);
-            }
-        }
-
-        let venteModal = null;
-
-        function creerModalVenteAvecPreRemplissage(nomComplet, telephone, prospectId) {
-            // Vérifier si le modal existe déjà, le supprimer si oui
-            if (venteModal) {
-                venteModal.remove();
-                venteModal = null;
-            }
-            
-            // Créer le modal
-            venteModal = document.createElement('div');
-            venteModal.id = 'newSaleModal';
-            venteModal.className = 'modal-overlay';
-            venteModal.innerHTML = generateSaleModalHTML();
-            document.body.appendChild(venteModal);
-            
-            // Afficher le modal
-            venteModal.classList.add('active');
-            
-            // Initialiser le modal avec les données pré-remplies
-            initSaleModalWithData(nomComplet, telephone, prospectId);
-            
-            // Empêcher le scroll du body
-            document.body.style.overflow = 'hidden';
-        }
-
-        function generateSaleModalHTML() {
-            return `
-                <div class="modal-content">
-                    <div class="modal-header sale">
-                        <h3 class="modal-title"><i class="fas fa-shopping-cart"></i> Nouvelle Vente</h3>
-                        <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
-                    </div>
-                    <div class="modal-body" style="height: auto; max-height: calc(90vh - 120px); overflow-y: auto;">
-                        <form id="client-form">
-                            <div class="step-indicator">
-                                <div class="step active" data-step="1">
-                                    <div class="step-number">1</div>
-                                    <div class="step-label">Client</div>
-                                </div>
-                                <div class="step" data-step="2">
-                                    <div class="step-number">2</div>
-                                    <div class="step-label">Prescription</div>
-                                </div>
-                                <div class="step" data-step="3">
-                                    <div class="step-number">3</div>
-                                    <div class="step-label">Paiement</div>
-                                </div>
-                                <div class="step" data-step="4">
-                                    <div class="step-number">4</div>
-                                    <div class="step-label">Tier Payant</div>
-                                </div>
-                            </div>
-
-                            <div id="step-1" class="form-step active">
-                                <h2 class="section-title sale">Informations Client</h2>
-                                <div class="form-grid">
-                                    <div class="form-group">
-                                        <label class="required-field">Nom complet</label>
-                                        <input type="text" name="nom_complet" id="nom_complet" class="form-control" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="required-field">Téléphone</label>
-                                        <div style="display:flex; gap:5px;">
-                                            <input type="text" name="indicatif" id="indicatif" value="+229" style="width:80px;" class="form-control">
-                                            <input type="tel" name="numero" id="numero" class="form-control" required>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="required-field">Date naissance</label>
-                                        <input type="date" name="date_naissance" id="date_naissance" class="form-control" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="required-field">Civilité</label>
-                                        <select name="civilite" id="civilite" class="form-control" required>
-                                            <option value="M.">M.</option>
-                                            <option value="Mme">Mme</option>
-                                            <option value="Mlle">Mlle</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Entreprise</label>
-                                        <select name="entreprise" id="entreprise" class="form-control"></select>
-                                        <input type="text" id="entreprise_input" class="form-control" style="display: none; margin-top: 5px;" placeholder="Ajouter entreprise">
-                                        <button type="button" class="btn-small" onclick="toggleCustomInput('entreprise')" style="margin-top: 5px; padding: 0.2rem 0.5rem;">
-                                            <i class="fas fa-plus"></i> Ajouter nouveau
-                                        </button>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="required-field">Agence</label>
-                                        <select name="agence" id="agence" class="form-control" required></select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="required-field">Commercial</label>
-                                        <select name="commercial" id="commercial" class="form-control" required></select>
-                                        <input type="text" id="commercial_input" class="form-control" style="display: none; margin-top: 5px;" placeholder="Ajouter commercial">
-                                        <button type="button" class="btn-small" onclick="toggleCustomInput('commercial')" style="margin-top: 5px; padding: 0.2rem 0.5rem;">
-                                            <i class="fas fa-plus"></i> Ajouter nouveau
-                                        </button>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="required-field">Utilisateur</label>
-                                        <input type="text" name="current_user" id="current_user" class="form-control" readonly>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div id="step-2" class="form-step">
-                                <h2 class="section-title sale">Prescription</h2>
-                                <div class="prescription-container">
-                                    <table class="prescription-table desktop-view">
-                                        <thead>
-                                            <tr><th>Œil</th><th>Sphere</th><th>Cylindre</th><th>Axe</th><th>ADD</th><th>DP</th><th>Hauteur</th></tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>OD</td>
-                                                <td><select name="od_sphere" id="od_sphere" class="prescription-select"></select></td>
-                                                <td><select name="od_cylindre" id="od_cylindre" class="prescription-select"></select></td>
-                                                <td><select name="od_axe" id="od_axe" class="prescription-select"></select></td>
-                                                <td><select name="od_add" id="od_add" class="prescription-select"></select></td>
-                                                <td><input type="number" name="od_dp" id="od_dp" value="0" class="small-input"></td>
-                                                <td><input type="number" name="od_hauteur" id="od_hauteur" value="0" class="small-input"></td>
-                                            </tr>
-                                            <tr>
-                                                <td>OG</td>
-                                                <td><select name="og_sphere" id="og_sphere" class="prescription-select"></select></td>
-                                                <td><select name="og_cylindre" id="og_cylindre" class="prescription-select"></select></td>
-                                                <td><select name="og_axe" id="og_axe" class="prescription-select"></select></td>
-                                                <td><select name="og_add" id="og_add" class="prescription-select"></select></td>
-                                                <td><input type="number" name="og_dp" id="og_dp" value="0" class="small-input"></td>
-                                                <td><input type="number" name="og_hauteur" id="og_hauteur" value="0" class="small-input"></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    <div class="prescription-mobile mobile-view">
-                                        <div class="prescription-card">
-                                            <div class="card-header"><h4>Œil Droit (OD)</h4></div>
-                                            <div class="card-body">
-                                                <div class="mobile-form-group"><label>Sphere</label><select name="od_sphere" class="prescription-select"></select></div>
-                                                <div class="mobile-form-group"><label>Cylindre</label><select name="od_cylindre" class="prescription-select"></select></div>
-                                                <div class="mobile-form-group"><label>Axe</label><select name="od_axe" class="prescription-select"></select></div>
-                                                <div class="mobile-form-group"><label>ADD</label><select name="od_add" class="prescription-select"></select></div>
-                                            </div>
-                                        </div>
-                                        <div class="prescription-card">
-                                            <div class="card-header"><h4>Œil Gauche (OG)</h4></div>
-                                            <div class="card-body">
-                                                <div class="mobile-form-group"><label>Sphere</label><select name="og_sphere" class="prescription-select"></select></div>
-                                                <div class="mobile-form-group"><label>Cylindre</label><select name="og_cylindre" class="prescription-select"></select></div>
-                                                <div class="mobile-form-group"><label>Axe</label><select name="og_axe" class="prescription-select"></select></div>
-                                                <div class="mobile-form-group"><label>ADD</label><select name="og_add" class="prescription-select"></select></div>
-                                            </div>
-                                        </div>
-                                        <div class="prescription-card measures-card">
-                                            <div class="card-header"><h4>Mesures</h4></div>
-                                            <div class="card-body">
-                                                <div class="measures-grid">
-                                                    <div class="measure-group"><label>DP OD</label><input type="number" name="od_dp" value="0" class="small-input"></div>
-                                                    <div class="measure-group"><label>DP OG</label><input type="number" name="og_dp" value="0" class="small-input"></div>
-                                                    <div class="measure-group"><label>Hauteur OD</label><input type="number" name="od_hauteur" value="0" class="small-input"></div>
-                                                    <div class="measure-group"><label>Hauteur OG</label><input type="number" name="og_hauteur" value="0" class="small-input"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <h2 class="section-title sale" style="margin-top:2rem;">Commande</h2>
-                                <div class="form-grid">
-                                    <div class="form-group">
-                                        <label class="required-field">Type de Verre</label>
-                                        <select name="type_verre" id="type_verre" class="form-control" required></select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="required-field">Gamme Verre</label>
-                                        <select name="gamme_verre" id="gamme_verre" class="form-control"></select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="required-field">Monture</label>
-                                        <select name="choix_monture" id="choix_monture" class="form-control" required disabled></select>
-                                    </div>
-                                </div>
-                                
-                                <h2 class="section-title sale" style="margin-top:2rem;">Informations médicales</h2>
-                                <div class="form-grid">
-                                    <div class="form-group">
-                                        <label for="clinique">Clinique</label>
-                                        <div class="select-with-input">
-                                            <select name="clinique" id="clinique" class="form-control"><option value="">-- Choisir --</option></select>
-                                            <input type="text" id="clinique_input" class="form-control" style="display: none; margin-top: 5px;" placeholder="Nouvelle clinique">
-                                        </div>
-                                        <button type="button" class="btn-small" onclick="toggleCustomInput('clinique')" style="margin-top: 5px; padding: 0.2rem 0.5rem;">
-                                            <i class="fas fa-plus"></i> Ajouter nouvelle
-                                        </button>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="ophtalmo">Ophtalmologue</label>
-                                        <div class="select-with-input">
-                                            <select name="ophtalmo" id="ophtalmo" class="form-control"><option value="">-- Choisir --</option></select>
-                                            <input type="text" id="ophtalmo_input" class="form-control" style="display: none; margin-top: 5px;" placeholder="Nouvel ophtalmologue">
-                                        </div>
-                                        <button type="button" class="btn-small" onclick="toggleCustomInput('ophtalmo')" style="margin-top: 5px; padding: 0.2rem 0.5rem;">
-                                            <i class="fas fa-plus"></i> Ajouter nouveau
-                                        </button>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="date_soin">Date de soin</label>
-                                        <input type="date" name="date_soin" id="date_soin" class="form-control" />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div id="step-3" class="form-step">
-                                <h2 class="section-title sale">Paiement</h2>
-                                <div class="payment-card">
-                                    <div class="payment-row">
-                                        <div class="payment-group">
-                                            <label class="payment-label required-field">Monture (FCFA)</label>
-                                            <input type="number" class="form-control" name="montant_monture" id="montant_monture" value="0" oninput="calculerTotal()">
-                                        </div>
-                                        <div class="payment-group">
-                                            <label class="payment-label required-field">Verres (FCFA)</label>
-                                            <input type="number" class="form-control" name="montant_verres" id="montant_verres" value="0" oninput="calculerTotal()">
-                                        </div>
-                                        <div class="payment-group">
-                                            <label class="payment-label">Livraison (FCFA)</label>
-                                            <input type="number" class="form-control" name="frais_livraison" id="frais_livraison" value="0" oninput="calculerTotal()">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="payment-card">
-                                    <div class="payment-row">
-                                        <div class="payment-group">
-                                            <label class="payment-label">Total Brut</label>
-                                            <div class="payment-value" id="total_brut_display">0</div>
-                                        </div>
-                                        <div class="payment-group">
-                                            <label class="payment-label">Remise</label>
-                                            <div class="discount-selector">
-                                                <input type="number" class="form-control discount-amount" name="remise" id="remise" value="0" oninput="calculerTotal()">
-                                                <select class="form-control discount-type" name="remise_type" id="remise_type" onchange="calculerTotal()">
-                                                    <option value="FCFA">FCFA</option>
-                                                    <option value="%">%</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="payment-group">
-                                            <label class="payment-label">Part Assurance</label>
-                                            <input type="number" class="form-control" name="part_assurance" id="part_assurance" value="0" oninput="calculerTotal()">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="payment-card">
-                                    <div class="payment-row">
-                                        <div class="payment-group">
-                                            <label class="payment-label">Net à payer</label>
-                                            <div class="payment-value" id="net_a_payer_display">0</div>
-                                        </div>
-                                        <div class="payment-group">
-                                            <label class="payment-label">Acompte</label>
-                                            <input type="number" class="form-control" name="acompte" id="acompte" value="0" oninput="calculerTotal()">
-                                        </div>
-                                        <div class="payment-group">
-                                            <label class="payment-label">Reste à payer</label>
-                                            <div class="payment-value" id="reste_a_payer_display">0</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div id="step-4" class="form-step">
-                                <h2 class="section-title sale">Tier Payant & Livraison</h2>
-                                <div class="form-grid">
-                                    <div class="form-group">
-                                        <label>Assurance</label>
-                                        <select name="assurance" id="assurance" class="form-control"></select>
-                                        <input type="text" id="assurance_input" class="form-control" style="display: none; margin-top: 5px;" placeholder="Ajouter assurance">
-                                        <button type="button" class="btn-small" onclick="toggleCustomInput('assurance')" style="margin-top: 5px; padding: 0.2rem 0.5rem;">
-                                            <i class="fas fa-plus"></i> Ajouter nouveau
-                                        </button>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Compagnie</label>
-                                        <select name="compagnie" id="compagnie" class="form-control"></select>
-                                        <input type="text" id="compagnie_input" class="form-control" style="display: none; margin-top: 5px;" placeholder="Ajouter compagnie">
-                                        <button type="button" class="btn-small" onclick="toggleCustomInput('compagnie')" style="margin-top: 5px; padding: 0.2rem 0.5rem;">
-                                            <i class="fas fa-plus"></i> Ajouter nouveau
-                                        </button>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>N° Police</label>
-                                        <input type="text" name="numero_police" id="numero_police" class="form-control">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>TVA (18%)</label>
-                                        <input type="number" name="tva" id="tva" class="form-control" readonly>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Assuré principal</label>
-                                        <select name="assure_principal" id="assure_principal" class="form-control">
-                                            <option value="">-- Choisir --</option>
-                                            <option value="oui">Oui</option>
-                                            <option value="non">Non</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group" id="assure_principal_nom_container" style="display:none;">
-                                        <label>Nom assuré principal</label>
-                                        <input type="text" name="assure_principal_nom" id="assure_principal_nom" class="form-control">
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="required-field">Date livraison</label>
-                                        <input type="date" name="date_livraison" id="date_livraison" class="form-control" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="required-field">Contact livraison</label>
-                                        <select name="contact_livraison_type" id="contact_livraison_type" class="form-control" required>
-                                            <option value="">-- Choisir --</option>
-                                            <option value="client">Lui-même</option>
-                                            <option value="tiers">Tier personne</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="required-field">Téléphone contact</label>
-                                        <input type="tel" name="telephone_contact" id="telephone_contact" class="form-control" required>
-                                    </div>
-                                    <div class="form-group" style="grid-column:span 2;">
-                                        <label class="required-field">Adresse livraison</label>
-                                        <textarea name="adresse_livraison" id="adresse_livraison" class="form-control" rows="3" required></textarea>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="step-navigation">
-                                <div class="nav-group">
-                                    <button type="button" class="btn btn-secondary" id="prevStepBtn" style="display:none;">
-                                        <i class="fas fa-arrow-left"></i> Précédent
-                                    </button>
-                                </div>
-                                <div class="nav-group">
-                                    <button type="button" class="btn btn-outline" id="resetButton">
-                                        <i class="fas fa-undo"></i> Réinitialiser
-                                    </button>
-                                    <button type="button" class="btn btn-outline" onclick="closeModal()">
-                                        <i class="fas fa-times"></i> Annuler
-                                    </button>
-                                </div>
-                                <div class="nav-group">
-                                    <button type="button" class="btn btn-primary" id="nextStepBtn">
-                                        Suivant <i class="fas fa-arrow-right"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-success" id="submitBtn" style="display:none;">
-                                        <i class="fas fa-check"></i> Ajouter
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            `;
-        }
-
-        function initSaleModalWithData(nomComplet, telephone, prospectId) {
-            if (!window.AppState) {
-                window.AppState = {
-                    modals: { sale: { currentStep: 1 } },
-                    user: { nom: document.getElementById('usernameDisplay')?.textContent || 'Commercial' }
-                };
-            }
-            
-            AppState.modals.sale.currentStep = 1;
-            updateSaleStepDisplay();
-            calculerTotal();
-            
-            const today = new Date();
-            const delivery = new Date(today);
-            delivery.setDate(today.getDate() + 15);
-            const dateLivraisonEl = document.getElementById('date_livraison');
-            if (dateLivraisonEl) dateLivraisonEl.value = delivery.toISOString().split('T')[0];
-            
-            const currentUserEl = document.getElementById('current_user');
-            if (currentUserEl) currentUserEl.value = AppState.user.nom;
-            
-            const nomCompletEl = document.getElementById('nom_complet');
-            if (nomCompletEl && nomComplet) nomCompletEl.value = nomComplet;
-            
-            const indicatifEl = document.getElementById('indicatif');
-            const numeroEl = document.getElementById('numero');
-            if (numeroEl && telephone) {
-                let telClean = String(telephone).replace(/\s+/g, '');
-                const indicatifMatch = telClean.match(/^(\+?229|00229)/);
-                if (indicatifMatch) {
-                    if (indicatifEl) indicatifEl.value = '+229';
-                    numeroEl.value = telClean.replace(/^(\+?229|00229)/, '');
-                } else {
-                    numeroEl.value = telClean;
-                }
-            }
-            
-            loadCatalogueData();
-            
-            const prevBtn = document.getElementById('prevStepBtn');
-            const nextBtn = document.getElementById('nextStepBtn');
-            const resetBtn = document.getElementById('resetButton');
-            const submitBtn = document.getElementById('submitBtn');
-            
-            if (prevBtn) prevBtn.onclick = prevSaleStep;
-            if (nextBtn) nextBtn.onclick = nextSaleStep;
-            if (resetBtn) resetBtn.onclick = resetSaleForm;
-            if (submitBtn) submitBtn.onclick = submitSaleForm;
-            
-            ['montant_monture', 'montant_verres', 'frais_livraison', 'remise', 'part_assurance', 'acompte'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.addEventListener('input', calculerTotal);
-            });
-            
-            const remiseType = document.getElementById('remise_type');
-            if (remiseType) remiseType.addEventListener('change', calculerTotal);
-            
-            const assurePrincipal = document.getElementById('assure_principal');
-            if (assurePrincipal) assurePrincipal.addEventListener('change', toggleAssurePrincipal);
-            
-            const contactType = document.getElementById('contact_livraison_type');
-            if (contactType) contactType.addEventListener('change', updateContactFields);
-            
-            const agence = document.getElementById('agence');
-            if (agence) agence.addEventListener('change', loadMonturesForAgence);
-            
-            setupPrescriptionSync();
-            
-            setTimeout(() => loadMonturesForAgence(), 500);
-            
-            const detailModal = document.getElementById('detailModal');
-            if (detailModal && detailModal.classList.contains('active')) {
-                detailModal.classList.remove('active');
-            }
-        }
-
-        function updateSaleStepDisplay() {
-            if (!window.AppState) return;
-            const step = AppState.modals.sale.currentStep;
-            for (let i = 1; i <= 4; i++) {
-                const el = document.getElementById(`step-${i}`);
-                if (el) el.classList.toggle('active', i === step);
-            }
-            const steps = document.querySelectorAll('#newSaleModal .step');
-            steps.forEach((s, i) => s.classList.toggle('active', i + 1 === step));
-            
-            const prevBtn = document.getElementById('prevStepBtn');
-            const nextBtn = document.getElementById('nextStepBtn');
-            const submitBtn = document.getElementById('submitBtn');
-            if (prevBtn) prevBtn.style.display = step > 1 ? 'block' : 'none';
-            if (nextBtn) nextBtn.style.display = step < 4 ? 'block' : 'none';
-            if (submitBtn) submitBtn.style.display = step === 4 ? 'block' : 'none';
-        }
-
-        function prevSaleStep() {
-            if (AppState.modals.sale.currentStep > 1) {
-                AppState.modals.sale.currentStep--;
-                updateSaleStepDisplay();
-            }
-        }
-
-        function nextSaleStep() {
-            if (validateSaleStep(AppState.modals.sale.currentStep) && AppState.modals.sale.currentStep < 4) {
-                AppState.modals.sale.currentStep++;
-                updateSaleStepDisplay();
-            }
-        }
-
-        function validateSaleStep(step) {
-            if (step === 1) {
-                const required = ['nom_complet', 'numero', 'agence', 'commercial'];
-                for (const id of required) {
-                    if (!document.getElementById(id)?.value) {
-                        showAlert(`❌ Champ obligatoire: ${id.replace('_', ' ')}`, 'error');
-                        return false;
-                    }
-                }
-            }
-            if (step === 2) {
-                const required = ['type_verre', 'choix_monture'];
-                for (const id of required) {
-                    if (!document.getElementById(id)?.value) {
-                        showAlert(`❌ Veuillez sélectionner ${id === 'type_verre' ? 'un type de verre' : 'une monture'}`, 'error');
-                        return false;
-                    }
-                }
-            }
-            if (step === 4) {
-                const deliveryFields = [
-                    { id: 'date_livraison', label: 'Date de livraison' },
-                    { id: 'contact_livraison_type', label: 'Type de contact livraison' },
-                    { id: 'telephone_contact', label: 'Téléphone de contact' },
-                    { id: 'adresse_livraison', label: 'Adresse de livraison' }
-                ];
-                for (const field of deliveryFields) {
-                    if (!document.getElementById(field.id)?.value) {
-                        showAlert(`❌ ${field.label} est obligatoire`, 'error');
-                        if (AppState.modals.sale.currentStep !== 4) {
-                            AppState.modals.sale.currentStep = 4;
-                            updateSaleStepDisplay();
-                        }
-                        return false;
-                    }
-                }
-            }
-            return true;
-        }
-
-        function calculerTotal() {
-            const getVal = (id) => parseFloat(document.getElementById(id)?.value) || 0;
-            const monture = getVal('montant_monture');
-            const verres = getVal('montant_verres');
-            const livraison = getVal('frais_livraison');
-            const brut = monture + verres + livraison;
-            const remise = getVal('remise');
-            const remiseType = document.getElementById('remise_type')?.value || 'FCFA';
-            const remiseVal = remiseType === '%' ? brut * remise / 100 : remise;
-            const partAssurance = getVal('part_assurance');
-            const net = Math.max(0, brut - remiseVal - partAssurance);
-            const acompte = getVal('acompte');
-            const reste = Math.max(0, net - acompte);
-            
-            const totalBrutDisplay = document.getElementById('total_brut_display');
-            const netAPayerDisplay = document.getElementById('net_a_payer_display');
-            const resteAPayerDisplay = document.getElementById('reste_a_payer_display');
-            const tvaInput = document.getElementById('tva');
-            
-            if (totalBrutDisplay) totalBrutDisplay.textContent = brut.toLocaleString();
-            if (netAPayerDisplay) netAPayerDisplay.textContent = net.toLocaleString();
-            if (resteAPayerDisplay) resteAPayerDisplay.textContent = reste.toLocaleString();
-            if (tvaInput) tvaInput.value = Math.round(monture * 18 / 118);
-        }
-
-        function toggleAssurePrincipal() {
-            const val = document.getElementById('assure_principal')?.value;
-            const container = document.getElementById('assure_principal_nom_container');
-            const input = document.getElementById('assure_principal_nom');
-            if (val === 'oui' || val === 'non') {
-                if (container) container.style.display = 'block';
-                if (val === 'oui' && input) {
-                    input.value = document.getElementById('nom_complet')?.value || '';
-                    input.readOnly = true;
-                } else if (input) {
-                    input.value = '';
-                    input.readOnly = false;
-                }
-            } else if (container) {
-                container.style.display = 'none';
-            }
-        }
-
-        function updateContactFields() {
-            const type = document.getElementById('contact_livraison_type')?.value;
-            const tel = document.getElementById('telephone_contact');
-            const addr = document.getElementById('adresse_livraison');
-            if (type === 'client') {
-                const indicatif = document.getElementById('indicatif')?.value || '';
-                const numero = document.getElementById('numero')?.value || '';
-                if (tel) {
-                    tel.value = indicatif + ' ' + numero;
-                    tel.readOnly = true;
-                }
-                const agenceSelect = document.getElementById('agence');
-                const agenceText = agenceSelect?.selectedOptions[0]?.text || '';
-                if (addr) {
-                    addr.value = agenceText;
-                    addr.readOnly = true;
-                }
-            } else {
-                if (tel) { tel.readOnly = false; tel.value = ''; }
-                if (addr) { addr.readOnly = false; addr.value = ''; }
-            }
-        }
-
-        async function loadCatalogueData() {
-            try {
-                const response = await fetch(`${API_BASE}?action=catalogue`);
-                const data = await response.json();
-                if (!data.success) return;
-                const fields = {
-                    entreprise: data.data.entreprises,
-                    agence: data.data.agences,
-                    commercial: data.data.commerciaux,
-                    type_verre: data.data.typesVerre,
-                    gamme_verre: data.data.gammesVerre,
-                    assurance: data.data.assurances,
-                    compagnie: data.data.compagnies,
-                    clinique: data.data.cliniques,
-                    ophtalmo: data.data.ophtalmos
-                };
-                Object.entries(fields).forEach(([id, values]) => {
-                    const select = document.getElementById(id);
-                    if (select && values) {
-                        select.innerHTML = '<option value="">-- Choisir --</option>';
-                        values.forEach(v => select.add(new Option(v, v)));
-                    }
-                });
-                const sphereValues = data.data.sphere || [];
-                const axeValues = data.data.axe || [];
-                const addValues = data.data.add || [];
-                ['od_sphere', 'od_cylindre', 'og_sphere', 'og_cylindre'].forEach(name => {
-                    document.querySelectorAll(`[name="${name}"]`).forEach(s => {
-                        s.innerHTML = '<option value="">--</option>';
-                        sphereValues.forEach(v => s.add(new Option(v, v)));
-                    });
-                });
-                ['od_axe', 'og_axe'].forEach(name => {
-                    document.querySelectorAll(`[name="${name}"]`).forEach(s => {
-                        s.innerHTML = '<option value="">--</option>';
-                        axeValues.forEach(v => s.add(new Option(v, v)));
-                    });
-                });
-                ['od_add', 'og_add'].forEach(name => {
-                    document.querySelectorAll(`[name="${name}"]`).forEach(s => {
-                        s.innerHTML = '<option value="">--</option>';
-                        addValues.forEach(v => s.add(new Option(v, v)));
-                    });
-                });
-            } catch (error) {
-                console.error("Erreur chargement catalogue:", error);
-            }
-        }
-
-        async function loadMonturesForAgence() {
-            const agence = document.getElementById('agence')?.value;
-            const select = document.getElementById('choix_monture');
-            if (!agence || !select) return;
-            select.disabled = true;
-            select.innerHTML = '<option value="">-- Chargement --</option>';
-            try {
-                const response = await fetch(`${API_BASE}?action=stockmonture`);
-                const data = await response.json();
-                if (data.success && data.data.rows) {
-                    select.innerHTML = '<option value="">-- Sélectionner --</option>';
-                    data.data.rows
-                        .filter(row => row[1]?.toLowerCase() === agence.toLowerCase())
-                        .forEach(row => select.add(new Option(row[0] || '', row[0] || '')));
-                }
-                select.disabled = false;
-            } catch (error) {
-                console.error("Erreur montures:", error);
-                select.innerHTML = '<option value="">-- Erreur --</option>';
-                select.disabled = false;
-            }
-        }
-
-        function setupPrescriptionSync() {
-            const fields = ['od_sphere', 'od_cylindre', 'od_axe', 'od_add', 'og_sphere', 'og_cylindre', 'og_axe', 'og_add'];
-            fields.forEach(name => {
-                const selects = document.querySelectorAll(`[name="${name}"]`);
-                selects.forEach(select => {
-                    select.addEventListener('change', function() {
-                        selects.forEach(s => { if (s !== this) s.value = this.value; });
-                    });
-                });
-            });
-            ['od_dp', 'od_hauteur', 'og_dp', 'og_hauteur'].forEach(name => {
-                const inputs = document.querySelectorAll(`[name="${name}"]`);
-                inputs.forEach(input => {
-                    input.addEventListener('input', function() {
-                        inputs.forEach(inp => { if (inp !== this) inp.value = this.value; });
-                    });
-                });
-            });
-        }
-
-        function resetSaleForm() {
-            if (!confirm('Réinitialiser le formulaire ?')) return;
-            document.getElementById('client-form')?.reset();
-            const today = new Date();
-            const delivery = new Date(today);
-            delivery.setDate(today.getDate() + 15);
-            const dateLivraison = document.getElementById('date_livraison');
-            if (dateLivraison) dateLivraison.value = delivery.toISOString().split('T')[0];
-            const currentUser = document.getElementById('current_user');
-            if (currentUser) currentUser.value = AppState.user.nom;
-            calculerTotal();
-            AppState.modals.sale.currentStep = 1;
-            updateSaleStepDisplay();
-        }
-
-        function submitSaleForm() {
-            if (!validateSaleStep(4)) return;
-            showAlert('Traitement en cours...', 'info');
-            const submitBtn = document.getElementById('submitBtn');
-            if (submitBtn) {
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi...';
-            }
-            const data = {};
-            document.querySelectorAll('#client-form input, #client-form select, #client-form textarea').forEach(el => {
-                if (el.name && !el.disabled) data[el.name] = el.value;
-            });
-            ['entreprise', 'commercial', 'assurance', 'compagnie', 'clinique', 'ophtalmo'].forEach(field => {
-                const input = document.getElementById(field + '_input');
-                if (input && input.style.display === 'block' && input.value) data[field] = input.value;
-            });
-            const totalBrutText = document.getElementById('total_brut_display')?.textContent || '0';
-            const netAPayerText = document.getElementById('net_a_payer_display')?.textContent || '0';
-            const resteAPayerText = document.getElementById('reste_a_payer_display')?.textContent || '0';
-            data.total_brut = parseFloat(totalBrutText.replace(/[^0-9.-]/g, '')) || 0;
-            data.net_a_payer = parseFloat(netAPayerText.replace(/[^0-9.-]/g, '')) || 0;
-            data.reste_a_payer = parseFloat(resteAPayerText.replace(/[^0-9.-]/g, '')) || 0;
-            data.utilisateur = AppState.user.nom;
-            
-            fetch(`${API_BASE}?action=addCommandeClient`, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            }).then(() => {
-                showAlert('Vente enregistrée !', 'success');
-                setTimeout(() => closeModal(), 1500);
-            }).catch(error => {
-                console.error('Erreur:', error);
-                showAlert('Erreur lors de l\'envoi', 'error');
-                if (submitBtn) {
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = '<i class="fas fa-check"></i> Ajouter';
-                }
-            });
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('newSaleModal');
-            if (modal) {
-                modal.classList.remove('active');
-                setTimeout(() => { if (modal.parentNode) modal.remove(); venteModal = null; }, 300);
-            }
-            document.body.style.overflow = '';
-        }
-
-        window.toggleCustomInput = function(fieldName) {
-            const select = document.getElementById(fieldName);
-            const input = document.getElementById(fieldName + '_input');
-            const button = event.currentTarget;
-            if (input.style.display === 'none') {
-                select.style.display = 'none';
-                input.style.display = 'block';
-                input.value = '';
-                button.innerHTML = '<i class="fas fa-list"></i> Choisir existant';
-            } else {
-                select.style.display = 'block';
-                input.style.display = 'none';
-                button.innerHTML = '<i class="fas fa-plus"></i> Ajouter nouveau';
-                if (input.value.trim()) {
-                    let exists = false;
-                    for (let i = 0; i < select.options.length; i++) {
-                        if (select.options[i].text === input.value.trim()) exists = true;
-                    }
-                    if (!exists) select.add(new Option(input.value.trim(), input.value.trim()));
-                    select.value = input.value.trim();
-                }
-            }
-        };
-
-        function showError(message) { showAlert(message, 'error', 5000); }
-        function showSuccess(message) { showAlert(message, 'success', 3000); }
-
-        // ==================== FIN FONCTIONS MODAL VENTE ====================
-
+        // ==================== FONCTIONS MODAL DÉTAIL ====================
         function ouvrirDetailProspect(id) {
             const prospect = prospectsData.find(p => p['Idprospect'] === id);
             if (!prospect) return;
@@ -4686,18 +2763,7 @@ textarea.form-control {
                         </div>
                         <div class="detail-card">
                             <div class="detail-card-title"><i class="fas fa-chart-line"></i> Statuts</div>
-                            <div class="detail-item"><span class="detail-item-label"><i class="fas fa-user-tag"></i> Prospect:</span><span class="detail-item-value" ondblclick="activerEditionSelect('${id}', 'Statut du prospect', this, ['Nouveau prospect',
-'A contacter',
-'RDV planifié',
-'Intéressé',
-'RDV effectué / Pas intéressé',
-'RDV effectué / Intéressé',
-'Converti (Client)',
-'Perdu / Refusé',
-'Reporté / Pas maintenant',
-'Mauvais numéro',
-'Numéro injoignable',
-'Ne décroche pas'])"><span class="status-badge-large" style="background: ${statutClass === 'badge-info' ? '#dbeafe' : statutClass === 'badge-success' ? '#d1fae5' : statutClass === 'badge-purple' ? '#ede9fe' : statutClass === 'badge-danger' ? '#fee2e2' : '#fed7aa'}; color: ${statutClass === 'badge-info' ? '#1e40af' : statutClass === 'badge-success' ? '#065f46' : statutClass === 'badge-purple' ? '#5b21b6' : statutClass === 'badge-danger' ? '#991b1b' : '#92400e'};">${statutProspect}</span></span></div>
+                            <div class="detail-item"><span class="detail-item-label"><i class="fas fa-user-tag"></i> Prospect:</span><span class="detail-item-value" ondblclick="activerEditionSelect('${id}', 'Statut du prospect', this, ['Nouveau prospect','A contacter','RDV planifié','Intéressé','RDV effectué / Pas intéressé','RDV effectué / Intéressé','Converti (Client)','Perdu / Refusé','Reporté / Pas maintenant','Mauvais numéro','Numéro injoignable','Ne décroche pas'])"><span class="status-badge-large" style="background: ${statutClass === 'badge-info' ? '#dbeafe' : statutClass === 'badge-success' ? '#d1fae5' : statutClass === 'badge-purple' ? '#ede9fe' : statutClass === 'badge-danger' ? '#fee2e2' : '#fed7aa'}; color: ${statutClass === 'badge-info' ? '#1e40af' : statutClass === 'badge-success' ? '#065f46' : statutClass === 'badge-purple' ? '#5b21b6' : statutClass === 'badge-danger' ? '#991b1b' : '#92400e'};">${statutProspect}</span></span></div>
                             <div class="detail-item"><span class="detail-item-label"><i class="fas fa-calendar-check"></i> Date RDV:</span><span class="detail-item-value" ondblclick="activerEditionDate('${id}', 'Date de RDV', this)">${formaterDateVersJJMMAAAA(prospect['Date de RDV']) || 'Non planifié'}</span></div>
                             <div class="detail-item"><span class="detail-item-label"><i class="fas fa-clock"></i> Statut RDV:</span><span class="detail-item-value" ondblclick="activerEditionSelect('${id}', 'Statut du Rdv', this, ['','Planifié','Confirmé','Terminé','Reporté','Annulé','Manqué'])">${statutRdv ? `<span class="status-badge-large" style="background: ${rdvClass === 'badge-success' ? '#d1fae5' : rdvClass === 'badge-info' ? '#dbeafe' : rdvClass === 'badge-purple' ? '#ede9fe' : rdvClass === 'badge-danger' ? '#fee2e2' : '#fed7aa'}; color: ${rdvClass === 'badge-success' ? '#065f46' : rdvClass === 'badge-info' ? '#1e40af' : rdvClass === 'badge-purple' ? '#5b21b6' : rdvClass === 'badge-danger' ? '#991b1b' : '#92400e'};">${statutRdv}</span>` : 'Non défini'}</span></div>
                         </div>
@@ -4712,6 +2778,12 @@ textarea.form-control {
             document.getElementById('detailModal').classList.add('active');
         }
 
+        function fermerDetailModal() {
+            document.getElementById('detailModal').classList.remove('active');
+            afficherTableau();
+        }
+
+        // ==================== FONCTIONS D'ÉDITION INLINE ====================
         function activerEditionDate(id, champ, element) {
             const ancienneValeur = element.innerText.trim();
             const input = document.createElement('input');
@@ -4853,7 +2925,6 @@ textarea.form-control {
             
             const prospect = prospectsData.find(p => p['Idprospect'] === id);
             const valeurActuelle = prospect ? prospect[champ] || '' : '';
-            const ancienneValeur = valeurActuelle;
             
             options.forEach(opt => {
                 const option = document.createElement('option');
@@ -4881,11 +2952,6 @@ textarea.form-control {
                         prospect[regleChamp] = regles[regleChamp];
                         pendingUpdates.get(id)[regleChamp] = regles[regleChamp];
                     });
-                    
-                    // VÉRIFIER SI LE STATUT A ÉTÉ CHANGÉ EN "Converti (Client)"
-                    if (champ === 'Statut du prospect') {
-                        verifierChangementStatutProspect(id, ancienneValeur, nouvelleValeur, element);
-                    }
                     
                     ouvrirDetailProspect(id);
                     planifierEnvoi(id);
@@ -5073,230 +3139,24 @@ textarea.form-control {
             };
         }
 
-        function fermerDetailModal() {
-            document.getElementById('detailModal').classList.remove('active');
-            afficherTableau();
+        // ==================== FONCTIONS APPEL ====================
+        function appelerProspect(numero, prospectId) {
+            if (!numero) {
+                showAlert('Numéro de téléphone non disponible', 'error');
+                return;
+            }
+            
+            const tel = String(numero).replace(/\s+/g, '');
+            
+            if (confirm(`Souhaitez-vous appeler le numéro : ${tel} ?`)) {
+                window.location.href = `tel:${tel}`;
+                setTimeout(() => { 
+                    telephone.ouvrirConsignation(prospectId, tel); 
+                }, 6000);
+            }
         }
 
-function appelerProspect(numero, prospectId) {
-    if (!numero) {
-        showStyledAlert({
-            title: '❌ Numéro indisponible',
-            message: 'Le numéro de téléphone n\'est pas renseigné pour ce prospect.',
-            type: 'error',
-            icon: '📞'
-        });
-        return;
-    }
-    
-    const tel = String(numero).replace(/\s+/g, '');
-    
-    showStyledConfirm({
-        title: 'Appeler le prospect',
-        message: `Souhaitez-vous appeler le numéro : <strong>${tel}</strong> ?`,
-        type: 'info',
-        onConfirm: () => {
-            window.location.href = `tel:${tel}`;
-            setTimeout(() => { 
-                telephone.ouvrirConsignation(prospectId, tel); 
-            }, 6000);
-        }
-    });
-}
-
-// Style personnalisé pour les alertes
-const style = document.createElement('style');
-style.textContent = `
-    .styled-alert-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(4px);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 10000;
-        animation: fadeIn 0.3s ease;
-    }
-    
-    .styled-alert {
-        background: white;
-        border-radius: 20px;
-        padding: 0;
-        max-width: 400px;
-        width: 90%;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        animation: slideUp 0.3s ease;
-        overflow: hidden;
-    }
-    
-    .styled-alert-header {
-        padding: 20px 24px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        font-size: 1.25rem;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-    
-    .styled-alert-header.error {
-        background: linear-gradient(135deg, #f56565 0%, #c53030 100%);
-    }
-    
-    .styled-alert-header.info {
-        background: linear-gradient(135deg, #4299e1 0%, #2b6cb0 100%);
-    }
-    
-    .styled-alert-header.success {
-        background: linear-gradient(135deg, #48bb78 0%, #2f855a 100%);
-    }
-    
-    .styled-alert-content {
-        padding: 24px;
-        font-size: 1rem;
-        line-height: 1.5;
-        color: #2d3748;
-    }
-    
-    .styled-alert-actions {
-        padding: 16px 24px;
-        background: #f7fafc;
-        display: flex;
-        justify-content: flex-end;
-        gap: 12px;
-        border-top: 1px solid #e2e8f0;
-    }
-    
-    .styled-btn {
-        padding: 8px 20px;
-        border: none;
-        border-radius: 10px;
-        font-size: 0.875rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-    
-    .styled-btn-primary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-    }
-    
-    .styled-btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-    }
-    
-    .styled-btn-secondary {
-        background: #e2e8f0;
-        color: #4a5568;
-    }
-    
-    .styled-btn-secondary:hover {
-        background: #cbd5e0;
-    }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-    
-    @keyframes slideUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-`;
-document.head.appendChild(style);
-
-// Fonction pour afficher une alerte stylisée
-function showStyledAlert({ title, message, type = 'info', icon = 'ℹ️', duration = 3000 }) {
-    const overlay = document.createElement('div');
-    overlay.className = 'styled-alert-overlay';
-    
-    const alertBox = document.createElement('div');
-    alertBox.className = 'styled-alert';
-    
-    alertBox.innerHTML = `
-        <div class="styled-alert-header ${type}">
-            <span style="font-size: 1.5rem;">${icon}</span>
-            <span>${title}</span>
-        </div>
-        <div class="styled-alert-content">
-            ${message}
-        </div>
-        <div class="styled-alert-actions">
-            <button class="styled-btn styled-btn-primary" onclick="this.closest('.styled-alert-overlay').remove()">
-                OK
-            </button>
-        </div>
-    `;
-    
-    overlay.appendChild(alertBox);
-    document.body.appendChild(overlay);
-    
-    if (duration) {
-        setTimeout(() => {
-            if (overlay && overlay.parentNode) overlay.remove();
-        }, duration);
-    }
-}
-
-// Fonction pour afficher une confirmation stylisée
-function showStyledConfirm({ title, message, type = 'info', onConfirm, onCancel }) {
-    const overlay = document.createElement('div');
-    overlay.className = 'styled-alert-overlay';
-    
-    const confirmBox = document.createElement('div');
-    confirmBox.className = 'styled-alert';
-    
-    confirmBox.innerHTML = `
-        <div class="styled-alert-header ${type}">
-            <span style="font-size: 1.5rem;">${type === 'info' ? '📞' : '❓'}</span>
-            <span>${title}</span>
-        </div>
-        <div class="styled-alert-content">
-            ${message}
-        </div>
-        <div class="styled-alert-actions">
-            <button class="styled-btn styled-btn-secondary" id="styled-cancel-btn">
-                Annuler
-            </button>
-            <button class="styled-btn styled-btn-primary" id="styled-confirm-btn">
-                Appeler
-            </button>
-        </div>
-    `;
-    
-    overlay.appendChild(confirmBox);
-    document.body.appendChild(overlay);
-    
-    const confirmBtn = confirmBox.querySelector('#styled-confirm-btn');
-    const cancelBtn = confirmBox.querySelector('#styled-cancel-btn');
-    
-    const close = () => overlay.remove();
-    
-    confirmBtn.onclick = () => {
-        close();
-        if (onConfirm) onConfirm();
-    };
-    
-    cancelBtn.onclick = () => {
-        close();
-        if (onCancel) onCancel();
-    };
-}
-
+        // ==================== FONCTIONS MODAL AJOUT ====================
         function ouvrirModalAjout() {
             currentEditId = null;
             document.getElementById('modalTitle').innerHTML = '<i class="fas fa-user-plus"></i> Ajouter un prospect';
@@ -5379,6 +3239,7 @@ function showStyledConfirm({ title, message, type = 'info', onConfirm, onCancel 
             }
         }
 
+        // ==================== FONCTIONS SUPPRESSION ====================
         function confirmDelete(id) {
             deleteId = id;
             const prospect = prospectsData.find(p => p['Idprospect'] === id);
@@ -5420,25 +3281,10 @@ function showStyledConfirm({ title, message, type = 'info', onConfirm, onCancel 
             document.getElementById('deleteModal').classList.remove('active');
         }
 
-        window.addEventListener('beforeunload', () => {
-            if (pendingUpdates.size > 0) {
-                const ids = Array.from(pendingUpdates.keys());
-                ids.forEach(id => {
-                    const modifications = pendingUpdates.get(id);
-                    if (Object.keys(modifications).length > 0) {
-                        const data = {
-                            Idprospect: id,
-                            ...modifications
-                        };
-                        
-                        navigator.sendBeacon(
-                            `${API_BASE}?action=udprospect`,
-                            new Blob([JSON.stringify(data)], { type: 'application/json' })
-                        );
-                    }
-                });
-            }
-        });
+        // ==================== FONCTIONS UTILITAIRES ====================
+        function openVueGlobale() {
+            window.location.href = 'Accueil.html';
+        }
 
         function showLoading(etat) {
             const overlay = document.getElementById('loadingOverlay');
@@ -5481,10 +3327,42 @@ function showStyledConfirm({ title, message, type = 'info', onConfirm, onCancel 
             }, duration);
         }
 
-        function openVueGlobale() {
-            window.location.href = 'Accueil.html';
+        window.addEventListener('beforeunload', () => {
+            if (pendingUpdates.size > 0) {
+                const ids = Array.from(pendingUpdates.keys());
+                ids.forEach(id => {
+                    const modifications = pendingUpdates.get(id);
+                    if (Object.keys(modifications).length > 0) {
+                        const data = {
+                            Idprospect: id,
+                            ...modifications
+                        };
+                        
+                        navigator.sendBeacon(
+                            `${API_BASE}?action=udprospect`,
+                            new Blob([JSON.stringify(data)], { type: 'application/json' })
+                        );
+                    }
+                });
+            }
+        });
+// Dans DOMContentLoaded
+document.getElementById('rdvDateFilter').addEventListener('change', (e) => {
+    const filter = e.target.value;
+    if (!filter) {
+        currentRdvFilter = null;
+        customRdvStart = null;
+        customRdvEnd = null;
+    } else {
+        currentRdvFilter = filter;
+        const range = getRdvDateRange(filter);
+        if (range) {
+            customRdvStart = range.start;
+            customRdvEnd = range.end;
         }
-
+    }
+    appliquerFiltres();
+});
         // Exposer les fonctions nécessaires
         window.telephone = telephone;
         window.ouvrirModalAjout = ouvrirModalAjout;
@@ -5506,16 +3384,8 @@ function showStyledConfirm({ title, message, type = 'info', onConfirm, onCancel 
         window.chargerProspects = chargerProspects;
         window.scrollToTop = scrollToTop;
         window.openVueGlobale = openVueGlobale;
-        window.closeModal = closeModal;
-        window.prevSaleStep = prevSaleStep;
-        window.nextSaleStep = nextSaleStep;
-        window.calculerTotal = calculerTotal;
-        window.resetSaleForm = resetSaleForm;
-        window.submitSaleForm = submitSaleForm;
-        window.toggleAssurePrincipal = toggleAssurePrincipal;
-        window.updateContactFields = updateContactFields;
-        window.loadMonturesForAgence = loadMonturesForAgence;
-        window.setupPrescriptionSync = setupPrescriptionSync;
+        window.appliquerFiltres = appliquerFiltres;
+        window.setRdvFilter = setRdvFilter;
     </script>
 </body>
 </html>
