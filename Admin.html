@@ -5403,11 +5403,6 @@ async function effectuerReglementFournisseur() {
         .then(() => {
             hideProgressOverlay(true, 'Données envoyées avec succès');
             showToast('✅ Entrée ajoutée avec succès', 'success');
-            
-            setTimeout(() => {
-                loadGrandCaisseData();
-                closeModal();
-            }, 1000);
         })
         .catch(error => {
             console.error('Erreur lors de l\'ajout:', error);
