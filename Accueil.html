@@ -4435,6 +4435,32 @@
     <div id="modal-container"></div>
 
     <script>
+
+// AJOUTER CETTE FONCTION AU DÉBUT DU SCRIPT
+async function apiCall(action, method = 'GET', data = null) {
+    const token = sessionStorage.getItem('apiToken');
+    
+    if (!token && action !== 'login') {
+        console.error('❌ Pas de token');
+        window.location.href = 'code.html';
+        throw new Error('Non authentifié');
+    }
+    
+    let url = `${CONFIG.API_BASE}?action=${action}`;
+    if (token) url += `&token=${encodeURIComponent(token)}`;
+    
+    const options = {
+        method: method,
+        headers: { 'Content-Type': 'application/json' }
+    };
+    
+    if (method === 'POST' && data) {
+        options.body = JSON.stringify({ ...data, token: token });
+    }
+    
+    const response = await fetch(url, options);
+    return response.json();
+}
         // CONFIGURATION GLOBALE
         const CONFIG = {
             API_BASE: 'https://script.google.com/macros/s/AKfycbwdzHJGAL16KV_OnyoCIs5I7im2yNxrbEaEIbykQ8hy6ewQjJFQ0G4TfqYWWCMc7vfW/exec',
@@ -4531,32 +4557,33 @@
 
 async function loadNotifications() {
     try {
-        const response = await fetch(`${CONFIG.API_BASE}${CONFIG.ENDPOINTS.notification}`);
+        const token = sessionStorage.getItem('apiToken');
+        if (!token) return;
+        
+        const response = await fetch(`${CONFIG.API_BASE}?action=notification&token=${encodeURIComponent(token)}`);
         const data = await response.json();
         
         if (data.success && data.data && data.data.rows) {
             // Transformer les données en objets notifications avec gestion des dates
             const rawNotifications = data.data.rows.map(row => ({
-                dateFin: row[0] || null,           // Date de fin de validité
-                message: row[1] || 'Nouvelle notification', // Message
-                priorite: row[2] || 'Information',  // Priorité
+                dateFin: row[0] || null,
+                message: row[1] || 'Nouvelle notification',
+                priorite: row[2] || 'Information',
                 dateCreation: data.timestamp || new Date().toISOString()
             }));
             
-            // Filtrer les notifications non expirées (date de fin > maintenant)
+            // Filtrer les notifications non expirées
             const maintenant = new Date();
             AppState.notifications.all = rawNotifications.filter(notif => {
-                if (!notif.dateFin) return true; // Pas de date de fin = toujours valide
+                if (!notif.dateFin) return true;
                 const dateFin = new Date(notif.dateFin);
-                return dateFin > maintenant; // Garder si la date de fin est dans le futur
+                return dateFin > maintenant;
             });
             
             console.log(`✅ ${AppState.notifications.all.length} notifications actives chargées`);
             
-            // Mettre à jour le compteur
             updateNotificationCount();
             
-            // Démarrer le carrousel si des notifications existent
             if (AppState.notifications.all.length > 0) {
                 startNotificationCarousel();
             }
@@ -4825,7 +4852,9 @@ function replayNotifications() {
 
 function initAuth() {
     const username = sessionStorage.getItem("utilisateur") || localStorage.getItem("utilisateur");
-    if (!username) {
+    const token = sessionStorage.getItem("apiToken");
+    
+    if (!username || !token) {
         window.location.href = "code.html";
         return;
     }
@@ -4834,11 +4863,10 @@ function initAuth() {
     AppState.user.agence = sessionStorage.getItem("agence") || "Tous";
     AppState.user.analyse = sessionStorage.getItem("analyse") || "Tous";
     AppState.user.isAdmin = sessionStorage.getItem("isAdmin") === "true";
-    
-    // ✅ AJOUTER CETTE LIGNE
     AppState.user.hasCaisseAccess = sessionStorage.getItem("hasCaisseAccess") === "true";
+    AppState.user.token = token;
     
-    console.log('✅ Session chargée:', AppState.user); // Pour déboguer
+    console.log('✅ Session chargée:', AppState.user);
 
     $('username-display').textContent = username;
     $('profile-img').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=4f46e5&color=fff`;
@@ -4847,6 +4875,7 @@ function initAuth() {
         stopNotificationCarousel();
         sessionStorage.clear();
         localStorage.removeItem("utilisateur");
+        localStorage.removeItem("token");
         window.location.href = "code.html";
     });
 
@@ -4965,6 +4994,7 @@ function openProspect() { window.location.href = 'prospect.html'; }
 function openAdmin() { 
     hasAdminRights() ? window.location.href = 'Admin.html' : showAccessDenied("⛔ Accès refusé - Droits administrateur requis"); 
 }
+
 function openCaisse() { 
     hasCaisseAccess() ? window.location.href = 'Caisse.html' : showAccessDenied("⛔ Accès refusé - Droits caisse requis"); 
 }
@@ -4984,45 +5014,64 @@ function openDataFacture() {
         showAccessDenied("⛔ Accès refusé - Droits caisse requis");
     }
 }
-        async function loadClientsFromScript() {
-            showLoading();
-            const searchInput = $('searchInput');
-            if (searchInput) {
-                searchInput.disabled = true;
-                searchInput.placeholder = "Chargement...";
-            }
 
-            try {
-                const response = await fetch(`${CONFIG.API_BASE}${CONFIG.ENDPOINTS.liste}`);
-                if (!response.ok) throw new Error(`Erreur HTTP: ${response.status}`);
+async function loadClientsFromScript() {
+    showLoading();
+    const searchInput = $('searchInput');
+    if (searchInput) {
+        searchInput.disabled = true;
+        searchInput.placeholder = "Chargement...";
+    }
 
-                const data = await response.json();
-                if (!data.success || !data.data) throw new Error("Réponse invalide");
+    try {
+        // Récupérer le token depuis sessionStorage
+        const token = sessionStorage.getItem('apiToken');
+        
+        if (!token) {
+            throw new Error("Token manquant - Veuillez vous reconnecter");
+        }
+        
+        // Ajouter le token dans l'URL
+        const response = await fetch(`${CONFIG.API_BASE}?action=liste&token=${encodeURIComponent(token)}`);
+        
+        if (!response.ok) throw new Error(`Erreur HTTP: ${response.status}`);
 
-                AppState.clients.headers = data.data.headers;
-AppState.clients.all = data.data.rows; 
-AppState.clients.filtered = AppState.clients.all;
+        const data = await response.json();
+        
+        if (!data.success) {
+            throw new Error(data.message || "Erreur lors du chargement");
+        }
+        
+        if (!data.data) throw new Error("Réponse invalide");
 
-                
-                console.log(`✅ Total clients bruts: ${AppState.clients.all.length}`);
-                console.log(`✅ Clients après filtrage: ${AppState.clients.filtered.length}`);
+        AppState.clients.headers = data.data.headers;
+        AppState.clients.all = data.data.rows; 
+        AppState.clients.filtered = AppState.clients.all;
 
-                renderTableHeaders();
-                updateTableAndPagination();
+        console.log(`✅ Total clients bruts: ${AppState.clients.all.length}`);
+        console.log(`✅ Clients après filtrage: ${AppState.clients.filtered.length}`);
 
-                if (searchInput) {
-                    searchInput.disabled = false;
-                    searchInput.placeholder = "Rechercher par nom...";
-                }
+        renderTableHeaders();
+        updateTableAndPagination();
 
-            } catch (error) {
-                console.error("Erreur:", error);
-                showError("Erreur lors du chargement");
-            } finally {
-                hideLoading();
-            }
+        if (searchInput) {
+            searchInput.disabled = false;
+            searchInput.placeholder = "Rechercher par nom...";
         }
 
+    } catch (error) {
+        console.error("Erreur:", error);
+        showError(error.message || "Erreur lors du chargement");
+        
+        if (error.message.includes("Token") || error.message.includes("Session")) {
+            setTimeout(() => {
+                window.location.href = "code.html";
+            }, 3000);
+        }
+    } finally {
+        hideLoading();
+    }
+}
 
         function renderTableHeaders() {
             const thead = document.querySelector("#client-table thead");
@@ -5320,27 +5369,39 @@ if (!searchTerm) {
             fields.innerHTML = html;
         };
 
-        async function loadFournisseurs(selectId) {
-            const select = $(selectId);
-            if (!select) return;
-            
-            select.innerHTML = '<option value="">-- Chargement --</option>';
-            try {
-                const response = await fetch(`${CONFIG.API_BASE}${CONFIG.ENDPOINTS.catalogue}`);
-                const data = await response.json();
-                if (data.success && data.data.fournisseur) {
-                    data.data.fournisseur.sort().forEach(f => {
-                        const option = document.createElement('option');
-                        option.value = f;
-                        option.textContent = f;
-                        select.appendChild(option);
-                    });
-                }
-            } catch (error) {
-                console.error("Erreur fournisseurs:", error);
-                select.innerHTML = '<option value="">-- Erreur --</option>';
-            }
+async function loadFournisseurs(selectId) {
+    const select = $(selectId);
+    if (!select) return;
+    
+    select.innerHTML = '<option value="">-- Chargement --</option>';
+    
+    try {
+        const token = sessionStorage.getItem('apiToken');
+        if (!token) {
+            console.error('❌ Pas de token');
+            select.innerHTML = '<option value="">-- Non authentifié --</option>';
+            return;
         }
+        
+        const response = await fetch(`${CONFIG.API_BASE}?action=catalogue&token=${encodeURIComponent(token)}`);
+        const data = await response.json();
+        
+        if (data.success && data.data.fournisseur) {
+            select.innerHTML = '<option value="">-- Sélectionnez --</option>';
+            data.data.fournisseur.sort().forEach(f => {
+                const option = document.createElement('option');
+                option.value = f;
+                option.textContent = f;
+                select.appendChild(option);
+            });
+        } else {
+            select.innerHTML = '<option value="">-- Aucune donnée --</option>';
+        }
+    } catch (error) {
+        console.error("Erreur fournisseurs:", error);
+        select.innerHTML = '<option value="">-- Erreur --</option>';
+    }
+}
 
         window.submitProductForm = async function() {
             const form = $('productForm');
@@ -5387,7 +5448,7 @@ if (!searchTerm) {
                     body: JSON.stringify(productData)
                 });
 
-                 // Afficher le message de succès
+                // Afficher le message de succès
         formMessage.textContent = '✅ Produit enregistré avec succès !';
         formMessage.className = 'success-message';
         
@@ -5425,8 +5486,15 @@ if (!searchTerm) {
         }
     }
 };
+
 // MODALE NOUVELLE VENTE
 window.openNewSale = function() {
+    // Vérifier les droits d'accès
+    if (!hasCaisseAccess()) {
+        showAccessDenied("⛔ Accès refusé - Droits caisse requis pour créer une nouvelle vente");
+        return;
+    }
+    
     let modal = $('newSaleModal');
     if (!modal) {
         modal = document.createElement('div');
@@ -6182,9 +6250,16 @@ function updateContactFields() {
 
 async function loadCatalogueData() {
     try {
-        const response = await fetch(`${CONFIG.API_BASE}${CONFIG.ENDPOINTS.catalogue}`);
+        const token = sessionStorage.getItem('apiToken');
+        if (!token) return;
+        
+        const response = await fetch(`${CONFIG.API_BASE}?action=catalogue&token=${encodeURIComponent(token)}`);
         const data = await response.json();
-        if (!data.success) return;
+        
+        if (!data.success) {
+            console.error("Erreur catalogue:", data.message);
+            return;
+        }
 
         const fields = {
             entreprise: data.data.entreprises,
@@ -6241,7 +6316,10 @@ async function loadMonturesForAgence() {
     select.innerHTML = '<option value="">-- Chargement --</option>';
 
     try {
-        const response = await fetch(`${CONFIG.API_BASE}${CONFIG.ENDPOINTS.stockmonture}`);
+        const token = sessionStorage.getItem('apiToken');
+        if (!token) return;
+        
+        const response = await fetch(`${CONFIG.API_BASE}?action=stockmonture&token=${encodeURIComponent(token)}`);
         const data = await response.json();
         
         if (data.success && data.data.rows) {
@@ -6300,6 +6378,7 @@ function collectSaleData() {
     data.total_brut = parseFloat(totalBrutText.replace(/[^0-9.-]/g, '')) || 0;
     data.net_a_payer = parseFloat(netAPayerText.replace(/[^0-9.-]/g, '')) || 0;
     data.reste_a_payer = parseFloat(resteAPayerText.replace(/[^0-9.-]/g, '')) || 0;
+    data.token = sessionStorage.getItem('apiToken');
     
     return data;
 }
@@ -6321,7 +6400,9 @@ function submitSaleForm() {
     
     const data = collectSaleData();
     data.utilisateur = AppState.user.nom;
-    console.log('Données à envoyer:', data);
+    data.token = sessionStorage.getItem('apiToken'); // Ajouter le token
+    
+    console.log('Données à envoyer:', { ...data, token: '***' });
 
     fetch(`${CONFIG.API_BASE}${CONFIG.ENDPOINTS.addCommande}`, {
         method: 'POST',
@@ -6331,7 +6412,8 @@ function submitSaleForm() {
     })
     .then(() => {
         showSuccess('Vente enregistrée !');
-        setTimeout(() => closeModal(), 1500);
+// on utilise closeVente ( ne pas changer stp)
+        setTimeout(() => closeVente(), 1500);
     })
     .catch(error => {
         console.error('Erreur:', error);
@@ -6651,7 +6733,8 @@ function initProformaModal() {
 // Nouvelle fonction pour charger les données du catalogue pour la proforma
 async function loadProformaCatalogueData() {
     try {
-        const response = await fetch(`${CONFIG.API_BASE}${CONFIG.ENDPOINTS.catalogue}`);
+        const token = sessionStorage.getItem('apiToken');
+        const response = await fetch(`${CONFIG.API_BASE}?action=catalogue&token=${encodeURIComponent(token)}`);
         const data = await response.json();
         
         if (!data.success) return;
@@ -6681,7 +6764,7 @@ async function loadProformaCatalogueData() {
 
         // Charger les options de prescription (sphere, cylindre, axe, add)
         const sphereOptions = data.data.sphere || [];
-        const cylindreOptions = data.data.cylindre || [];
+        const cylindreOptions = data.data.sphere || [];// les meme donné que la sphere
         const axeOptions = data.data.axe || [];
         const addOptions = data.data.add || [];
 
@@ -6862,13 +6945,14 @@ async function generateProformaPDF() {
     btn.disabled = true;
 
     const data = collectProformaData();
+    data.token = sessionStorage.getItem('apiToken'); // Ajouter le token
 
     try {
-        await fetch(`${CONFIG.API_BASE}${CONFIG.ENDPOINTS.addproforma}`, {
+        const response = await fetch(`${CONFIG.API_BASE}?action=addproforma`, {
             method: 'POST',
             mode: 'no-cors',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ formData: data })
+            body: JSON.stringify({ formData: data, token: data.token })
         });
 
         setTimeout(async () => {
@@ -6891,9 +6975,15 @@ async function generateProformaPDF() {
     }
 }
 
+// ================================
+// GESTION DU PDF PROFORMA
+// ================================
 async function checkAndOpenProformaPDF() {
     try {
-        const url = `${CONFIG.API_BASE}${CONFIG.ENDPOINTS.getlastpdf}`;
+        const token = sessionStorage.getItem('apiToken');
+        const url = `${CONFIG.API_BASE}?action=getlastpdf&token=${encodeURIComponent(token)}`;
+        
+        console.log("📄 Récupération du dernier PDF:", url);
         
         const response = await fetch(url);
         
@@ -6902,7 +6992,7 @@ async function checkAndOpenProformaPDF() {
         }
         
         const result = await response.json();
-        console.log("Réponse du serveur:", result);
+        console.log("📄 Réponse du serveur:", result);
         
         const isSuccess = result.succès || result.success;
         const messageText = result.message || "";
@@ -6925,30 +7015,28 @@ async function checkAndOpenProformaPDF() {
         } 
         else {
             console.warn("⚠️ Structure de réponse inattendue:", result);
-            showError("Erreur inattendue lors de la génération du PDF.");
+            showMessage("Erreur inattendue lors de la génération du PDF.", "error");
             return;
         }
         
-if (pdfUrl) {
-    closeModal();
-    
-    // Convertir l'URL Google Drive en lien direct
-    const fileId = pdfUrl.match(/\/d\/(.*?)\/|file\/d\/(.*?)(\/|$)/);
-    if (fileId) {
-        const directUrl = `https://drive.google.com/uc?export=download&id=${fileId[1] || fileId[2]}`;
-        window.open(directUrl, '_blank');
-        showSuccess("PDF généré avec succès !");
-    } else {
-        window.open(pdfUrl, '_blank');
-    }
-}
+        if (pdfUrl) {
+            console.log("📄 Ouverture du PDF:", pdfUrl);
+            closeModal();
+            window.open(pdfUrl, '_blank');
+            showMessage("PDF généré avec succès! Ouverture dans un nouvel onglet.", "success");
+        }
         
     } catch (error) {
         console.error("❌ Erreur ouverture PDF:", error);
-        showError("Erreur lors de l'ouverture du PDF: " + error.message);
+        showMessage("Erreur lors de l'ouverture du PDF: " + error.message, "error");
     }
 }
-    function closeModal() {
+function closeModal() {
+    document.getElementById('modal-container').innerHTML = '';
+    document.querySelectorAll('.modal-overlay').forEach(el => el.remove());
+}
+
+    function closeVente() {
         // actualiser la page , pour etre sur que les donnée identique
         // donc ne pas changer
         window.location.href = 'Accueil.html';
@@ -7392,43 +7480,65 @@ class SalesAnalytics {
         });
     }
 
-    // Extraire les données de l'API
-    async fetchSalesData() {
-        this.showLoader(true);
+async fetchSalesData() {
+    this.showLoader(true);
+    
+    try {
+        // Récupérer le token depuis sessionStorage
+        const token = sessionStorage.getItem('apiToken');
         
-        try {
-            const response = await fetch('https://script.google.com/macros/s/AKfycbwdzHJGAL16KV_OnyoCIs5I7im2yNxrbEaEIbykQ8hy6ewQjJFQ0G4TfqYWWCMc7vfW/exec?action=dataclient');
-            
-            if (!response.ok) throw new Error(`Erreur HTTP: ${response.status}`);
-            
-            const result = await response.json();
-            
-            if (!result.success || !result.data) throw new Error("Réponse invalide");
-            
-            // Convertir en objets
-            const headers = result.data.headers;
-            const rows = result.data.rows;
-            
-            this.data = rows.map(row => {
-                const obj = {};
-                headers.forEach((header, index) => {
-                    obj[header] = row[index];
-                });
-                return obj;
-            });
-            
-            console.log(`✅ Données chargées: ${this.data.length} enregistrements`);
-            
-            return this.data;
-            
-        } catch (error) {
-            console.error("❌ Erreur chargement données:", error);
-            this.showNoDataMessage("Erreur de chargement des données. Veuillez réessayer.");
-            return [];
-        } finally {
-            this.showLoader(false);
+        if (!token) {
+            throw new Error("Token manquant - Veuillez vous reconnecter");
         }
+        
+        // Ajouter le token dans l'URL
+        const url = `https://script.google.com/macros/s/AKfycbwdzHJGAL16KV_OnyoCIs5I7im2yNxrbEaEIbykQ8hy6ewQjJFQ0G4TfqYWWCMc7vfW/exec?action=dataclient&token=${encodeURIComponent(token)}`;
+        
+        const response = await fetch(url);
+        
+        if (!response.ok) throw new Error(`Erreur HTTP: ${response.status}`);
+        
+        const result = await response.json();
+        
+        if (!result.success) {
+            throw new Error(result.message || "Erreur lors du chargement des données");
+        }
+        
+        if (!result.data) throw new Error("Réponse invalide");
+        
+        // Convertir en objets
+        const headers = result.data.headers;
+        const rows = result.data.rows;
+        
+        this.data = rows.map(row => {
+            const obj = {};
+            headers.forEach((header, index) => {
+                obj[header] = row[index];
+            });
+            return obj;
+        });
+        
+        console.log(`✅ Données chargées: ${this.data.length} enregistrements`);
+        
+        return this.data;
+        
+    } catch (error) {
+        console.error("❌ Erreur chargement données:", error);
+        
+        if (error.message.includes("Token") || error.message.includes("Session")) {
+            this.showNoDataMessage("Session expirée. Veuillez vous reconnecter.");
+            setTimeout(() => {
+                window.location.href = "code.html";
+            }, 3000);
+        } else {
+            this.showNoDataMessage("Erreur de chargement des données. Veuillez réessayer.");
+        }
+        
+        return [];
+    } finally {
+        this.showLoader(false);
     }
+}
 
     // Grouper les données par mois
     groupDataByMonth(data) {
