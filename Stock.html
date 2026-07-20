@@ -3,566 +3,1003 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>VisioPro - Gestion de Stock</title>
+    <title>VisioPro</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --success-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-            --danger-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-            --warning-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-            
-            --primary-50: #f0f4ff;
-            --primary-100: #d9e4ff;
-            --primary-200: #b3c9ff;
-            --primary-300: #8daef8;
-            --primary-400: #6793f1;
-            --primary-500: #4f46e5;
-            --primary-600: #4338ca;
-            --primary-700: #3730a3;
-            --primary-800: #312e81;
-            --primary-900: #1e1b4b;
-            
-            --gray-50: #fafafa;
-            --gray-100: #f5f5f5;
-            --gray-200: #e5e5e5;
-            --gray-300: #d4d4d4;
-            --gray-400: #a3a3a3;
-            --gray-500: #737373;
-            --gray-600: #525252;
-            --gray-700: #404040;
-            --gray-800: #262626;
-            --gray-900: #171717;
-            
-            --glass-bg: rgba(255, 255, 255, 0.1);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            
-            --border-radius-sm: 6px;
-            --border-radius-md: 10px;
-            --border-radius-lg: 14px;
-            --border-radius-xl: 18px;
-            --border-radius-full: 9999px;
-            
-            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
+        /* ============================================================
+           STYLES MODERNES INSPIRÉS DE VisioPro
+           ============================================================ */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        html {
-            font-size: 15px;
-            scroll-behavior: smooth;
+        :root {
+            --c-bg: #F7F6F3;
+            --c-surface: #FFFFFF;
+            --c-surface2: #F0EEE9;
+            --c-ink: #1A1916;
+            --c-ink2: #6B6860;
+            --c-ink3: #A8A69F;
+            --c-border: #E3E1DB;
+            --c-border2: #C8C5BC;
+            --c-accent: #3D4FE0;
+            --c-accent-lt: #EEF0FD;
+            --c-accent-dk: #2534B8;
+            --c-green: #1A8A5A;
+            --c-green-lt: #E6F5EE;
+            --c-red: #C43B3B;
+            --c-red-lt: #FCEAEA;
+            --c-amber: #B07020;
+            --c-amber-lt: #FDF3E3;
+            --shadow-sm: 0 1px 3px rgba(26,25,22,.06), 0 1px 2px rgba(26,25,22,.04);
+            --shadow-md: 0 4px 12px rgba(26,25,22,.08), 0 2px 4px rgba(26,25,22,.04);
+            --shadow-lg: 0 12px 32px rgba(26,25,22,.10), 0 4px 8px rgba(26,25,22,.06);
+            --r-sm: 6px;
+            --r-md: 10px;
+            --r-lg: 14px;
+            --r-xl: 20px;
+            --ease: cubic-bezier(.4,0,.2,1);
         }
 
         body {
-            background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+            background: var(--c-bg);
+            font-family: 'DM Sans', system-ui, sans-serif;
+            color: var(--c-ink);
             min-height: 100vh;
-            font-family: 'Inter', sans-serif;
-            color: #2d3748;
-            position: relative;
-            padding-bottom: 70px;
+            padding-bottom: 80px;
+            -webkit-font-smoothing: antialiased;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
+        /* Animations */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(16px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
 
-        @keyframes slideUp {
-            from { transform: translateY(15px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        @keyframes modalSlideIn {
+            from { opacity: 0; transform: scale(0.9) translateY(-20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
-        .dashboard-container {
-            max-width: 1600px;
+        /* Shell */
+        .shell {
+            max-width: 1800px;
             margin: 0 auto;
-            padding: 1rem;
-            animation: fadeIn 0.5s ease;
+            padding: 1.25rem 1.25rem 0;
+            animation: fadeUp .4s var(--ease) both;
         }
 
-        .header {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--border-radius-lg);
-            padding: 1rem 1.5rem;
-            box-shadow: var(--glass-shadow);
-            margin-bottom: 1.5rem;
+        /* Topbar */
+        .topbar {
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: center;
+            background: var(--c-surface);
+            border: 1px solid var(--c-border);
+            border-radius: var(--r-xl);
+            padding: .75rem 1.25rem;
+            margin-bottom: 1.25rem;
+            box-shadow: var(--shadow-sm);
+            flex-wrap: wrap;
+            gap: .5rem;
         }
 
-        .header-left h1 {
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            font-size: 1.75rem;
-        }
-
-        .user-info {
+        .topbar-brand {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: .75rem;
         }
 
-        .profile-img {
+        .brand-mark {
             width: 36px;
             height: 36px;
-            border-radius: 50%;
-            border: 2px solid var(--primary-300);
-        }
-
-        .stock-sections {
-            display: flex;
-            gap: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .stock-nav {
-            flex: 0 0 220px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--border-radius-lg);
-            padding: 1rem;
-        }
-
-        .nav-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: var(--primary-700);
-        }
-
-        .nav-btn {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1rem;
-            background: transparent;
-            border: 1px solid var(--glass-border);
-            border-radius: var(--border-radius-md);
-            color: var(--gray-700);
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s var(--transition-smooth);
-            width: 100%;
-            text-align: left;
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-        }
-
-        .nav-btn:hover {
-            background: var(--primary-gradient);
-            color: white;
-            transform: translateX(3px);
-        }
-
-        .nav-btn.active {
-            background: var(--primary-gradient);
-            color: white;
-            border-color: transparent;
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
-        }
-
-        .content-area {
-            flex: 1;
-        }
-
-        .section-content {
-            display: none;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: all 0.4s var(--transition-smooth);
-        }
-
-        .section-content.active {
-            display: block;
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .section-header {
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--border-radius-lg);
-            padding: 1rem;
-            margin-bottom: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .section-title {
-            margin: 0;
-            font-size: 1.3rem;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .btn {
-            padding: 0.6rem 1.2rem;
-            border: none;
-            border-radius: var(--border-radius-md);
-            font-weight: 600;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.3s var(--transition-smooth);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-        }
-
-        .btn-primary {
-            background: var(--primary-gradient);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(79, 70, 229, 0.3);
-        }
-
-        .btn-success {
-            background: var(--success-gradient);
-            color: white;
-        }
-
-        .btn-warning {
-            background: var(--warning-gradient);
-            color: white;
-        }
-
-        .btn-secondary {
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            color: var(--primary-600);
-        }
-
-        .summary-cards {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0.8rem;
-            margin-bottom: 1rem;
-        }
-
-        .summary-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--border-radius-lg);
-            padding: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .card-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
+            background: var(--c-accent);
+            border-radius: var(--r-md);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 0.9rem;
+            color: #fff;
+            font-size: .85rem;
+            overflow: hidden;
+        }
+.brand-mark img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+        .brand-name {
+            font-size: 1.05rem;
+            font-weight: 600;
+            letter-spacing: -.02em;
+            color: var(--c-ink);
         }
 
-        .table-container {
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--border-radius-lg);
+        .brand-name span {
+            color: var(--c-accent);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            flex-wrap: wrap;
+        }
+
+        .topbar-date {
+            font-size: .8rem;
+            color: var(--c-ink3);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .topbar-user {
+            font-size: .85rem;
+            font-weight: 500;
+            color: var(--c-ink2);
+        }
+
+        .avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: 2px solid var(--c-border);
+            object-fit: cover;
+        }
+
+        /* Main layout */
+        .main {
+            display: flex;
+            gap: 1.25rem;
+        }
+
+        .sidebar {
+            flex: 0 0 200px;
+            display: flex;
+            flex-direction: column;
+            gap: .5rem;
+        }
+
+        .sidebar-label {
+            font-size: .7rem;
+            font-weight: 600;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--c-ink3);
+            padding: .25rem .75rem;
+            margin-bottom: .25rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: .65rem;
+            padding: .65rem .9rem;
+            border-radius: var(--r-md);
+            border: 1px solid transparent;
+            background: transparent;
+            color: var(--c-ink2);
+            font-family: inherit;
+            font-size: .88rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all .2s var(--ease);
+            width: 100%;
+            text-align: left;
+        }
+
+        .nav-item:hover {
+            background: var(--c-surface2);
+            color: var(--c-ink);
+        }
+
+        .nav-item.active {
+            background: var(--c-accent-lt);
+            color: var(--c-accent);
+            border-color: rgba(61,79,224,.12);
+        }
+
+        .content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* Sections */
+        .section {
+            display: none;
+            animation: fadeUp .35s var(--ease) both;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: -.025em;
+            color: var(--c-ink);
+            margin-bottom: .2rem;
+        }
+
+        .section-sub {
+            font-size: .82rem;
+            color: var(--c-ink3);
+        }
+
+        .section-actions {
+            display: flex;
+            gap: .5rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            padding: .55rem 1rem;
+            border-radius: var(--r-md);
+            font-family: inherit;
+            font-size: .83rem;
+            font-weight: 500;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all .15s var(--ease);
+            white-space: nowrap;
+            position: relative;
             overflow: hidden;
         }
 
-        .table-wrapper {
-            max-height: 400px;
-            overflow-y: auto;
+        .btn-ghost {
+            background: var(--c-surface);
+            color: var(--c-ink2);
+            border-color: var(--c-border);
         }
 
-        .stock-table {
+        .btn-ghost:hover {
+            background: var(--c-surface2);
+            color: var(--c-ink);
+            border-color: var(--c-border2);
+            transform: translateY(-1px);
+        }
+
+        .btn-accent {
+            background: var(--c-accent);
+            color: #fff;
+            border-color: var(--c-accent);
+        }
+
+        .btn-accent:hover {
+            background: var(--c-accent-dk);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(61,79,224,.35);
+        }
+
+        .btn-accent:active {
+            transform: scale(0.96);
+        }
+
+        .btn-success {
+            background: var(--c-green);
+            color: #fff;
+            border-color: var(--c-green);
+        }
+
+        .btn-success:hover {
+            background: #14724a;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(26,138,90,.35);
+        }
+
+        .btn-danger {
+            background: var(--c-red);
+            color: #fff;
+            border-color: var(--c-red);
+        }
+
+        .btn-danger:hover {
+            background: #a32e2e;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(196,59,59,.35);
+        }
+
+        .btn-warning {
+            background: var(--c-amber);
+            color: #fff;
+            border-color: var(--c-amber);
+        }
+
+        .btn-warning:hover {
+            background: #8f5a1a;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(176,112,32,.35);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* KPI Cards */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: .75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .kpi-card {
+            background: var(--c-surface);
+            border: 1px solid var(--c-border);
+            border-radius: var(--r-lg);
+            padding: 1rem 1.1rem;
+            box-shadow: var(--shadow-sm);
+            transition: all .2s var(--ease);
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .kpi-label {
+            font-size: .75rem;
+            font-weight: 500;
+            color: var(--c-ink3);
+            letter-spacing: .02em;
+            text-transform: uppercase;
+            margin-bottom: .6rem;
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+        }
+
+        .kpi-icon {
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .65rem;
+        }
+
+        .kpi-value {
+            font-family: 'DM Mono', monospace;
+            font-size: 1.35rem;
+            font-weight: 500;
+            letter-spacing: -.02em;
+            color: var(--c-ink);
+            line-height: 1;
+            margin-bottom: .25rem;
+        }
+
+        .kpi-unit {
+            font-size: .72rem;
+            color: var(--c-ink3);
+            margin-left: .2rem;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        /* Toolbar */
+        .toolbar {
+            background: var(--c-surface);
+            border: 1px solid var(--c-border);
+            border-radius: var(--r-lg);
+            padding: .65rem .85rem;
+            margin-bottom: .75rem;
+            display: flex;
+            gap: .6rem;
+            align-items: center;
+            box-shadow: var(--shadow-sm);
+            flex-wrap: wrap;
+        }
+
+        .search-wrap {
+            flex: 1;
+            min-width: 180px;
+            position: relative;
+        }
+
+        .search-wrap i {
+            position: absolute;
+            left: .75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--c-ink3);
+            font-size: .78rem;
+            pointer-events: none;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: .5rem .8rem .5rem 2.1rem;
+            background: var(--c-bg);
+            border: 1px solid var(--c-border);
+            border-radius: var(--r-md);
+            font-family: inherit;
+            font-size: .85rem;
+            color: var(--c-ink);
+            transition: all .15s;
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: var(--c-accent);
+            box-shadow: 0 0 0 3px rgba(61,79,224,.1);
+        }
+
+        .search-input::placeholder {
+            color: var(--c-ink3);
+        }
+
+        .filters-row {
+            display: flex;
+            gap: .4rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        /* Filter chips */
+        .filter-chip {
+            display: flex;
+            align-items: center;
+            gap: .3rem;
+            padding: 0 .1rem 0 .6rem;
+            height: 30px;
+            background: var(--c-surface2);
+            border: 1px solid var(--c-border);
+            border-radius: 999px;
+            font-family: inherit;
+            font-size: .78rem;
+            color: var(--c-ink2);
+            cursor: pointer;
+            transition: border-color .12s, background .12s, color .12s;
+            white-space: nowrap;
+            position: relative;
+            user-select: none;
+        }
+
+        .filter-chip:hover {
+            border-color: var(--c-border2);
+            background: var(--c-surface);
+            color: var(--c-ink);
+        }
+
+        .filter-chip.active {
+            background: var(--c-accent-lt);
+            border-color: rgba(61,79,224,.25);
+            color: var(--c-accent);
+        }
+
+        .chip-label {
+            font-weight: 500;
+        }
+
+        .chip-val {
+            font-weight: 600;
+            font-size: .76rem;
+            max-width: 72px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: none;
+        }
+
+        .filter-chip.active .chip-val {
+            display: inline;
+        }
+
+        .chip-caret {
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            margin-right: 2px;
+            flex-shrink: 0;
+            font-size: .65rem;
+            color: var(--c-ink3);
+        }
+
+        .filter-chip.active .chip-caret {
+            color: var(--c-accent);
+        }
+
+        .result-count {
+            font-size: .79rem;
+            color: var(--c-ink3);
+            white-space: nowrap;
+            margin-left: auto;
+        }
+
+        /* Table */
+        .table-card {
+            background: var(--c-surface);
+            border: 1px solid var(--c-border);
+            border-radius: var(--r-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .table-scroll {
+            height: calc(100vh - 320px);
+            overflow-y: auto;
+            overflow-x: auto;
+        }
+
+        .table-scroll::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        .table-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .table-scroll::-webkit-scrollbar-thumb {
+            background: var(--c-border2);
+            border-radius: 3px;
+        }
+
+        .data-table {
             width: 100%;
             border-collapse: collapse;
+            min-width: 500px;
         }
 
-        .stock-table th {
-            text-align: left;
-            padding: 0.8rem;
-            background: rgba(79, 70, 229, 0.95);
-            color: white;
-            font-weight: 600;
+        .data-table thead {
             position: sticky;
             top: 0;
             z-index: 10;
-            font-size: 0.85rem;
         }
 
-        .stock-table td {
-            padding: 0.8rem;
-            border-bottom: 1px solid var(--glass-border);
-            font-size: 0.85rem;
+        .data-table th {
+            background: var(--c-surface2);
+            padding: .65rem .85rem;
+            text-align: left;
+            font-size: .75rem;
+            font-weight: 600;
+            color: var(--c-ink2);
+            letter-spacing: .04em;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--c-border);
         }
 
-        .stock-table tbody tr:hover {
-            background: rgba(79, 70, 229, 0.05);
+        .data-table th.sortable {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .data-table th.sortable::after {
+            content: ' ↕';
+            font-size: .6em;
+            opacity: .4;
+        }
+
+        .data-table tbody tr {
+            border-bottom: 1px solid var(--c-border);
+            transition: background .12s;
+        }
+
+        .data-table tbody tr:hover {
+            background: var(--c-accent-lt);
+        }
+
+        .data-table td {
+            padding: .7rem .85rem;
+            font-size: .84rem;
+            color: var(--c-ink);
+            vertical-align: middle;
+        }
+
+        .td-date {
+            font-family: 'DM Mono', monospace;
+            font-size: .78rem;
+            color: var(--c-ink2);
+        }
+
+        .td-amount {
+            font-family: 'DM Mono', monospace;
+            font-weight: 500;
+        }
+
+        .td-amount.positive {
+            color: var(--c-green);
+        }
+
+        .td-amount.negative {
+            color: var(--c-red);
         }
 
         .text-end {
             text-align: right;
         }
 
-        .controls-panel {
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--border-radius-lg);
-            padding: 1rem;
-            margin-bottom: 1rem;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.75rem;
+        .text-center {
+            text-align: center;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-flex;
             align-items: center;
+            gap: .3rem;
+            padding: .22rem .6rem;
+            border-radius: 999px;
+            font-size: .73rem;
+            font-weight: 600;
         }
 
-        .search-box {
-            flex: 1;
-            min-width: 200px;
-            position: relative;
+        .badge-success {
+            background: var(--c-green-lt);
+            color: var(--c-green);
         }
 
-        .search-box input {
-            width: 100%;
-            padding: 0.6rem 0.8rem 0.6rem 2.5rem;
-            border: 1px solid var(--gray-300);
-            border-radius: var(--border-radius-md);
-            font-family: inherit;
-            font-size: 0.9rem;
+        .badge-danger {
+            background: var(--c-red-lt);
+            color: var(--c-red);
         }
 
-        .search-box i {
-            position: absolute;
-            left: 0.8rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--gray-400);
+        .badge-warning {
+            background: var(--c-amber-lt);
+            color: var(--c-amber);
         }
 
-        .filter-select {
-            padding: 0.6rem 0.8rem;
-            border: 1px solid var(--gray-300);
-            border-radius: var(--border-radius-md);
-            font-family: inherit;
-            font-size: 0.9rem;
-            background: white;
-            min-width: 130px;
+        .badge-primary {
+            background: var(--c-accent-lt);
+            color: var(--c-accent);
         }
 
+        .cat-pill {
+            display: inline-block;
+            padding: .18rem .55rem;
+            border-radius: var(--r-sm);
+            font-size: .73rem;
+            background: var(--c-surface2);
+            color: var(--c-ink2);
+        }
+
+        /* Empty state */
+        .empty-state {
+            padding: 3rem 1rem;
+            text-align: center;
+            color: var(--c-ink3);
+        }
+
+        .empty-state i {
+            font-size: 1.8rem;
+            margin-bottom: .75rem;
+            display: block;
+            opacity: .4;
+        }
+
+        /* Modal */
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(8px);
+            background: rgba(26,25,22,.75);
+            backdrop-filter: blur(4px);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 2000;
-            animation: fadeIn 0.3s ease;
+            padding: 1rem;
         }
 
         .modal-overlay.active {
             display: flex;
         }
 
-        .modal-content {
-            background: white;
-            border-radius: var(--border-radius-xl);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+        .modal {
+            background: var(--c-surface);
+            border-radius: var(--r-xl);
+            box-shadow: var(--shadow-lg);
+            width: 100%;
             max-width: 500px;
-            width: 90%;
-            max-height: 85vh;
-            overflow: hidden;
-        }
-
-        .xlarge-modal {
-            max-width: 1400px;
-            width: 98%;
-            height: 90vh;
             max-height: 90vh;
-            display: flex;
-            flex-direction: column;
+            overflow: hidden;
+            animation: modalSlideIn .3s var(--ease);
         }
 
-        .modal-content.xlarge-modal .modal-body {
-            flex: 1;
-            overflow-y: auto;
-            max-height: calc(90vh - 120px);
-            padding: 1rem;
+        .modal.xlarge {
+            max-width: 95%;
+            width: 95%;
+            max-height: 95vh;
         }
 
-        .modal-content.xlarge-modal .table-container {
-            max-height: none;
-            height: auto;
+        @media (max-width: 768px) {
+            .modal.xlarge {
+                max-width: 98%;
+                width: 98%;
+                max-height: 98vh;
+            }
         }
 
-        .modal-content.xlarge-modal .table-wrapper {
-            max-height: calc(70vh - 150px);
-            overflow-y: auto;
-            overflow-x: auto;
-        }
-
-        .modal-content.xlarge-modal .stock-table {
-            font-size: 0.9rem;
-        }
-
-        .modal-content.xlarge-modal .stock-table th,
-        .modal-content.xlarge-modal .stock-table td {
-            padding: 0.5rem 0.8rem;
-            white-space: nowrap;
-        }
-
-        .modal-header {
-            padding: 1.2rem;
-            border-bottom: 1px solid var(--gray-200);
+        .modal-head {
+            padding: 1.25rem 1.5rem 1rem;
+            border-bottom: 1px solid var(--c-border);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: .5rem;
         }
 
-        .modal-title {
-            margin: 0;
-            font-size: 1.1rem;
-            color: var(--primary-700);
+        .modal-head-title {
+            font-size: 1rem;
+            font-weight: 600;
         }
 
         .modal-close {
-            background: transparent;
-            border: none;
-            font-size: 1.1rem;
-            color: var(--gray-500);
-            cursor: pointer;
             width: 28px;
             height: 28px;
-            border-radius: 50%;
+            border-radius: var(--r-sm);
+            border: 1px solid var(--c-border);
+            background: transparent;
+            color: var(--c-ink2);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all .15s;
         }
 
         .modal-close:hover {
-            background: var(--gray-100);
+            background: var(--c-surface2);
+            transform: rotate(90deg);
         }
 
         .modal-body {
-            padding: 1.2rem;
-            max-height: 55vh;
+            padding: 1.25rem 1.5rem;
+            max-height: 60vh;
             overflow-y: auto;
         }
 
-        .modal-footer {
-            padding: 1rem;
-            border-top: 1px solid var(--gray-200);
-            display: flex;
-            justify-content: flex-end;
-            gap: 0.5rem;
+        .modal-body.xlarge-body {
+            max-height: 70vh;
         }
 
+        .modal-foot {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--c-border);
+            display: flex;
+            justify-content: flex-end;
+            gap: .5rem;
+            flex-wrap: wrap;
+        }
+
+        /* Form */
         .form-group {
             margin-bottom: 1rem;
         }
 
         .form-label {
             display: block;
-            margin-bottom: 0.3rem;
+            font-size: .8rem;
             font-weight: 500;
-            color: var(--gray-700);
-            font-size: 0.85rem;
+            color: var(--c-ink2);
+            margin-bottom: .35rem;
         }
 
         .form-control {
             width: 100%;
-            padding: 0.6rem 0.8rem;
-            border: 1px solid var(--gray-300);
-            border-radius: var(--border-radius-md);
+            padding: .6rem .85rem;
+            background: var(--c-bg);
+            border: 1px solid var(--c-border);
+            border-radius: var(--r-md);
             font-family: inherit;
-            font-size: 0.9rem;
+            font-size: .88rem;
+            color: var(--c-ink);
+            outline: none;
+            transition: all .15s;
         }
 
         .form-control:focus {
-            outline: none;
-            border-color: var(--primary-400);
+            border-color: var(--c-accent);
+            box-shadow: 0 0 0 3px rgba(61,79,224,.1);
+            background: var(--c-surface);
+        }
+
+        .form-control[readonly] {
+            background: var(--c-surface2);
+            cursor: not-allowed;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: .75rem;
+        }
+
+        .form-hint {
+            font-size: .72rem;
+            color: var(--c-ink3);
+            margin-top: .2rem;
         }
 
         .nouvelle-quantite {
-            width: 100px;
-            padding: 0.4rem 0.6rem;
-            border: 1px solid var(--gray-300);
-            border-radius: var(--border-radius-md);
+            width: 85px;
+            padding: .35rem .5rem;
+            border: 1px solid var(--c-border);
+            border-radius: var(--r-sm);
             font-family: inherit;
-            font-size: 0.9rem;
+            font-size: .85rem;
             text-align: center;
+            outline: none;
+            transition: all .15s;
         }
 
-        .alert-message {
-            padding: 0.8rem 1rem;
-            border-radius: var(--border-radius-md);
-            margin: 0.8rem 0;
+        .nouvelle-quantite:focus {
+            border-color: var(--c-accent);
+            box-shadow: 0 0 0 3px rgba(61,79,224,.1);
+        }
+
+        /* Product row */
+        .product-row {
+            display: flex;
+            gap: .5rem;
+            align-items: end;
+            margin-bottom: .6rem;
+            padding: .6rem .8rem;
+            background: var(--c-bg);
+            border-radius: var(--r-md);
+            border: 1px solid var(--c-border);
+            transition: all .2s var(--ease);
+            flex-wrap: wrap;
+        }
+
+        .product-row:hover {
+            border-color: var(--c-accent);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .product-row .flex-3 { flex: 3; min-width: 120px; }
+        .product-row .flex-1 { flex: 1; min-width: 80px; }
+        .product-row .flex-05 { flex: 0.5; min-width: 40px; }
+
+        @media (max-width: 600px) {
+            .product-row .flex-3 { flex: 1 1 100%; }
+            .product-row .flex-1 { flex: 1 1 45%; }
+            .product-row .flex-05 { flex: 1 1 10%; }
+        }
+
+        /* Toast */
+        .toast-zone {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: .5rem;
+            pointer-events: none;
+        }
+
+        .toast {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            font-size: 0.85rem;
+            gap: .65rem;
+            padding: .75rem 1rem;
+            background: var(--c-surface);
+            border: 1px solid var(--c-border);
+            border-radius: var(--r-lg);
+            box-shadow: var(--shadow-md);
+            font-size: .85rem;
+            font-weight: 500;
+            max-width: 320px;
+            animation: toastIn .3s var(--ease) both;
+            pointer-events: auto;
         }
 
-        .alert-success {
-            background: rgba(16, 185, 129, 0.1);
-            color: #10b981;
-            border-left: 3px solid #10b981;
+        .toast-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: var(--r-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .8rem;
+            flex-shrink: 0;
         }
 
-        .alert-error {
-            background: rgba(239, 68, 68, 0.1);
-            color: #ef4444;
-            border-left: 3px solid #ef4444;
+        .toast.success .toast-icon {
+            background: var(--c-green-lt);
+            color: var(--c-green);
         }
 
-        .alert-warning {
-            background: rgba(245, 158, 11, 0.1);
-            color: #f59e0b;
-            border-left: 3px solid #f59e0b;
+        .toast.error .toast-icon {
+            background: var(--c-red-lt);
+            color: var(--c-red);
         }
 
-        .alert-info {
-            background: rgba(59, 130, 246, 0.1);
-            color: #3b82f6;
-            border-left: 3px solid #3b82f6;
+        .toast.warning .toast-icon {
+            background: var(--c-amber-lt);
+            color: var(--c-amber);
+        }
+
+        .toast.info .toast-icon {
+            background: var(--c-accent-lt);
+            color: var(--c-accent);
+        }
+
+        .toast-msg {
+            flex: 1;
+            color: var(--c-ink);
+        }
+
+        .toast-dismiss {
+            background: none;
+            border: none;
+            color: var(--c-ink3);
+            cursor: pointer;
+            font-size: 1.1rem;
+            padding: .1rem .25rem;
+        }
+
+        /* Alert message */
+        .alert-message {
+            padding: .6rem .8rem;
+            border-radius: var(--r-md);
+            margin: .6rem 0;
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            font-size: .8rem;
+        }
+
+        .alert-success { background: var(--c-green-lt); color: var(--c-green); border-left: 3px solid var(--c-green); }
+        .alert-error { background: var(--c-red-lt); color: var(--c-red); border-left: 3px solid var(--c-red); }
+        .alert-warning { background: var(--c-amber-lt); color: var(--c-amber); border-left: 3px solid var(--c-amber); }
+        .alert-info { background: var(--c-accent-lt); color: var(--c-accent); border-left: 3px solid var(--c-accent); }
+
+        /* Spinner */
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--c-border);
+            border-top-color: var(--c-accent);
+            border-radius: 50%;
+            animation: spin .7s linear infinite;
+            margin: 2rem auto;
         }
 
         .spinner-border {
-            width: 1.8rem;
-            height: 1.8rem;
-            border: 3px solid var(--primary-400);
-            border-right-color: transparent;
+            width: 1.5rem;
+            height: 1.5rem;
+            border: 3px solid var(--c-accent-lt);
+            border-right-color: var(--c-accent);
             border-radius: 50%;
             animation: spin 1s linear infinite;
+        }
+
+        .loading-state {
+            padding: 3rem 1rem;
+            text-align: center;
+            color: var(--c-ink3);
         }
 
         .loading-indicator {
@@ -571,278 +1008,601 @@
             align-items: center;
             justify-content: center;
             padding: 1.5rem;
-            gap: 0.8rem;
+            gap: .5rem;
         }
 
         .no-data {
             text-align: center;
             padding: 1.5rem;
-            color: var(--gray-500);
+            color: var(--c-ink3);
             font-style: italic;
         }
 
-        .toast-container {
-            position: fixed;
-            top: 0.8rem;
-            right: 0.8rem;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            gap: 0.4rem;
-            max-width: 300px;
+        /* Skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, var(--c-surface2) 25%, var(--c-surface) 50%, var(--c-surface2) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: var(--r-sm);
         }
 
-        .toast {
-            padding: 0.8rem;
-            border-radius: var(--border-radius-md);
-            background: white;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            animation: slideIn 0.3s ease;
-            border-left: 3px solid;
-            font-size: 0.85rem;
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
 
-        .toast.success { border-left-color: #10b981; }
-        .toast.error { border-left-color: #ef4444; }
-        .toast.warning { border-left-color: #f59e0b; }
-        .toast.info { border-left-color: #3b82f6; }
-
-        .mobile-stock-nav {
-            display: none;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(20px);
-            border-top: 1px solid var(--glass-border);
-            z-index: 1000;
-            padding: 0.5rem 1rem;
-            justify-content: space-around;
-        }
-
-        .mobile-stock-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.2rem;
-            background: none;
-            border: none;
-            color: var(--gray-500);
-            font-size: 0.7rem;
-            cursor: pointer;
-            padding: 0.3rem 0.5rem;
-            border-radius: var(--border-radius-md);
-        }
-
-        .mobile-stock-item.active {
-            color: var(--primary-600);
-            background: var(--primary-50);
-        }
-
-        .mobile-stock-item i {
-            font-size: 1.3rem;
-        }
-
-        @media (max-width: 768px) {
-            .stock-nav { display: none; }
-            .mobile-stock-nav { display: flex; }
-            .summary-cards { grid-template-columns: repeat(2, 1fr); }
-            .section-header { flex-direction: column; align-items: stretch; }
-            .stock-table { min-width: 800px; }
-            .xlarge-modal { width: 100%; height: 100vh; max-height: 100vh; border-radius: 0; }
-        }
-
-        .back-btn {
-            position: fixed;
-            bottom: 100px;
-            right: 20px;
-            z-index: 1001;
-        }
-        
-        .back-btn .btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 25px;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
-        }
-        
-        .back-btn .btn i {
-            margin: 0;
-            font-size: 1.3rem;
-        }
-
+        /* Progress overlay */
         .progress-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
+            inset: 0;
+            background: rgba(26,25,22,.7);
+            backdrop-filter: blur(4px);
+            display: none;
             align-items: center;
+            justify-content: center;
             z-index: 10000;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
         }
 
         .progress-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
+            display: flex;
         }
 
         .progress-modal {
-            background: white;
-            border-radius: 10px;
-            padding: 1.5rem;
-            min-width: 300px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-            animation: slideUp 0.3s ease;
-        }
-
-        .progress-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            background: var(--c-surface);
+            border-radius: var(--r-xl);
+            padding: 2rem;
+            max-width: 400px;
+            width: 90%;
             text-align: center;
-            gap: 1rem;
+            animation: modalSlideIn .3s var(--ease);
         }
 
-        .progress-spinner {
+        .progress-icon {
             font-size: 2.5rem;
-            color: #3b82f6;
+            margin-bottom: 1rem;
+        }
+
+        .progress-text h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: .3rem;
+        }
+
+        .progress-text p {
+            font-size: .85rem;
+            color: var(--c-ink3);
+            margin-bottom: .5rem;
         }
 
         .progress-bar {
             width: 100%;
             height: 6px;
-            background: #e5e7eb;
+            background: var(--c-border);
             border-radius: 3px;
             overflow: hidden;
-            margin-top: 0.8rem;
+            margin-top: .8rem;
         }
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+            background: var(--c-accent);
             width: 0%;
-            transition: width 0.3s ease;
+            transition: width .3s ease;
         }
 
-        .sortable {
-            cursor: pointer;
-        }
-
-        .sortable::after {
-            content: ' ↕';
-            font-size: 0.75em;
-            opacity: 0.5;
-        }
-
-        .fab {
+        /* Mobile Nav */
+        .mobile-nav {
+            display: none;
             position: fixed;
-            bottom: 5rem;
-            right: 1.5rem;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--c-surface);
+            border-top: 1px solid var(--c-border);
+            z-index: 1000;
+            padding: .5rem 1rem env(safe-area-inset-bottom,.5rem);
+            justify-content: space-around;
+            box-shadow: 0 -4px 20px rgba(26,25,22,.06);
+        }
+
+        .mob-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: .2rem;
+            background: none;
+            border: none;
+            color: var(--c-ink3);
+            font-family: inherit;
+            font-size: .65rem;
+            font-weight: 500;
+            cursor: pointer;
+            padding: .4rem .6rem;
+            border-radius: var(--r-md);
+            transition: all .15s;
+        }
+
+        .mob-item i {
+            font-size: .95rem;
+        }
+
+        .mob-item.active {
+            color: var(--c-accent);
+            background: var(--c-accent-lt);
+        }
+
+        /* FAB */
+        .fab {
+            display: none;
+            position: fixed;
+            bottom: 5.5rem;
+            right: 1.25rem;
             width: 48px;
             height: 48px;
             border-radius: 50%;
-            background: var(--primary-gradient);
-            color: white;
+            background: var(--c-accent);
+            color: #fff;
             border: none;
             cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            box-shadow: var(--shadow-md);
+            z-index: 100;
+            transition: all .2s;
+        }
+
+        .fab:hover {
+            transform: translateY(-2px) scale(1.1);
+            background: var(--c-accent-dk);
+        }
+
+        .fab.visible {
+            display: flex;
+        }
+
+        /* Back button */
+        .back-btn {
+            position: fixed;
+            bottom: 5.5rem;
+            left: 1.25rem;
+            z-index: 100;
+        }
+
+        .back-btn .btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            padding: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.3rem;
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
-            z-index: 100;
-            transition: all 0.3s ease;
+            box-shadow: var(--shadow-md);
+        }
+
+        .back-btn .btn span {
+            display: none;
+        }
+
+        .back-btn .btn i {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .sidebar {
+                display: none;
+            }
+
+            .mobile-nav {
+                display: flex;
+            }
+
+            .fab {
+                display: flex;
+            }
+
+            .fab.visible {
+                display: flex;
+            }
+
+            .back-btn {
+                bottom: 5.5rem;
+            }
+
+            .shell {
+                padding: .75rem .75rem 0;
+            }
+
+            .topbar {
+                padding: .5rem .75rem;
+            }
+
+            .topbar-date {
+                display: none;
+            }
+
+            .section-head {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .section-actions .btn {
+                flex: 1;
+                justify-content: center;
+            }
+
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-wrap {
+                min-width: unset;
+            }
+
+            .filters-row {
+                flex-wrap: wrap;
+            }
+
+            .result-count {
+                margin-left: 0;
+            }
+
+            .data-table {
+                min-width: 500px;
+            }
+
+            .modal {
+                max-width: 100%;
+                margin: .5rem;
+                max-height: 95vh;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .kpi-card {
+                padding: .75rem;
+            }
+
+            .topbar-user {
+                display: none;
+            }
+
+            .brand-name {
+                font-size: .9rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="toast-container" id="toast-container"></div>
-    <button class="fab" onclick="scrollToTop()" id="fab" style="display:none;"><i class="fas fa-arrow-up"></i></button>
+    <!-- Toast Notifications -->
+    <div class="toast-zone" id="toast-zone"></div>
 
-    <div class="dashboard-container">
-        <header class="header">
-            <div class="header-left"><h1>Stock Manager</h1></div>
-            <div class="user-info">
-                <span id="username-display">Admin</span>
-                <img src="https://ui-avatars.com/api/?name=Admin&background=6366f1&color=fff" alt="Profil" class="profile-img">
+    <!-- Floating Action Button -->
+    <button class="fab" id="fab" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Back Button -->
+    <div class="back-btn">
+        <button class="btn btn-ghost" onclick="goBack()">
+            <i class="fas fa-arrow-left"></i>
+            <span>Retour</span>
+        </button>
+    </div>
+
+    <!-- Shell -->
+    <div class="shell">
+        <!-- Topbar -->
+        <header class="topbar">
+            <div class="topbar-brand">
+                <div class="brand-mark">
+                    <img src="logoAppli.png" alt="VisionPro" onerror="this.style.display='none';this.parentElement.innerHTML='<i class=\'fas fa-eye\'></i>'">
+                </div>
+                <span class="brand-name">Visio<span>Pro</span></span>
+            </div>
+            <div class="topbar-right">
+                <span class="topbar-date" id="current-date"></span>
+                <span class="topbar-user" id="topbar-username">Admin</span>
+                <img src="https://ui-avatars.com/api/?name=Admin&background=3D4FE0&color=fff&size=64" alt="Profil" class="avatar" id="user-avatar">
             </div>
         </header>
 
-        <div class="back-btn">
-            <button class="btn btn-primary" onclick="goBack()"><i class="fas fa-arrow-left"></i></button>
-        </div>
-
-        <div class="stock-sections">
-            <nav class="stock-nav" id="stock-nav">
-                <h3 class="nav-title">Agences</h3>
+        <!-- Main -->
+        <div class="main">
+            <!-- Sidebar -->
+            <aside class="sidebar" id="sidebar">
+                <p class="sidebar-label">Gestion de Stock</p>
                 <div id="nav-buttons"></div>
-            </nav>
+            </aside>
 
-            <div class="content-area" id="content-area"></div>
+            <!-- Content -->
+            <div class="content" id="content-area">
+                <!-- Les sections sont générées dynamiquement par JavaScript -->
+            </div>
         </div>
     </div>
 
-    <nav class="mobile-stock-nav" id="mobile-stock-nav"></nav>
+    <!-- Mobile Navigation -->
+    <nav class="mobile-nav" id="mobile-nav"></nav>
+
+    <!-- Modal Container -->
     <div id="modal-container"></div>
 
     <script>
-        const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbwdzHJGAL16KV_OnyoCIs5I7im2yNxrbEaEIbykQ8hy6ewQjJFQ0G4TfqYWWCMc7vfW/exec';
+        // ============================================================
+        // CONFIGURATION
+        // ============================================================
+        const CONFIG = {
+            API_BASE: 'https://script.google.com/macros/s/AKfycbwdzHJGAL16KV_OnyoCIs5I7im2yNxrbEaEIbykQ8hy6ewQjJFQ0G4TfqYWWCMc7vfW/exec',
+            SESSION_KEYS: {
+                USER: 'utilisateur',
+                TOKEN: 'apiToken'
+            }
+        };
 
-        let agencies = [];
-        let stockData = {};
-        let currentAgency = null;
-        let toastId = 0;
-        let pendingSourceAgenceId = null;
-        let progressInterval = null;
+        // ============================================================
+        // GESTION DU TOKEN
+        // ============================================================
+        const TokenManager = {
+            getToken() {
+                return sessionStorage.getItem(CONFIG.SESSION_KEYS.TOKEN) || localStorage.getItem(CONFIG.SESSION_KEYS.TOKEN);
+            },
+            getUser() {
+                return sessionStorage.getItem(CONFIG.SESSION_KEYS.USER) || localStorage.getItem(CONFIG.SESSION_KEYS.USER) || 'Admin';
+            },
+            isAuthenticated() {
+                const token = this.getToken();
+                return token && token !== 'undefined' && token !== 'null';
+            },
+            redirectToLogin() {
+                sessionStorage.removeItem(CONFIG.SESSION_KEYS.TOKEN);
+                sessionStorage.removeItem(CONFIG.SESSION_KEYS.USER);
+                window.location.href = 'code.html';
+            },
+            checkAndRedirect() {
+                if (!this.isAuthenticated()) {
+                    this.redirectToLogin();
+                    return false;
+                }
+                return true;
+            }
+        };
 
-        document.addEventListener('DOMContentLoaded', () => {
-            window.addEventListener('scroll', handleScroll);
-            loadAgencies();
-        });
+        // ============================================================
+        // ÉTAT GLOBAL
+        // ============================================================
+        const STATE = {
+            agencies: [],
+            stockData: {},
+            currentAgency: null,
+            pendingTransferData: null,
+            toastId: 0,
+            inventaireEnCours: null,
+            progressInterval: null
+        };
 
+        // ============================================================
+        // FONCTIONS UTILITAIRES
+        // ============================================================
+        const Utils = {
+            formatDate: (dateStr) => {
+                if (!dateStr) return '';
+                try {
+                    const date = new Date(dateStr);
+                    return isNaN(date.getTime()) ? dateStr : date.toLocaleDateString('fr-FR');
+                } catch { return dateStr; }
+            },
+            formatCurrency: (amount) => {
+                const val = typeof amount === 'number' ? amount : parseFloat(amount) || 0;
+                return val.toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + ' FCFA';
+            },
+            escapeHtml: (text) => {
+                if (!text) return '';
+                return String(text)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            },
+            showToast: (message, type = 'info', duration = 5000) => {
+                const container = document.getElementById('toast-zone');
+                const id = `toast-${STATE.toastId++}`;
+                const toast = document.createElement('div');
+                const icons = { success: 'check-circle', error: 'exclamation-circle', warning: 'exclamation-triangle', info: 'info-circle' };
+                toast.className = `toast ${type}`;
+                toast.id = id;
+                toast.innerHTML = `
+                    <span class="toast-icon"><i class="fas fa-${icons[type] || 'info-circle'}"></i></span>
+                    <span class="toast-msg">${message}</span>
+                    <button class="toast-dismiss" onclick="closeToast('${id}')"><i class="fas fa-times"></i></button>
+                `;
+                container.appendChild(toast);
+                setTimeout(() => closeToast(id), duration);
+                return id;
+            },
+            showProgress: (message = 'Traitement en cours...', subMessage = '') => {
+                const overlay = document.createElement('div');
+                overlay.className = 'progress-overlay active';
+                overlay.id = 'global-progress-overlay';
+                overlay.innerHTML = `
+                    <div class="progress-modal">
+                        <div class="progress-icon"><i class="fas fa-spinner fa-spin"></i></div>
+                        <div class="progress-text">
+                            <h4>${message}</h4>
+                            ${subMessage ? `<p>${subMessage}</p>` : ''}
+                            <div class="progress-bar"><div class="progress-fill"></div></div>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(overlay);
+                const fill = overlay.querySelector('.progress-fill');
+                let width = 0;
+                const interval = setInterval(() => {
+                    if (width < 80) { width += 5; fill.style.width = width + '%'; }
+                }, 200);
+                overlay.dataset.interval = interval;
+            },
+            hideProgress: (success = true, message = '') => {
+                const overlay = document.getElementById('global-progress-overlay');
+                if (!overlay) return;
+                clearInterval(overlay.dataset.interval);
+                const fill = overlay.querySelector('.progress-fill');
+                if (fill) fill.style.width = '100%';
+                const content = overlay.querySelector('.progress-text');
+                const icon = success ? 'check-circle' : 'exclamation-circle';
+                const color = success ? '#1A8A5A' : '#C43B3B';
+                const title = success ? 'Succès !' : 'Erreur';
+                const defaultMsg = success ? 'Opération terminée avec succès' : 'Une erreur est survenue';
+                content.innerHTML = `
+                    <div class="progress-icon" style="color:${color}"><i class="fas fa-${icon}"></i></div>
+                    <h4>${title}</h4>
+                    <p>${message || defaultMsg}</p>
+                `;
+                setTimeout(() => overlay.remove(), 2000);
+            },
+            closeModal: () => {
+                document.getElementById('modal-container').innerHTML = '';
+                document.querySelectorAll('.modal-overlay').forEach(el => el.remove());
+            }
+        };
+
+        // ============================================================
+        // API
+        // ============================================================
+        const API = {
+            async get(action, params = {}) {
+                if (!TokenManager.checkAndRedirect()) return;
+                const token = TokenManager.getToken();
+                const url = new URL(CONFIG.API_BASE);
+                url.searchParams.append('action', action);
+                url.searchParams.append('token', token);
+                Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) throw new Error(`Erreur HTTP: ${response.status}`);
+                    const data = await response.json();
+
+                    if (data.success === false) {
+                        if (data.message === 'Session expirée' || data.message === 'Session invalide' || data.message === 'Token invalide') {
+                            TokenManager.redirectToLogin();
+                            throw new Error(data.message);
+                        }
+                    }
+                    return data;
+                } catch (error) {
+                    console.error('Erreur API GET:', error);
+                    throw error;
+                }
+            },
+            async post(action, data = {}) {
+                if (!TokenManager.checkAndRedirect()) return;
+                const token = TokenManager.getToken();
+                const url = `${CONFIG.API_BASE}?action=${action}`;
+                const bodyData = {
+                    ...data,
+                    token: token,
+                    utilisateur: TokenManager.getUser(),
+                    timestamp: new Date().toISOString()
+                };
+
+                // Mode no-cors - on ne peut pas lire la réponse
+                await fetch(url, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(bodyData)
+                });
+
+                return { success: true, message: 'Requête envoyée' };
+            }
+        };
+
+        // ============================================================
+        // GESTION DES TOASTS
+        // ============================================================
+        function closeToast(id) {
+            const toast = document.getElementById(id);
+            if (toast) toast.remove();
+        }
+
+        // ============================================================
+        // GESTION DE LA DATE
+        // ============================================================
+        function updateCurrentDate() {
+            const now = new Date();
+            document.getElementById('current-date').textContent = now.toLocaleDateString('fr-FR', {
+                weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+            });
+        }
+
+        // ============================================================
+        // NAVIGATION
+        // ============================================================
+        function goBack() {
+            window.location.href = 'Accueil.html';
+        }
+
+        function handleScroll() {
+            const fab = document.getElementById('fab');
+            if (fab) {
+                fab.classList.toggle('visible', window.scrollY > 300);
+            }
+        }
+
+        // ============================================================
+        // CHARGEMENT DES AGENCES
+        // ============================================================
         async function loadAgencies() {
+            if (!TokenManager.checkAndRedirect()) return;
+
             try {
-                const res = await fetch(`${API_BASE_URL}?action=getCategories`);
-                const json = await res.json();
+                const json = await API.get('getCategories');
                 if (!json.success || !json.data?.categories?.length) throw new Error('Réponse invalide');
 
-                agencies = json.data.categories;
-                
-                agencies.forEach(({ value }) => {
-                    stockData[value] = { allData: [], filteredData: [] };
+                STATE.agencies = json.data.categories;
+
+                STATE.agencies.forEach(({ value }) => {
+                    STATE.stockData[value] = { allData: [], filteredData: [] };
                 });
-                
+
                 buildUI();
-                if (agencies.length > 0) {
-                    currentAgency = agencies[0].value;
-                    showSection(currentAgency);
-                    loadAgenceStock(currentAgency);
+                if (STATE.agencies.length > 0) {
+                    STATE.currentAgency = STATE.agencies[0].value;
+                    showSection(STATE.currentAgency);
+                    loadAgenceStock(STATE.currentAgency);
                 }
             } catch (err) {
                 console.error('Erreur chargement agences:', err);
                 document.getElementById('content-area').innerHTML = `
-                    <div style="padding:2rem;text-align:center;">
-                        <i class="fas fa-exclamation-triangle" style="font-size:2rem;color:#ef4444;"></i>
-                        <div>Impossible de charger les agences.</div>
-                        <button class="btn btn-primary" onclick="loadAgencies()">Réessayer</button>
+                    <div class="empty-state" style="padding:3rem 1rem;">
+                        <i class="fas fa-exclamation-triangle" style="color:var(--c-red);"></i>
+                        <p>Impossible de charger les agences. ${err.message}</p>
+                        <button class="btn btn-accent" onclick="loadAgencies()" style="margin-top:.5rem;">Réessayer</button>
                     </div>`;
             }
         }
 
+        // ============================================================
+        // CONSTRUCTION DE L'INTERFACE
+        // ============================================================
         function buildUI() {
             buildSideNav();
             buildMobileNav();
@@ -851,672 +1611,1438 @@
 
         function buildSideNav() {
             const navButtons = document.getElementById('nav-buttons');
-            navButtons.innerHTML = agencies.map(({ value, label }, i) => `
-                <button id="nav-btn-${value}" class="nav-btn ${i === 0 ? 'active' : ''}" onclick="showSection('${value}')">
+            navButtons.innerHTML = STATE.agencies.map(({ value, label }, i) => `
+                <button class="nav-item ${i === 0 ? 'active' : ''}" onclick="showSection('${value}')" data-agence="${value}">
                     <i class="fas fa-warehouse"></i>
-                    <span>${label}</span>
+                    <span>${label.length > 20 ? label.substring(0,18)+'...' : label}</span>
                 </button>
             `).join('');
         }
 
         function buildMobileNav() {
-            const mobileNav = document.getElementById('mobile-stock-nav');
-            mobileNav.innerHTML = agencies.map(({ value, label }, i) => `
-                <button id="mobile-nav-${value}" class="mobile-stock-item ${i === 0 ? 'active' : ''}" onclick="showSection('${value}')">
+            const mobileNav = document.getElementById('mobile-nav');
+            mobileNav.innerHTML = STATE.agencies.map(({ value, label }, i) => `
+                <button class="mob-item ${i === 0 ? 'active' : ''}" onclick="showSection('${value}')" data-agence="${value}">
                     <i class="fas fa-warehouse"></i>
-                    <span>${label}</span>
+                    <span>${label.length > 12 ? label.substring(0,10)+'..' : label}</span>
                 </button>
             `).join('');
         }
 
         function buildSections() {
-            document.getElementById('content-area').innerHTML = agencies.map(({ value, label }, i) => `
-                <div id="section-${value}" class="section-content ${i === 0 ? 'active' : ''}">
-                    <div class="section-header">
-                        <h2 class="section-title">Agence ${label}</h2>
-                        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-                            <button class="btn btn-primary" onclick="demarrerInventaire('${value}')">
+            document.getElementById('content-area').innerHTML = STATE.agencies.map(({ value, label }, i) => `
+                <div id="section-${value}" class="section ${i === 0 ? 'active' : ''}">
+                    <div class="section-head">
+                        <div>
+                            <div class="section-title">${Utils.escapeHtml(label)}</div>
+                            <div class="section-sub">Gestion du stock de l'agence</div>
+                        </div>
+                        <div class="section-actions">
+                            <button class="btn btn-accent" onclick="demarrerInventaire('${value}')">
                                 <i class="fas fa-clipboard-list"></i> Inventaire
                             </button>
-                            <button class="btn btn-warning" onclick="openTransferCodeVerification('${value}')">
-                                <i class="fas fa-exchange-alt"></i> Transférer vers
+                            <button class="btn btn-warning" onclick="openTransferWizard('${value}')">
+                                <i class="fas fa-exchange-alt"></i> Transférer
                             </button>
-                            <button class="btn btn-secondary" onclick="refreshStockData('${value}')">
+                            <button class="btn btn-ghost" onclick="refreshStockData('${value}')">
                                 <i class="fas fa-sync-alt"></i> Actualiser
                             </button>
                         </div>
                     </div>
 
-                    <div class="controls-panel">
-                        <div class="search-box">
+<!-- KPI Cards - Stock Physique par Catégorie -->
+<div class="kpi-grid" id="kpi-grid-${value}">
+    <!-- Les cartes seront générées dynamiquement par JavaScript -->
+</div>
+
+                    <!-- Toolbar -->
+                    <div class="toolbar">
+                        <div class="search-wrap">
                             <i class="fas fa-search"></i>
-                            <input type="text" id="search-${value}" placeholder="Rechercher par référence..." onkeyup="applyStockFilter('${value}')">
+                            <input type="text" class="search-input" id="search-${value}" placeholder="Rechercher référence..." onkeyup="applyStockFilter('${value}')">
                         </div>
-                        <div>
-                            <select class="filter-select" id="filter-category-${value}" onchange="applyStockFilter('${value}')">
-                                <option value="">Toutes les catégories</option>
-                            </select>
+                        <div class="filters-row">
+                            <div class="filter-chip" id="chip-${value}-category" onclick="toggleCategoryFilter('${value}')">
+                                <span class="chip-label">Catégorie</span>
+                                <span class="chip-val" id="chip-${value}-category-val">Tous</span>
+                                <span class="chip-caret"><i class="fas fa-chevron-down"></i></span>
+                                <div class="chip-drop" id="chip-${value}-category-drop" style="display:none;position:absolute;top:calc(100%+6px);left:0;min-width:170px;background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-lg);padding:.3rem;z-index:200;box-shadow:0 6px 20px rgba(26,25,22,.1);"></div>
+                            </div>
+                            <span class="result-count" id="result-count-${value}">0 résultat(s)</span>
                         </div>
                     </div>
 
-                    <div class="summary-cards">
-                        <div class="summary-card">
-                            <div style="display:flex;align-items:center;gap:.75rem;">
-                                <div class="card-icon" style="background:linear-gradient(135deg,#3b82f6,#60a5fa);"><i class="fas fa-box"></i></div>
-                                <div><div style="font-size:.875rem;color:var(--gray-500);">Total Produits</div><div id="total-products-${value}" style="font-size:1.5rem;font-weight:700;color:#3b82f6;">0</div></div>
+                    <!-- Table -->
+                    <div class="table-card">
+                        <div class="table-scroll">
+                            <div id="skeleton-${value}" class="skeleton" style="display:none;">
+                                <div class="skeleton-row" style="display:flex;padding:.7rem .85rem;gap:1rem;border-bottom:1px solid var(--c-border);">
+                                    <div class="skeleton-cell" style="flex:1;height:18px;"></div>
+                                    <div class="skeleton-cell" style="flex:1;height:18px;"></div>
+                                    <div class="skeleton-cell" style="flex:0.7;height:18px;"></div>
+                                    <div class="skeleton-cell" style="flex:0.5;height:18px;"></div>
+                                    <div class="skeleton-cell" style="flex:0.5;height:18px;"></div>
+                                    <div class="skeleton-cell" style="flex:0.5;height:18px;"></div>
+                                </div>
+                                <div class="skeleton-row" style="display:flex;padding:.7rem .85rem;gap:1rem;border-bottom:1px solid var(--c-border);">
+                                    <div class="skeleton-cell" style="flex:1;height:18px;"></div>
+                                    <div class="skeleton-cell" style="flex:1;height:18px;"></div>
+                                    <div class="skeleton-cell" style="flex:0.7;height:18px;"></div>
+                                    <div class="skeleton-cell" style="flex:0.5;height:18px;"></div>
+                                    <div class="skeleton-cell" style="flex:0.5;height:18px;"></div>
+                                    <div class="skeleton-cell" style="flex:0.5;height:18px;"></div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="summary-card">
-                            <div style="display:flex;align-items:center;gap:.75rem;">
-                                <div class="card-icon" style="background:linear-gradient(135deg,#10b981,#34d399);"><i class="fas fa-cubes"></i></div>
-                                <div><div style="font-size:.875rem;color:var(--gray-500);">Stock Total</div><div id="total-stock-${value}" style="font-size:1.5rem;font-weight:700;color:#10b981;">0</div></div>
-                            </div>
-                        </div>
-                        <div class="summary-card">
-                            <div style="display:flex;align-items:center;gap:.75rem;">
-                                <div class="card-icon" style="background:linear-gradient(135deg,#f59e0b,#fbbf24);"><i class="fas fa-tag"></i></div>
-                                <div><div style="font-size:.875rem;color:var(--gray-500);">Catégories</div><div id="total-categories-${value}" style="font-size:1.5rem;font-weight:700;color:#f59e0b;">0</div></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="table-container">
-                        <div class="table-wrapper">
-                            <table class="stock-table" id="stock-table-${value}">
+                            <table class="data-table" id="stock-table-${value}">
                                 <thead id="stock-header-${value}"></thead>
                                 <tbody id="stock-data-${value}">
-                                    <tr><td colspan="12"><div class="loading-indicator"><div class="spinner-border"></div><div>Chargement...</div></div><\/td><\/tr>
+                                    <tr><td colspan="12"><div class="loading-state"><div class="spinner"></div>Chargement...</div></td></tr>
                                 </tbody>
-                            <\/table>
+                            </table>
                         </div>
                     </div>
                 </div>
             `).join('');
+
+            // Initialiser les filtres de catégorie pour chaque section
+            STATE.agencies.forEach(({ value }) => {
+                initCategoryFilter(value);
+            });
         }
 
+        // ============================================================
+        // GESTION DES FILTRES CATÉGORIE
+        // ============================================================
+        function toggleCategoryFilter(agenceId) {
+            const drop = document.getElementById(`chip-${agenceId}-category-drop`);
+            if (drop) {
+                drop.style.display = drop.style.display === 'block' ? 'none' : 'block';
+                document.getElementById(`chip-${agenceId}-category`)?.classList.toggle('active');
+            }
+        }
+
+        function initCategoryFilter(agenceId) {
+            const data = STATE.stockData[agenceId]?.allData || [];
+            const cats = [...new Set(data.map(d => d['Catégorie']).filter(Boolean))].sort();
+            const drop = document.getElementById(`chip-${agenceId}-category-drop`);
+            if (!drop) return;
+
+            drop.innerHTML = `
+                <div class="drop-item ${cats.length === 0 ? 'sel' : ''}" data-value="" onclick="selectCategoryFilter('${agenceId}','','Tous')">
+                    Tous
+                    <span class="di-check" style="margin-left:auto;font-size:.7rem;display:${cats.length === 0 ? 'inline' : 'none'};"><i class="fas fa-check"></i></span>
+                </div>
+                ${cats.map(c => `
+                    <div class="drop-item" data-value="${Utils.escapeHtml(c)}" onclick="selectCategoryFilter('${agenceId}','${Utils.escapeHtml(c)}','${Utils.escapeHtml(c)}')">
+                        ${Utils.escapeHtml(c)}
+                        <span class="di-check" style="margin-left:auto;font-size:.7rem;display:none;"><i class="fas fa-check"></i></span>
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        function selectCategoryFilter(agenceId, value, label) {
+            const valEl = document.getElementById(`chip-${agenceId}-category-val`);
+            if (valEl) {
+                valEl.textContent = label || 'Tous';
+                valEl.style.display = value && value !== '' ? 'inline' : 'none';
+            }
+            const drop = document.getElementById(`chip-${agenceId}-category-drop`);
+            if (drop) {
+                drop.querySelectorAll('.drop-item').forEach(item => {
+                    item.classList.toggle('sel', item.dataset.value === value);
+                    const check = item.querySelector('.di-check');
+                    if (check) check.style.display = item.dataset.value === value ? 'inline' : 'none';
+                });
+                drop.style.display = 'none';
+            }
+            document.getElementById(`chip-${agenceId}-category`)?.classList.remove('active');
+            // Stocker la valeur sélectionnée
+            if (!STATE.stockData[agenceId]) STATE.stockData[agenceId] = { allData: [], filteredData: [] };
+            STATE.stockData[agenceId].selectedCategory = value;
+            applyStockFilter(agenceId);
+        }
+
+        // ============================================================
+        // GESTION DES SECTIONS
+        // ============================================================
         function showSection(agenceId) {
-            agencies.forEach(({ value }) => {
+            if (!TokenManager.checkAndRedirect()) return;
+
+            STATE.agencies.forEach(({ value }) => {
                 const section = document.getElementById(`section-${value}`);
                 if (section) section.classList.remove('active');
-                const navBtn = document.getElementById(`nav-btn-${value}`);
+                const navBtn = document.querySelector(`.nav-item[data-agence="${value}"]`);
                 if (navBtn) navBtn.classList.remove('active');
-                const mobileBtn = document.getElementById(`mobile-nav-${value}`);
+                const mobileBtn = document.querySelector(`.mob-item[data-agence="${value}"]`);
                 if (mobileBtn) mobileBtn.classList.remove('active');
             });
-            
+
             const activeSection = document.getElementById(`section-${agenceId}`);
             if (activeSection) activeSection.classList.add('active');
-            const activeNavBtn = document.getElementById(`nav-btn-${agenceId}`);
+            const activeNavBtn = document.querySelector(`.nav-item[data-agence="${agenceId}"]`);
             if (activeNavBtn) activeNavBtn.classList.add('active');
-            const activeMobileBtn = document.getElementById(`mobile-nav-${agenceId}`);
+            const activeMobileBtn = document.querySelector(`.mob-item[data-agence="${agenceId}"]`);
             if (activeMobileBtn) activeMobileBtn.classList.add('active');
-            
-            currentAgency = agenceId;
-            if (!stockData[agenceId]?.allData.length) loadAgenceStock(agenceId);
+
+            STATE.currentAgency = agenceId;
+            if (!STATE.stockData[agenceId]?.allData?.length) {
+                loadAgenceStock(agenceId);
+            }
+            // Fermer les menus déroulants
+            document.querySelectorAll('.chip-drop').forEach(d => d.style.display = 'none');
+            document.querySelectorAll('.filter-chip.active').forEach(c => c.classList.remove('active'));
         }
 
+        // ============================================================
+        // CHARGEMENT DU STOCK
+        // ============================================================
         async function loadAgenceStock(agenceId) {
-            const agency = agencies.find(a => a.value === agenceId);
+            if (!TokenManager.checkAndRedirect()) return;
+
+            const agency = STATE.agencies.find(a => a.value === agenceId);
             if (!agency) return;
 
+            const tbody = document.getElementById(`stock-data-${agenceId}`);
+            if (tbody) {
+                tbody.innerHTML = `<tr><td colspan="12"><div class="loading-state"><div class="spinner"></div>Chargement...</div></td></tr>`;
+            }
+
             try {
-                const idx = agencies.findIndex(a => a.value === agenceId) + 1;
-                const res = await fetch(`${API_BASE_URL}?action=stockagence${idx}`);
-                const json = await res.json();
+                const idx = STATE.agencies.findIndex(a => a.value === agenceId) + 1;
+                const json = await API.get(`stockagence${idx}`);
 
                 if (!json?.data?.rows || !json?.data?.headers) throw new Error('Structure de données invalide');
 
-                stockData[agenceId].allData = json.data.rows.map(row => {
+                STATE.stockData[agenceId].allData = json.data.rows.map(row => {
                     const item = {};
                     json.data.headers.forEach((h, i) => {
                         const key = h.trim();
                         let val = row[i] ?? '';
-                        if (['Stock', 'Prix', 'Conso', 'Stock de depart', 'Stock Physique'].some(k => key.includes(k)))
+                        if (['Stock', 'Prix', 'Conso', 'Stock de depart', 'Stock Physique', 'Stock depart'].some(k => key.includes(k))) {
                             val = parseFloat(val) || 0;
+                        }
                         item[key] = val;
                     });
                     item['Agence'] = agency.label;
                     return item;
                 });
 
-                stockData[agenceId].filteredData = [...stockData[agenceId].allData];
+                STATE.stockData[agenceId].filteredData = [];
+                STATE.stockData[agenceId].selectedCategory = '';
                 generateTableHeaders(agenceId);
-                populateFilters(agenceId);
+                initCategoryFilter(agenceId);
                 updateSummaryCards(agenceId);
                 displayStockData(agenceId);
-                showToast(`${stockData[agenceId].allData.length} produits chargés`, 'success');
+                updateLastUpdate(agenceId);
+                Utils.showToast(`${STATE.stockData[agenceId].allData.length} produits chargés`, 'success', 2000);
             } catch (err) {
                 console.error(`Erreur ${agenceId}:`, err);
-                document.getElementById(`stock-data-${agenceId}`).innerHTML = `
-                    <tr><td colspan="12"><div style="text-align:center;padding:1.5rem;color:#ef4444;">Erreur: ${err.message}</div><\/td><\/tr>`;
+                if (tbody) {
+                    tbody.innerHTML = `<tr><td colspan="12"><div class="empty-state"><i class="fas fa-exclamation-triangle" style="color:var(--c-red);"></i><p>Erreur: ${err.message}</p></div></td></tr>`;
+                }
             }
         }
 
         function generateTableHeaders(agenceId) {
-            const data = stockData[agenceId].allData;
+            const data = STATE.stockData[agenceId]?.allData || [];
             const thead = document.getElementById(`stock-header-${agenceId}`);
             if (!data[0] || !thead) return;
             const headers = Object.keys(data[0]).filter(h => h !== 'User' && h !== 'Agence');
             thead.innerHTML = '<tr>' + headers.map(h => {
-                const cls = (h.includes('Prix') || h.includes('Stock')) ? 'text-end' : '';
-                return `<th class="sortable ${cls}" onclick="sortTable('${agenceId}','${h}')">${h}</th>`;
-            }).join('') + '<\/tr>';
+                const cls = (h.includes('Prix') || h.includes('Stock') || h.includes('Conso')) ? 'text-end' : '';
+                return `<th class="sortable ${cls}" onclick="sortTable('${agenceId}','${h}')">${Utils.escapeHtml(h)}</th>`;
+            }).join('') + '</tr>';
         }
 
         function sortTable(agenceId, column) {
-            const data = stockData[agenceId].filteredData.length ? stockData[agenceId].filteredData : stockData[agenceId].allData;
+            const data = [...(STATE.stockData[agenceId].filteredData.length ? STATE.stockData[agenceId].filteredData : STATE.stockData[agenceId].allData)];
             data.sort((a, b) => {
                 let va = a[column], vb = b[column];
                 if (typeof va === 'string') va = va.toLowerCase();
                 if (typeof vb === 'string') vb = vb.toLowerCase();
-                return va < vb ? -1 : va > vb ? 1 : 0;
+                if (va < vb) return -1;
+                if (va > vb) return 1;
+                return 0;
             });
-            stockData[agenceId].filteredData = data;
+            STATE.stockData[agenceId].filteredData = data;
             displayStockData(agenceId);
         }
 
-        function populateFilters(agenceId) {
-            const sel = document.getElementById(`filter-category-${agenceId}`);
-            if (!sel) return;
-            const cats = [...new Set(stockData[agenceId].allData.map(d => d['Catégorie']).filter(Boolean))].sort();
-            sel.innerHTML = '<option value="">Toutes les catégories</option>' +
-                cats.map(c => `<option value="${c}">${c}</option>`).join('');
-        }
+// ============================================================
+// AFFICHAGE DU STOCK PAR CATÉGORIE (DYNAMIQUE)
+// ============================================================
 
-        function updateSummaryCards(agenceId) {
-            const data = stockData[agenceId].allData;
-            const totalStock = data.reduce((s, d) => s + (parseFloat(d['Stock Physique']) || 0), 0);
-            const totalCats = new Set(data.map(d => d['Catégorie']).filter(Boolean)).size;
-            document.getElementById(`total-products-${agenceId}`).textContent = data.length;
-            document.getElementById(`total-stock-${agenceId}`).textContent = totalStock;
-            document.getElementById(`total-categories-${agenceId}`).textContent = totalCats;
+function updateCategoryStockCards(agenceId) {
+    const data = STATE.stockData[agenceId]?.allData || [];
+    const grid = document.getElementById(`kpi-grid-${agenceId}`);
+    if (!grid) return;
+
+    // Grouper par catégorie : stock physique total et stock de départ total
+    const categoryData = {};
+    data.forEach(item => {
+        const cat = item['Catégorie'] || 'Non catégorisé';
+        const stockPhysique = parseFloat(item['Stock Physique']) || parseFloat(item['Stock']) || 0;
+        const stockDepart = parseFloat(item['Stock de depart']) || parseFloat(item['Stock depart']) || 0;
+        
+        if (!categoryData[cat]) {
+            categoryData[cat] = { stockPhysique: 0, stockDepart: 0 };
+        }
+        categoryData[cat].stockPhysique += stockPhysique;
+        categoryData[cat].stockDepart += stockDepart;
+    });
+
+    // Trier par stock physique décroissant
+    const sortedCategories = Object.entries(categoryData)
+        .sort((a, b) => b[1].stockPhysique - a[1].stockPhysique);
+
+    if (sortedCategories.length === 0) {
+        grid.innerHTML = `
+            <div class="kpi-card" style="grid-column:1 / -1;text-align:center;padding:1.5rem;">
+                <div class="kpi-label" style="justify-content:center;">
+                    <span class="kpi-icon" style="background:var(--c-ink3);color:#fff;"><i class="fas fa-info-circle"></i></span>
+                    Aucune catégorie
+                </div>
+                <div class="kpi-value" style="font-size:.9rem;color:var(--c-ink3);">Aucun stock disponible</div>
+            </div>
+        `;
+        return;
+    }
+
+    // Couleurs pour les cartes (cycle)
+    const colors = [
+        { bg: 'var(--c-accent-lt)', color: 'var(--c-accent)' },
+        { bg: 'var(--c-green-lt)', color: 'var(--c-green)' },
+        { bg: 'var(--c-amber-lt)', color: 'var(--c-amber)' },
+        { bg: 'var(--c-red-lt)', color: 'var(--c-red)' },
+        { bg: '#E8F0FE', color: '#1A73E8' },
+        { bg: '#FCE4EC', color: '#C62828' },
+        { bg: '#E8F5E9', color: '#2E7D32' },
+        { bg: '#FFF3E0', color: '#E65100' },
+        { bg: '#F3E5F5', color: '#6A1B9A' },
+        { bg: '#E0F7FA', color: '#00695C' },
+    ];
+
+    grid.innerHTML = sortedCategories.map(([category, data], index) => {
+        const color = colors[index % colors.length];
+        const { stockPhysique, stockDepart } = data;
+        
+        // Calcul du pourcentage par rapport au stock de départ
+        const percentage = stockDepart > 0 ? ((stockPhysique / stockDepart) * 100) : 0;
+        const percentageDisplay = percentage.toFixed(1);
+        
+        // Déterminer le statut (vert si >= 80%, orange si entre 50-80%, rouge si < 50%)
+        let statusColor = color.color;
+        let statusIcon = 'fa-check-circle';
+        let statusText = 'Bon';
+        if (percentage < 50) {
+            statusColor = 'var(--c-red)';
+            statusIcon = 'fa-exclamation-triangle';
+            statusText = 'Critique';
+        } else if (percentage < 80) {
+            statusColor = 'var(--c-amber)';
+            statusIcon = 'fa-clock';
+            statusText = 'Moyen';
+        }
+        
+        return `
+            <div class="kpi-card" style="position:relative;overflow:hidden;">
+                <div style="position:absolute;top:0;right:0;bottom:0;width:4px;background:${statusColor};border-radius:0 4px 4px 0;"></div>
+                <div class="kpi-label">
+                    <span class="kpi-icon" style="background:${color.bg};color:${color.color};"><i class="fas fa-tag"></i></span>
+                    ${Utils.escapeHtml(category)}
+                    <span style="margin-left:auto;font-size:.65rem;color:${statusColor};font-weight:600;">${percentageDisplay}%</span>
+                </div>
+                <div class="kpi-value" style="color:${color.color};">${stockPhysique}</div>
+                <div class="kpi-unit">
+                    <span style="color:var(--c-ink2);">Stock physique</span>
+                    <span style="color:var(--c-ink3);margin-left:.5rem;">(départ: ${stockDepart})</span>
+                </div>
+                <!-- Barre de progression : pourcentage par rapport au stock de départ -->
+                <div style="margin-top:.5rem;height:4px;background:var(--c-border);border-radius:2px;overflow:hidden;">
+                    <div style="height:100%;width:${Math.min(percentage, 100)}%;background:${statusColor};border-radius:2px;transition:width .6s ease;"></div>
+                </div>
+                <!-- Indicateur de statut -->
+                <div style="margin-top:.4rem;display:flex;align-items:center;gap:.3rem;font-size:.65rem;color:${statusColor};">
+                    <i class="fas ${statusIcon}"></i>
+                    <span>${statusText}</span>
+                    <span style="margin-left:auto;color:var(--c-ink3);font-size:.6rem;">${percentageDisplay}% du stock initial</span>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+function updateSummaryCards(agenceId) {
+    const data = STATE.stockData[agenceId]?.allData || [];
+    const totalStock = data.reduce((s, d) => s + (parseFloat(d['Stock Physique']) || parseFloat(d['Stock']) || 0), 0);
+    const totalCats = new Set(data.map(d => d['Catégorie']).filter(Boolean)).size;
+
+    // Mettre à jour les KPIs existants
+    const productsEl = document.getElementById(`total-products-${agenceId}`);
+    if (productsEl) productsEl.textContent = data.length;
+
+    const stockEl = document.getElementById(`total-stock-${agenceId}`);
+    if (stockEl) stockEl.textContent = totalStock;
+
+    const catsEl = document.getElementById(`total-categories-${agenceId}`);
+    if (catsEl) catsEl.textContent = totalCats;
+
+    // Mettre à jour les cartes par catégorie (NOUVEAU)
+    updateCategoryStockCards(agenceId);
+}
+
+        function updateLastUpdate(agenceId) {
+            const el = document.getElementById(`last-update-${agenceId}`);
+            if (el) {
+                const now = new Date();
+                el.textContent = now.toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+            }
         }
 
         function displayStockData(agenceId) {
-            const data = stockData[agenceId].filteredData.length ? stockData[agenceId].filteredData : stockData[agenceId].allData;
+            const data = STATE.stockData[agenceId]?.filteredData?.length ? STATE.stockData[agenceId].filteredData : STATE.stockData[agenceId]?.allData || [];
             const tbody = document.getElementById(`stock-data-${agenceId}`);
+            if (!tbody) return;
+
             if (!data.length) {
-                tbody.innerHTML = '<tr><td colspan="12" class="no-data">Aucun produit trouvé<\/td><\/tr>';
+                tbody.innerHTML = `<tr><td colspan="12"><div class="empty-state"><i class="fas fa-inbox"></i>Aucun produit trouvé</div></td></tr>`;
                 return;
             }
+
             const headers = Object.keys(data[0] || {}).filter(h => h !== 'User' && h !== 'Agence');
-            tbody.innerHTML = data.map(item => `
-                <tr>
+            tbody.innerHTML = data.map((item, index) => `
+                <tr style="animation:fadeUp .2s ${index * 0.02}s both;">
                     ${headers.map(h => {
                         let v = item[h] ?? '';
-                        if (h === 'Date') v = formatDate(v);
-                        if (h.includes('Prix')) v = formatCurrency(v);
-                        return `<td class="${h.includes('Prix') || h.includes('Stock') ? 'text-end' : ''}">${v}<\/td>`;
+                        if (h === 'Date' || h.includes('Date')) v = Utils.formatDate(v);
+                        if (h.includes('Prix')) v = Utils.formatCurrency(v);
+                        if (typeof v === 'number') v = v.toString();
+                        const cls = (h.includes('Prix') || h.includes('Stock') || h.includes('Conso')) ? 'td-amount' : '';
+                        return `<td class="${cls}">${Utils.escapeHtml(v)}</td>`;
                     }).join('')}
-                <\/tr>
+                </tr>
             `).join('');
+
+            // Mettre à jour le compteur de résultats
+            const countEl = document.getElementById(`result-count-${agenceId}`);
+            if (countEl) {
+                countEl.textContent = `${data.length} résultat${data.length > 1 ? 's' : ''}`;
+            }
         }
 
         function applyStockFilter(agenceId) {
-            const term = (document.getElementById(`search-${agenceId}`)?.value || '').toLowerCase();
-            const cat = document.getElementById(`filter-category-${agenceId}`)?.value || '';
-            
-            let filtered = stockData[agenceId].allData;
+            const term = (document.getElementById(`search-${agenceId}`)?.value || '').toLowerCase().trim();
+            const cat = STATE.stockData[agenceId]?.selectedCategory || '';
+
+            let filtered = [...(STATE.stockData[agenceId]?.allData || [])];
             if (term) {
-                filtered = filtered.filter(d => (d['Référence'] || '').toString().toLowerCase().includes(term));
+                filtered = filtered.filter(d => {
+                    const ref = (d['Référence'] || '').toString().toLowerCase();
+                    const desc = (d['Désignation'] || '').toString().toLowerCase();
+                    return ref.includes(term) || desc.includes(term);
+                });
             }
             if (cat) {
                 filtered = filtered.filter(d => d['Catégorie'] === cat);
             }
-            stockData[agenceId].filteredData = filtered;
+            STATE.stockData[agenceId].filteredData = filtered;
             displayStockData(agenceId);
         }
 
         function refreshStockData(agenceId) {
-            stockData[agenceId] = { allData: [], filteredData: [] };
+            if (!TokenManager.checkAndRedirect()) return;
+            STATE.stockData[agenceId] = { allData: [], filteredData: [], selectedCategory: '' };
             loadAgenceStock(agenceId);
         }
 
-        // ==================== INVENTAIRE (COMPLET DU CODE 2) ====================
-        function demarrerInventaire(agenceId) { openCodeVerificationDialog(agenceId); }
+        // ============================================================
+        // INVENTAIRE
+        // ============================================================
+// ============================================================
+// INVENTAIRE
+// Flow : catégorie → PDF → question mise à jour → code → recherche/ajout → validation
+// ============================================================
+function demarrerInventaire(agenceId) {
+    if (!TokenManager.checkAndRedirect()) return;
+    openCategorieInventaireDialog(agenceId);
+}
 
-        function openCodeVerificationDialog(agenceId) {
-            const agency = agencies.find(a => a.value === agenceId);
-            document.getElementById('modal-container').innerHTML = `
-                <div class="modal-overlay active" id="codeVerificationModal">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h3 class="modal-title"><i class="fas fa-shield-alt" style="color:var(--primary-500);margin-right:.5rem;"></i>Accès Inventaire — ${agency?.label}</h3>
-                            <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+// ------------------------------------------------------------
+// ÉTAPE 1 : choix de la catégorie
+// ------------------------------------------------------------
+function openCategorieInventaireDialog(agenceId) {
+    const agency = STATE.agencies.find(a => a.value === agenceId);
+    const data = STATE.stockData[agenceId]?.allData || [];
+    if (!data.length) {
+        Utils.showToast('Aucune donnée de stock pour cette agence', 'warning');
+        return;
+    }
+    const cats = [...new Set(data.map(d => d['Catégorie']).filter(Boolean))].sort();
+
+    const container = document.getElementById('modal-container');
+    container.innerHTML = `
+        <div class="modal-overlay active" id="categorieInventaireModal">
+            <div class="modal">
+                <div class="modal-head">
+                    <span class="modal-head-title"><i class="fas fa-tags" style="color:var(--c-accent);margin-right:.5rem;"></i>Inventaire — ${Utils.escapeHtml(agency?.label)}</span>
+                    <button class="modal-close" onclick="Utils.closeModal()"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert-message alert-info" style="margin-bottom:1rem;">
+                        <i class="fas fa-info-circle"></i> Choisissez la catégorie de stock à inventorier.
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Catégorie :</label>
+                        <select class="form-control" id="inventaireCategorieSelect">
+                            <option value="">Toutes les catégories</option>
+                            ${cats.map(c => `<option value="${Utils.escapeHtml(c)}">${Utils.escapeHtml(c)}</option>`).join('')}
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-foot">
+                    <button class="btn btn-accent" onclick="confirmerCategorieInventaire('${agenceId}')"><i class="fas fa-file-pdf"></i> Générer le PDF</button>
+                    <button class="btn btn-ghost" onclick="Utils.closeModal()">Annuler</button>
+                </div>
+            </div>
+        </div>`;
+}
+
+function confirmerCategorieInventaire(agenceId) {
+    const categorie = document.getElementById('inventaireCategorieSelect')?.value || '';
+    imprimerInventairePDF(agenceId, categorie);
+    openQuestionMiseAJourDialog(agenceId, categorie);
+}
+
+// ------------------------------------------------------------
+// ÉTAPE 2 : question "mettre à jour maintenant ?"
+// ------------------------------------------------------------
+function openQuestionMiseAJourDialog(agenceId, categorie) {
+    const agency = STATE.agencies.find(a => a.value === agenceId);
+    const container = document.getElementById('modal-container');
+    container.innerHTML = `
+        <div class="modal-overlay active" id="questionMajModal">
+            <div class="modal">
+                <div class="modal-head">
+                    <span class="modal-head-title"><i class="fas fa-clipboard-check" style="color:var(--c-accent);margin-right:.5rem;"></i>Mise à jour du stock</span>
+                    <button class="modal-close" onclick="Utils.closeModal()"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="modal-body">
+                    <p style="font-size:.9rem;color:var(--c-ink2);">
+                        Le PDF de <strong>${Utils.escapeHtml(categorie || 'toutes les catégories')}</strong> pour
+                        <strong>${Utils.escapeHtml(agency?.label)}</strong> a été généré.
+                    </p>
+                    <p style="font-size:.9rem;color:var(--c-ink2);margin-top:.5rem;">
+                        Souhaitez-vous mettre à jour le stock maintenant ?
+                    </p>
+                </div>
+                <div class="modal-foot">
+                    <button class="btn btn-success" onclick="openCodeVerificationDialog('${agenceId}','${Utils.escapeHtml(categorie)}')"><i class="fas fa-check"></i> Oui, mettre à jour</button>
+                    <button class="btn btn-ghost" onclick="Utils.closeModal()">Non, terminer</button>
+                </div>
+            </div>
+        </div>`;
+}
+
+// ------------------------------------------------------------
+// ÉTAPE 3 : vérification du code (catégorie transmise en hidden input)
+// ------------------------------------------------------------
+function openCodeVerificationDialog(agenceId, categorie = '') {
+    const agency = STATE.agencies.find(a => a.value === agenceId);
+    const container = document.getElementById('modal-container');
+    container.innerHTML = `
+        <div class="modal-overlay active" id="codeVerificationModal">
+            <div class="modal">
+                <div class="modal-head">
+                    <span class="modal-head-title"><i class="fas fa-shield-alt" style="color:var(--c-accent);margin-right:.5rem;"></i>Accès Inventaire — ${Utils.escapeHtml(agency?.label)}</span>
+                    <button class="modal-close" onclick="Utils.closeModal()"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert-message alert-info" style="margin-bottom:1rem;">
+                        <i class="fas fa-info-circle"></i> Code à 6 chiffres envoyé par email.
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Code de vérification :</label>
+                        <input type="text" class="form-control" id="codeInput" maxlength="6" placeholder="000000" inputmode="numeric" pattern="[0-9]*" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,6)">
+                        <input type="hidden" id="agenceInventaire" value="${agenceId}">
+                        <input type="hidden" id="categorieInventaire" value="${Utils.escapeHtml(categorie)}">
+                    </div>
+                    <div id="codeMessage" class="alert-message" style="display:none;"></div>
+                </div>
+                <div class="modal-foot">
+                    <button class="btn btn-accent" onclick="verifierCodeAcces()" id="btnVerifierCode"><i class="fas fa-check"></i> Vérifier</button>
+                    <button class="btn btn-ghost" onclick="regenererCode()"><i class="fas fa-sync-alt"></i> Renvoyer</button>
+                    <button class="btn btn-ghost" onclick="Utils.closeModal()">Annuler</button>
+                </div>
+            </div>
+        </div>`;
+    setTimeout(() => document.getElementById('codeInput')?.focus(), 100);
+    regenererCode();
+}
+
+async function regenererCode() {
+    if (!TokenManager.checkAndRedirect()) return;
+
+    const btn = document.getElementById('btnVerifierCode');
+    const agenceId = document.getElementById('agenceInventaire')?.value;
+    const agency = STATE.agencies.find(a => a.value === agenceId);
+    const agenceNom = agency?.label || '';
+
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; }
+    try {
+        await API.get('accesinventaire', { agence: agenceNom });
+        showCodeMessage('✅ Nouveau code envoyé par email', 'success');
+    } catch {
+        showCodeMessage('❌ Erreur', 'error');
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-check"></i> Vérifier';
+        }
+    }
+}
+
+async function verifierCodeAcces() {
+    if (!TokenManager.checkAndRedirect()) return;
+
+    const code = document.getElementById('codeInput')?.value.trim();
+    const agenceId = document.getElementById('agenceInventaire')?.value;
+    const categorie = document.getElementById('categorieInventaire')?.value || '';
+    if (!code || code.length !== 6) {
+        showCodeMessage('❌ Code à 6 chiffres requis', 'error');
+        return;
+    }
+    const btn = document.getElementById('btnVerifierCode');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+    try {
+        await API.post('codeaccess', { code: code });
+        setTimeout(() => {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-check"></i> Vérifier';
+            showCodeMessage('✅ Code vérifié !', 'success');
+            setTimeout(() => {
+                Utils.closeModal();
+                openInventaireSearchModal(agenceId, categorie);
+            }, 1000);
+        }, 800);
+    } catch {
+        showCodeMessage('❌ Erreur de vérification', 'error');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-check"></i> Vérifier';
+    }
+}
+
+function showCodeMessage(msg, type) {
+    const d = document.getElementById('codeMessage');
+    if (d) {
+        d.textContent = msg;
+        d.className = `alert-message alert-${type}`;
+        d.style.display = 'flex';
+        setTimeout(() => d.style.display = 'none', 3000);
+    }
+}
+
+// ------------------------------------------------------------
+// ÉTAPE 4 : recherche de référence + ajout cumulatif à la liste
+// ------------------------------------------------------------
+function openInventaireSearchModal(agenceId, categorie = '') {
+    if (!TokenManager.checkAndRedirect()) return;
+
+    const agency = STATE.agencies.find(a => a.value === agenceId);
+    const allData = STATE.stockData[agenceId]?.allData || [];
+    const data = categorie ? allData.filter(d => d['Catégorie'] === categorie) : allData;
+
+    if (!data.length) {
+        Utils.showToast('Aucune donnée', 'error');
+        return;
+    }
+
+    STATE.inventaireEnCours = { agenceId, categorie, produits: data, items: [], selection: null };
+
+    const container = document.getElementById('modal-container');
+    container.innerHTML = `
+        <div class="modal-overlay active" id="inventaireModal">
+            <div class="modal xlarge">
+                <div class="modal-head">
+                    <span class="modal-head-title"><i class="fas fa-clipboard-list" style="color:var(--c-accent);margin-right:.5rem;"></i>Mise à jour — ${Utils.escapeHtml(agency?.label)}${categorie ? ' · ' + Utils.escapeHtml(categorie) : ''}</span>
+                    <button class="modal-close" onclick="Utils.closeModal()"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="modal-body xlarge-body">
+                    <div class="alert-message alert-info" style="margin-bottom:.8rem;">
+                        <i class="fas fa-info-circle"></i> Recherchez une référence, ajoutez sa nouvelle quantité, puis passez à la suivante.
+                    </div>
+
+                    <div style="position:relative;margin-bottom:.6rem;">
+                        <div class="search-wrap">
+                            <i class="fas fa-search"></i>
+                            <input type="text" class="search-input" id="invSearchRef" placeholder="Rechercher une référence..." autocomplete="off" oninput="rechercheReferenceInventaire()">
                         </div>
-                        <div class="modal-body">
-                            <div class="alert-message alert-info" style="margin-bottom:1.5rem;">
-                                <i class="fas fa-exclamation-triangle"></i> Accès sécurisé. Un code a été envoyé par email.
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Code de vérification à 6 chiffres :</label>
-                                <input type="text" class="form-control" id="codeInput" maxlength="6" placeholder="000000" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,6)">
-                                <div style="font-size:.875rem;color:var(--gray-500);margin-top:.5rem;">Code reçu par email</div>
-                                <input type="hidden" id="agenceInventaire" value="${agenceId}">
-                            </div>
-                            <div id="codeMessage" class="alert-message" style="display:none;"></div>
+                        <div id="invSearchResults" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);max-height:220px;overflow-y:auto;z-index:300;box-shadow:var(--shadow-md);"></div>
+                    </div>
+
+                    <div id="invSelectedForm" style="display:none;" class="product-row">
+                        <div class="flex-3">
+                            <label class="form-label" style="font-size:.7rem;">Référence sélectionnée</label>
+                            <input type="text" class="form-control" id="invSelRef" readonly>
                         </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-primary" onclick="verifierCodeAcces()" id="btnVerifierCode"><i class="fas fa-check"></i> Vérifier</button>
-                            <button class="btn btn-secondary" onclick="regenererCode()"><i class="fas fa-sync-alt"></i> Renvoyer</button>
+                        <div class="flex-1">
+                            <label class="form-label" style="font-size:.7rem;">Stock actuel</label>
+                            <input type="text" class="form-control" id="invSelStockActuel" readonly>
+                        </div>
+                        <div class="flex-1">
+                            <label class="form-label" style="font-size:.7rem;">Nouvelle quantité</label>
+                            <input type="number" class="form-control" id="invSelNouvelleQte" min="0" placeholder="Qté">
+                        </div>
+                        <div class="flex-05">
+                            <button class="btn btn-accent" onclick="ajouterReferenceInventaire()"><i class="fas fa-plus"></i> Ajouter</button>
                         </div>
                     </div>
-                </div>`;
-            setTimeout(() => document.getElementById('codeInput')?.focus(), 100);
-            regenererCode();
-        }
 
-        async function regenererCode() {
-            const btn = document.getElementById('btnVerifierCode');
-            if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Génération...'; }
-            try {
-                await fetch(`${API_BASE_URL}?action=accesinventaire`, { method: 'GET', mode: 'no-cors' });
-                showCodeMessage('✅ Nouveau code envoyé par email !', 'success');
-                const inp = document.getElementById('codeInput');
-                if (inp) { inp.value = ''; inp.focus(); }
-            } catch { showCodeMessage('❌ Erreur lors de la génération', 'error'); }
-            finally { if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-check"></i> Vérifier'; } }
-        }
-
-        async function verifierCodeAcces() {
-            const code = document.getElementById('codeInput')?.value.trim();
-            const agenceId = document.getElementById('agenceInventaire')?.value;
-            if (!code || code.length !== 6) { showCodeMessage('❌ Code à 6 chiffres requis', 'error'); return; }
-            const btn = document.getElementById('btnVerifierCode');
-            btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Vérification...';
-            try {
-                await fetch(`${API_BASE_URL}?action=codeaccess&code=${code}`, { method: 'GET', mode: 'no-cors' });
-                setTimeout(() => {
-                    btn.disabled = false; btn.innerHTML = '<i class="fas fa-check"></i> Vérifier';
-                    if (/^\d{6}$/.test(code)) {
-                        showCodeMessage('✅ Code vérifié ! Ouverture...', 'success');
-                        setTimeout(() => { closeModal(); openInventaireUpdate(agenceId); }, 1500);
-                    } else { showCodeMessage('❌ Code incorrect.', 'error'); document.getElementById('codeInput')?.select(); }
-                }, 1000);
-            } catch { showCodeMessage('❌ Erreur de vérification', 'error'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-check"></i> Vérifier'; }
-        }
-
-        function showCodeMessage(msg, type) {
-            const d = document.getElementById('codeMessage');
-            if (d) { d.textContent = msg; d.className = `alert-message alert-${type}`; d.style.display = 'flex'; }
-        }
-
-        function openInventaireUpdate(agenceId) {
-            const agency = agencies.find(a => a.value === agenceId);
-            const data = stockData[agenceId].allData;
-            if (!data?.length) { showToast(`Aucune donnée pour ${agency?.label}`, 'error'); return; }
-
-            document.getElementById('modal-container').innerHTML = `
-                <div class="modal-overlay active" id="inventaireModal">
-                    <div class="modal-content xlarge-modal">
-                        <div class="modal-header">
-                            <h3 class="modal-title"><i class="fas fa-clipboard-list" style="color:var(--primary-500);margin-right:.5rem;"></i>Inventaire — ${agency?.label}</h3>
-                            <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="alert-message alert-info" style="margin-bottom:1rem;"><i class="fas fa-info-circle"></i> Mettez à jour les quantités pour ${agency?.label}.</div>
-                            <div class="search-box" style="margin-bottom:1rem;">
-                                <i class="fas fa-search"></i>
-                                <input type="text" class="form-control" id="searchReference" placeholder="Rechercher une référence..." autocomplete="off" onkeyup="filterProducts()">
-                            </div>
-                            <div class="table-container">
-                                <div class="table-wrapper">
-                                    <table class="stock-table" id="inventaireTable">
-                                        <thead><tr><th>Date</th><th>Catégorie</th><th>Référence</th><th class="text-end">Stock départ</th><th class="text-end">Prix vente</th><th class="text-end">Stock Physique</th><th class="text-end">Nouveau Stock</th><\/tr></thead>
-                                        <tbody id="inventaireData">
-                                            ${data.map(item => {
-                                                const ref = item['Référence'] || '';
-                                                return `<tr class="product-row" data-reference="${String(ref).toLowerCase()}">
-                                                    <td>${formatDate(item['Date']||'')}<\/td>
-                                                    <td>${item['Catégorie']||''}<\/td>
-                                                    <td class="reference-cell">${ref}<\/td>
-                                                    <td class="text-end">${item['Stock de depart']||0}<\/td>
-                                                    <td class="text-end">${formatCurrency(item['Prix de vente']||0)}<\/td>
-                                                    <td class="text-end stock-actuel">${item['Stock Physique']||0}<\/td>
-                                                    <td><input type="number" class="form-control nouvelle-quantite" data-reference="${ref}" data-categorie="${item['Catégorie']||''}" data-prix="${item['Prix de vente']||0}" data-stockdepart="${item['Stock de depart']||0}" min="0" value="" placeholder="Qté" style="width:100px;"><\/td>
-                                                <\/tr>`;
-                                            }).join('')}
-                                        </tbody>
-                                    <\/table>
-                                </div>
-                            </div>
-                            <input type="hidden" id="agenceInventaireUpdate" value="${agenceId}">
-                            <div id="inventaire-progress" style="display:none;margin-top:1rem;"><div class="progress-bar"><div class="progress-fill" id="progressBar" style="width:0%;"></div></div><div id="progress-text" style="text-align:center;font-size:.875rem;color:var(--gray-600);margin-top:.5rem;"></div></div>
-                            <div id="inventaire-message" class="alert-message" style="display:none;"></div>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-secondary" onclick="imprimerInventairePDF('${agenceId}')"><i class="fas fa-print"></i> Imprimer PDF</button>
-                            <button class="btn btn-success" onclick="validerMiseAJourInventaire()" id="btnValiderInventaire"><i class="fas fa-check"></i> Valider</button>
-                            <button class="btn btn-secondary" onclick="closeModal()"><i class="fas fa-times"></i> Fermer</button>
+                    <div class="table-card" style="margin-top:.8rem;">
+                        <div class="table-scroll" style="height:auto;max-height:260px;">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Référence</th>
+                                        <th>Catégorie</th>
+                                        <th class="text-end">Stock actuel</th>
+                                        <th class="text-end">Nouveau stock</th>
+                                        <th class="text-center">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="invListeItems">
+                                    <tr><td colspan="5"><div class="no-data">Aucune référence ajoutée pour le moment</div></td></tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
+
+                    <div id="inventaire-message" class="alert-message" style="display:none;margin-top:.6rem;"></div>
+                </div>
+                <div class="modal-foot">
+                    <span style="margin-right:auto;font-size:.8rem;color:var(--c-ink3);align-self:center;" id="invCompteur">0 référence(s) à mettre à jour</span>
+                    <button class="btn btn-success" onclick="validerMiseAJourInventaire()" id="btnValiderInventaire"><i class="fas fa-check"></i> Valider la mise à jour</button>
+                    <button class="btn btn-ghost" onclick="Utils.closeModal()"><i class="fas fa-times"></i> Fermer</button>
+                </div>
+            </div>
+        </div>`;
+    setTimeout(() => document.getElementById('invSearchRef')?.focus(), 100);
+}
+
+function rechercheReferenceInventaire() {
+    const term = (document.getElementById('invSearchRef')?.value || '').toLowerCase().trim();
+    const resultsBox = document.getElementById('invSearchResults');
+    if (!resultsBox) return;
+
+    if (!term) {
+        resultsBox.style.display = 'none';
+        resultsBox.innerHTML = '';
+        return;
+    }
+
+    const produits = STATE.inventaireEnCours?.produits || [];
+    const dejaAjoutes = new Set((STATE.inventaireEnCours?.items || []).map(i => i.reference));
+
+    const matches = produits.filter(p => {
+        const ref = (p['Référence'] || '').toString().toLowerCase();
+        const desc = (p['Désignation'] || '').toString().toLowerCase();
+        return ref.includes(term) || desc.includes(term);
+    }).slice(0, 20);
+
+    if (!matches.length) {
+        resultsBox.innerHTML = `<div style="padding:.6rem .8rem;color:var(--c-ink3);font-size:.82rem;">Aucun résultat</div>`;
+        resultsBox.style.display = 'block';
+        return;
+    }
+
+    resultsBox.innerHTML = matches.map(p => {
+        const ref = p['Référence'] || '';
+        const stock = p['Stock Physique'] ?? p['Stock'] ?? 0;
+        const already = dejaAjoutes.has(ref);
+        return `<div style="padding:.55rem .8rem;cursor:${already ? 'not-allowed' : 'pointer'};font-size:.82rem;border-bottom:1px solid var(--c-border);opacity:${already ? '.5' : '1'};display:flex;justify-content:space-between;gap:.5rem;"
+                     ${already ? '' : `onmouseover="this.style.background='var(--c-accent-lt)'" onmouseout="this.style.background=''" onclick="selectionnerReferenceInventaire('${Utils.escapeHtml(ref)}')"`}>
+                    <span><strong>${Utils.escapeHtml(ref)}</strong>${p['Désignation'] ? ' — ' + Utils.escapeHtml(p['Désignation']) : ''}</span>
+                    <span style="color:var(--c-ink3);">${already ? 'déjà ajouté' : 'stock: ' + stock}</span>
                 </div>`;
-            setTimeout(() => document.getElementById('searchReference')?.focus(), 100);
+    }).join('');
+    resultsBox.style.display = 'block';
+}
+
+function selectionnerReferenceInventaire(reference) {
+    const produits = STATE.inventaireEnCours?.produits || [];
+    const produit = produits.find(p => (p['Référence'] || '') === reference);
+    if (!produit) return;
+
+    const stockActuel = produit['Stock Physique'] ?? produit['Stock'] ?? 0;
+
+    STATE.inventaireEnCours.selection = {
+        reference,
+        categorie: produit['Catégorie'] || '',
+        prix: produit['Prix de vente'] || 0,
+        stockDepart: produit['Stock de depart'] ?? produit['Stock depart'] ?? 0,
+        stockActuel
+    };
+
+    document.getElementById('invSelRef').value = reference;
+    document.getElementById('invSelStockActuel').value = stockActuel;
+    document.getElementById('invSelNouvelleQte').value = '';
+    document.getElementById('invSelectedForm').style.display = 'flex';
+
+    document.getElementById('invSearchResults').style.display = 'none';
+    document.getElementById('invSearchRef').value = '';
+
+    setTimeout(() => document.getElementById('invSelNouvelleQte')?.focus(), 100);
+}
+
+function ajouterReferenceInventaire() {
+    const sel = STATE.inventaireEnCours?.selection;
+    if (!sel) {
+        showInventaireMessage("Sélectionnez d'abord une référence", 'warning');
+        return;
+    }
+    const nouvelleQteInput = document.getElementById('invSelNouvelleQte');
+    const nouvelleQte = parseInt(nouvelleQteInput?.value);
+    if (isNaN(nouvelleQte) || nouvelleQte < 0) {
+        showInventaireMessage('Veuillez saisir une quantité valide', 'error');
+        return;
+    }
+
+    STATE.inventaireEnCours.items = STATE.inventaireEnCours.items.filter(i => i.reference !== sel.reference);
+    STATE.inventaireEnCours.items.push({
+        reference: sel.reference,
+        categorie: sel.categorie,
+        prix: sel.prix,
+        stockDepart: sel.stockDepart,
+        ancienneQuantite: sel.stockActuel,
+        nouvelleQuantite: nouvelleQte
+    });
+
+    STATE.inventaireEnCours.selection = null;
+    document.getElementById('invSelectedForm').style.display = 'none';
+
+    renderListeInventaireItems();
+    Utils.showToast(`${sel.reference} ajouté`, 'success', 1500);
+    setTimeout(() => document.getElementById('invSearchRef')?.focus(), 100);
+}
+
+function supprimerReferenceInventaire(reference) {
+    if (!STATE.inventaireEnCours) return;
+    STATE.inventaireEnCours.items = STATE.inventaireEnCours.items.filter(i => i.reference !== reference);
+    renderListeInventaireItems();
+}
+
+function renderListeInventaireItems() {
+    const items = STATE.inventaireEnCours?.items || [];
+    const tbody = document.getElementById('invListeItems');
+    const compteur = document.getElementById('invCompteur');
+    if (compteur) compteur.textContent = `${items.length} référence(s) à mettre à jour`;
+    if (!tbody) return;
+
+    if (!items.length) {
+        tbody.innerHTML = `<tr><td colspan="5"><div class="no-data">Aucune référence ajoutée pour le moment</div></td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = items.map(it => `
+        <tr>
+            <td>${Utils.escapeHtml(it.reference)}</td>
+            <td>${Utils.escapeHtml(it.categorie)}</td>
+            <td class="text-end">${it.ancienneQuantite}</td>
+            <td class="text-end"><strong>${it.nouvelleQuantite}</strong></td>
+            <td class="text-center">
+                <button class="btn btn-danger" style="padding:.25rem .5rem;font-size:.7rem;" onclick="supprimerReferenceInventaire('${Utils.escapeHtml(it.reference)}')">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// ------------------------------------------------------------
+// ÉTAPE 5 : validation finale (envoi de tous les items d'un coup)
+// ------------------------------------------------------------
+async function validerMiseAJourInventaire() {
+    if (!TokenManager.checkAndRedirect()) return;
+
+    const agenceId = STATE.inventaireEnCours?.agenceId;
+    const items = STATE.inventaireEnCours?.items || [];
+    const agency = STATE.agencies.find(a => a.value === agenceId);
+
+    if (!items.length) {
+        showInventaireMessage('Aucune référence à mettre à jour', 'warning');
+        return;
+    }
+    if (!confirm(`${items.length} référence(s) à mettre à jour ?`)) return;
+
+    const modifications = items.map(it => ({
+        reference: it.reference,
+        categorie: it.categorie,
+        agence: agency?.label || agenceId,
+        prix: it.prix,
+        nouvelleQuantite: it.nouvelleQuantite,
+        ancienneQuantite: it.ancienneQuantite
+    }));
+
+    const btn = document.getElementById('btnValiderInventaire');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+    Utils.showProgress('Mise à jour...');
+
+    try {
+        await API.post('inventaire', {
+            action: 'inventaire',
+            agence: agency?.label || agenceId,
+            modifications,
+            timestamp: new Date().toISOString()
+        });
+
+        Utils.hideProgress(true, 'Inventaire mis à jour');
+        showInventaireMessage(`✅ ${modifications.length} référence(s) mise(s) à jour`, 'success');
+        setTimeout(() => {
+            Utils.closeModal();
+            STATE.inventaireEnCours = null;
+            refreshStockData(agenceId);
+        }, 1500);
+    } catch {
+        Utils.hideProgress(false, 'Erreur');
+        showInventaireMessage('❌ Erreur de connexion', 'error');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-check"></i> Valider la mise à jour';
+    }
+}
+
+function showInventaireMessage(msg, type) {
+    const d = document.getElementById('inventaire-message');
+    if (d) {
+        d.textContent = msg;
+        d.className = `alert-message alert-${type}`;
+        d.style.display = 'flex';
+        setTimeout(() => d.style.display = 'none', 3000);
+    }
+}
+
+// ------------------------------------------------------------
+// PDF (filtré par catégorie si fournie)
+// ------------------------------------------------------------
+function imprimerInventairePDF(agenceId, categorie = '') {
+    const agency = STATE.agencies.find(a => a.value === agenceId);
+    const allData = STATE.stockData[agenceId]?.allData || [];
+    const rows = categorie ? allData.filter(d => d['Catégorie'] === categorie) : allData;
+
+    const w = window.open('', '_blank');
+    w.document.write(`<!DOCTYPE html><html><head><title>Inventaire ${Utils.escapeHtml(agency?.label)}</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>
+        body{font-family:Arial,sans-serif;margin:10px;}h1{font-size:1.2rem;}table{width:100%;border-collapse:collapse;font-size:10px;}
+        th{background:#3D4FE0;color:white;padding:6px;}td{padding:5px;border:1px solid #ddd;}
+        .text-end{text-align:right;}
+        @media print{body{margin:0;}}
+    </style></head><body>
+        <h1>Inventaire — ${Utils.escapeHtml(agency?.label)}${categorie ? ' · ' + Utils.escapeHtml(categorie) : ''}</h1>
+        <p>Date: ${new Date().toLocaleDateString('fr-FR')} | Articles: ${rows.length}</p>
+        <table><thead><tr><th>Date</th><th>Catégorie</th><th>Référence</th><th class="text-end">Stock départ</th><th class="text-end">Prix</th><th class="text-end">Stock actuel</th></tr></thead>
+        <tbody>${rows.map(r => `<tr><td>${Utils.escapeHtml(Utils.formatDate(r['Date']||''))}</td><td>${Utils.escapeHtml(r['Catégorie']||'')}</td><td>${Utils.escapeHtml(r['Référence']||'')}</td><td class="text-end">${r['Stock de depart'] ?? r['Stock depart'] ?? 0}</td><td class="text-end">${Utils.formatCurrency(r['Prix de vente']||0)}</td><td class="text-end">${r['Stock Physique'] ?? r['Stock'] ?? 0}</td></tr>`).join('')}</tbody>
+    </table>
+        <div style="text-align:center;margin-top:15px;"><button onclick="window.print()">Imprimer</button> <button onclick="window.close()">Fermer</button></div>
+        <script>setTimeout(()=>window.print(),300);<\/script>
+    </body></html>`);
+    w.document.close();
+}
+
+        // ============================================================
+// TRANSFERT — avec limite de stock + anti-doublon de référence
+// ============================================================
+function openTransferWizard(sourceAgenceId) {
+    if (!TokenManager.checkAndRedirect()) return;
+
+    const sourceAgency = STATE.agencies.find(a => a.value === sourceAgenceId);
+    const targetAgencies = STATE.agencies.filter(a => a.value !== sourceAgenceId);
+    const products = STATE.stockData[sourceAgenceId]?.allData || [];
+
+    if (!products.length) {
+        Utils.showToast('Aucun produit disponible dans cette agence', 'warning');
+        return;
+    }
+
+    STATE.pendingTransferData = { sourceAgenceId, produits: [] };
+
+    const container = document.getElementById('modal-container');
+    container.innerHTML = `
+        <div class="modal-overlay active" id="transferWizardModal">
+            <div class="modal xlarge">
+                <div class="modal-head">
+                    <span class="modal-head-title"><i class="fas fa-exchange-alt" style="color:var(--c-accent);margin-right:.5rem;"></i>Transfert de Stock — ${Utils.escapeHtml(sourceAgency?.label)}</span>
+                    <button class="modal-close" onclick="Utils.closeModal()"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="modal-body xlarge-body">
+                    <div class="alert-message alert-info" style="margin-bottom:1rem;">
+                        <i class="fas fa-info-circle"></i>
+                        Sélectionnez les produits à transférer vers une autre agence.
+                    </div>
+
+                    <div class="form-group" style="margin-bottom:1rem;">
+                        <label class="form-label" style="font-weight:600;">
+                            <i class="fas fa-flag-checkered" style="color:var(--c-accent);"></i>
+                            Agence de destination
+                        </label>
+                        <select class="form-control" id="transfer-target-agency" style="border:2px solid var(--c-accent-lt);">
+                            ${targetAgencies.map(a =>
+                                `<option value="${a.value}">${Utils.escapeHtml(a.label)}</option>`
+                            ).join('')}
+                        </select>
+                    </div>
+
+                    <hr style="margin:.8rem 0;border-color:var(--c-border);">
+
+                    <div id="product-rows-container">
+                        <div class="product-row" data-row="1">
+                            <div class="flex-3">
+                                <label class="form-label" style="font-size:.7rem;">Produit</label>
+                                <select class="form-control product-select" data-row="1" onchange="updateProductRowInfo(this)">
+                                    <option value="">Sélectionner...</option>
+                                    ${products.map(p =>
+                                        `<option value="${Utils.escapeHtml(p['Référence'])}"
+                                                 data-stock="${p['Stock Physique'] || p['Stock'] || 0}"
+                                                 data-categorie="${Utils.escapeHtml(p['Catégorie'] || '')}"
+                                                 data-prix="${p['Prix de vente'] || 0}">
+                                            ${Utils.escapeHtml(p['Référence'])} - Stock: ${p['Stock Physique'] || p['Stock'] || 0}
+                                        </option>`
+                                    ).join('')}
+                                </select>
+                            </div>
+                            <div class="flex-1">
+                                <label class="form-label" style="font-size:.7rem;">Quantité</label>
+                                <input type="number" class="form-control product-qty" data-row="1" min="1" value="1" oninput="clampProductQty(this)">
+                            </div>
+                            <div class="flex-05" style="display:flex;gap:.3rem;align-items:center;padding-bottom:.2rem;">
+                                <button class="btn btn-danger" style="padding:.3rem .6rem;font-size:.7rem;" onclick="removeProductRow(this)"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-ghost" style="width:100%;margin:.5rem 0;border:1px dashed var(--c-border);" onclick="addProductRow()">
+                        <i class="fas fa-plus-circle"></i> Ajouter un autre produit
+                    </button>
+
+                    <div id="transfer-summary" style="background:var(--c-bg);padding:.8rem;border-radius:var(--r-md);font-size:.85rem;border:1px solid var(--c-border);">
+                        <strong>Résumé :</strong>
+                        <span id="product-count">0</span> produit(s) sélectionné(s)
+                        <span style="margin-left:1rem;">
+                            <span class="badge badge-primary" id="total-items-badge">0 unités</span>
+                        </span>
+                    </div>
+
+                    <div id="transfer-message" class="alert-message" style="display:none;margin-top:.8rem;"></div>
+                </div>
+                <div class="modal-foot">
+                    <button class="btn btn-ghost" onclick="Utils.closeModal()">Annuler</button>
+                    <button class="btn btn-success" onclick="submitTransferRequest('${sourceAgenceId}')" id="btnSubmitTransfer">
+                        <i class="fas fa-paper-plane"></i> Demander le transfert
+                    </button>
+                </div>
+            </div>
+        </div>`;
+
+    refreshProductOptionsAvailability();
+    updateTransferSummary();
+    setTimeout(() => {
+        const firstSelect = document.querySelector('.product-select');
+        if (firstSelect) firstSelect.focus();
+    }, 300);
+}
+
+function addProductRow() {
+    const container = document.getElementById('product-rows-container');
+    const rows = container.querySelectorAll('.product-row');
+    const newRowNum = rows.length + 1;
+
+    const firstRow = rows[0];
+    const newRow = firstRow.cloneNode(true);
+
+    newRow.dataset.row = newRowNum;
+    newRow.querySelectorAll('[data-row]').forEach(el => el.dataset.row = newRowNum);
+
+    const select = newRow.querySelector('.product-select');
+    const qty = newRow.querySelector('.product-qty');
+
+    select.innerHTML = document.querySelector('.product-select').innerHTML; // options complètes, non filtrées
+    select.value = '';
+    select.onchange = function() { updateProductRowInfo(this); };
+
+    qty.value = 1;
+    qty.removeAttribute('max');
+    qty.oninput = function() { clampProductQty(this); };
+
+    container.appendChild(newRow);
+    refreshProductOptionsAvailability();
+    updateTransferSummary();
+    setTimeout(() => select.focus(), 100);
+}
+
+function removeProductRow(btn) {
+    const container = document.getElementById('product-rows-container');
+    const rows = container.querySelectorAll('.product-row');
+    if (rows.length <= 1) {
+        showTransferMessage('Au moins un produit est requis', 'warning');
+        return;
+    }
+    const row = btn.closest('.product-row');
+    row.remove();
+    document.querySelectorAll('.product-row').forEach((r, i) => {
+        r.dataset.row = i + 1;
+        r.querySelectorAll('[data-row]').forEach(el => el.dataset.row = i + 1);
+    });
+    refreshProductOptionsAvailability();
+    updateTransferSummary();
+}
+
+// Empêche de choisir deux fois la même référence : elle est désactivée
+// dans tous les autres selects dès qu'elle est prise dans une ligne.
+function refreshProductOptionsAvailability() {
+    const selects = document.querySelectorAll('.product-select');
+    const selectedRefs = Array.from(selects).map(s => s.value).filter(v => v);
+
+    selects.forEach(select => {
+        const currentValue = select.value;
+        Array.from(select.options).forEach(opt => {
+            if (!opt.value) return;
+            const takenByAnotherRow = selectedRefs.includes(opt.value) && opt.value !== currentValue;
+            opt.disabled = takenByAnotherRow;
+            opt.style.color = takenByAnotherRow ? 'var(--c-ink3)' : '';
+        });
+    });
+}
+
+// Empêche de dépasser le stock disponible, que ce soit en changeant
+// de produit ou en tapant directement une quantité trop grande.
+function clampProductQty(input) {
+    const row = input.closest('.product-row');
+    const select = row.querySelector('.product-select');
+    const maxStock = parseInt(select.options[select.selectedIndex]?.dataset?.stock) || 0;
+
+    if (maxStock > 0) {
+        if (!input.value || parseInt(input.value) < 1) {
+            input.value = 1;
+        } else if (parseInt(input.value) > maxStock) {
+            input.value = maxStock;
+            showTransferMessage(`Quantité limitée au stock disponible (max: ${maxStock})`, 'warning');
         }
+    }
+    updateTransferSummary();
+}
 
-        function filterProducts() {
-            const term = (document.getElementById('searchReference')?.value || '').toLowerCase().trim();
-            document.querySelectorAll('#inventaireData .product-row').forEach(row => {
-                const ref = row.getAttribute('data-reference') || '';
-                const show = !term || ref.includes(term);
-                row.style.display = show ? '' : 'none';
-            });
+function updateProductRowInfo(select) {
+    const qtyInput = select.closest('.product-row').querySelector('.product-qty');
+    const maxStock = parseInt(select.options[select.selectedIndex]?.dataset?.stock) || 0;
+
+    if (qtyInput) {
+        if (maxStock > 0) {
+            qtyInput.max = maxStock;
+            if (!qtyInput.value || parseInt(qtyInput.value) < 1) qtyInput.value = 1;
+            if (parseInt(qtyInput.value) > maxStock) qtyInput.value = maxStock;
+        } else {
+            qtyInput.removeAttribute('max');
         }
+    }
 
-        async function validerMiseAJourInventaire() {
-            const agenceId = document.getElementById('agenceInventaireUpdate')?.value;
-            const agency = agencies.find(a => a.value === agenceId);
-            const username = localStorage.getItem('username') || 'Admin';
-            const modifications = [];
+    refreshProductOptionsAvailability();
+    updateTransferSummary();
+}
 
-            document.querySelectorAll('.nouvelle-quantite').forEach(input => {
-                if (input.closest('tr')?.style.display !== 'none' && input.value) {
-                    modifications.push({
-                        reference: input.dataset.reference || '',
-                        categorie: input.dataset.categorie || '',
-                        agence: agency?.label || agenceId,
-                        prix: input.dataset.prix || '',
-                        nouvelleQuantite: parseInt(input.value) || 0,
-                        ancienneQuantite: parseInt(input.closest('tr')?.querySelector('.stock-actuel')?.textContent) || 0
-                    });
-                }
-            });
+function updateTransferSummary() {
+    const rows = document.querySelectorAll('.product-row');
+    let count = 0;
+    let totalQty = 0;
 
-            if (!modifications.length) { showInventaireMessage('Aucun produit à mettre à jour.', 'warning'); return; }
-            if (!confirm(`Mettre à jour ${modifications.length} produit(s) pour ${agency?.label} ?`)) return;
+    rows.forEach(row => {
+        const select = row.querySelector('.product-select');
+        const qty = parseInt(row.querySelector('.product-qty')?.value) || 0;
+        if (select && select.value) {
+            count++;
+            totalQty += qty;
+        }
+    });
 
-            const btn = document.getElementById('btnValiderInventaire');
-            btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi...';
-            document.getElementById('inventaire-progress').style.display = 'block';
-            showProgressOverlay('Mise à jour en cours...');
+    const countEl = document.getElementById('product-count');
+    const badgeEl = document.getElementById('total-items-badge');
+    if (countEl) countEl.textContent = count;
+    if (badgeEl) badgeEl.textContent = `${totalQty} unité${totalQty > 1 ? 's' : ''}`;
+}
 
-            try {
-                const progressBar = document.getElementById('progressBar');
-                const progressText = document.getElementById('progress-text');
-                let p = 0;
-                const iv = setInterval(() => { if (p < 90) { p += 5; progressBar.style.width = p + '%'; progressText.textContent = `Envoi... ${p}%`; } }, 100);
+function showTransferMessage(msg, type) {
+    const div = document.getElementById('transfer-message');
+    if (div) {
+        div.textContent = msg;
+        div.className = `alert-message alert-${type}`;
+        div.style.display = 'flex';
+        setTimeout(() => div.style.display = 'none', 3000);
+    }
+}
 
-                await fetch(`${API_BASE_URL}?action=inventaire`, {
-                    method: 'POST', mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'inventaire', utilisateur: username, agence: agency?.label || agenceId, modifications, timestamp: new Date().toISOString() })
-                });
+async function submitTransferRequest(sourceAgenceId) {
+    if (!TokenManager.checkAndRedirect()) return;
 
-                clearInterval(iv);
-                progressBar.style.width = '100%';
-                progressText.textContent = 'Terminé !';
-                hideProgressOverlay();
-                showInventaireMessage(`✅ ${modifications.length} produit(s) mis à jour pour ${agency?.label}.`, 'success');
-                setTimeout(() => { closeModal(); refreshStockData(agenceId); }, 2000);
-            } catch {
-                hideProgressOverlay();
-                showInventaireMessage('❌ Erreur de connexion', 'error');
-                btn.disabled = false; btn.innerHTML = '<i class="fas fa-check"></i> Valider';
+    const products = [];
+    const rows = document.querySelectorAll('.product-row');
+    const refsSeen = new Set();
+    let hasError = false;
+
+    rows.forEach(row => {
+        const select = row.querySelector('.product-select');
+        const qty = parseInt(row.querySelector('.product-qty')?.value) || 0;
+
+        if (select && select.value) {
+            // Garde-fou côté validation finale, en plus du disabled sur les options
+            if (refsSeen.has(select.value)) {
+                showTransferMessage(`La référence "${select.value}" est sélectionnée plusieurs fois`, 'error');
+                hasError = true;
+                return;
             }
-        }
+            refsSeen.add(select.value);
 
-        function showInventaireMessage(msg, type) {
-            const d = document.getElementById('inventaire-message');
-            if (d) { d.textContent = msg; d.className = `alert-message alert-${type}`; d.style.display = 'flex'; }
+            const stock = parseInt(select.options[select.selectedIndex]?.dataset?.stock) || 0;
+            if (qty <= 0) {
+                showTransferMessage(`Quantité invalide pour ${select.value}`, 'error');
+                hasError = true;
+                return;
+            }
+            // Garde-fou côté validation finale, en plus du clamp en temps réel
+            if (qty > stock) {
+                showTransferMessage(`Stock insuffisant pour ${select.value} (max: ${stock})`, 'error');
+                hasError = true;
+                return;
+            }
+            products.push({
+                reference: select.value,
+                quantite: qty,
+                categorie: select.options[select.selectedIndex]?.dataset?.categorie || '',
+                prix: parseFloat(select.options[select.selectedIndex]?.dataset?.prix) || 0,
+                stock_actuel: stock
+            });
         }
+    });
 
-        function imprimerInventairePDF(agenceId) {
-            const agency = agencies.find(a => a.value === agenceId);
-            const table = document.getElementById('inventaireTable');
-            if (!table) return;
-            const rows = [...table.querySelectorAll('tbody tr')].map(r => ({
-                date: r.cells[0].textContent, categorie: r.cells[1].textContent,
-                reference: r.cells[2].textContent, stockDepart: r.cells[3].textContent,
-                prixVente: r.cells[4].textContent, stockPhysique: r.cells[5].textContent,
-                nouveauStock: r.querySelector('.nouvelle-quantite')?.value || ''
-            }));
-            const w = window.open('', '_blank');
-            w.document.write(`<!DOCTYPE html><html><head><title>Inventaire — ${agency?.label}</title><style>
-                body{font-family:Arial,sans-serif;margin:20px;}h1{text-align:center;}
-                table{width:100%;border-collapse:collapse;}th{background:#4CAF50;color:white;padding:10px;}
-                td{padding:8px;border:1px solid #ddd;}tr:nth-child(even){background:#f2f2f2;}
-                .text-end{text-align:right;}.footer{text-align:center;font-size:12px;color:#666;margin-top:20px;}
-                @media print{.no-print{display:none;}}
-            </style></head><body>
-                <h1>Inventaire — ${agency?.label}</h1>
-                <p><strong>Date :</strong> ${new Date().toLocaleDateString('fr-FR')} &nbsp;|&nbsp; <strong>Articles :</strong> ${rows.length}</p>
-                <table><thead><tr><th>Date</th><th>Catégorie</th><th>Référence</th><th>Stock départ</th><th>Prix vente</th><th>Stock Physique</th><th>Nouveau Stock</th></tr></thead>
-                <tbody>${rows.map(r => `<tr><td>${r.date}</td><td>${r.categorie}</td><td>${r.reference}</td><td class="text-end">${r.stockDepart}</td><td class="text-end">${r.prixVente}</td><td class="text-end">${r.stockPhysique}</td><td class="text-end">${r.nouveauStock}</td></tr>`).join('')}</tbody>
-                </table>
-                <div class="footer">Généré le ${new Date().toLocaleString('fr-FR')}</div>
-                <div class="no-print" style="text-align:center;margin-top:20px;"><button onclick="window.print()" style="padding:10px 20px;background:#4CAF50;color:white;border:none;border-radius:5px;cursor:pointer;">Imprimer</button><button onclick="window.close()" style="padding:10px 20px;background:#666;color:white;border:none;border-radius:5px;cursor:pointer;margin-left:10px;">Fermer</button></div>
-                <script>window.onload=()=>setTimeout(()=>window.print(),500);<\/script>
-            </body></html>`);
-            w.document.close();
-        }
+    if (hasError) return;
 
-        // ==================== TRANSFERT DE STOCK (CODE 1 - déjà présent) ====================
-        function openTransferCodeVerification(sourceAgenceId) {
-            pendingSourceAgenceId = sourceAgenceId;
-            const sourceAgency = agencies.find(a => a.value === sourceAgenceId);
-            
-            document.getElementById('modal-container').innerHTML = `
+    if (products.length === 0) {
+        showTransferMessage('Veuillez sélectionner au moins un produit', 'warning');
+        return;
+    }
+
+    const targetAgencyId = document.getElementById('transfer-target-agency')?.value;
+    if (!targetAgencyId) {
+        showTransferMessage('Veuillez sélectionner une agence de destination', 'warning');
+        return;
+    }
+
+    const sourceAgency = STATE.agencies.find(a => a.value === sourceAgenceId);
+    const targetAgency = STATE.agencies.find(a => a.value === targetAgencyId);
+
+    const btn = document.getElementById('btnSubmitTransfer');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi...';
+
+    Utils.showProgress('Préparation du transfert...');
+
+    try {
+        await API.post('transfert_request', {
+            source_agence: sourceAgency?.label || sourceAgenceId,
+            target_agence: targetAgency?.label || targetAgencyId,
+            source_agence_id: sourceAgenceId,
+            target_agence_id: targetAgencyId,
+            produits: products,
+            utilisateur: TokenManager.getUser(),
+            total_produits: products.length,
+            quantite_totale: products.reduce((sum, p) => sum + p.quantite, 0)
+        });
+
+        Utils.hideProgress(true, 'Demande envoyée');
+
+        STATE.pendingTransferData = {
+            sourceAgenceId: sourceAgenceId,
+            targetAgencyId: targetAgencyId,
+            produits: products,
+            sourceAgency: sourceAgency,
+            targetAgency: targetAgency
+        };
+
+        showTransferMessage('✅ Demande envoyée ! Un code de validation a été envoyé par email.', 'success');
+
+        setTimeout(() => {
+            const modal = document.getElementById('transferWizardModal');
+            if (modal) {
+                modal.classList.remove('active');
+                setTimeout(() => modal.remove(), 300);
+            }
+            openTransferCodeVerification();
+        }, 1500);
+
+    } catch (error) {
+        Utils.hideProgress(false, 'Erreur');
+        showTransferMessage('❌ Erreur: ' + (error.message || 'Connexion échouée'), 'error');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-paper-plane"></i> Demander le transfert';
+    }
+}
+
+        function openTransferCodeVerification() {
+            const container = document.getElementById('modal-container');
+            container.innerHTML = `
                 <div class="modal-overlay active" id="codeVerificationModalTransfer">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h3 class="modal-title"><i class="fas fa-shield-alt" style="color:var(--primary-500);margin-right:.5rem;"></i>Accès Transfert — ${sourceAgency?.label || 'Agence'}</h3>
-                            <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+                    <div class="modal">
+                        <div class="modal-head">
+                            <span class="modal-head-title"><i class="fas fa-shield-alt" style="color:var(--c-accent);margin-right:.5rem;"></i>Vérification du transfert</span>
+                            <button class="modal-close" onclick="Utils.closeModal()"><i class="fas fa-times"></i></button>
                         </div>
                         <div class="modal-body">
-                            <div class="alert-message alert-info" style="margin-bottom:1.5rem;"><i class="fas fa-exclamation-triangle"></i> Accès sécurisé au transfert de stock. Un code a été envoyé par email.</div>
+                            <div class="alert-message alert-info" style="margin-bottom:1rem;">
+                                <i class="fas fa-envelope"></i>
+                                Un code à 6 chiffres a été envoyé à l'administrateur.
+                                <br><small>Veuillez contacter l'administrateur pour obtenir le code.</small>
+                            </div>
                             <div class="form-group">
-                                <label class="form-label">Code de vérification à 6 chiffres :</label>
-                                <input type="text" class="form-control" id="transferCodeInput" maxlength="6" placeholder="000000" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,6)">
-                                <div style="font-size:.875rem;color:var(--gray-500);margin-top:.5rem;">Code reçu par email</div>
+                                <label class="form-label">Code de validation :</label>
+                                <input type="text" class="form-control" id="transferCodeInput"
+                                       maxlength="6" placeholder="000000"
+                                       inputmode="numeric"
+                                       style="font-size:1.5rem;text-align:center;letter-spacing:5px;"
+                                       oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,6)">
                             </div>
                             <div id="transferCodeMessage" class="alert-message" style="display:none;"></div>
                         </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-primary" onclick="verifyTransferCode()" id="btnVerifierTransferCode"><i class="fas fa-check"></i> Vérifier</button>
-                            <button class="btn btn-secondary" onclick="regenerateTransferCode()"><i class="fas fa-sync-alt"></i> Renvoyer</button>
+                        <div class="modal-foot">
+                            <button class="btn btn-ghost" onclick="Utils.closeModal()">Annuler</button>
+                            <button class="btn btn-success" onclick="validateTransferCode()" id="btnValidateTransferCode">
+                                <i class="fas fa-check"></i> Valider et transférer
+                            </button>
                         </div>
                     </div>
                 </div>`;
-            setTimeout(() => document.getElementById('transferCodeInput')?.focus(), 100);
-            regenerateTransferCode();
-        }
-
-        async function regenerateTransferCode() {
-            const btn = document.getElementById('btnVerifierTransferCode');
-            if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Génération...'; }
-            try {
-                await fetch(`${API_BASE_URL}?action=accesinventaire`, { method: 'GET', mode: 'no-cors' });
-                showTransferCodeMessage('✅ Nouveau code envoyé par email !', 'success');
-                const inp = document.getElementById('transferCodeInput');
-                if (inp) { inp.value = ''; inp.focus(); }
-            } catch { showTransferCodeMessage('❌ Erreur lors de la génération', 'error'); }
-            finally { if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-check"></i> Vérifier'; } }
-        }
-
-        async function verifyTransferCode() {
-            const code = document.getElementById('transferCodeInput')?.value.trim();
-            if (!code || code.length !== 6) { showTransferCodeMessage('❌ Code à 6 chiffres requis', 'error'); return; }
-            const btn = document.getElementById('btnVerifierTransferCode');
-            btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Vérification...';
-            try {
-                await fetch(`${API_BASE_URL}?action=codeaccess&code=${code}`, { method: 'GET', mode: 'no-cors' });
-                setTimeout(() => {
-                    btn.disabled = false; btn.innerHTML = '<i class="fas fa-check"></i> Vérifier';
-                    if (/^\d{6}$/.test(code)) {
-                        showTransferCodeMessage('✅ Code vérifié ! Ouverture du transfert...', 'success');
-                        setTimeout(() => { closeModal(); if (pendingSourceAgenceId) openTransferModal(pendingSourceAgenceId); else showToast('Erreur: aucune agence source sélectionnée', 'error'); }, 1500);
-                    } else { showTransferCodeMessage('❌ Code incorrect.', 'error'); document.getElementById('transferCodeInput')?.select(); }
-                }, 1000);
-            } catch { showTransferCodeMessage('❌ Erreur de vérification', 'error'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-check"></i> Vérifier'; }
+            setTimeout(() => document.getElementById('transferCodeInput')?.focus(), 300);
         }
 
         function showTransferCodeMessage(msg, type) {
-            const d = document.getElementById('transferCodeMessage');
-            if (d) { d.textContent = msg; d.className = `alert-message alert-${type}`; d.style.display = 'flex'; }
+            const div = document.getElementById('transferCodeMessage');
+            if (div) {
+                div.textContent = msg;
+                div.className = `alert-message alert-${type}`;
+                div.style.display = 'flex';
+                setTimeout(() => div.style.display = 'none', 3000);
+            }
         }
 
-        function openTransferModal(sourceAgenceId) {
-            const sourceAgency = agencies.find(a => a.value === sourceAgenceId);
-            const targetAgencies = agencies.filter(a => a.value !== sourceAgenceId);
-            
-            if (targetAgencies.length === 0) { showToast('Aucune autre agence disponible pour le transfert', 'warning'); return; }
-            const products = stockData[sourceAgenceId]?.allData || [];
-            if (!products.length) { showToast('Aucun produit disponible dans cette agence', 'warning'); return; }
+        async function validateTransferCode() {
+            const code = document.getElementById('transferCodeInput')?.value.trim();
+            if (!code || code.length !== 6) {
+                showTransferCodeMessage('Veuillez saisir un code à 6 chiffres', 'error');
+                return;
+            }
 
-            document.getElementById('modal-container').innerHTML = `
-                <div class="modal-overlay active" id="transferModal">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h3 class="modal-title"><i class="fas fa-exchange-alt" style="color:var(--primary-500);margin-right:.5rem;"></i>Transfert de Stock</h3>
-                            <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="alert-message alert-info" style="margin-bottom:1rem;"><i class="fas fa-info-circle"></i> Transférer un produit de <strong>${sourceAgency?.label || 'l\'agence source'}</strong> vers une autre agence</div>
-                            <div class="form-group">
-                                <label class="form-label">Produit à transférer (référence)</label>
-                                <select class="form-control" id="transfer-product-ref" onchange="updateProductInfo()">
-                                    <option value="">Sélectionner une référence...</option>
-                                    ${products.map(p => `<option value="${p['Référence']}">${p['Référence']} - ${p['Catégorie'] || ''} (Stock: ${p['Stock Physique'] || 0})</option>`).join('')}
-                                </select>
-                            </div>
-                            <div id="product-info" style="display:none; background:var(--gray-50); padding:0.8rem; border-radius:8px; margin-bottom:1rem;">
-                                <div><strong>Catégorie:</strong> <span id="info-categorie"></span></div>
-                                <div><strong>Stock actuel:</strong> <span id="info-stock"></span></div>
-                                <div><strong>Prix de vente:</strong> <span id="info-prix"></span></div>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Agence destinataire</label>
-                                <select class="form-control" id="transfer-target-agency">${targetAgencies.map(a => `<option value="${a.value}">${a.label}</option>`).join('')}</select>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Quantité à transférer</label>
-                                <input type="number" class="form-control" id="transfer-quantity" min="1" value="1" step="1">
-                            </div>
-                            <div id="transfer-message" class="alert-message" style="display:none;"></div>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-secondary" onclick="closeModal()"><i class="fas fa-times"></i> Annuler</button>
-                            <button class="btn btn-primary" onclick="executeTransfer('${sourceAgenceId}')"><i class="fas fa-exchange-alt"></i> Transférer</button>
-                        </div>
-                    </div>
-                </div>`;
-        }
+            const btn = document.getElementById('btnValidateTransferCode');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Vérification...';
 
-        function updateProductInfo() {
-            const ref = document.getElementById('transfer-product-ref')?.value;
-            if (!ref || !currentAgency) return;
-            const product = stockData[currentAgency]?.allData?.find(p => p['Référence'] === ref);
-            if (!product) return;
-            document.getElementById('product-info').style.display = 'block';
-            document.getElementById('info-categorie').textContent = product['Catégorie'] || '-';
-            document.getElementById('info-stock').textContent = product['Stock Physique'] || 0;
-            document.getElementById('info-prix').textContent = formatCurrency(product['Prix de vente'] || 0);
-            const maxQty = parseInt(product['Stock Physique']) || 0;
-            const qtyInput = document.getElementById('transfer-quantity');
-            qtyInput.max = maxQty;
-            if (parseInt(qtyInput.value) > maxQty) qtyInput.value = maxQty;
-        }
-
-        async function executeTransfer(sourceAgenceId) {
-            const ref = document.getElementById('transfer-product-ref')?.value;
-            const targetAgencyId = document.getElementById('transfer-target-agency')?.value;
-            const quantity = parseInt(document.getElementById('transfer-quantity')?.value) || 0;
-            
-            if (!ref) { showTransferMessage('Veuillez sélectionner un produit', 'warning'); return; }
-            if (!targetAgencyId) { showTransferMessage('Veuillez sélectionner une agence destinataire', 'warning'); return; }
-            if (quantity <= 0) { showTransferMessage('La quantité doit être supérieure à 0', 'warning'); return; }
-            
-            const sourceProduct = stockData[sourceAgenceId]?.allData?.find(p => p['Référence'] === ref);
-            if (!sourceProduct) { showTransferMessage('Produit non trouvé', 'error'); return; }
-            
-            const currentStock = parseInt(sourceProduct['Stock Physique']) || 0;
-            if (quantity > currentStock) { showTransferMessage(`Stock insuffisant. Disponible: ${currentStock}`, 'error'); return; }
-            
-            const sourceAgency = agencies.find(a => a.value === sourceAgenceId);
-            const targetAgency = agencies.find(a => a.value === targetAgencyId);
-            const username = localStorage.getItem('username') || 'Admin';
-            
-            const btn = document.querySelector('#transferModal .btn-primary');
-            if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Transfert...'; }
-            showProgressOverlay('Transfert en cours...');
-            
             try {
-                const transferData = { source_agence: sourceAgency?.label || sourceAgenceId, target_agence: targetAgency?.label || targetAgencyId, reference: ref, categorie: sourceProduct['Catégorie'] || '', quantite: quantity, prix: sourceProduct['Prix de vente'] || 0, utilisateur: username };
-                await fetch(`${API_BASE_URL}?action=transfert_stock`, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(transferData) });
-                
-                setTimeout(() => {
-                    if (stockData[sourceAgenceId]?.allData) {
-                        const productIndex = stockData[sourceAgenceId].allData.findIndex(p => p['Référence'] === ref);
-                        if (productIndex !== -1) stockData[sourceAgenceId].allData[productIndex]['Stock Physique'] = currentStock - quantity;
+                await API.post('codeaccess', { code: code });
+
+                showTransferCodeMessage('✅ Code validé ! Transfert en cours...', 'success');
+
+                if (!STATE.pendingTransferData) {
+                    throw new Error('Données de transfert manquantes. Veuillez recommencer.');
+                }
+
+                const { sourceAgenceId, targetAgencyId, produits, sourceAgency, targetAgency } = STATE.pendingTransferData;
+
+                Utils.showProgress('Transfert en cours...');
+
+                let successCount = 0;
+                for (const produit of produits) {
+                    try {
+                        await API.post('transfert_stock', {
+                            source_agence: sourceAgency?.label || sourceAgenceId,
+                            target_agence: targetAgency?.label || targetAgencyId,
+                            reference: produit.reference,
+                            categorie: produit.categorie,
+                            quantite: produit.quantite,
+                            prix: produit.prix,
+                            utilisateur: TokenManager.getUser()
+                        });
+                        successCount++;
+                    } catch (err) {
+                        console.error(`Erreur transfert ${produit.reference}:`, err);
+                        Utils.showToast(`Erreur pour ${produit.reference}`, 'error', 2000);
                     }
-                    Promise.all([loadAgenceStock(sourceAgenceId), loadAgenceStock(targetAgencyId)]).then(() => {
-                        hideProgressOverlay();
-                        showTransferMessage(`✅ Transfert réussi! ${quantity} unité(s) de ${ref} transférées vers ${targetAgency?.label || 'l\'agence destinataire'}`, 'success');
-                        showToast(`Transfert effectué: ${quantity}x ${ref} → ${targetAgency?.label || 'destination'}`, 'success');
-                        setTimeout(() => closeModal(), 2000);
-                    }).catch(() => { hideProgressOverlay(); showTransferMessage(`⚠️ Transfert effectué mais erreur lors du rechargement des données`, 'warning'); setTimeout(() => closeModal(), 2000); });
-                }, 1000);
-            } catch (err) { hideProgressOverlay(); showTransferMessage(`❌ Erreur: ${err.message}`, 'error'); if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-exchange-alt"></i> Transférer'; } }
+                }
+
+                Utils.hideProgress(true, `${successCount} produit(s) transféré(s)`);
+
+                if (successCount === produits.length) {
+                    showTransferCodeMessage(`✅ Transfert terminé ! ${successCount} produit(s) transféré(s).`, 'success');
+                    Utils.showToast(`✅ ${successCount} produit(s) transféré(s) avec succès`, 'success', 3000);
+                } else {
+                    showTransferCodeMessage(`⚠️ ${successCount}/${produits.length} produit(s) transféré(s). Vérifiez les erreurs.`, 'warning');
+                }
+
+                setTimeout(() => {
+                    Utils.closeModal();
+                    STATE.pendingTransferData = null;
+                    refreshStockData(sourceAgenceId);
+                    if (targetAgencyId) refreshStockData(targetAgencyId);
+                }, 1500);
+
+            } catch (error) {
+                Utils.hideProgress(false, 'Erreur');
+                showTransferCodeMessage('❌ Code invalide ou erreur: ' + (error.message || 'Vérification échouée'), 'error');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-check"></i> Valider et transférer';
+            }
         }
 
-        function showTransferMessage(msg, type) {
-            const div = document.getElementById('transfer-message');
-            if (div) { div.textContent = msg; div.className = `alert-message alert-${type}`; div.style.display = 'flex'; setTimeout(() => div.style.display = 'none', 3000); }
-        }
+        // ============================================================
+        // INITIALISATION
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!TokenManager.checkAndRedirect()) return;
 
-        // ==================== PROGRESS ====================
-        function showProgressOverlay(msg = 'Traitement...') {
-            const el = document.createElement('div');
-            el.className = 'progress-overlay active'; el.id = 'global-progress-overlay';
-            el.innerHTML = `<div class="progress-modal"><div class="progress-content"><div class="progress-spinner"><i class="fas fa-spinner fa-spin"></i></div><div class="progress-text"><h4>${msg}</h4><div class="progress-bar"><div class="progress-fill"></div></div></div></div></div>`;
-            document.body.appendChild(el);
-            const fill = el.querySelector('.progress-fill');
-            let w = 0;
-            progressInterval = setInterval(() => { if (w < 80) { w += 5; if (fill) fill.style.width = w + '%'; } }, 200);
-        }
+            const username = TokenManager.getUser();
+            document.getElementById('topbar-username').textContent = username;
+            document.getElementById('user-avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=3D4FE0&color=fff&size=64`;
 
-        function hideProgressOverlay() {
-            if (progressInterval) { clearInterval(progressInterval); progressInterval = null; }
-            const el = document.getElementById('global-progress-overlay');
-            if (el) { const fill = el.querySelector('.progress-fill'); if (fill) fill.style.width = '100%'; setTimeout(() => el.remove(), 500); }
-        }
+            updateCurrentDate();
+            window.addEventListener('scroll', handleScroll);
+            loadAgencies();
+        });
 
-        function closeModal() {
-            const modal = document.querySelector('.modal-overlay.active');
-            if (modal) { modal.classList.remove('active'); setTimeout(() => modal.remove(), 300); }
-        }
-
-        // ==================== UTILS ====================
-        function formatDate(d) {
-            if (!d) return '';
-            try { const dt = new Date(d); return isNaN(dt) ? d : dt.toLocaleDateString('fr-FR'); } catch { return d; }
-        }
-
-        function formatCurrency(v) {
-            const n = typeof v !== 'number' ? parseFloat(v) || 0 : v;
-            return n.toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + ' FCFA';
-        }
-
-        function showToast(msg, type = 'info', duration = 4000) {
-            const container = document.getElementById('toast-container');
-            const id = `toast-${toastId++}`;
-            const icons = { success: 'check-circle', error: 'exclamation-circle', warning: 'exclamation-triangle', info: 'info-circle' };
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.id = id;
-            toast.innerHTML = `<i class="fas fa-${icons[type]}"></i><span>${msg}</span><button class="modal-close" style="margin-left:auto;" onclick="closeToast('${id}')"><i class="fas fa-times"></i></button>`;
-            container.appendChild(toast);
-            setTimeout(() => closeToast(id), duration);
-        }
-
-        function closeToast(id) {
-            const toast = document.getElementById(id);
-            if (toast) toast.remove();
-        }
-
-        function handleScroll() { document.getElementById('fab').style.display = window.scrollY > 300 ? 'flex' : 'none'; }
-        function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
-        function goBack() { window.history.back(); }
+        // Exposer les fonctions globalement
+        window.showSection = showSection;
+        window.goBack = goBack;
+        window.closeToast = closeToast;
+        window.sortTable = sortTable;
+        window.applyStockFilter = applyStockFilter;
+        window.refreshStockData = refreshStockData;
+        window.demarrerInventaire = demarrerInventaire;
+        window.regenererCode = regenererCode;
+        window.verifierCodeAcces = verifierCodeAcces;
+        window.validerMiseAJourInventaire = validerMiseAJourInventaire;
+        window.imprimerInventairePDF = imprimerInventairePDF;
+        window.openTransferWizard = openTransferWizard;
+        window.addProductRow = addProductRow;
+        window.removeProductRow = removeProductRow;
+        window.updateProductRowInfo = updateProductRowInfo;
+        window.submitTransferRequest = submitTransferRequest;
+        window.validateTransferCode = validateTransferCode;
+        window.toggleCategoryFilter = toggleCategoryFilter;
+        window.selectCategoryFilter = selectCategoryFilter;
+        window.Utils = Utils;
+        window.TokenManager = TokenManager;
+        window.openCategorieInventaireDialog = openCategorieInventaireDialog;
+window.confirmerCategorieInventaire = confirmerCategorieInventaire;
+window.openQuestionMiseAJourDialog = openQuestionMiseAJourDialog;
+window.openInventaireSearchModal = openInventaireSearchModal;
+window.rechercheReferenceInventaire = rechercheReferenceInventaire;
+window.selectionnerReferenceInventaire = selectionnerReferenceInventaire;
+window.ajouterReferenceInventaire = ajouterReferenceInventaire;
+window.supprimerReferenceInventaire = supprimerReferenceInventaire;
+        window.clampProductQty = clampProductQty;
+window.refreshProductOptionsAvailability = refreshProductOptionsAvailability;
     </script>
 </body>
 </html>
