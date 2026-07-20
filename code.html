@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VisioPro</title>
+    <title>VisioPro - Accès Sécurisé</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -39,7 +39,6 @@
             position: relative;
         }
 
-        /* Background overlay pour meilleure lisibilité */
         body::before {
             content: '';
             position: fixed;
@@ -51,7 +50,6 @@
             z-index: -1;
         }
 
-        /* Background animation */
         body::after {
             content: '';
             position: fixed;
@@ -67,7 +65,6 @@
             pointer-events: none;
         }
 
-        /* Floating elements */
         .floating-elements {
             position: fixed;
             width: 100%;
@@ -86,51 +83,17 @@
             animation: float 15s infinite ease-in-out;
         }
 
-        .floating-element:nth-child(1) {
-            width: 80px;
-            height: 80px;
-            top: 10%;
-            left: 10%;
-            animation-delay: 0s;
-        }
-
-        .floating-element:nth-child(2) {
-            width: 120px;
-            height: 120px;
-            top: 70%;
-            left: 80%;
-            animation-delay: -5s;
-        }
-
-        .floating-element:nth-child(3) {
-            width: 60px;
-            height: 60px;
-            top: 20%;
-            left: 85%;
-            animation-delay: -10s;
-        }
-
-        .floating-element:nth-child(4) {
-            width: 100px;
-            height: 100px;
-            top: 80%;
-            left: 15%;
-            animation-delay: -7s;
-        }
+        .floating-element:nth-child(1) { width: 80px; height: 80px; top: 10%; left: 10%; animation-delay: 0s; }
+        .floating-element:nth-child(2) { width: 120px; height: 120px; top: 70%; left: 80%; animation-delay: -5s; }
+        .floating-element:nth-child(3) { width: 60px; height: 60px; top: 20%; left: 85%; animation-delay: -10s; }
+        .floating-element:nth-child(4) { width: 100px; height: 100px; top: 80%; left: 15%; animation-delay: -7s; }
 
         @keyframes float {
-            0%, 100% {
-                transform: translateY(0) rotate(0deg);
-            }
-            33% {
-                transform: translateY(-20px) rotate(120deg);
-            }
-            66% {
-                transform: translateY(10px) rotate(240deg);
-            }
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(120deg); }
+            66% { transform: translateY(10px) rotate(240deg); }
         }
 
-        /* HEADER */
         header {
             display: flex;
             justify-content: space-between;
@@ -163,7 +126,6 @@
             background-clip: text;
         }
 
-        /* CONTAINER */
         .login-container {
             width: 100%;
             max-width: 450px;
@@ -178,7 +140,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* GLASSMORPHISM BOX */
         .login-box {
             background: var(--glass-bg);
             backdrop-filter: blur(20px);
@@ -204,14 +165,8 @@
             transition: var(--transition);
         }
 
-        .login-box:hover::before {
-            opacity: 1;
-        }
-
-        .login-box:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
+        .login-box:hover::before { opacity: 1; }
+        .login-box:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); }
 
         h2 {
             text-align: center;
@@ -236,7 +191,6 @@
             border-radius: 3px;
         }
 
-        /* LABELS */
         label {
             color: var(--text-light);
             font-size: 0.9rem;
@@ -245,10 +199,7 @@
             font-weight: 500;
         }
 
-        /* INPUT FIELD */
-        .input-group {
-            margin-bottom: 25px;
-        }
+        .input-group { margin-bottom: 25px; }
 
         .input-field {
             display: flex;
@@ -274,9 +225,7 @@
             transition: var(--transition);
         }
 
-        .input-field:focus-within::before {
-            left: 100%;
-        }
+        .input-field:focus-within::before { left: 100%; }
 
         .input-field input {
             flex: 1;
@@ -288,39 +237,14 @@
             font-size: 1rem;
         }
 
-        .input-field input::placeholder {
-            color: var(--text-muted);
-        }
+        .input-field input::placeholder { color: var(--text-muted); }
+        .input-field i { color: var(--text-light); font-size: 1rem; margin-right: 10px; transition: var(--transition); }
+        .input-field:focus-within { border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.3); }
+        .input-field:focus-within i { color: var(--primary-light); }
 
-        .input-field i {
-            color: var(--text-light);
-            font-size: 1rem;
-            margin-right: 10px;
-            transition: var(--transition);
-        }
+        .toggle-password { cursor: pointer; transition: var(--transition); }
+        .toggle-password:hover { color: var(--primary-light); transform: scale(1.1); }
 
-        /* FOCUS */
-        .input-field:focus-within {
-            border-color: var(--primary-light);
-            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.3);
-        }
-
-        .input-field:focus-within i {
-            color: var(--primary-light);
-        }
-
-        /* PASSWORD TOGGLE */
-        .toggle-password {
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .toggle-password:hover {
-            color: var(--primary-light);
-            transform: scale(1.1);
-        }
-
-        /* LOGIN BUTTON */
         .login-button {
             width: 100%;
             padding: 16px;
@@ -349,26 +273,11 @@
             transition: var(--transition);
         }
 
-        .login-button:hover::before {
-            left: 100%;
-        }
+        .login-button:hover::before { left: 100%; }
+        .login-button:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(108, 99, 255, 0.6); }
+        .login-button:active { transform: translateY(0); }
+        .login-button.disabled { opacity: 0.6; cursor: not-allowed; pointer-events: none; }
 
-        .login-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(108, 99, 255, 0.6);
-        }
-
-        .login-button:active {
-            transform: translateY(0);
-        }
-        
-        .login-button.disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-
-        /* ADDITIONAL OPTIONS */
         .login-options {
             display: flex;
             justify-content: space-between;
@@ -377,28 +286,11 @@
             font-size: 0.85rem;
         }
 
-        .remember-me {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--text-muted);
-        }
+        .remember-me { display: flex; align-items: center; gap: 8px; color: var(--text-muted); }
+        .remember-me input { accent-color: var(--primary-color); }
+        .forgot-password { color: var(--text-muted); text-decoration: none; transition: var(--transition); }
+        .forgot-password:hover { color: var(--primary-light); }
 
-        .remember-me input {
-            accent-color: var(--primary-color);
-        }
-
-        .forgot-password {
-            color: var(--text-muted);
-            text-decoration: none;
-            transition: var(--transition);
-        }
-
-        .forgot-password:hover {
-            color: var(--primary-light);
-        }
-
-        /* SEPARATOR */
         .separator {
             display: flex;
             align-items: center;
@@ -407,19 +299,15 @@
             font-size: 0.9rem;
         }
 
-        .separator::before,
-        .separator::after {
+        .separator::before, .separator::after {
             content: '';
             flex: 1;
             height: 1px;
             background: rgba(255, 255, 255, 0.3);
         }
 
-        .separator span {
-            padding: 0 15px;
-        }
+        .separator span { padding: 0 15px; }
 
-        /* SOCIAL LOGIN */
         .social-login {
             display: flex;
             justify-content: center;
@@ -442,24 +330,11 @@
             transition: var(--transition);
         }
 
-        .social-btn:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: translateY(-3px);
-        }
+        .social-btn:hover { background: rgba(255, 255, 255, 0.25); transform: translateY(-3px); }
+        .social-btn.google:hover { color: #DB4437; }
+        .social-btn.facebook:hover { color: #4267B2; }
+        .social-btn.twitter:hover { color: #1DA1F2; }
 
-        .social-btn.google:hover {
-            color: #DB4437;
-        }
-
-        .social-btn.facebook:hover {
-            color: #4267B2;
-        }
-
-        .social-btn.twitter:hover {
-            color: #1DA1F2;
-        }
-
-        /* REGISTER LINK */
         .register-link {
             text-align: center;
             margin-top: 25px;
@@ -467,18 +342,9 @@
             font-size: 0.9rem;
         }
 
-        .register-link a {
-            color: var(--primary-light);
-            text-decoration: none;
-            font-weight: 600;
-            transition: var(--transition);
-        }
+        .register-link a { color: var(--primary-light); text-decoration: none; font-weight: 600; transition: var(--transition); }
+        .register-link a:hover { color: var(--accent-color); }
 
-        .register-link a:hover {
-            color: var(--accent-color);
-        }
-
-        /* MESSAGE */
         #message {
             margin-top: 15px;
             padding: 12px;
@@ -489,25 +355,10 @@
             backdrop-filter: blur(10px);
         }
 
-        .error-message {
-            background: rgba(255, 77, 77, 0.2);
-            color: #ff4d4d;
-            border: 1px solid rgba(255, 77, 77, 0.3);
-        }
+        .error-message { background: rgba(255, 77, 77, 0.2); color: #ff4d4d; border: 1px solid rgba(255, 77, 77, 0.3); }
+        .success-message { background: rgba(34, 197, 94, 0.2); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); }
+        .warning-message { background: rgba(255, 165, 0, 0.2); color: #ffa500; border: 1px solid rgba(255, 165, 0, 0.3); }
 
-        .success-message {
-            background: rgba(34, 197, 94, 0.2);
-            color: #22c55e;
-            border: 1px solid rgba(34, 197, 94, 0.3);
-        }
-        
-        .warning-message {
-            background: rgba(255, 165, 0, 0.2);
-            color: #ffa500;
-            border: 1px solid rgba(255, 165, 0, 0.3);
-        }
-
-        /* WELCOME MESSAGE */
         .welcome-message {
             position: fixed;
             top: 50%;
@@ -526,40 +377,14 @@
         }
 
         @keyframes fadeInScale {
-            from {
-                opacity: 0;
-                transform: translate(-50%, -50%) scale(0.8);
-            }
-            to {
-                opacity: 1;
-                transform: translate(-50%, -50%) scale(1);
-            }
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
         }
 
-        .welcome-message i {
-            font-size: 70px;
-            color: var(--primary-light);
-            margin-bottom: 20px;
-        }
-
-        .welcome-message h3 {
-            color: var(--text-light);
-            font-size: 2rem;
-            margin-bottom: 15px;
-            font-weight: 600;
-        }
-
-        .welcome-message p {
-            color: var(--text-muted);
-            font-size: 1.1rem;
-        }
-
-        .welcome-message .user-name {
-            color: var(--accent-color);
-            font-weight: 700;
-            font-size: 1.3rem;
-            margin-top: 10px;
-        }
+        .welcome-message i { font-size: 70px; color: var(--primary-light); margin-bottom: 20px; }
+        .welcome-message h3 { color: var(--text-light); font-size: 2rem; margin-bottom: 15px; font-weight: 600; }
+        .welcome-message p { color: var(--text-muted); font-size: 1.1rem; }
+        .welcome-message .user-name { color: var(--accent-color); font-weight: 700; font-size: 1.3rem; margin-top: 10px; }
 
         .welcome-overlay {
             position: fixed;
@@ -572,8 +397,7 @@
             z-index: 999;
             display: none;
         }
-        
-        /* Countdown timer styling */
+
         .countdown-timer {
             font-size: 1.2rem;
             font-weight: bold;
@@ -586,89 +410,39 @@
             backdrop-filter: blur(5px);
         }
 
-        /* MOBILE OPTIMISATION */
         @media (max-width: 768px) {
-            header {
-                flex-direction: column;
-                gap: 20px;
-                padding: 15px 20px;
-            }
-            
-            .login-box {
-                padding: 30px 25px;
-            }
-
-            h2 {
-                font-size: 1.5rem;
-            }
-            
-            .login-options {
-                flex-direction: column;
-                gap: 15px;
-                align-items: flex-start;
-            }
-
-            .welcome-message {
-                padding: 30px 40px;
-                width: 90%;
-            }
-
-            .welcome-message h3 {
-                font-size: 1.5rem;
-            }
-
-            .welcome-message i {
-                font-size: 50px;
-            }
+            header { flex-direction: column; gap: 20px; padding: 15px 20px; }
+            .login-box { padding: 30px 25px; }
+            h2 { font-size: 1.5rem; }
+            .login-options { flex-direction: column; gap: 15px; align-items: flex-start; }
+            .welcome-message { padding: 30px 40px; width: 90%; }
+            .welcome-message h3 { font-size: 1.5rem; }
+            .welcome-message i { font-size: 50px; }
         }
 
         @media (max-width: 480px) {
-            .logo-container h1 {
-                font-size: 1.5rem;
-            }
-            
-            .login-box {
-                padding: 25px 20px;
-            }
-            
-            h2 {
-                font-size: 1.4rem;
-            }
-
-            .welcome-message {
-                padding: 25px 30px;
-            }
-
-            .welcome-message h3 {
-                font-size: 1.3rem;
-            }
+            .logo-container h1 { font-size: 1.5rem; }
+            .login-box { padding: 25px 20px; }
+            h2 { font-size: 1.4rem; }
+            .welcome-message { padding: 25px 30px; }
+            .welcome-message h3 { font-size: 1.3rem; }
         }
 
-        /* Shake animation */
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
             20%, 40%, 60%, 80% { transform: translateX(5px); }
         }
-        .shake {
-            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
-        }
+        .shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
 
-        /* Loading animation */
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.05); }
             100% { transform: scale(1); }
         }
-        .pulse {
-            animation: pulse 1.5s infinite ease-in-out;
-        }
-        
-        /* Disabled inputs style */
-        input:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
+        .pulse { animation: pulse 1.5s infinite ease-in-out; }
+
+        input:disabled { opacity: 0.6; cursor: not-allowed; }
     </style>
 </head>
 
@@ -680,7 +454,6 @@
         <div class="floating-element"></div>
     </div>
 
-    <!-- Welcome Message Overlay -->
     <div class="welcome-overlay" id="welcomeOverlay"></div>
     <div class="welcome-message" id="welcomeMessage">
         <i class="fas fa-user-circle"></i>
@@ -729,106 +502,171 @@
     </div>
 
     <script>
-        console.log('=== APPLICATION DÉMARRÉE ===');
-        console.log('Date/heure:', new Date().toLocaleString());
+        // ==================== CONFIGURATION ====================
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwdzHJGAL16KV_OnyoCIs5I7im2yNxrbEaEIbykQ8hy6ewQjJFQ0G4TfqYWWCMc7vfW/exec';
         
-        // ==================== BLOCAGE APRÈS 3 TENTATIVES ====================
+        // ==================== FONCTIONS DE SÉCURITÉ ====================
+        
+        function sanitizeInput(input) {
+            if (!input) return '';
+            return String(input)
+                .replace(/[&<>]/g, function(m) {
+                    if (m === '&') return '&amp;';
+                    if (m === '<') return '&lt;';
+                    if (m === '>') return '&gt;';
+                    return m;
+                })
+                .substring(0, 255);
+        }
+        
+        function isValidUsername(username) {
+            const validPattern = /^[a-zA-Z0-9_@.\-]{3,50}$/;
+            return validPattern.test(username);
+        }
+        
+        // ==================== GESTION DU TOKEN ====================
+        
+        function getApiToken() {
+            return sessionStorage.getItem('apiToken');
+        }
+        
+        function setApiToken(token) {
+            if (token) sessionStorage.setItem('apiToken', token);
+        }
+        
+        function clearApiToken() {
+            sessionStorage.removeItem('apiToken');
+            sessionStorage.removeItem('utilisateur');
+            sessionStorage.removeItem('isAdmin');
+            sessionStorage.removeItem('hasCaisseAccess');
+            sessionStorage.removeItem('agence');
+            sessionStorage.removeItem('analyse');
+        }
+        
+        
+        async function apiCall(action, data = {}) {
+            const token = getApiToken();
+            
+            if (!token && action !== 'login') {
+                console.error('❌ Pas de token, redirection vers login');
+                window.location.href = 'index.html';
+                throw new Error('Non authentifié');
+            }
+            
+            // Construire l'URL avec tous les paramètres (méthode GET)
+            const params = new URLSearchParams();
+            params.append('action', action);
+            
+            // Ajouter le token si présent
+            if (token) params.append('token', token);
+            
+            // Ajouter toutes les données
+            for (const [key, value] of Object.entries(data)) {
+                if (value !== undefined && value !== null) {
+                    if (typeof value === 'object') {
+                        params.append(key, JSON.stringify(value));
+                    } else {
+                        params.append(key, String(value));
+                    }
+                }
+            }
+            
+            const url = `${SCRIPT_URL}?${params.toString()}`;
+            
+            // Pour les logs (masquer les données sensibles)
+            const logUrl = url.replace(/password=[^&]*/, 'password=***');
+            console.log(`📡 API Call (GET): ${action}`, logUrl);
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    mode: 'cors',
+                    cache: 'no-cache'
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                if (!result.success && result.message && result.message.includes('Session')) {
+                    console.warn('⚠️ Session expirée, redirection');
+                    clearApiToken();
+                    window.location.href = 'index.html';
+                }
+                
+                return result;
+                
+            } catch (error) {
+                console.error(`❌ Erreur API ${action}:`, error);
+                return {
+                    success: false,
+                    message: 'Erreur de connexion au serveur',
+                    errorDetails: error.message
+                };
+            }
+        }
+        
+
         const STORAGE_KEY = "visiopro_login_block";
         const MAX_ATTEMPTS = 3;
-        const BLOCK_DURATION_MS = 60 * 1000; // 1 minute
+        const BLOCK_DURATION_MS = 60 * 1000;
         
         let blockData = null;
         let countdownInterval = null;
         
-        console.log('Configuration du blocage:', { MAX_ATTEMPTS, BLOCK_DURATION_MS });
-        
-        // Récupération et initialisation du système de blocage
         function initBlockSystem() {
-            console.log('Initialisation du système de blocage...');
             const stored = localStorage.getItem(STORAGE_KEY);
             const now = Date.now();
-            
-            console.log('Données stockées:', stored);
             
             if (stored) {
                 try {
                     blockData = JSON.parse(stored);
-                    console.log('Données de blocage chargées:', blockData);
-                    
-                    // Vérifier si le blocage est encore actif
                     if (blockData.isBlocked) {
                         const remaining = blockData.blockedUntil - now;
-                        console.log('Blocage actif, temps restant:', remaining, 'ms');
-                        
                         if (remaining > 0) {
                             activateBlockade(remaining);
                             return;
                         } else {
-                            console.log('Blocage expiré, réinitialisation');
                             resetBlockState();
                         }
                     } else {
-                        console.log('Aucun blocage actif');
-                        // Vérifier si le compteur doit être réinitialisé (1h sans activité)
                         const lastAttemptTime = blockData.lastAttemptTime || 0;
-                        if (now - lastAttemptTime > 3600000) {
-                            console.log('Réinitialisation après 1h d\'inactivité');
-                            resetBlockState();
-                        }
+                        if (now - lastAttemptTime > 3600000) resetBlockState();
                     }
-                } catch(e) {
-                    console.error('Erreur de lecture du localStorage:', e);
-                    resetBlockState();
-                }
+                } catch(e) { resetBlockState(); }
             } else {
-                console.log('Aucune donnée stockée, initialisation par défaut');
                 resetBlockState();
             }
         }
         
         function resetBlockState() {
-            console.log('Réinitialisation de l\'état de blocage');
-            blockData = {
-                attempts: 0,
-                isBlocked: false,
-                blockedUntil: null,
-                lastAttemptTime: null
-            };
+            blockData = { attempts: 0, isBlocked: false, blockedUntil: null, lastAttemptTime: null };
             saveBlockState();
-            console.log('État après réinitialisation:', blockData);
         }
         
         function saveBlockState() {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(blockData));
-            console.log('État sauvegardé:', blockData);
         }
         
         function registerFailedAttempt() {
-            console.log('Enregistrement d\'une tentative échouée');
-            if (blockData.isBlocked) {
-                console.log('Système déjà bloqué, tentative ignorée');
-                return false;
-            }
-            
+            if (blockData.isBlocked) return false;
             blockData.attempts++;
             blockData.lastAttemptTime = Date.now();
-            console.log('Nombre de tentatives:', blockData.attempts, '/', MAX_ATTEMPTS);
             
             if (blockData.attempts >= MAX_ATTEMPTS) {
-                console.log('⚠️ Seuil de tentatives atteint! Activation du blocage');
                 blockData.isBlocked = true;
                 blockData.blockedUntil = Date.now() + BLOCK_DURATION_MS;
                 saveBlockState();
                 activateBlockade(BLOCK_DURATION_MS);
                 return true;
             }
-            
             saveBlockState();
             return false;
         }
         
         function activateBlockade(remainingMs) {
-            console.log('🔒 Activation du blocage pour', remainingMs, 'ms');
             const usernameInput = document.getElementById('username');
             const passwordInput = document.getElementById('password');
             const loginBtn = document.getElementById('loginBtn');
@@ -840,13 +678,10 @@
             loginBtn.disabled = true;
             loginBtn.classList.add('disabled');
             
-            console.log('Inputs désactivés, bouton désactivé');
-            
             const secondsRemaining = Math.ceil(remainingMs / 1000);
             messageDiv.textContent = `⛔ Trop de tentatives échouées. Accès bloqué pour ${secondsRemaining} secondes.`;
             messageDiv.className = 'warning-message';
             messageDiv.style.display = 'block';
-            
             countdownDiv.style.display = 'block';
             
             if (countdownInterval) clearInterval(countdownInterval);
@@ -855,7 +690,6 @@
             countdownInterval = setInterval(() => {
                 remaining -= 1000;
                 if (remaining <= 0) {
-                    console.log('Déblocage automatique');
                     clearInterval(countdownInterval);
                     countdownInterval = null;
                     resetBlockState();
@@ -865,12 +699,9 @@
                     countdownDiv.textContent = `⏱️ Accès bloqué. Réessayez dans ${secs} secondes...`;
                 }
             }, 1000);
-            
-            countdownDiv.textContent = `⏱️ Accès bloqué. Réessayez dans ${secondsRemaining} secondes...`;
         }
         
         function deactivateBlockade() {
-            console.log('🔓 Désactivation du blocage');
             const usernameInput = document.getElementById('username');
             const passwordInput = document.getElementById('password');
             const loginBtn = document.getElementById('loginBtn');
@@ -881,30 +712,18 @@
             passwordInput.disabled = false;
             loginBtn.disabled = false;
             loginBtn.classList.remove('disabled');
-            
             messageDiv.style.display = 'none';
             countdownDiv.style.display = 'none';
             
-            if (countdownInterval) {
-                clearInterval(countdownInterval);
-                countdownInterval = null;
-            }
-            
-            console.log('Système débloqué');
+            if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
         }
         
         function isAccessBlocked() {
             if (blockData && blockData.isBlocked) {
-                const now = Date.now();
-                if (now < blockData.blockedUntil) {
-                    console.log('Accès bloqué jusqu\'à:', new Date(blockData.blockedUntil));
-                    return true;
-                } else {
-                    console.log('Blocage expiré');
-                    resetBlockState();
-                    deactivateBlockade();
-                    return false;
-                }
+                if (Date.now() < blockData.blockedUntil) return true;
+                resetBlockState();
+                deactivateBlockade();
+                return false;
             }
             return false;
         }
@@ -915,19 +734,17 @@
         const message = document.getElementById('message');
         const togglePassword = document.getElementById('togglePassword');
         const passwordInputField = document.getElementById('password');
-        const usernameInputField = document.getElementById('username');
         const welcomeMessageDiv = document.getElementById('welcomeMessage');
         const welcomeOverlay = document.getElementById('welcomeOverlay');
         const userNameDisplay = document.getElementById('userNameDisplay');
-
+        
         function showWelcomeMessage(username) {
-            console.log('🎉 Affichage du message de bienvenue pour:', username);
-            userNameDisplay.textContent = username;
+            const safeUsername = sanitizeInput(username);
+            userNameDisplay.textContent = safeUsername;
             welcomeOverlay.style.display = 'block';
             welcomeMessageDiv.style.display = 'block';
             
             setTimeout(() => {
-                console.log('Fermeture du message de bienvenue');
                 welcomeMessageDiv.style.animation = 'fadeInScale 0.3s reverse';
                 setTimeout(() => {
                     welcomeMessageDiv.style.display = 'none';
@@ -936,172 +753,132 @@
                 }, 300);
             }, 3000);
         }
-
-        // Toggle password visibility
+        
         if (togglePassword) {
             togglePassword.addEventListener('click', function() {
                 const type = passwordInputField.getAttribute('type') === 'password' ? 'text' : 'password';
                 passwordInputField.setAttribute('type', type);
                 this.classList.toggle('fa-eye');
                 this.classList.toggle('fa-eye-slash');
-                console.log('Visibilité du mot de passe:', type === 'text' ? 'visible' : 'masqué');
             });
         }
-
-        // Form submission
+        
+        // Formulaire de connexion
         if (form) {
-            form.addEventListener('submit', function(e) {
+            form.addEventListener('submit', async function(e) {
                 e.preventDefault();
-                console.log('=== TENTATIVE DE CONNEXION ===');
                 
                 if (isAccessBlocked()) {
-                    console.log('❌ Accès refusé - système bloqué');
                     message.textContent = "⛔ Accès temporairement bloqué. Veuillez patienter.";
                     message.className = 'warning-message';
                     message.style.display = 'block';
                     return;
                 }
                 
-                const username = document.getElementById('username').value.trim();
+                const username = sanitizeInput(document.getElementById('username').value.trim());
                 const password = document.getElementById('password').value.trim();
                 
-                console.log('Tentative de connexion pour:', username);
-                console.log('Mot de passe saisi (masqué):', password ? '****' : 'vide');
-
                 if (!username || !password) {
-                    console.log('❌ Champs vides détectés');
                     message.textContent = "Veuillez remplir tous les champs.";
                     message.className = 'error-message';
                     message.style.display = 'block';
                     return;
                 }
-
+                
+                if (!isValidUsername(username)) {
+                    message.textContent = "Nom d'utilisateur invalide (3-50 caractères)";
+                    message.className = 'error-message';
+                    message.style.display = 'block';
+                    return;
+                }
+                
                 const submitBtn = form.querySelector('button[type="submit"]');
                 const originalBtnText = submitBtn.innerHTML;
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connexion...';
                 submitBtn.disabled = true;
-                
-                console.log('Envoi de la requête au serveur...');
-
                 message.style.display = 'none';
-
-                const timestamp = new Date().getTime();
-                const url = `https://script.google.com/macros/s/AKfycbwdzHJGAL16KV_OnyoCIs5I7im2yNxrbEaEIbykQ8hy6ewQjJFQ0G4TfqYWWCMc7vfW/exec?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}&_=${timestamp}`;
                 
-                console.log('URL de requête:', url.replace(password, '****'));
-                
-                fetch(url)
-                    .then(res => {
-                        console.log('Réponse reçue, status:', res.status);
-                        return res.json();
-                    })
-                    .then(data => {
-                        console.log('Données de réponse:', data);
-                        if (data.success) {
-                            console.log('✅ Connexion réussie pour:', username);
-                            resetBlockState();
-                            deactivateBlockade();
-                            
-                            showWelcomeMessage(username);
-                            
-                            message.textContent = 'Connexion réussie ! Redirection...';
-                            message.className = 'success-message';
-                            message.style.display = 'block';
-
-                            sessionStorage.setItem("utilisateur", username);
-                            sessionStorage.setItem("isAdmin", data.data?.isAdmin ? "true" : "false");
-                            sessionStorage.setItem("hasCaisseAccess", data.data?.hasCaisseAccess ? "true" : "false");
-                            sessionStorage.setItem("agence", data.data?.agence || "");
-                            sessionStorage.setItem("analyse", data.data?.analyse || "");
-                            
-                            console.log('Données session sauvegardées:', {
-                                utilisateur: username,
-                                isAdmin: data.data?.isAdmin,
-                                hasCaisseAccess: data.data?.hasCaisseAccess,
-                                agence: data.data?.agence
-                            });
-
-                            setTimeout(() => {
-                                console.log('🔄 Redirection vers Accueil.html');
-                                window.location.href = 'Accueil.html';
-                            }, 2000);
-                        } else {
-                            console.log('❌ Échec de connexion:', data.message);
-                            const wasBlocked = registerFailedAttempt();
-                            
-                            if (wasBlocked) {
-                                console.log('🔒 3 tentatives échouées, système bloqué');
-                                message.textContent = "⛔ 3 tentatives échouées. Accès bloqué 1 minute.";
-                                message.className = 'warning-message';
-                                message.style.display = 'block';
-                            } else {
-                                const remainingAttempts = MAX_ATTEMPTS - blockData.attempts;
-                                console.log(`Tentatives restantes: ${remainingAttempts}/${MAX_ATTEMPTS}`);
-                                message.textContent = data.message || 'Identifiants incorrects.';
-                                message.className = 'error-message';
-                                message.style.display = 'block';
-                                
-                                if (remainingAttempts > 0 && remainingAttempts < MAX_ATTEMPTS) {
-                                    setTimeout(() => {
-                                        if (message.textContent.includes('incorrects')) {
-                                            message.textContent = `⚠️ Il reste ${remainingAttempts} tentative(s) avant blocage.`;
-                                            message.className = 'warning-message';
-                                            setTimeout(() => {
-                                                if (message.textContent.includes('reste')) message.style.display = 'none';
-                                            }, 3000);
-                                        }
-                                    }, 1500);
-                                }
-                            }
-                            
-                            form.classList.add('shake');
-                            setTimeout(() => {
-                                form.classList.remove('shake');
-                            }, 500);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('❌ Erreur fetch:', error);
-                        console.error('Détails:', error.message);
-                        message.textContent = "Erreur de connexion au serveur.";
-                        message.className = 'error-message';
-                        message.style.display = 'block';
-                    })
-                    .finally(() => {
-                        submitBtn.innerHTML = originalBtnText;
-                        if (!blockData.isBlocked) {
-                            submitBtn.disabled = false;
-                        }
-                        submitBtn.classList.remove('pulse');
-                        console.log('Fin de la tentative de connexion');
+                try {
+                    // Utiliser GET pour éviter CORS
+                    const result = await apiCall('login', {
+                        username: username,
+                        password: password
                     });
+                    
+                    if (result.success && result.data && result.data.token) {
+                        setApiToken(result.data.token);
+                        sessionStorage.setItem("utilisateur", username);
+                        sessionStorage.setItem("isAdmin", result.data.isAdmin ? "true" : "false");
+                        sessionStorage.setItem("hasCaisseAccess", result.data.hasCaisseAccess ? "true" : "false");
+                        sessionStorage.setItem("agence", result.data.agence || "");
+                        sessionStorage.setItem("analyse", result.data.analyse || "");
+                        
+                        resetBlockState();
+                        deactivateBlockade();
+                        showWelcomeMessage(username);
+                        
+                        message.textContent = 'Connexion réussie ! Redirection...';
+                        message.className = 'success-message';
+                        message.style.display = 'block';
+                        
+                        setTimeout(() => { window.location.href = 'Accueil.html'; }, 2000);
+                        
+                    } else {
+                        const wasBlocked = registerFailedAttempt();
+                        const remainingAttempts = MAX_ATTEMPTS - blockData.attempts;
+                        
+                        if (wasBlocked) {
+                            message.textContent = "⛔ 3 tentatives échouées. Accès bloqué 1 minute.";
+                            message.className = 'warning-message';
+                        } else {
+                            message.textContent = result.message || 'Identifiants incorrects.';
+                            message.className = 'error-message';
+                            
+                            if (remainingAttempts > 0 && remainingAttempts < MAX_ATTEMPTS) {
+                                setTimeout(() => {
+                                    if (message.textContent.includes('incorrects')) {
+                                        message.textContent = `⚠️ Il reste ${remainingAttempts} tentative(s) avant blocage.`;
+                                        message.className = 'warning-message';
+                                        setTimeout(() => {
+                                            if (message.textContent.includes('reste')) message.style.display = 'none';
+                                        }, 3000);
+                                    }
+                                }, 1500);
+                            }
+                        }
+                        message.style.display = 'block';
+                        form.classList.add('shake');
+                        setTimeout(() => form.classList.remove('shake'), 500);
+                    }
+                    
+                } catch (error) {
+                    console.error('Erreur:', error);
+                    message.textContent = "Erreur de connexion au serveur.";
+                    message.className = 'error-message';
+                    message.style.display = 'block';
+                } finally {
+                    submitBtn.innerHTML = originalBtnText;
+                    if (!blockData.isBlocked) submitBtn.disabled = false;
+                }
             });
         }
-
+        
         // Initialisation
-        console.log('Démarrage de l\'application...');
+        console.log('=== APPLICATION SÉCURISÉE DÉMARRÉE ===');
         initBlockSystem();
         
-        // Vérifier le blocage au chargement
         if (isAccessBlocked() && blockData && blockData.blockedUntil) {
             const remaining = blockData.blockedUntil - Date.now();
-            if (remaining > 0) {
-                console.log('Blocage actif détecté au chargement');
-                activateBlockade(remaining);
-            }
+            if (remaining > 0) activateBlockade(remaining);
         }
         
-        // Afficher les tentatives restantes si nécessaire
         if (blockData && blockData.attempts > 0 && blockData.attempts < MAX_ATTEMPTS && !blockData.isBlocked) {
             const remaining = MAX_ATTEMPTS - blockData.attempts;
-            console.log(`⚠️ Avertissement: ${remaining} tentative(s) restante(s)`);
             message.textContent = `⚠️ Attention : ${remaining} tentative(s) restante(s) avant blocage.`;
             message.className = 'warning-message';
             message.style.display = 'block';
             setTimeout(() => {
-                if (message.textContent.includes('restante')) {
-                    message.style.display = 'none';
-                }
+                if (message.textContent.includes('restante')) message.style.display = 'none';
             }, 5000);
         }
         
