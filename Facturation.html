@@ -2559,13 +2559,8 @@ async function genererFacture() {
                     facturationId: facturationId
                 });
 
-                await API.post('updateFacturesSelectionnees', {
-                    idClients: factures.map(f => f['Id Client']).filter(id => id),
-                    statut: facturationId
-                });
-
                 Utils.hideProgress(true, `Dépôt généré : ${facturationId}`);
-                Utils.showToast(`✅ Dépôt généré ! Réf: ${facturationId}`, 'success', 5000);
+                Utils.showToast(`✅ Dépôt généré ! Réf: ${facturationId}`, 'success', 10000);
                 closeModal();
                 factureManager.deselectAll();
                 document.querySelectorAll('.facture-checkbox').forEach(cb => cb.checked = false);
