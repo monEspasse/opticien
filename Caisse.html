@@ -2153,38 +2153,59 @@ function showDepenseCodeMessage(msg, type) {
     }
 
     /* ══════════════ INIT ══════════════ */
-
-    document.addEventListener('DOMContentLoaded', async () => {
-        // Vérifier la session avant tout chargement
-        if (!checkSession()) return;
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log("=== INITIALISATION CAISSE.HTML ===");
+    
+    // Vérifier la session avant tout chargement
+    if (!checkSession()) return;
+    
+    // Vérifier les droits d'accès à la caisse
+    if (!hasCaisseAccess()) return;
+    
+    // Démarrer le timer d'inactivité
+    startInactivityTimer();
+    
+    // Afficher les infos utilisateur
+    displayUserInfo();
+    
+    setCurrentDate();
+    
+    console.log("📡 Chargement des caisses...");
+    const loaded = await loadCaisses();
+    console.log("Résultat chargement caisses:", loaded);
+    
+    if (loaded && caisses.length > 0) {
+        console.log("✅ Caisses disponibles:", caisses.map(c => c.name));
+        buildUI();
         
-        // Vérifier les droits d'accès à la caisse
-        if (!hasCaisseAccess()) return;
+        console.log("📡 Chargement des données de toutes les caisses...");
+        await loadAllCaisseData();
         
-        // Démarrer le timer d'inactivité
-        startInactivityTimer();
+        currentCaisse = caisses[0].id;
+        console.log(`🔍 Caisse sélectionnée: ${caisses[0].name} (${currentCaisse})`);
         
-        // Afficher les infos utilisateur
-        displayUserInfo();
+        // Peuple les dropdowns dynamiques pour chaque caisse
+        caisses.forEach(c => populateDynamicOptions(c.id));
+        updateSummary(currentCaisse);
+        displayData(currentCaisse);
         
-        setCurrentDate();
-        const loaded = await loadCaisses();
-        if (loaded && caisses.length > 0) {
-            buildUI();
-            await loadAllCaisseData();
-            currentCaisse = caisses[0].id;
-            // Peuple les dropdowns dynamiques pour chaque caisse
-            caisses.forEach(c => populateDynamicOptions(c.id));
-            updateSummary(currentCaisse);
-            displayData(currentCaisse);
-        } else {
-            document.getElementById('content-area').innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <p>Aucune caisse trouvée. Vérifiez votre connexion API.</p>
-                </div>`;
-        }
-    });
+        console.log("✅ Initialisation terminée");
+    } else {
+        console.error("❌ Échec du chargement des caisses");
+        document.getElementById('content-area').innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>Aucune caisse trouvée. Vérifiez votre connexion API.</p>
+                <p style="font-size:0.8rem;color:var(--c-ink3);margin-top:0.5rem;">
+                    Token: ${getApiToken() ? '✅ Présent' : '❌ Manquant'}
+                </p>
+                <button onclick="location.reload()" class="btn btn-accent" style="margin-top:1rem;">
+                    <i class="fas fa-sync"></i> Réessayer
+                </button>
+            </div>`;
+    }
+});
+    
 </script>
 </body>
 </html>
