@@ -1096,49 +1096,26 @@
                 }
             };
 
-            // ================================
-            // GESTION DE L'IMPRESSION / PDF
-            // ================================
-// ================================
-// GESTION DE L'IMPRESSION / PDF
-// ================================
 const ImpressionManager = {
-    async generer() {
-        const clientId = document.getElementById('client-id').textContent;
-        const clientName = document.getElementById('client-name').textContent;
-        const token = API.getToken();
+async generer() {
+    const clientId = document.getElementById('client-id').textContent;
+    const token = API.getToken();
 
-        // Récupérer les données du client pour les passer au reçu
-        const clientData = {
-            clientId: clientId,
-            nom_complet: document.getElementById('client-fullname').textContent,
-            numero: document.getElementById('client-phone').textContent,
-            net_a_payer: document.getElementById('net-amount').textContent,
-            acompte: document.getElementById('deposit-amount-payment').textContent,
-            reste_a_payer: document.getElementById('remaining-amount').textContent,
-            agence: document.getElementById('agency').textContent
-        };
+    try {
+        this.showLoadingIndicator('Génération du PDF en cours...');
 
-        try {
-            this.showLoadingIndicator('Génération du reçu en cours...');
+        const apiUrl = `${CONFIG.API_BASE}?action=addrecu`;
+        await fetch(apiUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ clientId, token })   // ✅ token ajouté
+        });
 
-            // Étape 1: Envoyer les données pour écrire dans le reçu
-            const apiUrl = `${CONFIG.API_BASE}`;
-            await fetch(apiUrl, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    action: 'addrecu',
-                    token: token,
-                    formData: clientData
-                })
-            });
-
-            // Étape 2: Attendre l'écriture
+            // Étape 2: Attendre la génération
             await new Promise(resolve => setTimeout(resolve, 2000));
 
-            // Étape 3: Récupérer le PDF
+            // Étape 3: Récupérer le PDF avec le token
             const pdfUrl = `${CONFIG.API_BASE}?action=getrecucaissepdf&token=${encodeURIComponent(token)}`;
             const response = await fetch(pdfUrl);
 
@@ -1146,19 +1123,31 @@ const ImpressionManager = {
 
             const result = await response.json();
 
-            if (result.success && result.data && result.data.pdfUrl) {
+            const isSuccess = result.succès || result.success;
+            let finalPdfUrl = null;
+
+            if (isSuccess && result.data && result.data.pdfUrl) {
+                finalPdfUrl = result.data.pdfUrl;
+            } else if (result.message === "Le PDF est en cours de génération. Veuillez patienter quelques secondes.") {
                 this.hideLoadingIndicator();
-                window.open(result.data.pdfUrl, '_blank');
-                Utils.showMessage("Reçu généré avec succès!", "success");
+                Utils.showMessage("Le PDF est en cours de génération. Veuillez patienter quelques secondes puis réessayer.", "warning");
+                return;
             } else {
                 this.hideLoadingIndicator();
-                Utils.showMessage("Erreur lors de la génération du reçu.", "error");
+                Utils.showMessage("Erreur inattendue lors de la génération du PDF.", "error");
+                return;
+            }
+
+            if (finalPdfUrl) {
+                this.hideLoadingIndicator();
+                window.open(finalPdfUrl, '_blank');
+                Utils.showMessage("PDF généré avec succès! Ouverture dans un nouvel onglet.", "success");
             }
 
         } catch (error) {
-            console.error("❌ Erreur génération reçu:", error);
+            console.error("❌ Erreur génération PDF:", error);
             this.hideLoadingIndicator();
-            Utils.showMessage("Erreur: " + error.message, "error");
+            Utils.showMessage("Erreur lors de la génération du PDF: " + error.message, "error");
         }
     },
 
