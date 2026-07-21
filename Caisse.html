@@ -1070,8 +1070,11 @@ body {
     
     // Gestion du token API
 function getApiToken() {
-    // Chercher d'abord avec la clé utilisée par code.html ('apiToken')
-    return sessionStorage.getItem("apiToken") || localStorage.getItem("apiToken");
+    // Chercher d'abord avec les différentes clés possibles
+    return sessionStorage.getItem("apiToken") || 
+           sessionStorage.getItem("token") || 
+           localStorage.getItem("apiToken") || 
+           localStorage.getItem("token");
 }
     
 function saveApiToken(token) {
