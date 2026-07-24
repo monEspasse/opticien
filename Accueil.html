@@ -5419,7 +5419,12 @@ async function loadFournisseurs(selectId) {
             const quantity = $('productQuantity').value;
             const utilisateur = AppState.user.nom || "Inconnu";
             
-            const productData = { category, quantity, utilisateur };
+            const productData = { 
+    category, 
+    quantity, 
+    utilisateur,
+    token: sessionStorage.getItem('apiToken')
+};
 
             try {
                 if (category === 'monture') {
