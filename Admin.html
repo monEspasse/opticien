@@ -710,6 +710,7 @@
             text-transform: uppercase;
             border-bottom: 1px solid var(--c-border);
         }
+        
 
         .data-table tbody tr {
             border-bottom: 1px solid var(--c-border);
@@ -1694,12 +1695,13 @@
                                         <th class="sortable" onclick="sortTable('grand-caisse','Designation')">Désignation</th>
                                         <th class="sortable" onclick="sortTable('grand-caisse','Montant')">Montant</th>
                                         <th class="sortable" onclick="sortTable('grand-caisse','Mouvement')">Mouvement</th>
-                                        <th class="sortable" onclick="sortTable('grand-caisse','ModePaiement')">Mode</th>
+<th class="sortable" onclick="sortTable('grand-caisse','EnCaisse')">En Caisse</th>
+<th class="sortable" onclick="sortTable('grand-caisse','ModePaiement')">Mode</th>
                                         <th class="sortable" onclick="sortTable('grand-caisse','Categorie')">Catégorie</th>
                                     </tr>
                                 </thead>
                                 <tbody id="grandCaisseData">
-                                    <tr><td colspan="6"><div class="loading-state"><div class="spinner"></div>Chargement...</div></td></tr>
+                                    <tr><td colspan="7"><div class="loading-state"><div class="spinner"></div>Chargement...</div></td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -2163,24 +2165,32 @@
                 }, 200);
                 overlay.dataset.interval = interval;
             },
-            hideProgress: (success = true, message = '') => {
-                const overlay = document.getElementById('global-progress-overlay');
-                if (!overlay) return;
-                clearInterval(overlay.dataset.interval);
-                const fill = overlay.querySelector('.progress-fill');
-                if (fill) fill.style.width = '100%';
-                const content = overlay.querySelector('.progress-text');
-                const icon = success ? 'check-circle' : 'exclamation-circle';
-                const color = success ? '#1A8A5A' : '#C43B3B';
-                const title = success ? 'Succès !' : 'Erreur';
-                const defaultMsg = success ? 'Opération terminée avec succès' : 'Une erreur est survenue';
-                content.innerHTML = `
-                    <div class="progress-icon" style="color:${color}"><i class="fas fa-${icon}"></i></div>
-                    <h4>${title}</h4>
-                    <p>${message || defaultMsg}</p>
-                `;
-                setTimeout(() => overlay.remove(), 2000);
-            },
+updateProgressMessage: (subMessage) => {
+    const overlay = document.getElementById('global-progress-overlay');
+    if (!overlay) return;
+    const p = overlay.querySelector('.progress-text p');
+    if (p) p.textContent = subMessage;
+},
+hideProgress: (success = true, message = '') => {
+    const overlays = document.querySelectorAll('#global-progress-overlay');
+    if (!overlays.length) return;
+    overlays.forEach((el, idx) => { if (idx > 0) el.remove(); }); 
+    const overlay = overlays[0];
+    clearInterval(overlay.dataset.interval);
+    const fill = overlay.querySelector('.progress-fill');
+    if (fill) fill.style.width = '100%';
+    const content = overlay.querySelector('.progress-text');
+    const icon = success ? 'check-circle' : 'exclamation-circle';
+    const color = success ? '#1A8A5A' : '#C43B3B';
+    const title = success ? 'Succès !' : 'Erreur';
+    const defaultMsg = success ? 'Opération terminée avec succès' : 'Une erreur est survenue';
+    content.innerHTML = `
+        <div class="progress-icon" style="color:${color}"><i class="fas fa-${icon}"></i></div>
+        <h4>${title}</h4>
+        <p>${message || defaultMsg}</p>
+    `;
+    setTimeout(() => overlay.remove(), 2000);
+},
             showDeleteConfirm: (itemName, onConfirm) => {
                 const container = document.getElementById('modal-container');
                 const modalId = 'delete-modal-' + Date.now();
@@ -2358,6 +2368,7 @@ showConfirm: (message, onConfirm, options = {}) => {
 // ============================================================
 // GESTION DES TABLEAUX
 // ============================================================
+
 const TableManager = {
     showSkeleton: (type) => {
         const skeleton = document.getElementById(`${type}TableSkeleton`);
@@ -2383,6 +2394,30 @@ const TableManager = {
             `;
         }
     },
+    // Trie selon la colonne/direction DÉJÀ stockée dans STATE, sans jamais inverser.
+    // À utiliser après un chargement de données ou un filtrage.
+    applySort: (type) => {
+        const sort = STATE.sort[type];
+        const column = sort.column;
+        const data = Utils.getData(type);
+        data.sort((a, b) => {
+            let va = a[column], vb = b[column];
+            if (column.includes('Date')) { va = new Date(va); vb = new Date(vb); }
+            if (column.includes('Montant') || column.includes('Total') || column.includes('Part') ||
+                column === 'TVATotal' || column === 'SalaireBase' || column === 'PrimePerformance' ||
+                column === 'PrimeAssiduite' || column === 'PrimeResponsabilite' || column === 'SoldeConges' ||
+                column === 'CongesAnnuels' || column === 'NbFactures' || column === 'EnCaisse') {
+                va = parseFloat(va) || 0; vb = parseFloat(vb) || 0;
+            }
+            if (va < vb) return sort.direction === 'asc' ? -1 : 1;
+            if (va > vb) return sort.direction === 'asc' ? 1 : -1;
+            return 0;
+        });
+        STATE.filtered[type] = data;
+        TableManager.update(type);
+    },
+    // Trie en INVERSANT la direction si on reclique sur la même colonne.
+    // À utiliser uniquement sur le clic d'un en-tête de colonne.
     sort: (type, column) => {
         const sort = STATE.sort[type];
         if (sort.column === column) sort.direction = sort.direction === 'asc' ? 'desc' : 'asc';
@@ -2394,7 +2429,7 @@ const TableManager = {
             if (column.includes('Montant') || column.includes('Total') || column.includes('Part') ||
                 column === 'TVATotal' || column === 'SalaireBase' || column === 'PrimePerformance' ||
                 column === 'PrimeAssiduite' || column === 'PrimeResponsabilite' || column === 'SoldeConges' ||
-                column === 'CongesAnnuels' || column === 'NbFactures') {
+                column === 'CongesAnnuels' || column === 'NbFactures' || column === 'EnCaisse') {
                 va = parseFloat(va) || 0; vb = parseFloat(vb) || 0;
             }
             if (va < vb) return sort.direction === 'asc' ? -1 : 1;
@@ -2423,7 +2458,6 @@ const TableManager = {
     }
 };
 
-
         function updateResultCount(type) {
             const count = document.getElementById(`${type}-result-count`);
             if (count) {
@@ -2445,8 +2479,8 @@ const TableManager = {
                             Acces: r[3] || '', Caisse: r[4] || '', Agence: r[5] || '', Analyse: r[6] || ''
                         }));
                         STATE.filtered.users = [];
-                        TableManager.sort('users', STATE.sort.users.column);
-                        TableManager.hideSkeleton('users');
+TableManager.applySort('users');
+TableManager.hideSkeleton('users');
                         Utils.showToast(`${STATE.allData.users.length} utilisateurs chargés`, 'success');
                     } else throw new Error('Structure invalide');
                 })
@@ -2469,9 +2503,9 @@ const TableManager = {
                             Type: r[3] || '', Solde: parseFloat(r[4]) || 0, Categorie: r[5] || '', Idunique: r[6] || ''
                         }));
                         STATE.filtered.banque = [];
-                        initBanqueFilters();
-                        TableManager.sort('banque', STATE.sort.banque.column);
-                        TableManager.hideSkeleton('banque');
+initBanqueFilters();
+TableManager.applySort('banque');
+TableManager.hideSkeleton('banque');
                         updateBanqueSummaryCards(Utils.getData('banque'));
                         Utils.showToast(`${STATE.allData.banque.length} transactions chargées`, 'success');
                     } else throw new Error('Structure invalide');
@@ -2495,9 +2529,9 @@ const TableManager = {
                             ModePaiement: r[6] || '', Categorie: r[7] || ''
                         }));
                         STATE.filtered.grandCaisse = [];
-                        initGrandCaisseFilters();
-                        TableManager.sort('grandCaisse', STATE.sort.grandCaisse.column);
-                        TableManager.hideSkeleton('grandCaisse');
+initGrandCaisseFilters();
+TableManager.applySort('grandCaisse');
+TableManager.hideSkeleton('grandCaisse');
                         updateGrandCaisseSummaryCards(Utils.getData('grandCaisse'));
                         Utils.showToast(`${STATE.allData.grandCaisse.length} entrées chargées`, 'success');
                     } else throw new Error('Structure invalide');
@@ -2534,9 +2568,9 @@ const TableManager = {
                             ResteAPayer: r[headers.indexOf('Reste a payer')] || ''
                         }));
                         STATE.filtered.pointFacturation = [];
-                        initPointFacturationFilters();
-                        TableManager.sort('pointFacturation', STATE.sort.pointFacturation.column);
-                        TableManager.hideSkeleton('pointFacturation');
+initPointFacturationFilters();
+TableManager.applySort('pointFacturation');
+TableManager.hideSkeleton('pointFacturation');
                         Utils.showToast(`${STATE.allData.pointFacturation.length} points chargés`, 'success');
                     } else throw new Error('Structure invalide');
                 })
@@ -2562,9 +2596,9 @@ const TableManager = {
                             Idfacture: r[15] || ''
                         }));
                         STATE.filtered.fournisseur = [];
-                        extractFournisseurLists();
-                        TableManager.sort('fournisseur', STATE.sort.fournisseur.column);
-                        TableManager.hideSkeleton('fournisseur');
+extractFournisseurLists();
+TableManager.applySort('fournisseur');
+TableManager.hideSkeleton('fournisseur');
                         Utils.showToast(`${STATE.allData.fournisseur.length} factures chargées`, 'success');
                     } else throw new Error('Structure invalide');
                 })
@@ -2606,9 +2640,9 @@ const TableManager = {
                             return emp;
                         });
                         STATE.filtered.personnel = [];
-                        extractDepartments();
-                        TableManager.sort('personnel', STATE.sort.personnel.column);
-                        TableManager.hideSkeleton('personnel');
+extractDepartments();
+TableManager.applySort('personnel');
+TableManager.hideSkeleton('personnel');
                         Utils.showToast(`${STATE.allData.personnel.length} employés chargés`, 'success');
                     } else throw new Error('Structure invalide');
                 })
@@ -2748,10 +2782,10 @@ function applyFilters(type) {
                 }
             };
             if (filters[type]) filters[type]();
-            STATE.filtered[type] = data;
-            STATE.pagination.page[type] = 1;
-            TableManager.sort(type, STATE.sort[type].column);
-            if (type === 'banque') updateBanqueSummaryCards(data);
+STATE.filtered[type] = data;
+STATE.pagination.page[type] = 1;
+TableManager.applySort(type);
+if (type === 'banque') updateBanqueSummaryCards(data);
             if (type === 'grandCaisse') updateGrandCaisseSummaryCards(data);
             TableManager.update(type);
             updateClearAllButton(type);
@@ -2884,6 +2918,9 @@ function applyFilters(type) {
                 setTimeout(() => document.querySelector(`#section-${sectionId} .section-head`)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
             }
             closeAllChips();
+            document.addEventListener('click', (e) => {
+    if (!e.target.closest('.filter-chip')) closeAllChips();
+});
         }
 
         function openVueGlobale() {
@@ -2931,7 +2968,8 @@ function applyFilters(type) {
                     <td title="${item.Designation}">${item.Designation ? item.Designation.substring(0,40)+(item.Designation.length>40?'...':'') : 'N/A'}</td>
                     <td class="td-amount ${item.Mouvement === 'Sortie' ? 'negative' : 'positive'}">${Utils.formatCurrency(item.Montant)}</td>
                     <td><span class="badge ${item.Mouvement === 'Entrée' ? 'badge-entree' : 'badge-sortie'}">${item.Mouvement || 'N/A'}</span></td>
-                    <td><span class="cat-pill">${item.ModePaiement || 'N/A'}</span></td>
+<td class="td-amount ${item.EnCaisse < 0 ? 'negative' : 'positive'}">${Utils.formatCurrency(item.EnCaisse)}</td>
+<td><span class="cat-pill">${item.ModePaiement || 'N/A'}</span></td>
                     <td><span class="cat-pill">${item.Categorie || 'N/A'}</span></td>
                 </tr>
             `).join('');
@@ -3175,8 +3213,8 @@ function applyFilters(type) {
                     <div class="form-group" style="margin-bottom:.3rem;">
                         <label class="form-label">Mouvement</label>
                         <select class="form-control entry-mouvement" style="font-size:.82rem;padding:.35rem .6rem;">
-                            <option value="Entrée" ${data?.mouvement === 'Entrée' ? 'selected' : ''}>Entrée</option>
                             <option value="Sortie" ${data?.mouvement === 'Sortie' ? 'selected' : ''}>Sortie</option>
+                            <option value="Entrée" ${data?.mouvement === 'Entrée' ? 'selected' : ''}>Entrée</option>
                         </select>
                     </div>
                     <div class="form-group" style="margin-bottom:.3rem;">
@@ -3324,10 +3362,10 @@ function applyFilters(type) {
             allData.forEach((data) => {
                 API.postData('addGrandCaisse', data)
                     .then(() => {
-                        sent++;
-                        Utils.showProgress(`Envoi de ${allData.length} entrées...`, `${sent}/${allData.length} envoyées`);
-                        if (sent + errors === allData.length) finishGrandCaisseSubmission(sent, errors);
-                    })
+    sent++;
+    Utils.updateProgressMessage(`${sent}/${allData.length} envoyées`);
+    if (sent + errors === allData.length) finishGrandCaisseSubmission(sent, errors);
+})
                     .catch(() => {
                         errors++;
                         if (sent + errors === allData.length) finishGrandCaisseSubmission(sent, errors);
