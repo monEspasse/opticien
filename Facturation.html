@@ -2142,99 +2142,143 @@ async function loadEditDynamicOptions(currentSociete, currentAssurance, currentC
         // ============================================================
         // NOUVELLE FACTURE
         // ============================================================
-        async function openAddFactureModal() {
-            const container = document.getElementById('modal-container');
-            if (!container) return;
-            if (document.querySelector('.modal-overlay.active')) { closeModal(); await new Promise(r => setTimeout(r, 300)); }
+       async function openAddFactureModal() {
+    const container = document.getElementById('modal-container');
+    if (!container) return;
+    if (document.querySelector('.modal-overlay.active')) { closeModal(); await new Promise(r => setTimeout(r, 300)); }
 
-            container.innerHTML = `
-                <div class="modal-overlay active" id="addFactureModal">
-                    <div class="modal">
-                        <div class="modal-head">
-                            <span class="modal-head-title"><i class="fas fa-plus-circle" style="color:var(--c-accent);"></i> Nouvelle Facture</span>
-                            <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="addFactureForm">
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label class="form-label">ID Client <span class="required">*</span></label>
-                                        <input type="text" class="form-control" id="addClientId" required placeholder="2 lettres + numéro police">
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form-label">Date <span class="required">*</span></label>
-                                        <input type="date" class="form-control" id="addDate" value="${new Date().toISOString().split('T')[0]}" required>
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label class="form-label">N° Police</label>
-                                        <input type="text" class="form-control" id="addPolice" placeholder="Numéro de police">
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form-label">Société</label>
-                                        <select class="form-control" id="addSociete"></select>
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label class="form-label">Assuré Principal</label>
-                                        <input type="text" class="form-control" id="addAssure" placeholder="Nom complet">
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form-label">Bénéficiaire</label>
-                                        <input type="text" class="form-control" id="addBeneficiaire" placeholder="Nom du bénéficiaire">
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label class="form-label">Actes</label>
-                                        <input type="text" class="form-control" id="addActes" value="Lunettes">
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form-label">Montant Total</label>
-                                        <input type="number" step="0.01" class="form-control" id="addMontant" placeholder="0.00">
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label class="form-label">Part Assureur</label>
-                                        <input type="number" step="0.01" class="form-control" id="addPartAssureur" placeholder="0.00">
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form-label">Part Client</label>
-                                        <input type="number" step="0.01" class="form-control" id="addPartClient" placeholder="0.00">
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label class="form-label">TVA sur Monture</label>
-                                        <input type="number" step="0.01" class="form-control" id="addTVA" placeholder="0.00">
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form-label">Assurance</label>
-                                        <select class="form-control" id="addAssurance"></select>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Compagnie</label>
-                                    <select class="form-control" id="addCompagnie"></select>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-foot">
-                            <button class="btn btn-ghost" onclick="closeModal()">Annuler</button>
-                            <button class="btn btn-accent" onclick="submitNewFacture()"><i class="fas fa-save"></i> Ajouter</button>
-                        </div>
-                    </div>
+    container.innerHTML = `
+        <div class="modal-overlay active" id="addFactureModal">
+            <div class="modal">
+                <div class="modal-head">
+                    <span class="modal-head-title"><i class="fas fa-plus-circle" style="color:var(--c-accent);"></i> Nouvelle Facture</span>
+                    <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
                 </div>
-            `;
+                <div class="modal-body">
+                    <form id="addFactureForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">ID Client <span class="required">*</span></label>
+                                <input type="text" class="form-control" id="addClientId" readonly
+                                       placeholder="Généré automatiquement" style="background:var(--c-surface2);font-weight:600;">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Date <span class="required">*</span></label>
+                                <input type="date" class="form-control" id="addDate" value="${new Date().toISOString().split('T')[0]}" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">N° Police</label>
+                                <input type="text" class="form-control" id="addPolice" placeholder="Numéro de police">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Société</label>
+                                <select class="form-control" id="addSociete"></select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Assuré Principal</label>
+                                <input type="text" class="form-control" id="addAssure" placeholder="Nom complet">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Bénéficiaire</label>
+                                <input type="text" class="form-control" id="addBeneficiaire" placeholder="Nom du bénéficiaire">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Actes</label>
+                                <input type="text" class="form-control" id="addActes" value="Lunettes">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Montant Total</label>
+                                <input type="number" step="0.01" class="form-control" id="addMontant" placeholder="0.00">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Part Assureur</label>
+                                <input type="number" step="0.01" class="form-control" id="addPartAssureur" placeholder="0.00">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Part Client</label>
+                                <input type="number" step="0.01" class="form-control" id="addPartClient" placeholder="0.00">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">TVA sur Monture</label>
+                                <input type="number" step="0.01" class="form-control" id="addTVA" placeholder="0.00">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Assurance</label>
+                                <select class="form-control" id="addAssurance"></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+    <label class="form-label">Compagnie</label>
+    <select class="form-control" id="addCompagnie"></select>
+</div>
+<div class="form-group">
+    <label class="form-label">Propriétaire</label>
+    <select class="form-control" id="addProprietaire"></select>
+</div>
+                    </form>
+                </div>
+                <div class="modal-foot">
+                    <button class="btn btn-ghost" onclick="closeModal()">Annuler</button>
+                    <button class="btn btn-accent" onclick="submitNewFacture()"><i class="fas fa-save"></i> Ajouter</button>
+                </div>
+            </div>
+        </div>
+    `;
 
-            setTimeout(() => document.getElementById('addClientId')?.focus(), 100);
-            await loadDynamicOptions();
+    setTimeout(() => document.getElementById('addAssure')?.focus(), 100);
+    await loadDynamicOptions();
+
+    // Recalcule l'ID Client à chaque modification des champs concernés
+    ['addAssure', 'addDate', 'addPolice'].forEach(id => {
+        document.getElementById(id)?.addEventListener('input', generateClientIdPreview);
+    });
+    generateClientIdPreview();
+}
+
+
+
+function generateClientIdPreview() {
+    const nom = document.getElementById('addAssure')?.value.trim() || '';
+    const dateVal = document.getElementById('addDate')?.value || '';
+    const police = document.getElementById('addPolice')?.value.trim() || '';
+
+    // 4 premières lettres du nom, sans accents ni caractères non-alphabétiques
+    const prefix = nom
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-zA-Z]/g, '')
+        .substring(0, 4)
+        .toUpperCase();
+
+    // Jour + mois au format JJMM
+    let ddmm = '';
+    if (dateVal) {
+        const d = new Date(dateVal);
+        if (!isNaN(d.getTime())) {
+            ddmm = String(d.getDate()).padStart(2, '0') + String(d.getMonth() + 1).padStart(2, '0');
         }
+    }
 
+    const policeClean = police.replace(/\s+/g, '');
 
+    const idField = document.getElementById('addClientId');
+    if (!idField) return;
+
+    if (prefix.length === 4 && ddmm && policeClean) {
+        idField.value = `${prefix}-${ddmm}-${policeClean}`;
+    } else {
+        idField.value = ''; // incomplet : on vide plutôt que d'afficher un ID partiel/faux
+    }
+}
 function addNewItemStyleVisio() {
     if (document.getElementById('newItemStyleVisio')) return;
     const style = document.createElement('style');
@@ -2282,9 +2326,9 @@ function handleDynamicSelectChange(select) {
 function showNewValueModal(select) {
     addNewItemStyleVisio();
     const labelMap = {
-        addSociete: 'Société', addAssurance: 'Assurance', addCompagnie: 'Compagnie',
-        editSociete: 'Société', editAssurance: 'Assurance', editCompagnie: 'Compagnie'
-    };
+    addSociete: 'Société', addAssurance: 'Assurance', addCompagnie: 'Compagnie', addProprietaire: 'Propriétaire',
+    editSociete: 'Société', editAssurance: 'Assurance', editCompagnie: 'Compagnie', editProprietaire: 'Propriétaire'
+};
     const label = labelMap[select.id] || 'Valeur';
     const selectId = select.id;
  
@@ -2361,22 +2405,26 @@ async function loadDynamicOptions() {
     try {
         const data = await API.get('importassurance');
         if (!data?.data?.rows) return;
- 
+
         const headers = data.data.headers;
         const assurances = [...new Set(data.data.rows.map(r => r[headers.indexOf('Assurance')]).filter(Boolean))];
         const compagnies = [...new Set(data.data.rows.map(r => r[headers.indexOf('Compagnie')]).filter(Boolean))];
         const societes = [...new Set(data.data.rows.map(r => r[headers.indexOf('Société')]).filter(Boolean))];
- 
+        const proprietaires = [...new Set(data.data.rows.map(r => r[headers.indexOf('Proprietaire')]).filter(Boolean))];
+
         const selSociete = document.getElementById('addSociete');
         const selAssurance = document.getElementById('addAssurance');
         const selCompagnie = document.getElementById('addCompagnie');
+        const selProprietaire = document.getElementById('addProprietaire');
         if (selSociete) selSociete.dataset.mode = 'add';
         if (selAssurance) selAssurance.dataset.mode = 'add';
         if (selCompagnie) selCompagnie.dataset.mode = 'add';
- 
+        if (selProprietaire) selProprietaire.dataset.mode = 'add';
+
         populateDynamicSelect(selSociete, societes, '');
         populateDynamicSelect(selAssurance, assurances, '');
         populateDynamicSelect(selCompagnie, compagnies, '');
+        populateDynamicSelect(selProprietaire, proprietaires, '');
     } catch (e) { console.error('Erreur chargement options:', e); }
 }
 
@@ -2385,20 +2433,21 @@ async function loadDynamicOptions() {
             if (!form?.checkValidity()) { form?.reportValidity(); return; }
 
             const data = {
-                clientId: document.getElementById('addClientId')?.value.trim() || '',
-                date: document.getElementById('addDate')?.value || '',
-                police: document.getElementById('addPolice')?.value.trim() || '',
-                societe: document.getElementById('addSociete')?.value || '',
-                assure: document.getElementById('addAssure')?.value.trim() || '',
-                beneficiaire: document.getElementById('addBeneficiaire')?.value.trim() || '',
-                actes: document.getElementById('addActes')?.value.trim() || '',
-                montant: parseFloat(document.getElementById('addMontant')?.value) || 0,
-                partAssureur: parseFloat(document.getElementById('addPartAssureur')?.value) || 0,
-                partAssure: parseFloat(document.getElementById('addPartClient')?.value) || 0,
-                tva: parseFloat(document.getElementById('addTVA')?.value) || 0,
-                assurance: document.getElementById('addAssurance')?.value || '',
-                compagnie: document.getElementById('addCompagnie')?.value || ''
-            };
+    clientId: document.getElementById('addClientId')?.value.trim() || '',
+    date: document.getElementById('addDate')?.value || '',
+    police: document.getElementById('addPolice')?.value.trim() || '',
+    societe: document.getElementById('addSociete')?.value || '',
+    assure: document.getElementById('addAssure')?.value.trim() || '',
+    beneficiaire: document.getElementById('addBeneficiaire')?.value.trim() || '',
+    actes: document.getElementById('addActes')?.value.trim() || '',
+    montant: parseFloat(document.getElementById('addMontant')?.value) || 0,
+    partAssureur: parseFloat(document.getElementById('addPartAssureur')?.value) || 0,
+    partAssure: parseFloat(document.getElementById('addPartClient')?.value) || 0,
+    tva: parseFloat(document.getElementById('addTVA')?.value) || 0,
+    assurance: document.getElementById('addAssurance')?.value || '',
+    compagnie: document.getElementById('addCompagnie')?.value || '',
+    proprietaire: document.getElementById('addProprietaire')?.value || ''
+};
 
             const btn = document.querySelector('#addFactureModal .btn-accent');
             const original = btn.innerHTML;
